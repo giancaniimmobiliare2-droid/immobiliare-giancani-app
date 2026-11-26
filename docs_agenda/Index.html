@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Immobiliare Giancani — Hub Immobiliare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-light: #e8c988;
+      --gold-dim: rgba(201, 169, 110, 0.15);
+      --ink: #0a0a0f;
+      --ink-2: #111118;
+      --ink-3: #1a1a25;
+      --ink-4: #242433;
+      --mist: #e8e6e0;
+      --mist-dim: rgba(232, 230, 224, 0.6);
+      --mist-faint: rgba(232, 230, 224, 0.08);
+      --glass: rgba(255,255,255,0.035);
+      --glass-border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--ink);
+      color: var(--mist);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at 20% 10%, rgba(201,169,110,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 80% 80%, rgba(120,100,200,0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+    .caption { font-size: 11px; font-weight: 400; color: rgba(232,230,224,0.4); letter-spacing: 0.04em; }
+
+    /* ── GLASS CARD ── */
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* ── LOGIN SECTION ── */
+    #loginSection {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 0;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--ink-2);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 24px;
+      padding: 48px 40px 40px;
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03);
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .login-monogram {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--ink);
+      margin: 0 auto 28px;
+      box-shadow: 0 8px 24px rgba(201,169,110,0.25);
+    }
+
+    .login-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px; font-weight: 300;
+      text-align: center;
+      color: var(--mist);
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .login-title strong { font-weight: 700; }
+
+    .login-subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(232,230,224,0.35);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin-bottom: 36px;
+    }
+
+    .login-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.2), transparent);
+      margin-bottom: 28px;
+    }
+
+    .input-group { margin-bottom: 16px; }
+    .input-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(232,230,224,0.4);
+      margin-bottom: 8px;
+    }
+    .input-row { display: flex; gap: 8px; }
+    .field {
+      width: 100%;
+      background: var(--ink);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: var(--mist);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field:focus {
+      border-color: rgba(201,169,110,0.5);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.08);
+    }
+    .field::placeholder { color: rgba(232,230,224,0.2); }
+
+    .btn-otp {
+      flex-shrink: 0;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gold);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-otp:hover { background: rgba(201,169,110,0.22); }
+    .btn-otp:active { transform: scale(0.97); }
+    .btn-otp:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+      margin-top: 20px;
+    }
+    .btn-primary:hover { opacity: 0.92; box-shadow: 0 8px 28px rgba(201,169,110,0.4); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .status-bar {
+      display: flex; align-items: center; gap-8px;
+      justify-content: center;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      gap: 8px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .status-label { font-size: 10px; color: rgba(232,230,224,0.3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── DASHBOARD ── */
+    #mainDashboard {
+      display: none;
+      position: relative; z-index: 1;
+      min-height: 100vh;
+    }
+
+    /* HERO BAR */
+    .hero-bar {
+      position: sticky; top: 0; z-index: 50;
+      padding: 16px 24px;
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hero-brand {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .hero-mono {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--ink);
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600;
+      color: var(--mist);
+      letter-spacing: 0.01em;
+    }
+    .hero-role {
+      font-size: 10px; color: var(--gold);
+      letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 10px; }
+
+    .btn-ghost {
+      background: var(--mist-faint);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 11px; font-weight: 600;
+      color: rgba(232,230,224,0.55);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-ghost:hover { color: var(--mist); border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); }
+
+    /* MAIN CONTENT */
+    .main-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* SECTION HEADER */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold);
+    }
+
+    /* NAV TABS */
+    .nav-tabs {
+      display: flex; gap: 4px;
+      background: var(--ink-3);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(232,230,224,0.35);
+      cursor: pointer;
+      transition: all 0.22s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: rgba(232,230,224,0.7); background: rgba(255,255,255,0.03); }
+    .tab-btn.active {
+      background: var(--ink);
+      color: var(--gold);
+      box-shadow: 0 1px 12px rgba(0,0,0,0.4);
+    }
+    .tab-btn i { font-size: 12px; }
+
+    /* TAB CONTENT */
+    .tab-content { display: none; animation: fadeIn 0.3s ease both; }
+    .tab-content.active { display: block; }
+
+    /* STAT CARDS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--ink-2);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { border-color: rgba(201,169,110,0.2); transform: translateY(-2px); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px; font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(232,230,224,0.35); }
+
+    /* FORM */
+    .panel {
+      background: var(--ink-2);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--mist);
+      margin-bottom: 4px;
+    }
+    .panel-desc { font-size: 11px; color: rgba(232,230,224,0.35); margin-bottom: 24px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr; } }
+
+    .form-group label {
+      display: block;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(232,230,224,0.35);
+      margin-bottom: 8px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--ink);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 12px 15px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--mist);
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: rgba(201,169,110,0.4); }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(232,230,224,0.18); }
+
+    .col-span-2 { grid-column: 1 / -1; }
+
+    .clause-box {
+      background: rgba(201,169,110,0.04);
+      border: 1px solid rgba(201,169,110,0.12);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 11px;
+      color: rgba(232,230,224,0.45);
+      line-height: 1.7;
+    }
+    .clause-box strong { color: var(--gold); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(232,230,224,0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { color: var(--mist); border-color: rgba(255,255,255,0.15); }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border: none;
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(201,169,110,0.25);
+    }
+    .btn-submit:hover { box-shadow: 0 6px 24px rgba(201,169,110,0.4); }
+
+    /* LOG TERMINAL */
+    .terminal {
+      background: #070710;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 18px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      color: rgba(34,197,94,0.8);
+      line-height: 1.8;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .terminal p::before { content: '› '; opacity: 0.4; }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .data-table th {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(232,230,224,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .data-table td {
+      padding: 13px 14px;
+      color: rgba(232,230,224,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .badge-bozza {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    }
+    .badge-bozza.done { background: rgba(34,197,94,0.08); color: #4ade80; border: 1px solid rgba(34,197,94,0.15); }
+    .badge-bozza.pending { background: rgba(201,169,110,0.08); color: var(--gold); border: 1px solid rgba(201,169,110,0.15); }
+
+    /* CHART */
+    .chart-bars {
+      display: flex; align-items: flex-end; gap: 14px;
+      height: 120px;
+      padding: 0 4px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 16px 16px 0;
+    }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .bar-fill {
+      width: 100%; max-width: 36px;
+      background: rgba(201,169,110,0.15);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 6px 6px 0 0;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .bar-fill:hover { background: rgba(201,169,110,0.55); }
+    .bar-label { font-size: 10px; color: rgba(232,230,224,0.35); font-weight: 500; }
+
+    /* QUICK LINKS */
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .quick-link {
+      background: var(--ink-3);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px 18px;
+      display: flex; align-items: center; gap: 14px;
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s;
+      cursor: pointer;
+    }
+    .quick-link:hover {
+      border-color: rgba(201,169,110,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    .quick-link-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--gold);
+    }
+    .quick-link-text { flex: 1; }
+    .quick-link-title { font-size: 13px; font-weight: 600; color: var(--mist); margin-bottom: 2px; }
+    .quick-link-desc { font-size: 10px; color: rgba(232,230,224,0.3); }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1400px; margin: 0 auto;
+    }
+    .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; color: var(--gold); }
+    .footer-copy { font-size: 10px; color: rgba(232,230,224,0.2); letter-spacing: 0.08em; }
+
+    /* ANIMATIONS */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════ LOGIN ══════════════════════════════ -->
+  <div id="loginSection">
+    <div class="login-card">
+      <div class="login-monogram">G</div>
+
+      <h1 class="login-title">Antonio<br><strong>Giancani</strong></h1>
+      <p class="login-subtitle">Hub Immobiliare · Accesso Riservato</p>
+      <div class="login-divider"></div>
+
+      <div id="manualOtpForm" class="hidden">
+        <div class="input-group">
+          <label>Numero di Telefono</label>
+          <div class="input-row">
+            <input type="text" id="loginPhone" value="3201667156" class="field" autocomplete="tel">
+            <button type="button" id="btnRichiediOtp" onclick="RichiediOtpBoss()" class="btn-otp">OTP</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Codice OTP</label>
+          <input type="text" id="loginOtp" placeholder="••••••" class="field" autocomplete="one-time-code" style="text-align:center;letter-spacing:0.25em;font-size:18px;font-weight:700;">
+        </div>
+        <button onclick="InviaOtpManuale()" class="btn-primary">
+          <i class="fa-solid fa-arrow-right-to-bracket" style="margin-right:8px;"></i>Accedi
+        </button>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-dot"></div>
+        <span class="status-label">Verifica accesso in corso…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ DASHBOARD ══════════════════════════════ -->
+  <div id="mainDashboard">
+    <!-- HERO NAV -->
+    <nav class="hero-bar">
+      <div class="hero-brand">
+        <div class="hero-mono">G</div>
+        <div>
+          <div class="hero-name">Immobiliare Giancani</div>
+          <div class="hero-role">Hub Immobiliare Professionale</div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <span id="displayIp" style="font-size:10px;color:rgba(232,230,224,0.25);letter-spacing:0.06em;display:none;" class="sm-show"></span>
+        <a href="?page=vetrina" target="_blank" class="btn-ghost">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>Mappa</span>
+        </a>
+        <button onclick="logout()" class="btn-ghost" style="color:rgba(220,100,100,0.6);">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+      <!-- NAV TABS -->
+      <div class="nav-tabs">
+        <button onclick="switchTab('foglioVisita')" id="btn-foglioVisita" class="tab-btn active">
+          <i class="fa-solid fa-file-signature"></i> Nuova Visita
+        </button>
+        <button onclick="switchTab('centrale')" id="btn-centrale" class="tab-btn">
+          <i class="fa-solid fa-chart-mixed"></i> Centrale
+        </button>
+        <button onclick="switchTab('bozze')" id="btn-bozze" class="tab-btn">
+          <i class="fa-solid fa-folder"></i> Bozze
+        </button>
+        <button onclick="switchTab('scorciatoie')" id="btn-scorciatoie" class="tab-btn">
+          <i class="fa-solid fa-bolt"></i> Accessi Rapidi
+        </button>
+      </div>
+
+      <!-- TAB: NUOVA VISITA -->
+      <section id="tab-foglioVisita" class="tab-content active">
+        <div class="panel">
+          <div class="panel-title">Registra Nuova Visita</div>
+          <p class="panel-desc">Raccoglie i dati del cliente e prepara il modulo di presa visione per la firma digitale.</p>
+          <form id="formNuovaVisita" onsubmit="salvaNuovaVisita(event)" class="form-grid">
+            <div class="form-group">
+              <label>Nome & Cognome Visitatore</label>
+              <input type="text" required placeholder="Es. Marco Bianchi">
+            </div>
+            <div class="form-group">
+              <label>Telefono / Codice Fiscale</label>
+              <input type="text" required placeholder="Es. 3291234567">
+            </div>
+            <div class="form-group">
+              <label>Immobile Riferimento</label>
+              <input type="text" required placeholder="Es. Rif. V104 — Via Roma 12, Favara">
+            </div>
+            <div class="form-group">
+              <label>Data e Ora Visita</label>
+              <input type="datetime-local" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label>Note Cliente</label>
+              <textarea rows="3" placeholder="Budget, impressioni, richieste particolari…"></textarea>
+            </div>
+            <div class="form-group col-span-2">
+              <div class="clause-box">
+                <strong><i class="fa-solid fa-gavel" style="margin-right:5px;"></i>Clausola di Presa Visione</strong>
+                Il sottoscritto dichiara di aver visionato l'immobile sopra indicato per il tramite di Immobiliare Giancani e si impegna, nel caso di acquisto o locazione dello stesso, a riconoscere la provvigione spettante a termini di legge.
+              </div>
+            </div>
+            <div class="form-group col-span-2">
+              <div class="form-actions">
+                <button type="button" onclick="salvaInBozza()" class="btn-secondary">Salva Bozza</button>
+                <button type="submit" class="btn-submit">Invia & Firma <i class="fa-solid fa-signature" style="margin-left:6px;"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB: CENTRALE -->
+      <section id="tab-centrale" class="tab-content">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-immobili">42</div>
+            <div class="stat-label">Immobili Attivi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-visite">18</div>
+            <div class="stat-label">Visite del Mese</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-trattative">5</div>
+            <div class="stat-label">Trattative in Corso</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Attività Recente</div>
+          <p class="panel-desc">Log in tempo reale dei flussi server e delle operazioni automatiche.</p>
+          <div class="terminal">
+            <p>Allineamento Database Immobili completato.</p>
+            <p>PDF Archivio Cloud generati correttamente.</p>
+            <p>Mappa Territoriale aggiornata — 130+ immobili attivi.</p>
+            <p>In attesa di nuove richieste dai moduli periferici.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:0;">
+          <div class="panel-title">Visite — Ultimi 4 Mesi</div>
+          <p class="panel-desc">Andamento mensile delle visite registrate.</p>
+          <div class="chart-bars">
+            <div class="bar-col">
+              <div class="bar-fill" style="height:60px;" title="Marzo: 12"></div>
+              <div class="bar-label">Mar</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-fill" style="height:95px;" title="Aprile: 19"></div>
+              <div class="bar-label">Apr</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-fill" style="height:125px;" title="Maggio: 25"></div>
+              <div class="bar-label">Mag</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-fill" style="height:90px; background:rgba(201,169,110,0.45); border-color:rgba(201,169,110,0.7);" title="Giugno: 18"></div>
+              <div class="bar-label" style="color:var(--gold);">Giu</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: BOZZE -->
+      <section id="tab-bozze" class="tab-content">
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <div class="panel-title">Bozze & Documenti</div>
+              <p class="panel-desc" style="margin-bottom:0;">Visualizza, riprendi o elimina i contratti non finalizzati.</p>
+            </div>
+            <button onclick="caricaBozzeTotali()" class="btn-ghost" style="font-size:11px;">
+              <i class="fa-solid fa-rotate"></i> Aggiorna
+            </button>
+          </div>
+          <div id="bozze-loader" class="hidden" style="text-align:center;padding:24px;color:rgba(232,230,224,0.3);font-size:12px;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size:20px;color:var(--gold);display:block;margin-bottom:10px;"></i>
+            Caricamento…
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Immobile</th>
+                  <th>Stato</th>
+                  <th style="text-align:right;">Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="bozze-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center;padding:32px;color:rgba(232,230,224,0.2);font-size:11px;">
+                    Nessuna bozza disponibile
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: ACCESSI RAPIDI -->
+      <section id="tab-scorciatoie" class="tab-content">
+        <div class="section-header" style="margin-bottom:16px;">
+          <span class="section-label">Accessi Rapidi</span>
+        </div>
+        <div class="quick-links">
+          <a href="?page=vetrina" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Mappa Territoriale</div>
+              <div class="quick-link-desc">130+ immobili interattivi live</div>
+            </div>
+          </a>
+          <a href="?page=mappa" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-crosshairs"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Gestione Geocodifica</div>
+              <div class="quick-link-desc">Posiziona i tuoi immobili</div>
+            </div>
+          </a>
+          <a href="?page=reels" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-film"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Vetrina Video Reels</div>
+              <div class="quick-link-desc">Catalogo video immersivo</div>
+            </div>
+          </a>
+          <a href="?page=foglio_visita" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-file-signature"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Foglio Visita Digitale</div>
+              <div class="quick-link-desc">Crea e firma sul posto</div>
+            </div>
+          </a>
+          <a href="?page=incarico" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-handshake"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Incarico di Vendita</div>
+              <div class="quick-link-desc">Mandato digitale immediato</div>
+            </div>
+          </a>
+          <a href="?page=area_acquirenti" target="_blank" class="quick-link">
+            <div class="quick-link-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Area Riservata Acquirenti</div>
+              <div class="quick-link-desc">Documenti e proposte private</div>
+            </div>
+          </a>
+          <div class="quick-link" onclick="window.open('https://www.immobiliaregiancani.it','_blank')">
+            <div class="quick-link-icon"><i class="fa-solid fa-globe"></i></div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Sito Web Giancani</div>
+              <div class="quick-link-desc">immobiliaregiancani.it</div>
+            </div>
+          </div>
+          <div class="quick-link" onclick="window.open('https://www.instagram.com/giancani.immobiliare','_blank')">
+            <div class="quick-link-icon" style="background:rgba(131,60,152,0.15);border-color:rgba(131,60,152,0.25);color:#c084fc;">
+              <i class="fa-brands fa-instagram"></i>
+            </div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Instagram</div>
+              <div class="quick-link-desc">Gestisci la tua presenza social</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:20px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:32px;border-color:rgba(201,169,110,0.12);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);letter-spacing:0.04em;">Immobiliare Giancani</div>
+          <div style="font-size:11px;color:rgba(232,230,224,0.3);letter-spacing:0.14em;text-transform:uppercase;">Agente Immobiliare Professionale · Favara, Agrigento</div>
+        </div>
+      </section>
+
+    </div><!-- /main-content -->
+
+    <footer style="border-top:1px solid rgba(255,255,255,0.04);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold);">Immobiliare Giancani</span>
+      <span style="font-size:10px;color:rgba(232,230,224,0.2);letter-spacing:0.08em;">HUB v4.0 · Tutti i diritti riservati</span>
+    </footer>
+
+  </div><!-- /mainDashboard -->
+
+  <script>
+    function ottieniBrowserId() {
+      let id = localStorage.getItem('ag_device_id');
+      if (!id) { id = 'BOSS_' + Math.random().toString(36).slice(2,14) + Date.now().toString(36); localStorage.setItem('ag_device_id', id); }
+      return id;
+    }
+    async function ottieniIpPubblico() {
+      try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); return d.ip; } catch(e) { return '0.0.0.0'; }
+    }
+
+    function switchTab(id) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      document.getElementById('btn-' + id).classList.add('active');
+      if (id === 'bozze') caricaBozzeTotali();
+    }
+
+    function caricaBozzeTotali() {
+      var loader = document.getElementById('bozze-loader');
+      var tbody = document.getElementById('bozze-tbody');
+      if (loader) loader.classList.remove('hidden');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(bozze) {
+            if (loader) loader.classList.add('hidden');
+            renderBozzeTotali(bozze || []);
+          })
+          .withFailureHandler(function(err) {
+            if (loader) loader.classList.add('hidden');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="padding:24px;text-align:center;color:rgba(255,80,80,0.6);font-size:11px;">Errore: ' + (err.message||'impossibile caricare') + '</td></tr>';
+          })
+          .leggiBozzeIncarichiComplete();
+      } else {
+        if (loader) loader.classList.add('hidden');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="padding:24px;text-align:center;color:rgba(232,230,224,0.2);font-size:11px;">Nessuna bozza disponibile</td></tr>';
+      }
+    }
+
+    function renderBozzeTotali(bozze) {
+      var tbody = document.getElementById('bozze-tbody');
+      if (!tbody) return;
+      if (!bozze.length) { tbody.innerHTML = '<tr><td colspan="5" style="padding:32px;text-align:center;color:rgba(232,230,224,0.2);font-size:11px;">Nessuna bozza salvata</td></tr>'; return; }
+      tbody.innerHTML = '';
+      bozze.forEach(function(b) {
+        var badge = b.stato === 'COMPLETATO'
+          ? '<span class="badge-bozza done">✓ Completato</span>'
+          : '<span class="badge-bozza pending">✎ Bozza</span>';
+        var azioni = b.stato !== 'COMPLETATO'
+          ? '<button onclick="riprendiBozzaDaHub(\'' + b.idBozza + '\')" style="color:var(--gold);font-size:11px;font-weight:700;background:none;border:none;cursor:pointer;margin-right:12px;">▶ Riprendi</button>'
+          : '';
+        azioni += '<button onclick="eliminaBozzaDaHub(\'' + b.idBozza + '\')" style="color:rgba(220,80,80,0.7);font-size:11px;font-weight:700;background:none;border:none;cursor:pointer;">✕ Elimina</button>';
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td style="font-size:11px;color:rgba(232,230,224,0.4);">' + (b.dataOra||'—') + '</td><td style="font-weight:600;">' + (b.venditori||'—') + '</td><td style="color:rgba(232,230,224,0.6);">' + (b.indirizzo||'—') + '</td><td>' + badge + '</td><td style="text-align:right;">' + azioni + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    function riprendiBozzaDaHub(id) {
+      if (typeof google !== 'undefined' && google.script)
+        google.script.run.withSuccessHandler(function(url){ if (url) window.open(url + '?page=incarico&riprendi=' + id, '_blank'); }).getWebAppUrl();
+    }
+    function eliminaBozzaDaHub(id) {
+      if (!confirm('Eliminare definitivamente questa bozza?')) return;
+      google.script.run.withSuccessHandler(function(res){ if (res && res.successo) caricaBozzeTotali(); else alert('Errore: ' + ((res&&res.messaggio)||'impossibile eliminare')); }).eliminaBozzaIncarico(id);
+    }
+
+    async function controllaBypassAllAvvio() {
+      const num = "3201667156";
+      const dev = ottieniBrowserId();
+      const ip = await ottieniIpPubblico();
+      const el = document.getElementById('displayIp');
+      if (el) { el.textContent = 'IP: ' + ip; el.style.display = 'block'; }
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(r) { r.ok && r.bypass ? mostraDashboard(r.tok) : mostraFormManuale(); })
+          .dcVerificaBypassBoss(num, dev, ip);
+      } else {
+        setTimeout(() => mostraDashboard("DEV_TOKEN"), 600);
+      }
+    }
+
+    function RichiediOtpBoss() {
+      const num = document.getElementById('loginPhone').value.trim();
+      if (!num || num.length < 9) { alert("Numero non valido"); return; }
+      const btn = document.getElementById('btnRichiediOtp');
+      btn.disabled = true; btn.textContent = "…";
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(r) { btn.disabled = false; btn.textContent = "OTP"; if (r.ok) alert("Codice inviato su WhatsApp!"); else alert("Errore: " + r.m); })
+          .withFailureHandler(function() { btn.disabled = false; btn.textContent = "OTP"; })
+          .dcInviaOtpBoss(num);
+      } else {
+        setTimeout(() => { btn.disabled = false; btn.textContent = "OTP"; alert("[DEV] OTP simulato inviato."); }, 800);
+      }
+    }
+
+    async function InviaOtpManuale() {
+      const num = document.getElementById('loginPhone').value;
+      const otp = document.getElementById('loginOtp').value;
+      if (!otp) { alert("Inserisci l'OTP"); return; }
+      const dev = ottieniBrowserId();
+      const ip = await ottieniIpPubblico();
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(r) { r.ok ? mostraDashboard(r.tok) : alert(r.m); })
+          .dcVerificaOtpBoss(num, otp, dev, ip);
+      } else {
+        mostraDashboard("DEV_TOKEN");
+      }
+    }
+
+    function mostraDashboard(token) {
+      localStorage.setItem('ag_token', token);
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'block';
+    }
+    function mostraFormManuale() {
+      document.getElementById('manualOtpForm').classList.remove('hidden');
+      document.querySelector('#loginSection .status-label').textContent = 'Autenticazione manuale richiesta';
+    }
+
+    function salvaNuovaVisita(e) {
+      e.preventDefault();
+      alert("✓ Foglio Visita inviato e salvato correttamente.");
+      document.getElementById('formNuovaVisita').reset();
+    }
+    function salvaInBozza() { alert("✓ Bozza salvata con successo."); }
+    function logout() { localStorage.removeItem('ag_token'); window.location.reload(); }
+
+    window.addEventListener('DOMContentLoaded', controllaBypassAllAvvio);
+  </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+        <!-- 📱 TAB 4: TELEGRAM & CANALI SOCIAL RTMP -->
+        <div id="tab-telegram" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title">📱 Bot Telegram & Canali Social RTMP</div>
+            <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-telegram')">❓ Tutorial & Guida</button>
+          </div>
+
+          <!-- CARD 1: CONFIGURAZIONE BOT TELEGRAM -->
+          <div class="section-card">
+            <div class="section-title">📱 Configurazione Bot Telegram & Avvisi Automatici <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-bot-telegram')" title="Guida & Mini Tutorial: 📱 Configurazione Bot Telegram">❓</button></div>
+<div id="tut-bot-telegram" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 📱 Configurazione Bot Telegram</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Configura il bot Telegram per ricevere e inviare notifiche push con foto e link quando parte una diretta o viene inserito un nuovo immobile.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Inserisci il Token del Bot Telegram e l'ID del Canale o della Chat.</li><li>Clicca <em>'Invia Notifica Test'</em> per verificare che i messaggi arrivino correttamente su Telegram.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-bot-telegram')">✖️ Chiudi Guida</div>
+</div>
+            <form onsubmit="event.preventDefault(); salvaConfigurazioneTelegram();">
+              <div class="form-grid">
+                <div class="form-group full"><label>Telegram Bot Token:</label><input type="password" id="telegram-token"></div>
+                <div class="form-group"><label>Telegram Chat ID:</label><input type="text" id="telegram-chatid"></div>
+                <div class="form-group"><label>Notifica Cambio Immobile:</label><select id="telegram-auto"><option value="SI">🔔 ATTIVA</option><option value="NO">🔕 DISATTIVA</option></select></div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+                <button type="submit" class="btn-gold" style="flex: 1.2; min-width: 200px;">💾 SALVA CONFIGURAZIONE TELEGRAM</button>
+                <button type="button" onclick="inviaNotificaTelegramTestRegia()" class="btn-gold" style="flex: 1; min-width: 160px; background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #3498db;">🔔 INVIA NOTIFICA TEST</button>
+                <button type="button" onclick="generaReportPostDirettaOra()" class="btn-gold" style="flex: 1; min-width: 160px; background: rgba(46,204,113,0.2); border: 1px solid #2ecc71; color: #2ecc71;">📊 INVIA REPORT DIRETTA</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 🐱 CARD RAPIDA: BOT GATTO NARRATORE -->
+          <div class="section-card" style="border: 1.5px solid #f39c12; background: linear-gradient(135deg, rgba(243,156,18,0.08), rgba(15,23,42,0.85)); margin-top: 16px;">
+            <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="color: #fbbf24;">🐱 Bot Gatto Narratore — Grandi Classici (Video Verticali 9:16)</span>
+              <button type="button" onclick="mostraTab('tab-bot-storie')" class="btn-gold" style="font-size: 11px; padding: 4px 10px;">Apri Sezione Bot Storie ➔</button>
+            </div>
+            <p style="font-size: 12px; color: var(--sand); margin: 6px 0 12px 0;">
+              Genera video verticali 9:16 basati sui riassunti dei grandi classici (estratti da Colonna F), con il gatto 3D Pixar, voce Diego e branding Immobiliare Giancani, inviando il video direttamente al bot Telegram.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" onclick="eseguiBotGattoNarratoreDaRegia()" class="btn-gold" style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #f39c12, #d35400); color: #fff; font-weight: 800;">🚀 AVVIA BOT GATTO NARRATORE ORA</button>
+              <button type="button" onclick="apriCanaleTelegramBot()" class="btn-gold" style="flex: 1; min-width: 160px; background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #3498db;">📲 APRI TELEGRAM</button>
+            </div>
+          </div>
+
+          <!-- 📡 CARD MULTI-CANALE: POST DIRETTA A TUTTI I CANALI -->
+          <div class="section-card" style="border: 1.5px solid #2ecc71; background: linear-gradient(135deg, rgba(46,204,113,0.08), rgba(15,23,42,0.85)); margin-top: 16px;">
+            <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="color: #2ecc71;">📡 Annuncio Multi-Canale Diretta Live (Tutti i Canali)</span>
+            </div>
+            <p style="font-size: 12px; color: var(--sand); margin: 6px 0 12px 0;">
+              Invia simultaneamente il post di annuncio che siamo in diretta a <b>Facebook (Pagina + Profilo)</b>, <b>Telegram (Canale + ID_BOSS)</b>, <b>WhatsApp Cloud API</b>, <b>WordPress (Sito Ufficiale)</b>, <b>YouTube</b> e <b>Instagram</b> con i dati estratti rigorosamente dalla <b>Colonna F</b> e firma <b>Immobiliare Giancani</b>.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" onclick="inviaPostDirettaTuttiCanaliManuale()" class="btn-gold" style="flex: 1; min-width: 240px; background: linear-gradient(135deg, #27ae60, #1e8449); color: #fff; font-weight: 800;">
+                📢 INVIA ORA POST DIRETTA A TUTTI I CANALI
+              </button>
+            </div>
+            <div id="status-post-multicanale" style="margin-top: 8px; font-size: 12px; display: none;"></div>
+          </div>
+
+          <!-- CARD 2: CONFIGURAZIONE CANALI STREAMING RTMP (TIKTOK & INSTAGRAM) -->
+          <div class="section-card" style="background: rgba(225, 48, 108, 0.06); border-color: #e1306c;">
+            <div class="section-title" style="color: #ff6b81;">📸 Canali Live RTMP (TikTok LIVE & Instagram LIVE) <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-rtmp-adapter')" title="Guida: Canali Live RTMP">❓</button></div>
+<div id="tut-rtmp-adapter" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 📸 Canali Live RTMP</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Permette di trasmettere il flusso live simultaneamente su TikTok e Instagram inserendo la chiave RTMP.</div>
+  <div class="tut-steps">
+    <ol>
+      <li>Da app TikTok/Instagram o da browser web, avvia una sessione live e copia la Stream Key o Stream URL.</li>
+      <li>Incolla la chiave nei campi sottostanti e salva.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-rtmp-adapter')">✖️ Chiudi Guida</div>
+</div>
+            <div style="font-size: 12px; color: var(--sand); margin-bottom: 12px;">
+              Configura le chiavi di trasmissione RTMP per inviare la regia live contemporaneamente su tutti i tuoi account social:
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label style="color: #ff6b81; font-weight: bold;">🎵 TikTok LIVE Stream Key o URL RTMP:
+                  <span id="stato-tiktok" style="font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #aaa; margin-left: 8px;">⚪ Inattivo</span>
+                </label>
+                <!-- Guida rapida TikTok -->
+                <div style="font-size: 10.5px; color: rgba(255,200,200,0.75); background: rgba(255,107,129,0.08); border: 1px solid rgba(255,107,129,0.2); border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; line-height: 1.6;">
+                  <strong style="color: #ff6b81;">📱 Come ottenere la chiave TikTok:</strong><br>
+                  1. Apri app <b>TikTok</b> → tocca <b>+</b> → <b>Live</b> → <b>Streaming live</b><br>
+                  2. Copia la <b>Chiave Stream</b> (o URL RTMP completo)<br>
+                  3. Incollala qui sotto e salva — Immobiliare Giancani<br>
+                  <em style="color: rgba(255,200,200,0.55);">⚠️ Richiede account TikTok Creator con Live abilitato (≥1000 follower o richiesta Creator)</em>
+                </div>
+                <input type="password" id="input-tiktok-rtmp" placeholder="Incolla Stream Key o rtmp://live-push.tiktok-cdns.com/live/..." style="border-color: rgba(225,48,108,0.4);" oninput="var k=this.value.trim(); var el=document.getElementById('btn-salva-tiktok'); if(el) el.disabled=!k;">
+              </div>
+              <div class="form-group full">
+                <label style="color: #e1306c; font-weight: bold;">📸 Instagram LIVE Stream Key o URL RTMP:</label>
+                <input type="password" id="input-instagram-rtmp" placeholder="Incolla Stream Key o rtmp://live-upload.instagram.com:443/rtmp/..." style="border-color: rgba(225,48,108,0.4);">
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
+              <button id="btn-salva-tiktok" type="button" onclick="salvaTikTokKey()" class="btn-gold" style="flex: 1; min-width: 180px; background: linear-gradient(135deg, #ff6b81, #c0392b); color: #fff;">
+                💾 SALVA CHIAVE TIKTOK LIVE
+              </button>
+              <button type="button" onclick="salvaCanaliRTMPUI()" class="btn-gold" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #e1306c, #fd1d1d); color: #fff;">
+                💾 SALVA ANCHE INSTAGRAM
+              </button>
+              <button type="button" onclick="disattivaTikTok()" style="background: rgba(255,255,255,0.06); color: #aaa; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; font-size: 11.5px; cursor: pointer;" title="Disabilita TikTok senza eliminare la chiave">
+                ⚪ Disattiva TikTok
+              </button>
+            </div>
+            <div id="rtmp-status-msg" style="margin-top: 8px; font-size: 11.5px; color: #2ecc71; display: none;"></div>
+          </div>
+        </div>
+

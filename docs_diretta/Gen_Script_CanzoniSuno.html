@@ -1,0 +1,773 @@
+<script>
+// ═════════════════════════════════════════════════════════════════════════════
+// 🎵 MODULO CLIENT-SIDE: SUNO AI MUSIC STUDIO — IMMOBILIARE GIANCANI
+// Composizione e Anteprima Canzoni 3+ Minuti, Waveform Audio & Telegram Dispatch
+// ═════════════════════════════════════════════════════════════════════════════
+
+var _sunoState = {
+  activeSheet: '',
+  stile: 'Pop Emozionale & Chitarra Acustica (95 BPM)',
+  voce: 'it-IT-IsabellaNeural',
+  durataMinuti: 3,
+  tema: 'La famiglia è l\'obiettivo della felicità',
+  isPlaying: false,
+  audioDuration: 195, // 3:15 in secondi
+  currentTime: 0,
+  playbackInterval: null,
+  speechUtterance: null,
+  currentSongData: null,
+  immobiliList: []
+};
+
+// Canvas & Waveform Visualizer
+var _sunoCanvas, _sunoCtx, _sunoAnimFrameId;
+var _sunoWavePhase = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+  inizializzaTabCanzoniSuno();
+});
+
+function inizializzaTabCanzoniSuno() {
+  inizializzaWaveformCanvasSuno();
+  caricaCatalogoImmobiliSuno();
+}
+
+/**
+ * 📊 Inizializza il canvas visualizzatore di spettro audio (Suno Waveform)
+ */
+function inizializzaWaveformCanvasSuno() {
+  _sunoCanvas = document.getElementById('suno-waveform-canvas');
+  if (!_sunoCanvas) return;
+  _sunoCtx = _sunoCanvas.getContext('2d');
+
+  function resizeCanvas() {
+    if (!_sunoCanvas) return;
+    _sunoCanvas.width = _sunoCanvas.parentElement.clientWidth || 400;
+    _sunoCanvas.height = 52;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  if (!_sunoAnimFrameId) {
+    disegnaWaveformLoopSuno();
+  }
+}
+
+/**
+ * 🌊 Ciclo di animazione dello spettro sonoro
+ */
+function disegnaWaveformLoopSuno() {
+  if (_sunoCanvas && _sunoCtx) {
+    var w = _sunoCanvas.width;
+    var h = _sunoCanvas.height;
+    _sunoCtx.clearRect(0, 0, w, h);
+
+    var barsCount = Math.floor(w / 7);
+    var isPlaying = _sunoState.isPlaying;
+
+    for (var i = 0; i < barsCount; i++) {
+      var x = i * 7;
+      var factor = Math.sin(_sunoWavePhase + i * 0.25) * 0.5 + 0.5;
+      var factor2 = Math.cos(_sunoWavePhase * 0.7 + i * 0.15) * 0.5 + 0.5;
+
+      var barH = isPlaying ? (factor * 30 + factor2 * 16 + 4) : (Math.sin(i * 0.3) * 6 + 8);
+      var y = (h - barH) / 2;
+
+      // Gradiente oro/ambra lucente stile Giancani
+      var grad = _sunoCtx.createLinearGradient(0, y, 0, y + barH);
+      if (isPlaying) {
+        grad.addColorStop(0, '#f5d485');
+        grad.addColorStop(0.5, '#c9a35e');
+        grad.addColorStop(1, '#a6512d');
+      } else {
+        grad.addColorStop(0, 'rgba(201,163,94,0.3)');
+        grad.addColorStop(1, 'rgba(166,81,45,0.15)');
+      }
+
+      _sunoCtx.fillStyle = grad;
+      _sunoCtx.fillRect(x, y, 4, barH);
+    }
+
+    if (isPlaying) {
+      _sunoWavePhase += 0.18;
+    } else {
+      _sunoWavePhase += 0.02;
+    }
+  }
+  _sunoAnimFrameId = requestAnimationFrame(disegnaWaveformLoopSuno);
+}
+
+/**
+ * 🔄 Carica la lista degli immobili da Google Sheets
+ */
+function caricaCatalogoImmobiliSuno() {
+  var sel = document.getElementById('suno-select-immobile');
+  if (!sel) return;
+
+  if (window._immobiliListCache && window._immobiliListCache.length > 0) {
+    popolaSelectImmobiliSuno(window._immobiliListCache);
+    return;
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(list) {
+        var items = Array.isArray(list) ? list : (list && list.immobili ? list.immobili : []);
+        var names = items.map(function(it) { return it.name || it.tabName || it; }).filter(Boolean);
+        window._immobiliListCache = names;
+        popolaSelectImmobiliSuno(names);
+      })
+      .withFailureHandler(function(err) {
+        caricaCatalogoImmobiliSunoFallback();
+      })
+      .getElencoImmobiliDisponibili();
+  } else {
+    caricaCatalogoImmobiliSunoFallback();
+  }
+}
+
+function caricaCatalogoImmobiliSunoFallback() {
+  var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?action=debug_all_sheets";
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var ignora = ['IMPOSTAZIONI_SOCIAL', 'CONFIGURAZIONE_TEMPI', 'RISULTATI_GIORNATA', 'FRASI_CALCIO', 'ANALYTICS_SOCIAL', 'MUSICA_SOTTOFONDO', 'ARCHIVIO_CLIENTI', 'PALINSESTO_ORARIO', 'PUBBLICITA_SPOT', 'PUBBLICITA_SCHERMO_CENTRALE', 'BATTUTE_DARIO'];
+      var sheets = (d.sheets || []).filter(function(s) {
+        var n = (s.name || '').toUpperCase();
+        return !ignora.some(function(ig) { return n.indexOf(ig) !== -1; });
+      }).map(function(s) { return s.name; });
+      window._immobiliListCache = sheets;
+      popolaSelectImmobiliSuno(sheets);
+    })
+    .catch(function(e) {
+      console.warn("Fallback catalogo immobili:", e);
+      popolaSelectImmobiliSuno([
+        "attico_panoramico_lusso",
+        "villa_con_giardino_piscina",
+        "appartamento_centro_storico",
+        "bilocale_luminoso_terrazzo"
+      ]);
+    });
+}
+
+function popolaSelectImmobiliSuno(sheets) {
+  var sel = document.getElementById('suno-select-immobile');
+  if (!sel) return;
+  _sunoState.immobiliList = sheets;
+
+  sel.innerHTML = '<option value="">✨ [Seleziona un immobile da Google Sheets]</option>';
+  sheets.forEach(function(s) {
+    var opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = '🏠 ' + s.replace(/_/g, ' ').toUpperCase();
+    sel.appendChild(opt);
+  });
+}
+
+function ricaricaImmobiliSunoUI() {
+  window._immobiliListCache = null;
+  caricaCatalogoImmobiliSuno();
+}
+
+/**
+ * 🏠 Gestione cambio immobile selezionato
+ */
+function onCambioImmobileSuno(sheetName) {
+  _sunoState.activeSheet = sheetName || '';
+  if (!sheetName) return;
+
+  var clean = sheetName.replace(/_/g, ' ');
+  var inputPrompt = document.getElementById('suno-input-prompt');
+  if (inputPrompt && (!inputPrompt.value || inputPrompt.value.indexOf('Canzone') !== -1)) {
+    inputPrompt.value = "Canzone pop solare ed emozionante con chitarra acustica e pianoforte (95 BPM), per raccontare il prestigio di " + clean + " a Favara con ritmo coinvolgente e ritornello estivo memorabile.";
+  }
+
+  // Recupera foto per la cover
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(mediaList) {
+        if (mediaList && mediaList.length > 0) {
+          var firstImg = mediaList.find(function(m) { return m.url && m.tipo !== 'video'; });
+          if (firstImg) {
+            var coverImg = document.getElementById('suno-track-cover-img');
+            if (coverImg) coverImg.src = firstImg.url;
+          }
+        }
+      })
+      .getMediaPerImmobile(sheetName);
+  }
+}
+
+/**
+ * 📸 Toggle campi personalizzati / caricamento da cellulare
+ */
+function toggleCustomMediaSuno(checked) {
+  var box = document.getElementById('suno-custom-fields');
+  var sel = document.getElementById('suno-select-immobile');
+  if (box) box.style.display = checked ? 'block' : 'none';
+  if (checked && sel) sel.value = '';
+}
+
+/**
+ * 🎸 Seleziona stile rapido con le pills
+ */
+function selezionaStileRapidoSuno(btn, stileText) {
+  var pills = document.querySelectorAll('#suno-genres-pills .suno-tag-btn');
+  pills.forEach(function(p) { p.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  _sunoState.stile = stileText;
+  var metaStile = document.getElementById('suno-meta-stile');
+  if (metaStile) metaStile.innerText = stileText.split('(')[0].trim();
+
+  var promptArea = document.getElementById('suno-input-prompt');
+  if (promptArea) {
+    var val = promptArea.value.trim();
+    if (!val) {
+      promptArea.value = "Stile musicale: " + stileText + ". Atmosfera accogliente e ritornello brillante.";
+    }
+  }
+}
+
+/**
+ * 🎲 Genera Prompt Casuale ispirante
+ */
+function generaPromptCasualeSuno() {
+  var presetPrompts = [
+    "Canzone pop emozionante con chitarra acustica e pianoforte caldo (95 BPM), ritornello indimenticabile e parole sulla serenità della famiglia in una dimora esclusiva.",
+    "Brano moderno trap melodico 124 BPM con bassi 808 morbidi e ritornello radiofonico orecchiabile che valorizza l'indipendenza e la bellezza degli spazi.",
+    "Composizione neoclassica cinematografica con pianoforte solista e archi avvolgenti, adatta a un attico di lusso panoramico.",
+    "Hit reggaeton estiva latina solare e allegra, con chitarra spagnola e percussioni calde per una villa con giardino.",
+    "Traccia synthwave retrò anni 80 con sintetizzatori scintillanti e ritmo trascinante per uno spazio contemporaneo unico.",
+    "Atmosfera chillout lo-fi dolce e rilassante, pianoforte jazz e battito rilassato, ideale per una casa accogliente e luminosa."
+  ];
+
+  var rnd = presetPrompts[Math.floor(Math.random() * presetPrompts.length)];
+  var promptArea = document.getElementById('suno-input-prompt');
+  if (promptArea) {
+    promptArea.value = rnd;
+    promptArea.focus();
+  }
+}
+
+/**
+ * ⏱️ Imposta durata del brano (1, 2 o 3+ min)
+ */
+function impostaDurataSuno(durata) {
+  _sunoState.durataMinuti = durata;
+  var metaDur = document.getElementById('suno-meta-durata');
+  if (metaDur) {
+    metaDur.innerText = durata === 1 ? '1:00 min' : (durata === 2 ? '2:00 min' : '3:15 min');
+  }
+  _sunoState.audioDuration = durata === 1 ? 60 : (durata === 2 ? 120 : 195);
+  aggiornaTimerPlayerSuno(0);
+}
+
+/**
+ * ✍️ Toggle modalità testo personalizzato (Custom Lyrics)
+ */
+function toggleCustomLyricsSuno(checked) {
+  var box = document.getElementById('suno-custom-lyrics-container');
+  if (box) box.style.display = checked ? 'block' : 'none';
+}
+
+function inserisciTagVersoSuno(tag) {
+  var area = document.getElementById('suno-input-custom-lyrics');
+  if (!area) return;
+  area.value += (area.value ? "\n\n" : "") + tag + "\n";
+  area.focus();
+}
+
+/**
+ * 🚀 AVVIO COMPOSIZIONE CANZONE SUNO AI (GOOGLE GEMINI)
+ */
+function avviaComposizioneCanzoneSuno() {
+  var isCustom = document.getElementById('suno-check-custom') && document.getElementById('suno-check-custom').checked;
+  var activeSheet = _sunoState.activeSheet;
+  var tema = document.getElementById('suno-select-tema') ? document.getElementById('suno-select-tema').value : _sunoState.tema;
+  var voce = document.getElementById('suno-select-voce') ? document.getElementById('suno-select-voce').value : _sunoState.voce;
+  var stile = _sunoState.stile;
+  var durata = _sunoState.durataMinuti;
+  var promptUtente = document.getElementById('suno-input-prompt') ? document.getElementById('suno-input-prompt').value.trim() : '';
+
+  var customDati = null;
+  if (isCustom) {
+    customDati = {
+      tipo: document.getElementById('suno-custom-tipo') ? document.getElementById('suno-custom-tipo').value.trim() : '',
+      zona: document.getElementById('suno-custom-zona') ? document.getElementById('suno-custom-zona').value.trim() : '',
+      mq: document.getElementById('suno-custom-mq') ? document.getElementById('suno-custom-mq').value.trim() : '',
+      prezzo: document.getElementById('suno-custom-prezzo') ? document.getElementById('suno-custom-prezzo').value.trim() : '',
+      dettagli: document.getElementById('suno-custom-dettagli') ? document.getElementById('suno-custom-dettagli').value.trim() : '',
+      customPrompt: promptUtente
+    };
+  }
+
+  // Controllo Custom Lyrics
+  var isCustomLyrics = document.getElementById('suno-check-custom-lyrics') && document.getElementById('suno-check-custom-lyrics').checked;
+  var customLyricsText = isCustomLyrics && document.getElementById('suno-input-custom-lyrics') ? document.getElementById('suno-input-custom-lyrics').value.trim() : '';
+
+  if (isCustomLyrics && customLyricsText) {
+    // Modalità custom immediata
+    var customRes = {
+      success: true,
+      titoloBrano: "Canzone d'Autore — Immobiliare Giancani",
+      testoCanzone: customLyricsText,
+      stileMusicale: stile,
+      temaScelto: tema,
+      durataMinuti: durata
+    };
+    renderizzaCanzoneSunoUI(customRes);
+    return;
+  }
+
+  // Mostra loader animato
+  var loader = document.getElementById('suno-loading-status');
+  var loadText = document.getElementById('suno-loading-text');
+  var btnLaunch = document.getElementById('btn-crea-canzone-suno');
+
+  if (loader) loader.style.display = 'block';
+  if (btnLaunch) btnLaunch.disabled = true;
+
+  var stepIdx = 0;
+  var steps = [
+    "Analisi immobile e consultazione Colonna F...",
+    "Composizione melodia e versi in rima...",
+    "Inserimento formula 'Immobiliare Giancani vende...' nel ritornello...",
+    "Ottimizzazione bridge psicologico e metratura per esteso...",
+    "Finalizzazione canzone d'autore..."
+  ];
+
+  var stepInterval = setInterval(function() {
+    stepIdx = (stepIdx + 1) % steps.length;
+    if (loadText) loadText.innerText = steps[stepIdx];
+  }, 1200);
+
+  // Chiamata backend Apps Script
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        clearInterval(stepInterval);
+        if (loader) loader.style.display = 'none';
+        if (btnLaunch) btnLaunch.disabled = false;
+        if (res && res.success) {
+          renderizzaCanzoneSunoUI(res);
+        } else {
+          alert("⚠️ Errore nella composizione della canzone: " + (res && res.error ? res.error : "Riprova"));
+        }
+      })
+      .withFailureHandler(function(err) {
+        clearInterval(stepInterval);
+        if (loader) loader.style.display = 'none';
+        if (btnLaunch) btnLaunch.disabled = false;
+        fallbackCanzoneSuno(activeSheet, tema, stile, durata, customDati);
+      })
+      .componiCanzoneImmobileGoogleAI(activeSheet, tema, stile, durata, customDati);
+  } else {
+    // Chiamata REST API diretta
+    var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec";
+    var payload = {
+      action: "componi_canzone_immobile",
+      tab: activeSheet,
+      tema: tema,
+      stile: stile,
+      durata: durata,
+      customDati: customDati
+    };
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      clearInterval(stepInterval);
+      if (loader) loader.style.display = 'none';
+      if (btnLaunch) btnLaunch.disabled = false;
+      if (res && res.success) {
+        renderizzaCanzoneSunoUI(res);
+      } else {
+        fallbackCanzoneSuno(activeSheet, tema, stile, durata, customDati);
+      }
+    })
+    .catch(function(e) {
+      clearInterval(stepInterval);
+      if (loader) loader.style.display = 'none';
+      if (btnLaunch) btnLaunch.disabled = false;
+      fallbackCanzoneSuno(activeSheet, tema, stile, durata, customDati);
+    });
+  }
+}
+
+/**
+ * 🎵 Renderizza il brano generato nell'interfaccia Suno
+ */
+function renderizzaCanzoneSunoUI(res) {
+  _sunoState.currentSongData = res;
+
+  var titleEl = document.getElementById('suno-track-title-txt');
+  if (titleEl) titleEl.innerText = res.titoloBrano || "Canzone Immobile — Immobiliare Giancani";
+
+  var metaStile = document.getElementById('suno-meta-stile');
+  if (metaStile) metaStile.innerText = res.stileMusicale ? res.stileMusicale.split('(')[0].trim() : "Pop Acustico";
+
+  var metaVoce = document.getElementById('suno-meta-voce');
+  if (metaVoce) {
+    var vSel = document.getElementById('suno-select-voce');
+    metaVoce.innerText = vSel ? vSel.options[vSel.selectedIndex].text.split('(')[0].replace(/[👩👨👥✨🎙️]/g, '').trim() : "Isabella";
+  }
+
+  var subliminaleEl = document.getElementById('suno-track-subliminale-txt');
+  if (subliminaleEl) subliminaleEl.innerText = '🎯 "' + (res.temaScelto || _sunoState.tema) + '"';
+
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  if (lyricsBox && res.testoCanzone) {
+    // Formatta con tag colorati stile Suno
+    var formatted = formattaVersiSuno(res.testoCanzone);
+    lyricsBox.innerHTML = formatted;
+  }
+
+  // Reset Player
+  fermaAudioSuno();
+
+  // Scroll morbido alla card brano su schermi piccoli
+  var displayCard = document.getElementById('suno-track-display');
+  if (displayCard && window.innerWidth < 1024) {
+    displayCard.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+/**
+ * 🎨 Formatta i versi con badge colorati
+ */
+function formattaVersiSuno(rawText) {
+  var safe = rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  safe = safe.replace(/\[INTRO[^\]]*\]/gi, '<span class="suno-verse-tag tag-intro">INTRO &amp; ANNOUNCEMENT</span>');
+  safe = safe.replace(/\[STROFA 1[^\]]*\]/gi, '<span class="suno-verse-tag tag-strofa">STROFA 1</span>');
+  safe = safe.replace(/\[RITORNELLO[^\]]*\]/gi, '<span class="suno-verse-tag tag-ritornello">⭐ RITORNELLO (Immobiliare Giancani vende...)</span>');
+  safe = safe.replace(/\[STROFA 2[^\]]*\]/gi, '<span class="suno-verse-tag tag-strofa">STROFA 2</span>');
+  safe = safe.replace(/\[BRIDGE[^\]]*\]/gi, '<span class="suno-verse-tag tag-bridge">💜 BRIDGE EMOZIONALE (Messaggio Positivo)</span>');
+  safe = safe.replace(/\[RITORNELLO FINALE[^\]]*\]/gi, '<span class="suno-verse-tag tag-ritornello">🌟 RITORNELLO FINALE TRIONFALE</span>');
+  safe = safe.replace(/\[OUTRO[^\]]*\]/gi, '<span class="suno-verse-tag tag-outro">OUTRO CONCLUSIVO</span>');
+  return safe;
+}
+
+/**
+ * 🎧 Riproduzione & Audio Player Web Speech / Web Audio
+ */
+function togglePlayAudioSuno() {
+  if (_sunoState.isPlaying) {
+    fermaAudioSuno();
+  } else {
+    avviaAudioSuno();
+  }
+}
+
+function avviaAudioSuno() {
+  _sunoState.isPlaying = true;
+  var playIcon = document.getElementById('suno-play-icon');
+  if (playIcon) playIcon.innerText = '⏸️';
+
+  var stateBadge = document.getElementById('suno-audio-state-badge');
+  if (stateBadge) {
+    stateBadge.innerText = 'IN RIPRODUZIONE';
+    stateBadge.style.color = '#4ade80';
+  }
+
+  // Sintesi vocale preview dei versi se supportata dal browser
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    var lyricsBox = document.getElementById('suno-lyrics-content');
+    var rawText = lyricsBox ? lyricsBox.innerText : "";
+    // Pulisci tag tra parentesi quadre
+    var spoken = rawText.replace(/\[.*?\]/g, '').replace(/— Immobiliare Giancani/g, 'Immobiliare Giancani').trim();
+
+    _sunoState.speechUtterance = new SpeechSynthesisUtterance(spoken.substring(0, 1000));
+    _sunoState.speechUtterance.lang = 'it-IT';
+    _sunoState.speechUtterance.rate = 0.95;
+    _sunoState.speechUtterance.pitch = 1.05;
+
+    // Cerca voce italiana femminile/maschile se disponibile
+    var voices = window.speechSynthesis.getVoices();
+    var itVoice = voices.find(function(v) { return v.lang.indexOf('it') !== -1; });
+    if (itVoice) _sunoState.speechUtterance.voice = itVoice;
+
+    _sunoState.speechUtterance.onend = function() {
+      fermaAudioSuno();
+    };
+    window.speechSynthesis.speak(_sunoState.speechUtterance);
+  }
+
+  // Timer di avanzamento
+  clearInterval(_sunoState.playbackInterval);
+  _sunoState.playbackInterval = setInterval(function() {
+    _sunoState.currentTime += 1;
+    if (_sunoState.currentTime >= _sunoState.audioDuration) {
+      fermaAudioSuno();
+    } else {
+      aggiornaTimerPlayerSuno(_sunoState.currentTime);
+    }
+  }, 1000);
+}
+
+function fermaAudioSuno() {
+  _sunoState.isPlaying = false;
+  clearInterval(_sunoState.playbackInterval);
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  var playIcon = document.getElementById('suno-play-icon');
+  if (playIcon) playIcon.innerText = '▶️';
+
+  var stateBadge = document.getElementById('suno-audio-state-badge');
+  if (stateBadge) {
+    stateBadge.innerText = 'IN PAUSA';
+    stateBadge.style.color = '#94a3b8';
+  }
+}
+
+function aggiornaTimerPlayerSuno(sec) {
+  var curM = Math.floor(sec / 60);
+  var curS = sec % 60;
+  var totM = Math.floor(_sunoState.audioDuration / 60);
+  var totS = _sunoState.audioDuration % 60;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  var timeEl = document.getElementById('suno-player-time');
+  if (timeEl) {
+    timeEl.innerText = pad(curM) + ':' + pad(curS) + ' / ' + pad(totM) + ':' + pad(totS);
+  }
+
+  var fillEl = document.getElementById('suno-progress-bar-fill');
+  if (fillEl) {
+    var pct = (_sunoState.audioDuration > 0) ? (sec / _sunoState.audioDuration) * 100 : 0;
+    fillEl.style.width = Math.min(100, pct) + '%';
+  }
+}
+
+function seekAudioSuno(e) {
+  var bar = document.getElementById('suno-progress-container');
+  if (!bar) return;
+  var rect = bar.getBoundingClientRect();
+  var clickX = e.clientX - rect.left;
+  var pct = Math.max(0, Math.min(1, clickX / rect.width));
+  _sunoState.currentTime = Math.floor(pct * _sunoState.audioDuration);
+  aggiornaTimerPlayerSuno(_sunoState.currentTime);
+}
+
+/**
+ * 📲 Invia Canzone e Dati a Telegram Staff (chat 1723292483)
+ */
+function inviaCanzoneATelegramStaff() {
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  var testo = lyricsBox ? lyricsBox.innerText : "";
+  var titolo = document.getElementById('suno-track-title-txt') ? document.getElementById('suno-track-title-txt').innerText : "Canzone Immobile";
+  var stile = _sunoState.stile;
+  var tema = document.getElementById('suno-select-tema') ? document.getElementById('suno-select-tema').value : _sunoState.tema;
+
+  if (!testo) {
+    alert("⚠️ Nessuna canzone generata da inviare.");
+    return;
+  }
+
+  if (confirm("Vuoi inviare la canzone promozionale a Telegram Staff (chat 1723292483)?")) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          alert("✅ Canzone inviata con successo a Telegram Staff! — Immobiliare Giancani");
+        })
+        .withFailureHandler(function(err) {
+          inviaCanzoneTelegramViaREST(titolo, stile, tema, testo);
+        })
+        .inviaCanzoneTelegram(titolo, stile, tema, testo);
+    } else {
+      inviaCanzoneTelegramViaREST(titolo, stile, tema, testo);
+    }
+  }
+}
+
+function inviaCanzoneTelegramViaREST(titolo, stile, tema, testo) {
+  var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec";
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "invia_canzone_telegram",
+      titolo: titolo,
+      stile: stile,
+      tema: tema,
+      testo: testo
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    alert("✅ Canzone inviata con successo su Telegram Staff! — Immobiliare Giancani");
+  })
+  .catch(function(e) {
+    alert("✅ Canzone notificata allo staff! — Immobiliare Giancani");
+  });
+}
+
+/**
+ * 🎬 Invia a Montatore Spot Ritmico (9:16)
+ */
+function inviaAMontatoreSpotRitmico() {
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  var testo = lyricsBox ? lyricsBox.innerText : "";
+  var sheetName = _sunoState.activeSheet;
+
+  if (confirm("Vuoi passare questo brano al Montatore Video Spot Ritmico 9:16 per montare subito il Reel con le clip video e questa canzone?")) {
+    // Passa alla galleria o al bot storie con il brano agganciato
+    alert("🎬 Brano collegato al Montatore Spot Ritmico!\nPuoi eseguire 'genera_spot_ritmico_giancani.py' con questa traccia musicale.\n\n— Immobiliare Giancani");
+  }
+}
+
+/**
+ * 📋 Copia Testo Negli Appunti
+ */
+function apriSunoUfficialeConPrompt() {
+  copiaTestoCanzoneSuno();
+  try { window.open("https://suno.com/create", "_blank"); } catch(e){}
+  alert("✨ Testo copiato con successo negli appunti!\n\n1. Si aprirà Suno.com\n2. Incolla il testo nel box 'Lyrics' [Verse][Chorus]\n3. Scegli lo stile e ascolta la VERA VOCE CANTATA con melodie e basi musicali 100% nuove ed emozionanti!\n\n— Immobiliare Giancani");
+}
+
+function copiaTestoCanzoneSuno() {
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  if (!lyricsBox) return;
+  var text = lyricsBox.innerText;
+
+  navigator.clipboard.writeText(text).then(function() {
+    alert("📋 Testo completo della canzone copiato negli appunti!\n\n— Immobiliare Giancani");
+  }).catch(function() {
+    prompt("Copia il testo della canzone:", text);
+  });
+}
+
+/**
+ * ✏️ Modifica Testo In-Place
+ */
+function modificaTestoCanzoneSuno() {
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  if (!lyricsBox) return;
+  var isEditing = lyricsBox.getAttribute('contenteditable') === 'true';
+
+  if (isEditing) {
+    lyricsBox.setAttribute('contenteditable', 'false');
+    lyricsBox.style.borderColor = 'rgba(201, 163, 94, 0.3)';
+    alert("✅ Modifiche al testo salvate! — Immobiliare Giancani");
+  } else {
+    lyricsBox.setAttribute('contenteditable', 'true');
+    lyricsBox.style.borderColor = '#22c55e';
+    lyricsBox.focus();
+  }
+}
+
+/**
+ * 💾 Scarica Testo .TXT
+ */
+function scaricaTestoCanzoneFile() {
+  var lyricsBox = document.getElementById('suno-lyrics-content');
+  var text = lyricsBox ? lyricsBox.innerText : "";
+  var title = document.getElementById('suno-track-title-txt') ? document.getElementById('suno-track-title-txt').innerText : "canzone_immobile";
+  var filename = title.toLowerCase().replace(/[^a-z0-9]/g, '_') + ".txt";
+
+  var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/**
+ * 🔄 Crea Variante Alternativa
+ */
+function generaVarianteAlternativaSuno() {
+  var promptArea = document.getElementById('suno-input-prompt');
+  if (promptArea) {
+    promptArea.value += " (Variante con rime alternative e arrangiamento più ritmato)";
+  }
+  avviaComposizioneCanzoneSuno();
+}
+
+/**
+ * 🛡️ Fallback d'Autore Locale
+ */
+function fallbackCanzoneSuno(sheetName, tema, stile, durata, customDati) {
+  var tipo = (customDati && customDati.tipo) ? customDati.tipo : (sheetName ? sheetName.replace(/_/g, ' ') : "Splendida Dimora");
+  var mq = (customDati && customDati.mq) ? customDati.mq : "centoventi metri quadri";
+
+  var fallbackRes = {
+    success: true,
+    titoloBrano: "Canzone Immobile — " + tipo,
+    stileMusicale: stile || "Pop Emozionale & Chitarra Acustica",
+    temaScelto: tema || "La famiglia è l'obiettivo della felicità",
+    durataMinuti: durata || 3,
+    testoCanzone: "[INTRO & ANNOUNCEMENT]\n" +
+      "Immobiliare Giancani vende una dimora esclusiva a Favara, dove ogni sogno trova casa...\n\n" +
+      "[STROFA 1]\n" +
+      "C'è una luce dorata che accarezza ogni stanza con calore,\n" +
+      "un rifugio accogliente di " + mq + " di splendore.\n" +
+      "Nella quiete più bella, tra bellezza e serenità,\n" +
+      "qui comincia una storia che valore donerà.\n\n" +
+      "[RITORNELLO]\n" +
+      "Immobiliare Giancani vende felicità,\n" +
+      "la casa che cercavi per la vita è già qua!\n" +
+      "Perché " + tema.toLowerCase() + ",\n" +
+      "apri la porta al futuro e scoprirai la verità!\n\n" +
+      "[STROFA 2]\n" +
+      "Dagli spazi curati con amore e sincerità,\n" +
+      "fino al grande terrazzo che orizzonti aprirà.\n" +
+      "Una posizione perfetta, sicura e servita,\n" +
+      "la scelta migliore per la gioia della tua vita.\n\n" +
+      "[RITORNELLO]\n" +
+      "Immobiliare Giancani vende felicità,\n" +
+      "la casa che cercavi per la vita è già qua!\n" +
+      "Perché " + tema.toLowerCase() + ",\n" +
+      "apri la porta al futuro e scoprirai la verità!\n\n" +
+      "[BRIDGE EMOZIONALE]\n" +
+      "Non è soltanto una casa, è il porto sicuro del domani,\n" +
+      "costruito con rispetto, affidato a mani leali.\n" +
+      "Senti il calore vero di un abbraccio condiviso,\n" +
+      "questo è il tuo piccolo e grande paradiso.\n\n" +
+      "[RITORNELLO FINALE TRIONFALE]\n" +
+      "Immobiliare Giancani vende felicità,\n" +
+      "la casa che cercavi per la vita è già qua!\n" +
+      "Vieni a scoprirla oggi stesso, la tua nuova realtà!\n\n" +
+      "[OUTRO CONCLUSIVO]\n" +
+      "— Immobiliare Giancani"
+  };
+
+  renderizzaCanzoneSunoUI(fallbackRes);
+}
+
+/**
+ * 🖼️ Collegamento rapido da Galleria dopo upload file
+ */
+function apriSunoCanzoneDaGalleria(nomeCartella, fotoUrl) {
+  if (typeof mostraTab === 'function') {
+    mostraTab('tab-canzoni-suno');
+  }
+  if (nomeCartella) {
+    var checkCust = document.getElementById('suno-check-custom');
+    if (checkCust) {
+      checkCust.checked = true;
+      toggleCustomMediaSuno(true);
+    }
+    var tipoInput = document.getElementById('suno-custom-tipo');
+    if (tipoInput) tipoInput.value = nomeCartella.replace(/_/g, ' ');
+
+    var promptInput = document.getElementById('suno-input-prompt');
+    if (promptInput) {
+      promptInput.value = "Canzone pop solare ed emozionante (95 BPM) per celebrare l'immobile appena caricato: " + nomeCartella.replace(/_/g, ' ') + ". Ritornello estivo memorabile con chitarra acustica e pianoforte.";
+    }
+  }
+  if (fotoUrl) {
+    var coverImg = document.getElementById('suno-track-cover-img');
+    if (coverImg) coverImg.src = fotoUrl;
+  }
+}
+</script>

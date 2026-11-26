@@ -1,0 +1,2669 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>DarIA Live — Stanza Personale | Immobiliare Giancani</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d4a853;
+      --primary-dark: #b38636;
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-gold: rgba(212, 168, 83, 0.4);
+      --live-red: #ef4444;
+      --accent-green: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: #090d16;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--live-red);
+      color: var(--live-red);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--live-red);
+      border-radius: 50%;
+      animation: pulseLive 1.5s infinite;
+    }
+
+    @keyframes pulseLive {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* BANNER AUDIO AUTOPLAY UNLOCK */
+    #unlockAudioBar {
+      background: linear-gradient(135deg, #d4a853, #f59e0b);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 14px;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(212, 168, 83, 0.5);
+      transition: all 0.3s ease;
+      animation: pulseAudioBar 2s infinite;
+    }
+
+    @keyframes pulseAudioBar {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(212, 168, 83, 0.4); }
+      50% { transform: scale(1.02); box-shadow: 0 6px 25px rgba(212, 168, 83, 0.8); }
+    }
+
+    #unlockAudioBar:hover { transform: scale(1.03); }
+
+    /* AVATAR & PROSCENIUM */
+    .stage-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-gold);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .media-container {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      background: #000;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-gold);
+    }
+
+    .prop-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    .prop-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: none;
+    }
+
+    .prop-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      display: none;
+    }
+
+    /* Media Overlay Top Bar */
+        /* SELETTORE CONDUTTORE DARIA / DARIO */
+    .host-selector {
+      display: flex;
+      gap: 3px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 3px;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 168, 83, 0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .host-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .host-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #0f172a;
+      box-shadow: 0 2px 8px rgba(212, 168, 83, 0.4);
+    }
+
+    .pip-switch-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1.5px solid var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 30;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      transition: transform 0.2s ease;
+    }
+
+    .pip-switch-badge:active {
+      transform: scale(0.9);
+    }
+
+    .media-overlay-top {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 12;
+      pointer-events: none;
+    }
+
+    .media-mode-badges {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .mode-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(212, 168, 83, 0.5);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: var(--primary);
+      color: #0f172a;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(212, 168, 83, 0.4);
+    }
+
+    .media-sound-btn {
+      pointer-events: auto;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .avatar-pip {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      overflow: visible;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 15px rgba(212,168,83,0.3);
+      background: #111;
+      z-index: 20;
+      animation: avatarFloat 3.5s ease-in-out infinite;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes avatarFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Speaking Pulse Ring */
+    .avatar-pip.is-talking {
+      border-color: #10b981;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.7), 0 0 12px rgba(212, 168, 83, 0.8);
+      animation: avatarTalkingPulse 0.8s infinite alternate;
+    }
+
+    @keyframes avatarTalkingPulse {
+      0% { transform: scale(1); border-color: var(--primary); }
+      100% { transform: scale(1.06); border-color: #10b981; }
+    }
+
+    /* Equalizer Sound Waves */
+    .avatar-waves {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      align-items: flex-end;
+      gap: 3px;
+      height: 16px;
+      z-index: 25;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 3px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .avatar-pip.is-talking .avatar-waves {
+      display: flex;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: #10b981;
+      border-radius: 2px;
+      animation: soundWave 0.5s ease-in-out infinite alternate;
+    }
+    .wave-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .wave-bar:nth-child(2) { height: 13px; animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { height: 9px; animation-delay: 0.3s; }
+    .wave-bar:nth-child(4) { height: 14px; animation-delay: 0.15s; }
+
+    @keyframes soundWave {
+      0% { height: 3px; background: var(--primary); }
+      100% { height: 13px; background: #10b981; }
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s ease;
+    }
+
+    .pip-label {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--primary);
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .prop-info-bar {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .prop-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .prop-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag-badge {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tag-gold {
+      background: rgba(212, 168, 83, 0.15);
+      color: var(--primary);
+      border-color: var(--border-gold);
+      font-weight: 600;
+    }
+
+    .prop-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      max-height: 80px;
+      overflow-y: auto;
+      margin-top: 4px;
+      padding-right: 4px;
+    }
+
+    /* SFONDO AMBIENTALE DELLA PAGINA */
+    .page-ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      filter: blur(28px) brightness(0.42) saturate(1.3);
+      z-index: 0;
+      transition: background-image 0.8s ease-in-out;
+      transform: scale(1.12);
+      pointer-events: none;
+    }
+
+    .page-ambient-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 20%, rgba(15, 23, 42, 0.45), rgba(9, 13, 22, 0.88));
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* GALLERIA FOTO IN FONDO ALLA SCHEDA */
+    .prop-gallery-wrapper {
+      padding: 10px 14px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.4);
+      border-top: 1px solid rgba(212, 168, 83, 0.2);
+    }
+
+    .gallery-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gallery-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gallery-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: rgba(212, 168, 83, 0.15);
+      border: 1px solid var(--border-gold);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .gallery-strip {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 6px 2px 8px 2px;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .gallery-strip::-webkit-scrollbar {
+      height: 5px;
+    }
+    .gallery-strip::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .gallery-thumb-item {
+      position: relative;
+      flex: 0 0 92px;
+      height: 68px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .gallery-thumb-item:active,
+    .gallery-thumb-item.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 14px rgba(212, 168, 83, 0.85);
+      transform: scale(1.05);
+    }
+
+    .gallery-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-thumb-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.5) 80%, transparent 100%);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 2px 3px 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* FRECCE NAVIGAZIONE FOTO NEL PLAYER PRINCIPALE */
+    .photo-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-gold);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      z-index: 15;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .photo-nav-arrow:active { transform: translateY(-50%) scale(0.92); }
+    .photo-nav-arrow.arrow-prev { left: 8px; }
+    .photo-nav-arrow.arrow-next { right: 8px; }
+
+    /* ACTION BAR */
+    .cta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 14px 14px 14px;
+    }
+
+    .btn-act {
+      border: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-prenota {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-prenota:active { transform: scale(0.98); }
+
+    .btn-next {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .btn-next:active { background: rgba(255,255,255,0.15); }
+
+    /* CHAT STREAM */
+    .chat-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      height: 280px;
+      overflow: hidden;
+    }
+
+    .chat-history {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-daria {
+      align-self: flex-start;
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid var(--border-gold);
+      color: #f1f5f9;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #0f172a;
+      font-weight: 500;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble-author {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .msg-user .bubble-author {
+      color: #1e293b;
+    }
+
+    /* QUICK CHIPS */
+    .chips-slider {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 6px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      scrollbar-width: none;
+    }
+
+    .chips-slider::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 14px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip-btn:hover { color: #fff; border-color: var(--primary); }
+
+    /* CHAT INPUT BAR */
+    .input-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #0f172a;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .input-field {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .input-field:focus { border-color: var(--primary); }
+
+    .btn-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-circle:active { transform: scale(0.92); }
+
+    .btn-mic {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-mic.listening {
+      background: var(--live-red);
+      color: #fff;
+      animation: pulseLive 1s infinite;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-signature {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       🎯 3 PROPOSTE IMMOBILIARI CLICCABILI IN CHAT
+       ══════════════════════════════════════════════════════════════ */
+    .proposte-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .proposta-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border-gold);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .proposta-card:hover, .proposta-card:active {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 6px 20px rgba(212, 168, 83, 0.4);
+      background: rgba(30, 41, 59, 0.98);
+    }
+
+    .proposta-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border-gold);
+      flex-shrink: 0;
+    }
+
+    .proposta-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .proposta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(212, 168, 83, 0.15);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .proposta-titolo {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .proposta-dettagli {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .proposta-prezzo {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .proposta-btn-show {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       🏛️ BOX PERSUASIVO VENDITORI D'ÉLITE
+       ══════════════════════════════════════════════════════════════ */
+    .venditore-box-chat {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1.5px solid var(--primary);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 10px;
+      box-shadow: 0 8px 25px rgba(212, 168, 83, 0.25);
+    }
+
+    .venditore-box-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 168, 83, 0.3);
+      padding-bottom: 8px;
+    }
+
+    .venditore-badge-prestigio {
+      background: var(--primary);
+      color: #0f172a;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .venditore-titolo-card {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .venditore-pilastri {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .venditore-pilastro-item {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      line-height: 1.4;
+      border-left: 3px solid var(--primary);
+    }
+
+    .venditore-pilastro-item.highlight {
+      background: rgba(212, 168, 83, 0.12);
+      border-left-color: #10b981;
+    }
+
+    .venditore-pilastro-item b {
+      color: var(--primary);
+    }
+
+    .docs-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .docs-list-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .doc-item-pill {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #cbd5e1;
+    }
+
+    .doc-item-pill span.icon {
+      color: var(--primary);
+      font-size: 12px;
+    }
+
+    .btn-apri-form-venditore {
+      width: 100%;
+      background: linear-gradient(135deg, #d4a853, #b38636);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(212, 168, 83, 0.5);
+      transition: all 0.2s;
+    }
+
+    .btn-apri-form-venditore:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(212, 168, 83, 0.7);
+    }
+
+    .chip-venditore {
+      background: rgba(212, 168, 83, 0.15) !important;
+      border-color: var(--primary) !important;
+      color: var(--primary) !important;
+      font-weight: 700 !important;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       📝 MODALE CARICAMENTO DOCUMENTI & DICHIARAZIONE RESPONSABILITÀ
+       ══════════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #0f172a;
+      border: 1.5px solid var(--border-gold);
+      border-radius: 20px;
+      max-width: 580px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      color: #fff;
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal-header-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+
+    .form-label span.req {
+      color: var(--live-red);
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .file-upload-block {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px dashed rgba(212, 168, 83, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .file-upload-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .file-upload-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .file-input-custom {
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    .dichiarazione-box {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 16px 0;
+    }
+
+    .dichiarazione-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .dichiarazione-checkbox-row input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .dichiarazione-text {
+      font-size: 11px;
+      color: #f1f5f9;
+      line-height: 1.45;
+    }
+
+    .btn-invia-fascicolo {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-invia-fascicolo:hover {
+      filter: brightness(1.1);
+      transform: scale(1.01);
+    }
+
+    .upload-status-bar {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      text-align: center;
+      display: none;
+    }
+
+    .upload-status-bar.info {
+      background: rgba(212, 168, 83, 0.2);
+      color: var(--primary);
+      display: block;
+    }
+
+    .upload-status-bar.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      display: block;
+    }
+
+    .upload-status-bar.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--live-red);
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SFONDO AMBIENTALE IMMOBILE CON GLOW E OVERLAY -->
+  <div id="pageAmbientBg" class="page-ambient-bg"></div>
+  <div class="page-ambient-overlay"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-box">
+      <div>
+        <div class="brand-title">IMMOBILIARE GIANCANI</div>
+        <div class="brand-sub">DarIA Live • Stanza Personale</div>
+      </div>
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span> In Onda
+    </div>
+  </header>
+
+  <!-- UNLOCK AUDIO PROMPT -->
+  <main>
+    <div id="unlockAudioBar" onclick="sbloccaAudioDarIA()">
+      🔊 Tocca qui per ascoltare DarIA e attivare la voce
+    </div>
+
+    <!-- PALINSESTO IMMOBILE + AVATAR PIP -->
+    <section class="stage-card">
+      <div class="media-container" id="mediaContainer">
+        <!-- Overlay controlli e toggle video/foto -->
+        <div class="media-overlay-top">
+          <div class="media-mode-badges">
+            <button id="btnModoVideo" class="mode-btn active" onclick="attivaModalitaVideo()">🎬 Video Tour</button>
+            <button id="btnModoFoto" class="mode-btn" onclick="attivaModalitaFoto()">📸 Foto Gallery</button>
+          </div>
+          <div class="host-selector" title="Scegli il tuo conduttore">
+            <button id="btnHostDaria" class="host-btn active" onclick="selezionaConduttore('daria', event)">👩‍💼 DarIA</button>
+            <button id="btnHostDario" class="host-btn" onclick="selezionaConduttore('dario', event)">👨‍💼 DarIO</button>
+          </div>
+          <button id="btnSoundVideo" class="media-sound-btn" onclick="toggleAudioVideo()" title="Attiva/Disattiva audio video">🔇 Muto</button>
+        </div>
+
+        <!-- Video Tour Player Reale -->
+        <video id="propVideo" class="prop-video" autoplay loop muted playsinline webkit-playsinline preload="auto">
+        </video>
+
+        <!-- Fallback YouTube Iframe -->
+        <iframe id="propIframe" class="prop-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+        <!-- Fallback / Foto Gallery Immagine -->
+        <img id="propFoto" class="prop-photo" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" alt="Immobile">
+
+        <!-- Frecce Navigazione Galleria Foto -->
+        <button id="btnPrevFoto" class="photo-nav-arrow arrow-prev" onclick="cambiaFotoNav(-1)" title="Foto Precedente">❮</button>
+        <button id="btnNextFoto" class="photo-nav-arrow arrow-next" onclick="cambiaFotoNav(1)" title="Foto Successiva">❯</button>
+
+        <!-- Avatar DarIA in PiP (in basso a destra, sopra il video) -->
+        <div class="avatar-pip" id="avatarPip" onclick="sbloccaAudioDarIA()" title="Tocca per ascoltare DarIA">
+          <!-- Onde sonore equalizzatore quando parla -->
+          <div class="avatar-waves" id="avatarWaves">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+          <div class="avatar-inner">
+            <img id="avatarFace" class="avatar-img" src="" alt="DarIA Avatar">
+          </div>
+          <span class="pip-label" id="avatarPipLabel">DarIA • Live</span>
+        </div>
+
+        <!-- Player Audio HTML5 Dedicato per Sintesi Vocale Cristallina -->
+        <audio id="dariaAudioPlayer" playsinline preload="auto" style="display:none;"></audio>
+      </div>
+
+      <div class="prop-info-bar">
+        <div id="propTitle" class="prop-title">Caricamento immobile...</div>
+        <div class="prop-tags">
+          <span id="propCitta" class="tag-badge tag-gold">Favara / Agrigento</span>
+          <span id="propTipo" class="tag-badge">Appartamento</span>
+          <span id="propMq" class="tag-badge">120 metri quadri</span>
+          <span id="propPrezzo" class="tag-badge">Trattativa Riservata</span>
+        </div>
+        <div id="propDesc" class="prop-desc">
+          Connessione alla stanza immobiliare in corso...
+        </div>
+      </div>
+
+      <!-- GALLERIA FOTOGRAFICA IN FONDO ALLA SCHEDA -->
+      <div class="prop-gallery-wrapper">
+        <div class="gallery-header-row">
+          <span class="gallery-title">📸 Foto Ambienti • Tocca per visualizzare</span>
+          <span class="gallery-count" id="galleryCountBadge">3 Foto</span>
+        </div>
+        <div class="gallery-strip" id="propGalleryStrip">
+          <!-- Miniature generate dinamicamente -->
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn-act btn-next" onclick="caricaProssimoImmobile()">
+          🎬 Prossimo Video ❯
+        </button>
+        <button class="btn-act btn-prenota" onclick="prenotaVisitaImmobile()">
+          📅 Prenota Visita
+        </button>
+      </div>
+    </section>
+
+    <!-- CHAT INTERATTIVA CON DARIA -->
+    <section class="chat-card">
+      <div id="chatHistory" class="chat-history">
+        <div class="msg-bubble msg-daria">
+          <span class="bubble-author">👩‍💼 DarIA</span>
+          Ciao! Sono DarIA, la tua consulente virtuale di Immobiliare Giancani. Sono qui per guidarti nella ricerca e farti vedere le nostre migliori proposte abitative. Di cosa hai bisogno?
+        </div>
+      </div>
+
+      <!-- SUGGESTION CHIPS -->
+      <div class="chips-slider">
+        <button class="chip-btn chip-venditore" onclick="apriModalVenditore()">🤝 Vendi con Noi (Proprietari)</button>
+        <button class="chip-btn" onclick="inviaSuggerimento('Mostrami 3 proposte')">✨ 3 Proposte Subito</button>
+        <button class="chip-btn" onclick="inviaSuggerimento('Mostrami case a Favara')">📍 Case a Favara</button>
+        <button class="chip-btn" onclick="inviaSuggerimento('Fammi vedere ville indipendenti')">🏡 Ville indipendenti</button>
+        <button class="chip-btn" onclick="inviaSuggerimento('Vorrei vedere il bagno')">🛁 Mostrami il bagno</button>
+        <button class="chip-btn" onclick="inviaSuggerimento('Quali documenti servono?')">📄 Documenti acquisto</button>
+      </div>
+
+      <!-- INPUT BAR -->
+      <div class="input-bar">
+        <input type="text" id="userInput" class="input-field" placeholder="Chiedi a DarIA..." onkeydown="if(event.key==='Enter') inviaMessaggioChat()">
+        <button id="micBtn" class="btn-circle btn-mic" onclick="toggleMicrofono()" title="Parla al microfono">🎤</button>
+        <button class="btn-circle" onclick="inviaMessaggioChat()" title="Invia">➤</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 📝 MODALE CARICAMENTO DOCUMENTI VENDITORE CON DICHIARAZIONE RESPONSABILITÀ -->
+  <div id="modalVenditore" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="chiudiModalVenditore()" title="Chiudi">✕</button>
+      <div class="modal-header-tag">Immobiliare Giancani • Servizio Venditori d'Élite</div>
+      <h2 class="modal-title">🤝 Vendi la Tua Proprietà al Massimo Valore</h2>
+      <p class="modal-subtitle">
+        Valorizzazione d'eccellenza con <b>Droni 4K</b>, selezione predittiva tramite <b>Intelligenza Artificiale</b> e soprattutto la cura totale dei <b>Rapporti Umani</b> con la guida personale di Antonio Giancani. Compila il modulo per attivare il fascicolo.
+      </p>
+
+      <form id="formVenditore" onsubmit="inviaFascicoloVenditore(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome <span class="req">*</span></label>
+            <input type="text" id="vNome" class="form-input" placeholder="Es. Mario" oninput="sanitizzaInputSenzaPunti(this)" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cognome <span class="req">*</span></label>
+            <input type="text" id="vCognome" class="form-input" placeholder="Es. Rossi" oninput="sanitizzaInputSenzaPunti(this)" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Telefono / WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="vTelefono" class="form-input" placeholder="Es. 320 1234567" oninput="this.value = this.value.replace(/\D/g, '')" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="vEmail" class="form-input" placeholder="mario.rossi@email.it" oninput="this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, '')">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Codice Fiscale</label>
+            <input type="text" id="vCodiceFiscale" class="form-input" placeholder="Es. RSSMRA80A01A089X" style="text-transform:uppercase;" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipologia Immobile <span class="req">*</span></label>
+            <select id="vTipologia" class="form-input" style="background:#1e293b; color:#fff;">
+              <option value="Appartamento">Appartamento</option>
+              <option value="Villa Casa Indipendente">Villa Casa Indipendente</option>
+              <option value="Attico Terrazzato">Attico Terrazzato</option>
+              <option value="Locale Commerciale Ufficio">Locale Commerciale Ufficio</option>
+              <option value="Terreno Rustico">Terreno Rustico</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Indirizzo / Zona Immobile <span class="req">*</span></label>
+          <input type="text" id="vIndirizzo" class="form-input" placeholder="Es. Via Crispi Favara Agrigento" oninput="sanitizzaInputSenzaPunti(this)" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prezzo Desiderato / Stima (€)</label>
+            <input type="text" id="vPrezzo" class="form-input" placeholder="Es. 120000 euro o Da concordare" oninput="sanitizzaInputSenzaPunti(this)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Superficie Indicativa (metri quadri)</label>
+            <input type="text" id="vMq" class="form-input" placeholder="Es. 110 metri quadri" oninput="sanitizzaInputSenzaPunti(this)">
+          </div>
+        </div>
+
+        <!-- SEZIONE UPLOAD DEI 6 DOCUMENTI RICHIESTI CON PROTEZIONE ANTI-PIRATA -->
+        <div style="margin: 16px 0 10px 0;">
+          <div class="docs-section-title">
+            <span>🛡️</span> <b>Fascicolo Documentale (6 Documenti • Solo PDF o Immagini)</b>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+            🛡️ <b>Protezione Anti-Pirata Attiva:</b> Sono autorizzati esclusivamente file PDF e Immagini (JPG, PNG, WEBP). Qualsiasi altro file o script viene bloccato istantaneamente. Testo sanitizzato senza punti né caratteri speciali.
+          </p>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">1. 📜 Atto di Provenienza</div>
+            <div class="file-upload-desc">Compravendita, donazione, successione o sentenza del tribunale.</div>
+            <input type="file" id="file_atto" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">2. 📐 Visura Catastale</div>
+            <div class="file-upload-desc">Visura catastale storica aggiornata con subalterni corretti.</div>
+            <input type="file" id="file_visura" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">3. 🗺️ Planimetria o Mappa Catastale</div>
+            <div class="file-upload-desc">Planimetria catastale rasterizzata conforme allo stato dei luoghi.</div>
+            <input type="file" id="file_planimetria" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">4. 🏛️ Documenti Urbanistici ed Edilizi</div>
+            <div class="file-upload-desc">Dichiarazione ante 67, concessione edilizia in sanatoria, condono o agibilità.</div>
+            <input type="file" id="file_urbanistica" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">5. ⚡ Attestato Prestazione Energetica (APE)</div>
+            <div class="file-upload-desc">Certificato APE in corso di validità con classe energetica indicata.</div>
+            <input type="file" id="file_ape" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+
+          <div class="file-upload-block">
+            <div class="file-upload-title">6. 🪪 Documenti Proprietari</div>
+            <div class="file-upload-desc">Carta d'identità in corso di validità e codice fiscale di tutti gli intestatari.</div>
+            <input type="file" id="file_proprietari" class="file-input-custom" accept=".pdf,image/jpeg,image/png,image/webp">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Note aggiuntive per Antonio Giancani</label>
+          <textarea id="vNote" class="form-input" rows="2" placeholder="Dettagli particolari sull'immobile, orari per essere ricontattato..." oninput="sanitizzaInputSenzaPunti(this)"></textarea>
+        </div>
+
+        <!-- DICHIARAZIONE DI RESPONSABILITÀ OBBLIGATORIA -->
+        <div class="dichiarazione-box">
+          <div class="dichiarazione-checkbox-row">
+            <input type="checkbox" id="vDichiarazione" required>
+            <label for="vDichiarazione" class="dichiarazione-text">
+              <b>Dichiarazione di Responsabilità:</b><br>
+              Dichiaro sotto la mia personale responsabilità civile e penale di essere legittimo proprietario o avente titolo dell'immobile indicato, che le informazioni e i documenti forniti sono autentici e veritieri, consapevole che la presa in carico e la messa in vendita sono subordinate alla preventiva verifica e autorizzazione di Antonio Giancani.
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" id="btnInviaFascicolo" class="btn-invia-fascicolo">
+          🚀 Invia Fascicolo & Richiedi Autorizzazione
+        </button>
+
+        <div id="uploadStatus" class="upload-status-bar"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    Tutti gli annunci sono verificati da <span class="brand-signature">— Immobiliare Giancani</span>
+  </footer>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════
+    // 🎭 DATI AVATAR E STATO APPLICAZIONE
+    // ══════════════════════════════════════════════════════════════
+    var tokenSessione = new URLSearchParams(window.location.search).get('t') || '';
+    var audioAbilitato = false;
+    var isSpeaking = false;
+    var animInterval = null;
+    var currentImmobile = null;
+
+    // 🎭 Asset grafici conduttori (DarIA donna e DarIO uomo)
+    var DARIA_REST = "data:image/jpeg;base64," + "<?= getDariaRestB64() ?>";
+    var DARIA_SPEAK = "data:image/jpeg;base64," + "<?= getDariaSpeakB64() ?>";
+    var DARIO_REST = "data:image/jpeg;base64," + "<?= getDarioRestB64() ?>";
+    var DARIO_SPEAK = "data:image/jpeg;base64," + "<?= getDarioSpeakB64() ?>";
+
+    // Stato conduttore: 'daria' (femmina) di default, 'dario' (maschio)
+    var conduttoreAttivo = 'daria';
+    try {
+      var paramCond = new URLSearchParams(window.location.search).get('conduttore') || 
+                      new URLSearchParams(window.location.search).get('avatar') ||
+                      localStorage.getItem('CONDUTTORE_STANZA');
+      if (paramCond === 'dario' || paramCond === 'uomo' || paramCond === 'maschio') {
+        conduttoreAttivo = 'dario';
+      }
+    } catch(eCond) {}
+
+    // ⚡ Dati iniziali iniettati direttamente dal server per caricamento istantaneo
+    var DATI_INIZIALI_SERVER = null;
+    try {
+      DATI_INIZIALI_SERVER = <?!= initDataJson ?>;
+    } catch(eJson) {
+      DATI_INIZIALI_SERVER = null;
+    }
+
+    // Inizializzazione SDK Telegram Mini App
+    if (window.Telegram && window.Telegram.WebApp) {
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+      } catch(eTG) {}
+    }
+
+    window.onload = function() {
+      // Imposta avatar e conduttore iniziale
+      aggiornaGraficaConduttore();
+      
+      // Auto-unlock audio al primissimo tocco/click su qualsiasi parte dello schermo
+      var unlockOnce = function() {
+        if (!audioAbilitato) {
+          sbloccaAudioDarIA();
+        }
+        document.removeEventListener('click', unlockOnce);
+        document.removeEventListener('touchstart', unlockOnce);
+      };
+      document.addEventListener('click', unlockOnce, { passive: true });
+      document.addEventListener('touchstart', unlockOnce, { passive: true });
+
+      // Caricamento istantaneo: se i dati server sono già presenti, renderizza subito!
+      if (DATI_INIZIALI_SERVER && DATI_INIZIALI_SERVER.ok && DATI_INIZIALI_SERVER.immobile) {
+        renderDatiIniziali(DATI_INIZIALI_SERVER);
+      } else {
+        caricaDatiIniziali();
+      }
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    // 🎭 GESTIONE CONDUTTORE (DarIA Donna 👩‍💼 / DarIO Uomo 👨‍💼)
+    // ══════════════════════════════════════════════════════════════
+    function selezionaConduttore(nome, e) {
+      if (e) e.stopPropagation();
+      impostaConduttore(nome);
+      var msgCambio = (conduttoreAttivo === 'dario')
+        ? "Benvenuto! Sono DarIO, il tuo consulente personale per questo video tour. — Immobiliare Giancani"
+        : "Benvenuta! Sono DarIA, la tua guida immobiliare personale. — Immobiliare Giancani";
+      parlaVoceDarIA(msgCambio);
+    }
+
+    function toggleConduttore(e) {
+      if (e) e.stopPropagation();
+      var prox = (conduttoreAttivo === 'daria') ? 'dario' : 'daria';
+      selezionaConduttore(prox);
+    }
+
+    function impostaConduttore(nome) {
+      conduttoreAttivo = (nome === 'dario') ? 'dario' : 'daria';
+      try { localStorage.setItem('CONDUTTORE_STANZA', conduttoreAttivo); } catch(e){}
+      aggiornaGraficaConduttore();
+    }
+
+    function aggiornaGraficaConduttore() {
+      var avFace = document.getElementById('avatarFace');
+      var pipLbl = document.getElementById('avatarPipLabel');
+      var btnDaria = document.getElementById('btnHostDaria');
+      var btnDario = document.getElementById('btnHostDario');
+      var headerSub = document.querySelector('.brand-sub');
+      var unlockBar = document.getElementById('unlockAudioBar');
+      
+      var isDario = (conduttoreAttivo === 'dario');
+      var restImg = isDario ? (DARIO_REST || DARIA_REST) : DARIA_REST;
+      var nomeCond = isDario ? 'DarIO' : 'DarIA';
+      
+      if (avFace && !isSpeaking) avFace.src = restImg;
+      if (pipLbl) pipLbl.innerText = isSpeaking ? (nomeCond + ' • Parla') : (nomeCond + ' • Live');
+      if (btnDaria) {
+        if (isDario) btnDaria.classList.remove('active');
+        else btnDaria.classList.add('active');
+      }
+      if (btnDario) {
+        if (isDario) btnDario.classList.add('active');
+        else btnDario.classList.remove('active');
+      }
+      if (headerSub) headerSub.innerText = nomeCond + ' Live • Stanza Personale';
+      var uInp = document.getElementById('userInput');
+      if (uInp) uInp.placeholder = 'Chiedi a ' + nomeCond + '...';
+      if (unlockBar && !audioAbilitato) {
+        unlockBar.innerHTML = '🔊 Tocca qui per ascoltare ' + nomeCond + ' e attivare la voce';
+      }
+    }
+
+    function sbloccaAudioDarIA() {
+      if (audioAbilitato) return;
+      audioAbilitato = true;
+      var bar = document.getElementById('unlockAudioBar');
+      if (bar) bar.style.display = 'none';
+      
+      // Sblocca il player audio HTML5 silenziosamente
+      var aP = document.getElementById('dariaAudioPlayer');
+      if (aP) {
+        try { aP.play().then(function(){ aP.pause(); }).catch(function(){}); } catch(e){}
+      }
+      
+      var fraseBenvenuto = (conduttoreAttivo === 'dario')
+        ? "Benvenuto nella stanza live di Immobiliare Giancani! Sono DarIO, la tua guida personale."
+        : "Benvenuto nella stanza live di Immobiliare Giancani! Sono DarIA, la tua guida personale.";
+        
+      parlaVoceDarIA(fraseBenvenuto);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 🎙️ SINTESI VOCALE AVANZATA
+    // Tier 1: Microsoft Edge TTS WebSocket (it-IT-ElsaNeural 100% Femminile naturale)
+    // Tier 2: WebSpeech API filtrato esclusivamente su voci femminili
+    // Tier 3: Se nessuna voce femminile esiste sul dispositivo, switch automatico su DarIO uomo
+    // ══════════════════════════════════════════════════════════════
+    function parlaVoceDarIA(testo) {
+      if (!testo) return;
+      
+      var testoPulito = testo
+        .replace(/—|\*|_|#/g, '')
+        .replace(/\bmetri quadri\b/gi, 'metri quadri')
+        .replace(/https?:\/\/\S+/g, '')
+        .trim();
+
+      avviaAnimazioneLabiale();
+
+      var isDario = (conduttoreAttivo === 'dario');
+      var voiceName = isDario ? 'it-IT-GiuseppeNeural' : 'it-IT-ElsaNeural';
+
+      // 1. TENTATIVO CON EDGE TTS WEBSOCKET (Massima qualità naturale HD)
+      _riproduciEdgeTTSWebSocket(
+        testoPulito, 
+        voiceName, 
+        function() { fermaAnimazioneLabiale(); },
+        function() { riproduciSpeechSynthesisFallback(testoPulito); }
+      );
+    }
+
+    function _riproduciEdgeTTSWebSocket(testo, voiceName, onCompletato, onFallback) {
+      try {
+        var ws = new WebSocket("wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4");
+        ws.binaryType = "arraybuffer";
+        
+        var reqId = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+        
+        var audioChunks = [];
+        var isDone = false;
+        
+        var timeout = setTimeout(function() {
+          if (!isDone) {
+            isDone = true;
+            try { ws.close(); } catch(e){}
+            console.warn("[TTS] Edge TTS timeout, fallback WebSpeech locale");
+            if (onFallback) onFallback();
+          }
+        }, 9000);
+
+        ws.onopen = function() {
+          var dateStr = new Date().toISOString();
+          var configMsg = "X-Timestamp: " + dateStr + "\r\n" +
+                          "Content-Type: application/json; charset=utf-8\r\n" +
+                          "Path: speech.config\r\n\r" +
+                          '{"context":{"synthesis":{"audio":{"metadataOptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":true},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}';
+          ws.send(configMsg);
+          
+          var cleanSsmlText = testo.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          var ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='it-IT'><voice name='" + voiceName + "'>" + cleanSsmlText + "</voice></speak>";
+          var ssmlMsg = "X-RequestId: " + reqId + "\r\n" +
+                        "Content-Type: application/ssml+xml\r\n" +
+                        "X-Timestamp: " + dateStr + "\r\n" +
+                        "Path: ssml\r\n\r" + ssml;
+          ws.send(ssmlMsg);
+        };
+
+        ws.onmessage = function(e) {
+          if (typeof e.data === "string") {
+            if (e.data.indexOf("Path: turn.end") !== -1) {
+              isDone = true;
+              clearTimeout(timeout);
+              try { ws.close(); } catch(e){}
+              
+              if (audioChunks.length > 0) {
+                var blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                var audioUrl = URL.createObjectURL(blob);
+                var player = document.getElementById('dariaAudioPlayer');
+                if (player) {
+                  player.src = audioUrl;
+                  player.onplay = function() { avviaAnimazioneLabiale(); };
+                  player.onended = function() { 
+                    fermaAnimazioneLabiale(); 
+                    if (onCompletato) onCompletato();
+                  };
+                  player.onerror = function() {
+                    if (onFallback) onFallback();
+                  };
+                  var p = player.play();
+                  if (p !== undefined) {
+                    p.catch(function(err) {
+                      console.warn("[TTS] Autoplay bloccato, uso fallback:", err);
+                      if (onFallback) onFallback();
+                    });
+                  }
+                } else {
+                  if (onFallback) onFallback();
+                }
+              } else {
+                if (onFallback) onFallback();
+              }
+            }
+          } else if (e.data instanceof ArrayBuffer) {
+            try {
+              var view = new DataView(e.data);
+              var headerLength = view.getUint16(0, false);
+              var audioData = e.data.slice(2 + headerLength);
+              audioChunks.push(audioData);
+            } catch(eBuf) {
+              console.error("[TTS] Errore decodifica chunk audio:", eBuf);
+            }
+          }
+        };
+
+        ws.onerror = function(err) {
+          if (!isDone) {
+            isDone = true;
+            clearTimeout(timeout);
+            try { ws.close(); } catch(e){}
+            if (onFallback) onFallback();
+          }
+        };
+      } catch(eWs) {
+        if (onFallback) onFallback();
+      }
+    }
+
+    function riproduciSpeechSynthesisFallback(testoPulito) {
+      if (!('speechSynthesis' in window)) {
+        setTimeout(fermaAnimazioneLabiale, 3500);
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        var utter = new SpeechSynthesisUtterance(testoPulito);
+        utter.lang = 'it-IT';
+        utter.rate = 1.0;
+
+        var voci = window.speechSynthesis.getVoices();
+        var voceScelta = null;
+
+        if (conduttoreAttivo === 'daria') {
+          // 👩‍💼 CERCA ESCLUSIVAMENTE VOCI FEMMINILI PER DARIA
+          utter.pitch = 1.28; // Timbro squillante, caldo e tipicamente femminile
+          var nomiFemminili = ['elsa', 'isabella', 'lucia', 'alice', 'federica', 'paola', 'chiara', 'elena', 'giulia', 'emma', 'sofia', 'sara', 'female', 'donna', 'femmina'];
+          var nomiMaschili = ['cosimo', 'giuseppe', 'diego', 'luca', 'male', 'uomo', 'maschio'];
+
+          for (var i = 0; i < voci.length; i++) {
+            var v = voci[i];
+            var n = v.name.toLowerCase();
+            var l = v.lang.toLowerCase();
+            if (l.indexOf('it') !== -1 && nomiFemminili.some(function(f) { return n.indexOf(f) !== -1; })) {
+              voceScelta = v;
+              break;
+            }
+          }
+
+          if (!voceScelta) {
+            for (var j = 0; j < voci.length; j++) {
+              var v2 = voci[j];
+              var n2 = v2.name.toLowerCase();
+              var l2 = v2.lang.toLowerCase();
+              if (l2.indexOf('it') !== -1 && !nomiMaschili.some(function(m) { return n2.indexOf(m) !== -1; })) {
+                voceScelta = v2;
+                break;
+              }
+            }
+          }
+
+          // SE IL DISPOSITIVO NON HA ALCUNA VOCE FEMMINILE:
+          // Direttiva utente: "se non c'è la voce da femmina metti un avatar da uomo"
+          if (!voceScelta) {
+            console.warn('[VOICE] Nessuna voce femminile sul dispositivo: switch automatico su avatar DarIO uomo!');
+            impostaConduttore('dario');
+            utter.pitch = 0.90;
+            for (var k = 0; k < voci.length; k++) {
+              if (voci[k].lang.toLowerCase().indexOf('it') !== -1) {
+                voceScelta = voci[k];
+                break;
+              }
+            }
+          }
+        } else {
+          // 👨‍💼 CERCA VOCE MASCHILE PER DARIO
+          utter.pitch = 0.90;
+          var nomiUomo = ['giuseppe', 'diego', 'cosimo', 'luca', 'male', 'uomo'];
+          for (var u = 0; u < voci.length; u++) {
+            var vu = voci[u];
+            var nu = vu.name.toLowerCase();
+            var lu = vu.lang.toLowerCase();
+            if (lu.indexOf('it') !== -1 && nomiUomo.some(function(m) { return nu.indexOf(m) !== -1; })) {
+              voceScelta = vu;
+              break;
+            }
+          }
+          if (!voceScelta) {
+            for (var u2 = 0; u2 < voci.length; u2++) {
+              if (voci[u2].lang.toLowerCase().indexOf('it') !== -1) {
+                voceScelta = voci[u2];
+                break;
+              }
+            }
+          }
+        }
+
+        if (voceScelta) utter.voice = voceScelta;
+
+        utter.onstart = function() { avviaAnimazioneLabiale(); };
+        utter.onend = function() { fermaAnimazioneLabiale(); };
+        utter.onerror = function() { fermaAnimazioneLabiale(); };
+
+        window.speechSynthesis.speak(utter);
+      } catch(e) {
+        setTimeout(fermaAnimazioneLabiale, 3500);
+      }
+    }
+
+    function avviaAnimazioneLabiale() {
+      isSpeaking = true;
+      var pipEl = document.getElementById('avatarPip');
+      var avFace = document.getElementById('avatarFace');
+      var statusLbl = document.getElementById('avatarPipLabel');
+      
+      if (pipEl) pipEl.classList.add('is-talking');
+      var isDario = (conduttoreAttivo === 'dario');
+      var nomeCond = isDario ? 'DarIO' : 'DarIA';
+      if (statusLbl) statusLbl.innerText = nomeCond + ' • Parla';
+      
+      var restImg = isDario ? (DARIO_REST || DARIA_REST) : DARIA_REST;
+      var spkImg = isDario ? (DARIO_SPEAK || DARIA_SPEAK) : DARIA_SPEAK;
+      
+      if (animInterval) clearInterval(animInterval);
+      var toggle = false;
+      animInterval = setInterval(function() {
+        toggle = !toggle;
+        if (avFace) {
+          avFace.src = toggle ? spkImg : restImg;
+          avFace.style.transform = toggle ? 'scale(1.05)' : 'scale(1.0)';
+        }
+      }, 180);
+    }
+
+    function fermaAnimazioneLabiale() {
+      isSpeaking = false;
+      if (animInterval) { clearInterval(animInterval); animInterval = null; }
+      var pipEl = document.getElementById('avatarPip');
+      var avFace = document.getElementById('avatarFace');
+      var statusLbl = document.getElementById('avatarPipLabel');
+      
+      if (pipEl) pipEl.classList.remove('is-talking');
+      var isDario = (conduttoreAttivo === 'dario');
+      var nomeCond = isDario ? 'DarIO' : 'DarIA';
+      if (statusLbl) statusLbl.innerText = nomeCond + ' • Live';
+      var restImg = isDario ? (DARIO_REST || DARIA_REST) : DARIA_REST;
+      if (avFace) {
+        avFace.src = restImg;
+        avFace.style.transform = 'scale(1.0)';
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 📡 CHIAMATE BACKEND ED EVENTI
+    // ══════════════════════════════════════════════════════════════
+    function caricaDatiIniziali() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(renderDatiIniziali)
+          .withFailureHandler(function(err) { console.error(err); })
+          .stanzaApiDispatch('init', tokenSessione, {});
+      } else {
+        // Fallback demo per anteprima locale
+        renderDatiIniziali({
+          ok: true,
+          immobile: {
+            id: 'IMM_DEMO',
+            titolo: 'Splendido Appartamento Luminoso e Rifinito',
+            descrizione: 'Appartamento panoramico con vista mozzafiato, 120 metri quadri finemente rifiniti, tre camere da letto, ampio salone e balconi terrazzati.\n\n— *Immobiliare Giancani*',
+            citta: 'Favara (AG)',
+            tipologia: 'Appartamento',
+            prezzo: '€ 118.000',
+            mq: '120 metri quadri',
+            video: 'https://assets.mixkit.co/videos/preview/mixkit-modern-living-room-with-a-large-window-41554-large.mp4',
+            foto: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+              'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+              'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80'
+            ]
+          }
+        });
+      }
+    }
+
+    var catalogo3Proposte = [];
+    var venditoreInfoGlobal = null;
+
+    function renderDatiIniziali(data) {
+      if (!data || !data.ok) return;
+      if (data.proposte && Array.isArray(data.proposte)) {
+        catalogo3Proposte = data.proposte;
+      }
+      if (data.venditoreInfo) {
+        venditoreInfoGlobal = data.venditoreInfo;
+      }
+      if (data.immobile) {
+        aggiornaSchedaImmobile(data.immobile);
+      }
+    }
+
+    var currentFotoIdx = 0;
+
+    function aggiornaSchedaImmobile(imm) {
+      if (!imm) return;
+      currentImmobile = imm;
+      document.getElementById('propTitle').innerText = imm.titolo || 'Immobile Selezionato';
+      document.getElementById('propCitta').innerText = imm.citta || 'Favara / Agrigento';
+      document.getElementById('propTipo').innerText = imm.tipologia || 'Residenziale';
+      if (document.getElementById('propMq')) {
+        document.getElementById('propMq').innerText = imm.mq || '120 metri quadri';
+      }
+      if (document.getElementById('propPrezzo')) {
+        document.getElementById('propPrezzo').innerText = imm.prezzo || 'Trattativa Riservata';
+      }
+      document.getElementById('propDesc').innerText = imm.descrizione || '';
+
+      // 🌅 1. Aggiorna lo Sfondo Ambientale della Pagina con l'immagine dell'immobile
+      var bgEl = document.getElementById('pageAmbientBg');
+      if (bgEl && imm.foto) {
+        bgEl.style.backgroundImage = 'url("' + imm.foto + '")';
+      }
+
+      var videoEl = document.getElementById('propVideo');
+      var iframeEl = document.getElementById('propIframe');
+      var fotoEl = document.getElementById('propFoto');
+      var prevBtn = document.getElementById('btnPrevFoto');
+      var nextBtn = document.getElementById('btnNextFoto');
+
+      if (imm.foto) {
+        fotoEl.src = imm.foto;
+      }
+
+      // 📸 2. Genera la Galleria Fotografica in Fondo alla Scheda
+      var stripEl = document.getElementById('propGalleryStrip');
+      var countBadge = document.getElementById('galleryCountBadge');
+      var galleryList = (imm.gallery && Array.isArray(imm.gallery) && imm.gallery.length)
+        ? imm.gallery
+        : (imm.foto ? [imm.foto] : []);
+
+      if (countBadge) {
+        countBadge.innerText = galleryList.length + ' Foto Ambienti';
+      }
+
+      if (stripEl) {
+        stripEl.innerHTML = '';
+        var etichette = ['Soggiorno', 'Camere', 'Cucina', 'Bagno', 'Terrazzo / Vista'];
+        galleryList.forEach(function(imgUrl, idx) {
+          var item = document.createElement('div');
+          item.className = 'gallery-thumb-item' + (idx === 0 ? ' active' : '');
+          item.id = 'thumb_' + idx;
+          item.onclick = function() {
+            mostraFotoGalleria(idx, true);
+          };
+          var lblText = etichette[idx] || ('Ambiente ' + (idx + 1));
+          item.innerHTML = '<img class="gallery-thumb-img" src="' + imgUrl + '" alt="' + lblText + '" loading="lazy">' +
+                           '<span class="gallery-thumb-label">' + lblText + '</span>';
+          stripEl.appendChild(item);
+        });
+      }
+
+      // 🎬 3. Caricamento e riproduzione video tour immediata
+      if (imm.video && imm.video.startsWith('http')) {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        if (imm.video.includes('youtu.be') || imm.video.includes('youtube.com')) {
+          var ytUrl = imm.video.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+          iframeEl.src = ytUrl + (ytUrl.includes('?') ? '&' : '?') + 'autoplay=1&mute=1&playsinline=1';
+          iframeEl.style.display = 'block';
+          videoEl.style.display = 'none';
+          fotoEl.style.display = 'none';
+        } else {
+          // Video diretto MP4 su CDN veloce
+          videoEl.src = imm.video;
+          videoEl.style.display = 'block';
+          iframeEl.style.display = 'none';
+          fotoEl.style.display = 'none';
+          videoEl.muted = true;
+          videoEl.play().catch(function(err) {
+            console.log('Autoplay muted in attesa di interazione:', err);
+          });
+        }
+        impostaBadgeAttivo('video');
+      } else {
+        // Nessun video: mostra prima foto della galleria
+        mostraFotoGalleria(0, false);
+      }
+    }
+
+    function mostraFotoGalleria(idx, parla) {
+      if (!currentImmobile) return;
+      var galleryList = (currentImmobile.gallery && Array.isArray(currentImmobile.gallery) && currentImmobile.gallery.length)
+        ? currentImmobile.gallery
+        : [currentImmobile.foto];
+      if (idx < 0 || idx >= galleryList.length) return;
+      currentFotoIdx = idx;
+
+      var videoEl = document.getElementById('propVideo');
+      var iframeEl = document.getElementById('propIframe');
+      var fotoEl = document.getElementById('propFoto');
+      var prevBtn = document.getElementById('btnPrevFoto');
+      var nextBtn = document.getElementById('btnNextFoto');
+
+      // Nascondi video e iframe
+      if (videoEl) { videoEl.style.display = 'none'; videoEl.pause(); }
+      if (iframeEl) iframeEl.style.display = 'none';
+
+      // Mostra foto selezionata
+      if (fotoEl) {
+        fotoEl.src = galleryList[idx];
+        fotoEl.style.display = 'block';
+      }
+
+      // 🌅 Aggiorna lo sfondo ambientale dell'intera pagina per immergere l'utente nella stanza!
+      var bgEl = document.getElementById('pageAmbientBg');
+      if (bgEl) {
+        bgEl.style.backgroundImage = 'url("' + galleryList[idx] + '")';
+      }
+
+      // Mostra frecce navigazione foto
+      if (prevBtn) prevBtn.style.display = 'flex';
+      if (nextBtn) nextBtn.style.display = 'flex';
+
+      // Aggiorna classe active sulle miniature in fondo
+      var allThumbs = document.querySelectorAll('.gallery-thumb-item');
+      allThumbs.forEach(function(t, i) {
+        if (i === idx) t.classList.add('active');
+        else t.classList.remove('active');
+      });
+
+      impostaBadgeAttivo('foto');
+
+      // 🎙️ DarIA descrive l'ambiente
+      if (parla && audioAbilitato) {
+        var frasi = [
+          'Ecco il luminoso salone living dell\'immobile.',
+          'Questa è la confortevole zona notte con finiture curate.',
+          'Ecco la moderna cucina abitabile.',
+          'Questo è il bagno finemente rifinito.',
+          'Ed ecco la splendida vista esterna con terrazzo panoramico.'
+        ];
+        var fraseAmbiente = frasi[idx] || ('Ecco la vista dell\'ambiente ' + (idx + 1) + '.');
+        parlaVoceDarIA(fraseAmbiente);
+      }
+    }
+
+    function cambiaFotoNav(delta) {
+      if (!currentImmobile) return;
+      var galleryList = (currentImmobile.gallery && Array.isArray(currentImmobile.gallery) && currentImmobile.gallery.length)
+        ? currentImmobile.gallery
+        : [currentImmobile.foto];
+      var nuovoIdx = (currentFotoIdx + delta + galleryList.length) % galleryList.length;
+      mostraFotoGalleria(nuovoIdx, true);
+    }
+
+    function attivaModalitaVideo() {
+      var videoEl = document.getElementById('propVideo');
+      var iframeEl = document.getElementById('propIframe');
+      var fotoEl = document.getElementById('propFoto');
+      var prevBtn = document.getElementById('btnPrevFoto');
+      var nextBtn = document.getElementById('btnNextFoto');
+
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+
+      if (currentImmobile && currentImmobile.video && currentImmobile.video.startsWith('http')) {
+        if (currentImmobile.video.includes('youtu')) {
+          iframeEl.style.display = 'block';
+          videoEl.style.display = 'none';
+        } else {
+          videoEl.style.display = 'block';
+          iframeEl.style.display = 'none';
+          videoEl.play().catch(function(){});
+        }
+        fotoEl.style.display = 'none';
+        impostaBadgeAttivo('video');
+      }
+    }
+
+    function attivaModalitaFoto() {
+      mostraFotoGalleria(currentFotoIdx || 0);
+    }
+
+    function impostaBadgeAttivo(modo) {
+      var bV = document.getElementById('btnModoVideo');
+      var bF = document.getElementById('btnModoFoto');
+      if (bV && bF) {
+        if (modo === 'video') {
+          bV.classList.add('active');
+          bF.classList.remove('active');
+        } else {
+          bF.classList.add('active');
+          bV.classList.remove('active');
+        }
+      }
+    }
+
+    function toggleAudioVideo() {
+      var videoEl = document.getElementById('propVideo');
+      var btnSound = document.getElementById('btnSoundVideo');
+      if (videoEl) {
+        videoEl.muted = !videoEl.muted;
+        btnSound.innerText = videoEl.muted ? '🔇 Muto' : '🔊 Audio Attivo';
+      }
+    }
+
+    function inviaSuggerimento(testo) {
+      document.getElementById('userInput').value = testo;
+      inviaMessaggioChat();
+    }
+
+    function inviaMessaggioChat() {
+      var input = document.getElementById('userInput');
+      var testo = (input.value || '').trim();
+      if (!testo) return;
+
+      appendBubble('user', testo, 'Tu');
+      input.value = '';
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.ok) {
+              var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA';
+              appendBubble('daria', res.risposta, autoreCond);
+              parlaVoceDarIA(res.risposta);
+
+              if (res.isVenditore) {
+                appendVenditoreCard(res.venditoreInfo || venditoreInfoGlobal);
+              } else if (res.proposte && res.proposte.length) {
+                catalogo3Proposte = res.proposte;
+                append3ProposteCards(res.proposte);
+                if (res.immobile) {
+                  aggiornaSchedaImmobile(res.immobile);
+                }
+              } else if (res.immobile) {
+                aggiornaSchedaImmobile(res.immobile);
+              }
+            }
+          })
+          .stanzaApiDispatch('chat', tokenSessione, { testo: testo });
+      } else {
+        setTimeout(function() {
+          var isVend = /vender|vendo|valutazione|stima|proprietario/i.test(testo);
+          var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA';
+          if (isVend) {
+            var dummyV = 'Benvenuto in Immobiliare Giancani! Valorizziamo la tua proprietà con Droni 4K e Intelligenza Artificiale, ma il nostro vero punto di forza primario sono i rapporti umani autentici curati personalmente da Antonio Giancani.\n\n— Immobiliare Giancani';
+            appendBubble('daria', dummyV, autoreCond);
+            parlaVoceDarIA(dummyV);
+            appendVenditoreCard(venditoreInfoGlobal || {
+              puntiDiForza: [
+                { titolo: 'I Rapporti Umani: il Nostro Cuore Pulsante', descrizione: 'Presenza costante di Antonio Giancani fino al rogito.' },
+                { titolo: 'Droni 4K & Riprese Cinematiche', descrizione: 'Video aerei ad alta definizione.' },
+                { titolo: 'Intelligenza Artificiale & Targeting Mirato', descrizione: 'Acquirenti profilati e solventi.' }
+              ],
+              documentiRichiesti: [
+                { nome: 'Atto di Provenienza' },
+                { nome: 'Visura Catastale' },
+                { nome: 'Planimetria o Mappa Catastale' },
+                { nome: 'Documenti Urbanistici ed Edilizi' },
+                { nome: 'Attestato Prestazione Energetica (APE)' },
+                { nome: 'Documenti dei Proprietari' }
+              ]
+            });
+          } else {
+            var dummy = 'Ho selezionato esattamente 3 migliori proposte per te:\n1) Appartamento Corso Vittorio Veneto\n2) Appartamento Rifinito 2° Piano\n3) Appartamento Favara Centro\n\n— Immobiliare Giancani';
+            appendBubble('daria', dummy, autoreCond);
+            parlaVoceDarIA(dummy);
+            if (catalogo3Proposte && catalogo3Proposte.length) {
+              append3ProposteCards(catalogo3Proposte);
+            }
+          }
+        }, 700);
+      }
+    }
+
+    // 🎯 RENDERING DELLE 3 PROPOSTE IMMOBILIARI IN CHAT
+    function append3ProposteCards(proposte) {
+      if (!proposte || !proposte.length) return;
+      var history = document.getElementById('chatHistory');
+      var wrap = document.createElement('div');
+      wrap.className = 'proposte-box';
+      
+      var headerLbl = document.createElement('div');
+      headerLbl.style.fontSize = '11px';
+      headerLbl.style.fontWeight = '800';
+      headerLbl.style.color = '#d4a853';
+      headerLbl.style.textTransform = 'uppercase';
+      headerLbl.style.letterSpacing = '0.5px';
+      headerLbl.style.margin = '4px 0 2px 2px';
+      headerLbl.innerHTML = '✨ 3 Proposte dal Catalogo Daria Diretta:';
+      wrap.appendChild(headerLbl);
+
+      proposte.forEach(function(imm, idx) {
+        var card = document.createElement('div');
+        card.className = 'proposta-card';
+        card.onclick = function() { selezionaPropostaIdx(idx); };
+
+        var thumbSrc = imm.foto || (imm.gallery && imm.gallery[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=300&q=80';
+        var mqTesto = imm.mq ? String(imm.mq).replace(/\bmq\.?|\bm\^2|\bm²\b/gi, 'metri quadri') : '110 metri quadri';
+        
+        var htmlCard = 
+          '<img src="' + thumbSrc + '" class="proposta-thumb" alt="Miniatura">' +
+          '<div class="proposta-info">' +
+            '<div class="proposta-badge">Opzione ' + (idx + 1) + ' • ' + (imm.tipologia || 'Immobile') + '</div>' +
+            '<div class="proposta-titolo">' + imm.titolo + '</div>' +
+            '<div class="proposta-dettagli">' +
+              '<span class="proposta-prezzo">' + imm.prezzo + '</span>' +
+              '<span>•</span>' +
+              '<span>' + imm.citta + '</span>' +
+              '<span>•</span>' +
+              '<span>' + mqTesto + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<button class="proposta-btn-show">▶ Guarda</button>';
+        card.innerHTML = htmlCard;
+        wrap.appendChild(card);
+      });
+
+      history.appendChild(wrap);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function selezionaPropostaIdx(idx) {
+      if (!catalogo3Proposte || !catalogo3Proposte[idx]) return;
+      var imm = catalogo3Proposte[idx];
+      aggiornaSchedaImmobile(imm);
+      attivaModalitaVideo();
+      var mqT = imm.mq ? String(imm.mq).replace(/\bmq\.?|\bm\^2|\bm²\b/gi, 'metri quadri') : '110 metri quadri';
+      var annuncio = 'Ecco la proposta ' + (idx + 1) + ': ' + imm.titolo + ' a ' + imm.citta + ', superficie di ' + mqT + ' al prezzo di ' + imm.prezzo + '.\n\n— Immobiliare Giancani';
+      var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA';
+      appendBubble('daria', annuncio, autoreCond);
+      parlaVoceDarIA(annuncio);
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.stanzaApiDispatch('seleziona_immobile', tokenSessione, { idImmobile: imm.id });
+      }
+    }
+
+    // 🏛️ RENDERING BOX VENDITORI D'ÉLITE IN CHAT
+    function appendVenditoreCard(info) {
+      var history = document.getElementById('chatHistory');
+      var box = document.createElement('div');
+      box.className = 'venditore-box-chat';
+
+      var pilastriHtml = '';
+      if (info && info.puntiDiForza) {
+        info.puntiDiForza.forEach(function(p, i) {
+          var isHighlight = (i === 0) ? 'highlight' : '';
+          pilastriHtml += 
+            '<div class="venditore-pilastro-item ' + isHighlight + '">' +
+              '<b>' + p.titolo + '</b><br>' + p.descrizione +
+            '</div>';
+        });
+      }
+
+      var docsHtml = '';
+      if (info && info.documentiRichiesti) {
+        info.documentiRichiesti.forEach(function(d, i) {
+          docsHtml += 
+            '<div class="doc-item-pill">' +
+              '<span class="icon">✓</span>' +
+              '<span><b>' + (i + 1) + '.</b> ' + d.nome + '</span>' +
+            '</div>';
+        });
+      }
+
+      box.innerHTML = 
+        '<div class="venditore-box-header">' +
+          '<span class="venditore-badge-prestigio">Area Venditori d\'Élite</span>' +
+          '<span class="venditore-titolo-card">Immobiliare Giancani</span>' +
+        '</div>' +
+        '<div class="venditore-pilastri">' + pilastriHtml + '</div>' +
+        '<div class="docs-section-title"><span>📋</span> Documentazione Necessaria (6 Documenti)</div>' +
+        '<div class="docs-list-grid">' + docsHtml + '</div>' +
+        '<button class="btn-apri-form-venditore" onclick="apriModalVenditore()">' +
+          '📂 Compila Dichiarazione & Carica Documenti in Drive' +
+        '</button>';
+
+      history.appendChild(box);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 📂 GESTIONE MODALE VENDITORE E UPLOAD GOOGLE DRIVE
+    // ══════════════════════════════════════════════════════════════
+    function apriModalVenditore() {
+      var m = document.getElementById('modalVenditore');
+      if (m) m.classList.add('active');
+    }
+
+    function chiudiModalVenditore() {
+      var m = document.getElementById('modalVenditore');
+      if (m) m.classList.remove('active');
+    }
+
+    // 🛡️ SANITIZZAZIONE TESTO REALTIME (SENZA PUNTI E SENZA CARATTERI SPECIALI)
+    function sanitizzaInputSenzaPunti(el) {
+      if (!el) return;
+      el.value = el.value
+        .replace(/[^a-zA-Z0-9àèéìòùÀÈÉÌÒÙçÇ\s-]/g, ' ')
+        .replace(/\./g, '')
+        .replace(/\s+/g, ' ');
+    }
+
+    function sanitizeTextClient(txt) {
+      if (!txt) return '';
+      return String(txt)
+        .replace(/[^a-zA-Z0-9àèéìòùÀÈÉÌÒÙçÇ\s-]/g, ' ')
+        .replace(/\./g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // 🛡️ LETTURA FILE CON CONTROLLO ANTI-PIRATA BINARIO (SOLO PDF E IMMAGINI AUTENTICHE)
+    function leggiFileAsBase64(fileInputId, nomeDoc) {
+      return new Promise(function(resolve, reject) {
+        var input = document.getElementById(fileInputId);
+        if (!input || !input.files || !input.files[0]) {
+          return resolve(null);
+        }
+        var file = input.files[0];
+
+        // 1. Controllo estensione consentita
+        var cleanFileName = file.name.replace(/[\\\/]/g, '_');
+        var parts = cleanFileName.split('.');
+        if (parts.length < 2) {
+          alert('⚠️ Protezione Anti-Pirata: Il file "' + file.name + '" non ha estensione ed è stato bloccato.');
+          input.value = '';
+          return resolve(null);
+        }
+        var ext = parts.pop().toLowerCase().trim();
+        var allowedExt = ['pdf', 'jpg', 'jpeg', 'png', 'webp'];
+        if (allowedExt.indexOf(ext) === -1) {
+          alert('⚠️ Protezione Anti-Pirata: Il file "' + file.name + '" ha un\'estensione non consentita (.' + ext + ').\nSono ammessi esclusivamente documenti PDF e immagini (JPG, PNG, WEBP).');
+          input.value = '';
+          return resolve(null);
+        }
+
+        // 2. Controllo dimensione (Max 15 MB)
+        if (file.size > 15 * 1024 * 1024) {
+          alert('⚠️ Il file "' + file.name + '" supera la dimensione massima di 15 MB.');
+          input.value = '';
+          return resolve(null);
+        }
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var b64Full = e.target.result;
+          var b64Data = b64Full.includes(',') ? b64Full.split(',')[1] : b64Full;
+
+          // 3. Ispezione Magic Bytes dell'header binario
+          var isPdf = b64Data.startsWith('JVBERi'); // %PDF
+          var isJpg = b64Data.startsWith('/9j/');    // JPEG
+          var isPng = b64Data.startsWith('iVBORw');  // PNG
+          var isWebp = b64Data.startsWith('UklGR');  // WEBP
+
+          if (ext === 'pdf' && !isPdf) {
+            alert('⚠️ Allarme Anti-Pirata: Il file "' + file.name + '" non è un documento PDF autentico ed è stato bloccato.');
+            input.value = '';
+            return resolve(null);
+          }
+          if ((ext === 'jpg' || ext === 'jpeg') && !isJpg) {
+            alert('⚠️ Allarme Anti-Pirata: Il file "' + file.name + '" non è un\'immagine JPEG autentica ed è stato bloccato.');
+            input.value = '';
+            return resolve(null);
+          }
+          if (ext === 'png' && !isPng) {
+            alert('⚠️ Allarme Anti-Pirata: Il file "' + file.name + '" non è un\'immagine PNG autentica ed è stato bloccato.');
+            input.value = '';
+            return resolve(null);
+          }
+          if (ext === 'webp' && !isWebp) {
+            alert('⚠️ Allarme Anti-Pirata: Il file "' + file.name + '" non è un\'immagine WEBP autentica ed è stato bloccato.');
+            input.value = '';
+            return resolve(null);
+          }
+
+          var safeBaseName = parts.join('_').replace(/[^a-zA-Z0-9_-]/g, '_');
+          var finalName = (nomeDoc.replace(/\s+/g, '_') + '_' + safeBaseName + '.' + ext);
+
+          resolve({
+            id: fileInputId,
+            tipo: nomeDoc,
+            nome: finalName,
+            mime: file.type || (ext === 'pdf' ? 'application/pdf' : 'image/jpeg'),
+            base64: b64Full
+          });
+        };
+        reader.onerror = function() {
+          resolve(null);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function inviaFascicoloVenditore(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      var dich = document.getElementById('vDichiarazione');
+      if (!dich || !dich.checked) {
+        alert('È obbligatorio accettare la Dichiarazione di Responsabilità Civile e Penale.');
+        return;
+      }
+
+      // 🛡️ Sanitizzazione totale senza punti e senza caratteri speciali
+      var nome = sanitizeTextClient(document.getElementById('vNome').value);
+      var cognome = sanitizeTextClient(document.getElementById('vCognome').value);
+      var tel = String(document.getElementById('vTelefono').value || '').replace(/\D/g, '');
+      var email = String(document.getElementById('vEmail').value || '').trim().replace(/[^a-zA-Z0-9@._-]/g, '');
+      var cf = String(document.getElementById('vCodiceFiscale').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      var tipologia = sanitizeTextClient(document.getElementById('vTipologia').value);
+      var indirizzo = sanitizeTextClient(document.getElementById('vIndirizzo').value);
+      var prezzo = sanitizeTextClient(document.getElementById('vPrezzo').value);
+      var note = sanitizeTextClient(document.getElementById('vNote').value);
+
+      if (!nome || !tel || !indirizzo) {
+        alert('Compila tutti i campi obbligatori contrassegnati da *.');
+        return;
+      }
+
+      var statusEl = document.getElementById('uploadStatus');
+      var btn = document.getElementById('btnInviaFascicolo');
+      btn.disabled = true;
+      btn.innerText = '⏳ Caricamento fascicolo in corso...';
+      statusEl.className = 'upload-status-bar info';
+      statusEl.innerText = 'Elaborazione documenti e creazione cartella protetta su Google Drive...';
+
+      // Leggiamo tutti e 6 i file in parallelo
+      Promise.all([
+        leggiFileAsBase64('file_atto', 'Atto_Provenienza'),
+        leggiFileAsBase64('file_visura', 'Visura_Catastale'),
+        leggiFileAsBase64('file_planimetria', 'Planimetria_Catastale'),
+        leggiFileAsBase64('file_urbanistica', 'Documenti_Urbanistici'),
+        leggiFileAsBase64('file_ape', 'Attestato_APE'),
+        leggiFileAsBase64('file_proprietari', 'Documenti_Proprietari')
+      ]).then(function(docsRaw) {
+        var docsValidi = docsRaw.filter(function(d) { return d !== null; });
+
+        var payload = {
+          nome: nome,
+          cognome: cognome,
+          telefono: tel,
+          email: email,
+          codiceFiscale: cf,
+          tipologiaImmobile: tipologia,
+          indirizzoImmobile: indirizzo,
+          prezzoStima: prezzo,
+          note: note,
+          dichiarazioneResponsabilita: true,
+          documenti: docsValidi
+        };
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              btn.disabled = false;
+              btn.innerText = '🚀 Invia Fascicolo & Richiedi Autorizzazione';
+              if (res && res.ok) {
+                statusEl.className = 'upload-status-bar success';
+                statusEl.innerText = '✅ Fascicolo inviato con successo ad Antonio Giancani! Il tuo profilo è stato registrato ed è in attesa di validazione.';
+                setTimeout(function() {
+                  chiudiModalVenditore();
+                  var msgConferma = 'Grazie ' + nome + '! Il tuo fascicolo immobiliare è stato archiviato su Google Drive protetto e la notifica con i documenti è stata inviata direttamente ad Antonio Giancani per la verifica e autorizzazione. — Immobiliare Giancani';
+                  var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA';
+                  appendBubble('daria', msgConferma, autoreCond);
+                  parlaVoceDarIA(msgConferma);
+                }, 1800);
+              } else {
+                statusEl.className = 'upload-status-bar error';
+                statusEl.innerText = 'Errore: ' + (res && res.error ? res.error : 'Impossibile completare il caricamento.');
+              }
+            })
+            .withFailureHandler(function(err) {
+              btn.disabled = false;
+              btn.innerText = '🚀 Invia Fascicolo & Richiedi Autorizzazione';
+              statusEl.className = 'upload-status-bar error';
+              statusEl.innerText = 'Errore di connessione: ' + err.toString();
+            })
+            .stanzaApiDispatch('venditore_salva_fascicolo', tokenSessione, payload);
+        } else {
+          setTimeout(function() {
+            btn.disabled = false;
+            btn.innerText = '🚀 Invia Fascicolo & Richiedi Autorizzazione';
+            statusEl.className = 'upload-status-bar success';
+            statusEl.innerText = '✅ Demo: Fascicolo registrato con successo!';
+            setTimeout(function() {
+              chiudiModalVenditore();
+              var msgDemo = 'Fascicolo venditore registrato in demo con successo! — Immobiliare Giancani';
+              var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA';
+              appendBubble('daria', msgDemo, autoreCond);
+            }, 1000);
+          }, 1200);
+        }
+      }).catch(function(errUpload) {
+        btn.disabled = false;
+        btn.innerText = '🚀 Invia Fascicolo & Richiedi Autorizzazione';
+        statusEl.className = 'upload-status-bar error';
+        statusEl.innerText = 'Errore lettura file: ' + errUpload.toString();
+      });
+    }
+
+    function appendBubble(ruolo, testo, autore) {
+      var history = document.getElementById('chatHistory');
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble ' + (ruolo === 'user' ? 'msg-user' : 'msg-daria');
+      bubble.innerHTML = '<span class="bubble-author">' + autore + '</span>' + testo.replace(/\n/g, '<br>');
+      history.appendChild(bubble);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function prenotaVisitaImmobile() {
+      var idImm = currentImmobile ? currentImmobile.id : 'Generale';
+      if (confirm('Vuoi inviare la richiesta di visita ad Antonio Giancani per questo immobile?')) {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              alert('Richiesta inviata con successo! Antonio ti ricontatterà a breve.');
+            })
+            .stanzaApiDispatch('prenota_visita', tokenSessione, { idImmobile: idImm });
+        } else {
+          alert('Richiesta inoltrata ad Antonio Giancani!');
+        }
+      }
+    }
+
+    function caricaProssimoImmobile() {
+      var currId = currentImmobile ? currentImmobile.id : '';
+      appendBubble('user', 'Mostrami il prossimo immobile in video 🎬', 'Tu');
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.ok && res.immobile) {
+              aggiornaSchedaImmobile(res.immobile);
+              if (res.presentazione) {
+                var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA'; appendBubble('daria', res.presentazione, autoreCond);
+                parlaVoceDarIA(res.presentazione);
+              }
+            }
+          })
+          .withFailureHandler(function(err) {
+            console.error('Errore next:', err);
+          })
+          .stanzaApiDispatch('next', tokenSessione, { currentId: currId });
+      } else {
+        // Fallback demo locale
+        setTimeout(function() {
+          var dummy = "Ecco un'altra splendida proposta in video di 135 metri quadri con terrazzo panoramico.\n\n— Immobiliare Giancani";
+          var autoreCond = (conduttoreAttivo === 'dario') ? '👨‍💼 DarIO' : '👩‍💼 DarIA'; appendBubble('daria', dummy, autoreCond);
+          parlaVoceDarIA(dummy);
+        }, 500);
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 🎤 RICONOSCIMENTO VOCALE (MICROFONO)
+    // ══════════════════════════════════════════════════════════════
+    var recognition = null;
+    var isListening = false;
+
+    function toggleMicrofono() {
+      var micBtn = document.getElementById('micBtn');
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Il riconoscimento vocale non è supportato dal browser corrente. Usa la tastiera.');
+        return;
+      }
+
+      var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (isListening) {
+        if (recognition) recognition.stop();
+        isListening = false;
+        micBtn.classList.remove('listening');
+        return;
+      }
+
+      recognition = new SpeechRec();
+      recognition.lang = 'it-IT';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = function() {
+        isListening = true;
+        micBtn.classList.add('listening');
+      };
+
+      recognition.onresult = function(event) {
+        var transcript = event.results[0][0].transcript;
+        document.getElementById('userInput').value = transcript;
+        inviaMessaggioChat();
+      };
+
+      recognition.onerror = function() {
+        isListening = false;
+        micBtn.classList.remove('listening');
+      };
+
+      recognition.onend = function() {
+        isListening = false;
+        micBtn.classList.remove('listening');
+      };
+
+      recognition.start();
+    }
+  </script>
+</body>
+</html>

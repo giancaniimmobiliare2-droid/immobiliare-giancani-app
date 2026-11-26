@@ -1,0 +1,1044 @@
+<!-- BANNER COLLEGAMENTO WEB APP LIVE -->
+<div id="local-cloud-bar" style="display:none; width:100%; max-width:1360px; margin-bottom:15px; background:linear-gradient(90deg, #1e1b4b, #312e81); border:2px solid var(--gold); border-radius:14px; padding:12px 18px; color:#fff; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; box-shadow:0 8px 25px rgba(0,0,0,0.7);">
+  <div style="display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;">
+    <span style="font-size:20px;">🏰</span>
+    <span>Studio Regia Live Immobiliare Giancani</span>
+    <span style="background:#22c55e; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">ATTIVO</span>
+  </div>
+  <a href="https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?page=generator&phone=3201667156" target="_blank" style="background:var(--gold); color:#120c04; text-decoration:none; font-weight:800; font-size:12px; padding:8px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(201,163,94,0.4);">
+    <span>🚀 APRI VERSIONE CLOUD IN DIRETTA ></span>
+  </a>
+</div>
+<script>
+if (window.location.protocol === 'file:') {
+  document.addEventListener('DOMContentLoaded', function() {
+    var b = document.getElementById('local-cloud-bar');
+    if (b) b.style.display = 'flex';
+  });
+}
+</script>
+
+      <div class="container">
+      
+      <!-- 🖥️/📱 BARRA DI CONTROLLO SISTEMA: WINDOWS & ANDROID DUAL-MODE -->
+      <div id="sys-mode-bar" class="sys-mode-bar">
+        <div class="sys-mode-brand">
+          <span class="sys-pulse-dot"></span>
+          <span class="sys-brand-title">IMMOBILIARE GIANCANI • REGIA LIVE STUDIO</span>
+          <span id="sys-layout-badge" class="sys-layout-badge">🖥️ WINDOWS MODE</span>
+        </div>
+        <div class="sys-mode-actions">
+          <button type="button" onclick="window.open('https://tonyhood2345.github.io/live-stream-serverless/cacciatori.html', '_blank')" class="btn-sys-toggle" style="background: linear-gradient(135deg, #10b981, #047857); color: #fff; font-weight: 900; border: 1.5px solid #34d399; box-shadow: 0 0 10px rgba(16,185,129,0.4);" title="Apri Console Cacciatori di Immobili (Privati, WhatsApp 1-Click, Statistiche)">
+            <span>🎯</span>
+            <span>CACCIATORI</span>
+          </button>
+          <button type="button" onclick="window.open('https://tonyhood2345.github.io/live-stream-serverless/pwa_android/', '_blank')" class="btn-sys-toggle" style="background: linear-gradient(135deg, #f59e0b, #b45309); color: #000; font-weight: 900; border: 1.5px solid #fde047; box-shadow: 0 0 10px rgba(245,158,11,0.45);" title="Apri Web App Studio Video (Multi-Canzone, fino a 5 min, Logo Scontornato &amp; Drive Upload)">
+            <span>📱</span>
+            <span>APP VIDEO STUDIO</span>
+          </button>
+          <button type="button" onclick="accessoRapidoStudio('tab-timeline-editor')" class="btn-sys-toggle" style="background: linear-gradient(135deg, #c9a35e, #855d1a); color: #000; font-weight: 900; border: 1.5px solid #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.35);" title="Apri direttamente lo Studio Editor Video Timeline">
+            <span>🎬</span>
+            <span>EDITOR VIDEO</span>
+          </button>
+          <button type="button" onclick="accessoRapidoStudio('tab-canzoni-suno')" class="btn-sys-toggle" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; font-weight: 900; border: 1.5px solid #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.35);" title="Apri direttamente il Creatore Canzoni Suno AI">
+            <span>🎵</span>
+            <span>CANZONI SUNO</span>
+          </button>
+          <button type="button" id="btn-switch-layout" onclick="toggleLayoutModeGiancani()" class="btn-sys-toggle btn-sys-mode" title="Cambia visualizzazione tra Windows PC e Android Mobile">
+            <span id="icon-switch-layout">📱</span>
+            <span id="label-switch-layout">PASSA AD ANDROID</span>
+          </button>
+          <button type="button" id="btn-toggle-classic" onclick="toggleClassicThemeGiancani()" class="btn-sys-toggle btn-sys-classic" title="Torna alla grafica classica originale">
+            <span id="icon-toggle-classic">↩️</span>
+            <span id="label-toggle-classic">GRAFICA VECCHIA</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Header -->
+      <div class="header">
+        <img class="logo-img" src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P" alt="Immobiliare Giancani">
+        <div class="title">🏰 Studio Regia Live Suite (v147.0)</div>
+        <div class="subtitle">🔴 Regia Live & Costruttore Palinsesto Dinamico Unificato + Auto-Vision AI + Galleria Bulk</div>
+      </div>
+
+      <!-- GATE DI SICUREZZA TELEFONO -->
+      <div id="phone-auth-gate">
+        <div class="lock-icon">🔒</div>
+        <h3 style="font-size: 15px; margin-bottom: 10px; color: var(--gold-bright);">Accesso Riservato ad Da Immobiliare Giancani</h3>
+        <p style="font-size: 12px; color: var(--sand); margin-bottom: 20px;">Inserisci il tuo numero di telefono autorizzato per sbloccare la regia:</p>
+        
+        <input type="text" id="input-phone-auth" class="auth-input" placeholder="es. 3201667156 oppure Password" onkeyup="if(event.key==='Enter') verificaTelefono()">
+        <button onclick="verificaTelefono()" class="btn-gold" style="max-width: 320px; margin: 0 auto;">SBLOCCA STUDIO REGIA COMPLETE SUITE</button>
+        <div id="auth-error" style="color: #ff6b6b; font-size: 11px; margin-top: 12px; display: none;">⚠️ Inserisci 3201667156 o la tua password per accedere.</div>
+
+        <!-- ⚡ ACCESSO DIRETTO ISTANTANEO IN PRIMA PAGINA AGLI STUDI CREATIVI -->
+        <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(201,163,94,0.3); width: 100%; max-width: 520px; margin-left: auto; margin-right: auto;">
+          <div style="font-size: 12px; font-weight: 800; color: var(--gold-bright); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+            ⚡ ACCESSO DIRETTO IN PRIMA PAGINA AGLI STUDI CREATIVI (1-CLICK):
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <button type="button" onclick="accessoRapidoStudio('tab-timeline-editor')" style="background: linear-gradient(135deg, rgba(201,163,94,0.25), rgba(20,24,33,0.95)); border: 2px solid var(--gold-bright); color: #fff; padding: 14px 10px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); transition: all 0.2s;">
+              <span style="font-size: 28px;">🎬</span>
+              <span style="color:#ffd700; font-size: 12.5px;">EDITOR VIDEO TIMELINE</span>
+              <span style="font-size: 9.5px; color: #e2e8f0; font-weight: 700; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px;">⚡ APRI SUBITO</span>
+            </button>
+            <button type="button" onclick="accessoRapidoStudio('tab-canzoni-suno')" style="background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(20,24,33,0.95)); border: 2px solid #38bdf8; color: #fff; padding: 14px 10px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); transition: all 0.2s;">
+              <span style="font-size: 28px;">🎵</span>
+              <span style="color:#38bdf8; font-size: 12.5px;">CREATORE CANZONI SUNO</span>
+              <span style="font-size: 9.5px; color: #e2e8f0; font-weight: 700; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px;">⚡ APRI SUBITO</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANNELLO PRINCIPALE (A 8 TAB) -->
+      <div id="main-panel" style="display: none;">
+
+        <!-- 🎬🎵 HERO SHOWCASE: I DUE GRANDI STUDI CREATIVI (VIDEO TIMELINE & CANZONI SUNO) CON PULSANTI CON IMMAGINI -->
+        <div id="hero-creative-studios" style="margin-bottom: 22px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>⭐</span> I Grandi Studi Creativi Immobiliari (Nuova Generazione)
+            </div>
+            <span style="font-size: 11px; color: var(--sand); background: rgba(201,163,94,0.15); border: 1px solid var(--gold); border-radius: 12px; padding: 2px 10px; font-weight: 700;">
+              COLONNA F &amp; SINCRONIA 100%
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+            
+            <!-- CARD 1: 🎬 STUDIO VIDEO & TIMELINE RITMICA -->
+            <div onclick="apriStudioDaHero('tab-timeline-editor')" style="background: linear-gradient(135deg, rgba(20, 24, 33, 0.96), rgba(10, 14, 20, 0.98)); border: 2px solid var(--gold); border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 18px rgba(201,163,94,0.3); transition: all 0.25s ease; position: relative;" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#ffd700';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--gold)';">
+              <!-- COVER IMAGE CON OVERLAY VIGNETTE -->
+              <div style="height: 140px; position: relative; overflow: hidden; background: #000;">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=800&auto=format&fit=crop" alt="Editor Video Timeline" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; filter: contrast(1.05);">
+                <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(10, 14, 20, 1) 0%, rgba(10, 14, 20, 0.3) 60%, transparent 100%);"></div>
+                <div style="position: absolute; top: 12px; left: 14px; background: rgba(0,0,0,0.75); border: 1px solid var(--gold); border-radius: 20px; padding: 3px 10px; font-size: 10.5px; font-weight: 800; color: var(--gold-bright); display: flex; align-items: center; gap: 5px;">
+                  <span>🎬</span> STUDIO MONTATORE VIDEO V4.0
+                </div>
+                <div style="position: absolute; top: 12px; right: 14px; background: rgba(220,38,38,0.85); color: #fff; border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 800;">
+                  ⚡ BEAT-SYNCED
+                </div>
+                <div style="position: absolute; bottom: 10px; left: 14px; font-size: 17px; font-weight: 900; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.9);">
+                  Timeline Multi-Traccia &amp; Spot 9:16
+                </div>
+              </div>
+
+              <!-- CONTENUTO CARD -->
+              <div style="padding: 14px 16px;">
+                <p style="font-size: 11.5px; color: var(--sand); line-height: 1.45; margin-bottom: 14px;">
+                  Monta video commerciali al millisecondo a tempo di musica: <strong>transizioni Flash/Glow/Sfumatura</strong>, 8 font selezionabili (Anton, Montserrat, Bebas...) e <strong>testi retro-illuminati</strong> con capsula gold/neon da Colonna F.
+                </p>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;">
+                  <span style="font-size: 10px; background: rgba(201,163,94,0.15); color: var(--gold-bright); border: 1px solid rgba(201,163,94,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">🎞️ 4 Tracce Audio/Video</span>
+                  <span style="font-size: 10px; background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">⚡ Flash &amp; Sfumatura</span>
+                  <span style="font-size: 10px; background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">✨ Testi Glow &amp; Retro</span>
+                </div>
+                <!-- PULSANTE IMMAGINE DIRETTO -->
+                <button type="button" class="btn-gold" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; font-size: 12px; padding: 10px; box-shadow: 0 4px 15px rgba(201,163,94,0.4);">
+                  <span>🎬</span> APRI STUDIO VIDEO TIMELINE &gt;
+                </button>
+              </div>
+            </div>
+
+            <!-- CARD 2: 🎵 CREATORE DI CANZONI SUNO AI -->
+            <div onclick="apriStudioDaHero('tab-canzoni-suno')" style="background: linear-gradient(135deg, rgba(20, 24, 33, 0.96), rgba(10, 14, 20, 0.98)); border: 2px solid var(--gold); border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 18px rgba(56,189,248,0.3); transition: all 0.25s ease; position: relative;" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--gold)';">
+              <!-- COVER IMAGE CON OVERLAY VIGNETTE -->
+              <div style="height: 140px; position: relative; overflow: hidden; background: #000;">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop" alt="Creatore Canzoni Suno AI" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; filter: contrast(1.1);">
+                <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(10, 14, 20, 1) 0%, rgba(10, 14, 20, 0.3) 60%, transparent 100%);"></div>
+                <div style="position: absolute; top: 12px; left: 14px; background: rgba(0,0,0,0.75); border: 1px solid var(--gold); border-radius: 20px; padding: 3px 10px; font-size: 10.5px; font-weight: 800; color: var(--gold-bright); display: flex; align-items: center; gap: 5px;">
+                  <span>🎵</span> SUNO AI CANZONI IMMOBILIARI
+                </div>
+                <div style="position: absolute; top: 12px; right: 14px; background: rgba(37,99,235,0.85); color: #fff; border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 800;">
+                  🎧 BRANI 3+ MINUTI
+                </div>
+                <div style="position: absolute; bottom: 10px; left: 14px; font-size: 17px; font-weight: 900; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.9);">
+                  Creatore di Canzoni &amp; Basi Suno
+                </div>
+              </div>
+
+              <!-- CONTENUTO CARD -->
+              <div style="padding: 14px 16px;">
+                <p style="font-size: 11.5px; color: var(--sand); line-height: 1.45; margin-bottom: 14px;">
+                  Genera canzoni e brani musicali completi per ogni immobile con testi dalla <strong>Colonna F</strong>: stili Trap, Lofi Relax, Cinematic Luxury, Pop ed estensione fino a oltre 3 minuti con prompt perfetti per Suno.
+                </p>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;">
+                  <span style="font-size: 10px; background: rgba(201,163,94,0.15); color: var(--gold-bright); border: 1px solid rgba(201,163,94,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">🎼 Struttura [Verse][Chorus]</span>
+                  <span style="font-size: 10px; background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">🎹 Prompt Suno V3.5</span>
+                  <span style="font-size: 10px; background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); border-radius: 6px; padding: 2px 7px; font-weight: 700;">💎 Branding Giancani</span>
+                </div>
+                <!-- PULSANTE IMMAGINE DIRETTO -->
+                <button type="button" class="btn-gold" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; font-size: 12px; padding: 10px; box-shadow: 0 4px 15px rgba(37,99,235,0.4); background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 1px solid #60a5fa; color: #fff;">
+                  <span>🎵</span> APRI CREATORE CANZONI SUNO &gt;
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        
+        <!-- 📡 CENTRO DI REGIA MASTER — TRASMISSIONE DIRETTA STREAMING UNIFICATA (FB + YT + SOCIAL + MARATONE DARIA) -->
+        <div id="master-live-regia-box" style="background: linear-gradient(135deg, rgba(22, 17, 12, 0.98), rgba(12, 9, 7, 0.98)); border: 2px solid var(--gold); border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 10px 32px rgba(0,0,0,0.85), 0 0 20px rgba(212,168,83,0.25);">
+          
+          <!-- INTESTAZIONE REGIA & STATO LIVE -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; border-bottom: 1px solid rgba(212,168,83,0.3); padding-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; flex: 1; min-width: 320px;">
+              <div style="width: 46px; height: 46px; border-radius: 12px; background: rgba(229,9,20,0.18); border: 1.5px solid #e50914; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 18px rgba(229,9,20,0.35); flex-shrink: 0;">
+                📡
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <div style="font-size: 16px; font-weight: 800; color: var(--gold-bright); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <span>Regia Live Unificata — DarIA &amp; DarIO Multistream</span>
+                  <span id="badge-master-live-status" style="font-size: 11px; background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid #2ecc71; padding: 2px 10px; border-radius: 12px; font-weight: 800; letter-spacing: 0.5px;">PRONTO PER LA DIRETTA</span>
+                  <span id="badge-maratona-stato" style="display: none;">IN ATTESA</span>
+                  <span id="gen-multistream-badge" style="display: none;">PRONTO</span>
+                </div>
+                <div style="font-size: 11.5px; color: var(--sand); margin-top: 1px;">
+                  Unico quadro di controllo: trasmetti contemporaneamente su <b>Facebook Live</b>, <b>YouTube Live</b>, <b>Instagram</b> e <b>TikTok</b>.
+                </div>
+              </div>
+
+              <!-- 🎛️ MODALITÀ CAROSELLO & DIRETTA (ACCANTO AL TITOLO REGIA) -->
+              <div id="toolbar-modalita-regia" style="display: flex; align-items: center; gap: 7px; flex-wrap: wrap; background: rgba(0,0,0,0.45); padding: 5px 10px; border-radius: 10px; border: 1px solid rgba(212,168,83,0.35); margin-left: 10px;">
+                <span style="font-size: 10.5px; font-weight: 800; color: var(--gold-lt); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 2px;">MODALITÀ:</span>
+                <button id="btn-top-carosello-avatar" type="button" onclick="avviaCaroselloConAvatar()" style="background: linear-gradient(135deg, #e67e22, #d35400); color: #fff; border: 1.5px solid #f39c12; border-radius: 8px; padding: 7px 12px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(230,126,34,0.45); transition: all 0.2s;" title="Avvia il carosello video Post_YouTube (> 1 min) con intro vocale e commento DarIA & DarIO">
+                  📺 Carosello CON Avatar
+                </button>
+                <button id="btn-top-carosello-noavatar" type="button" onclick="avviaCaroselloSenzaAvatar()" style="background: linear-gradient(135deg, #c0392b, #962d22); color: #fff; border: 1.5px solid #e74c3c; border-radius: 8px; padding: 7px 12px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(192,57,43,0.45); transition: all 0.2s;" title="Avvia il carosello video Post_YouTube (> 1 min) a tutto schermo senza avatar">
+                  🎬 Carosello SENZA Avatar
+                </button>
+
+                <!-- ⏮️ NAVIGAZIONE CAROSELLO: INDIETRO / AVANTI -->
+                <div style="display: flex; align-items: center; gap: 3px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 3px 5px;" title="Naviga manualmente tra i video del Carosello">
+                  <span style="font-size: 9px; color: rgba(255,255,255,0.5); margin-right: 2px;">VIDEO:</span>
+                  <button type="button" onclick="navigaCarosello('prev')" id="btn-carosello-prev" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 5px 9px; font-size: 13px; font-weight: 900; cursor: pointer; transition: all 0.15s;" title="⏮️ Video precedente nel Carosello">⏮️</button>
+                  <span id="label-carosello-index" style="font-size: 10px; color: #fbbf24; font-weight: 700; min-width: 38px; text-align: center;">–/–</span>
+                  <button type="button" onclick="navigaCarosello('next')" id="btn-carosello-next" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 5px 9px; font-size: 13px; font-weight: 900; cursor: pointer; transition: all 0.15s;" title="⏭️ Video successivo nel Carosello">⏭️</button>
+                </div>
+
+                <button id="btn-top-diretta-avatar" type="button" onclick="avviaDirettaConAvatar()" style="background: linear-gradient(135deg, #27ae60, #1e8449); color: #fff; border: 1.5px solid #2ecc71; border-radius: 8px; padding: 7px 12px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(39,174,96,0.45); transition: all 0.2s;" title="Avvia la diretta tour dell'immobile con conduzione DarIA & DarIO">
+                  🎙️ Diretta CON Avatar
+                </button>
+                <button id="btn-top-diretta-noavatar" type="button" onclick="avviaDirettaSenzaAvatar()" style="background: linear-gradient(135deg, #4b6584, #34495e); color: #fff; border: 1.5px solid #778ca3; border-radius: 8px; padding: 7px 12px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(75,101,132,0.4); transition: all 0.2s;" title="Avvia la diretta tour dell'immobile a tutto schermo senza avatar">
+                  🖼️ Diretta SENZA Avatar
+                </button>
+                <button id="btn-top-diretta-verticale" type="button" onclick="window.open(location.pathname + '?page=verticale', '_blank')" style="background: linear-gradient(135deg, #7c3aed, #4c1d95); color: #fff; border: 1.5px solid #a78bfa; border-radius: 8px; padding: 7px 12px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(124,58,237,0.45); transition: all 0.2s;" title="Apri Diretta Live Verticale 9:16 (Reels/TikTok/Shorts) - Solo DarIA, mega prezzo e font personalizzati — Immobiliare Giancani">
+                  📱 Diretta VERTICALE (Solo DarIA)
+                </button>
+              </div>
+            </div>
+
+            <!-- 📡 CONTROLLO CANALI DEDICATI: YOUTUBE 24H INFINITO & FACEBOOK ORE 19:00 -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
+              <!-- BOX YOUTUBE 24H -->
+              <div style="background: linear-gradient(135deg, rgba(220,38,38,0.15), rgba(153,27,27,0.25)); border: 1.5px solid #ef4444; border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 14px rgba(220,38,38,0.25);">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">🔴</span>
+                    <span style="font-size: 13px; font-weight: 900; color: #f87171; letter-spacing: 0.3px;">YOUTUBE LIVE 24H INFINITO</span>
+                    <span style="font-size: 9.5px; background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: 800;">24/7 NON-STOP</span>
+                  </div>
+                  <div style="font-size: 11px; color: #cbd5e1; margin-top: 3px;">
+                    Canale: <a href="https://www.youtube.com/@immobiliaregiancani761/live" target="_blank" style="color: #fca5a5; font-weight: 700; text-decoration: underline;">@immobiliaregiancani761/live</a>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <button type="button" id="btn-yt-24h-launch" onclick="eseguiAvvioYouTube24H(this)" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; border: 1.5px solid #f87171; border-radius: 6px; padding: 7px 14px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(220,38,38,0.4);" title="Avvia o verifica la diretta 24H continua su YouTube Live">
+                    ▶️ AVVIA YOUTUBE 24H
+                  </button>
+                  <a href="https://www.youtube.com/@immobiliaregiancani761/live" target="_blank" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; padding: 7px 10px; font-size: 11px; font-weight: 800; text-decoration: none;" title="Apri player YouTube Live">
+                    👁️ Guarda
+                  </a>
+                </div>
+              </div>
+
+              <!-- BOX FACEBOOK ORE 19:00 -->
+              <div style="background: linear-gradient(135deg, rgba(24,119,242,0.15), rgba(30,64,175,0.25)); border: 1.5px solid #3b82f6; border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">📘</span>
+                    <span style="font-size: 13px; font-weight: 900; color: #93c5fd; letter-spacing: 0.3px;">FACEBOOK LIVE SERALE (ORE 19:00)</span>
+                    <span style="font-size: 9.5px; background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid #3b82f6; padding: 2px 6px; border-radius: 4px; font-weight: 800;">DAILY SHOW</span>
+                  </div>
+                  <div style="font-size: 11px; color: #cbd5e1; margin-top: 3px;">
+                    In onda ogni giorno alle <b>19:00</b> (Europe/Rome) • Fascia 19:00-01:00
+                  </div>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <button type="button" id="btn-fb-19-launch" onclick="eseguiAvvioFacebookOre19(this)" style="background: linear-gradient(135deg, #1d4ed8, #1e40af); color: #fff; border: 1.5px solid #60a5fa; border-radius: 6px; padding: 7px 14px; font-size: 11.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(29,78,216,0.4);" title="Innesca subito la diretta programmata di Facebook (Test o avvio anticipato)">
+                    🚀 LANCIA FB ORE 19:00
+                  </button>
+                  <a href="https://www.facebook.com/immobiliaregiancani" target="_blank" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; padding: 7px 10px; font-size: 11px; font-weight: 800; text-decoration: none;" title="Apri Pagina Facebook Ufficiale">
+                    📘 Pagina
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PULSANTI PRINCIPALI MASTER REGIA -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <button id="btn-master-avvia-live" type="button" onclick="eseguiAvvioDirettaMaster(this)" style="background: linear-gradient(135deg, #e50914, #b20710); color: #ffffff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 13px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 18px rgba(229,9,20,0.5); transition: all 0.25s ease;">
+                <span id="dot-master-live" style="width: 10px; height: 10px; border-radius: 50%; background: #ffffff; display: inline-block;"></span>
+                <span id="txt-master-live-btn">🔴 AVVIA DIRETTA STREAMING ORA</span>
+              </button>
+
+              <button id="btn-master-riavvia-qualita" type="button" onclick="eseguiRiavvioConNuovaQualitaMaster()" style="display: none; background: linear-gradient(135deg, #d97706, #b45309); color: #ffffff; border: 1.5px solid #fbbf24; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 900; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(217,119,6,0.4);" title="Riavvia lo streaming cloud applicando subito la nuova qualità o scala FFmpeg selezionata">
+                🔄 APPLICA NUOVA QUALITÀ FFmpeg
+              </button>
+
+              <!-- ⏹️ PULSANTE FERMA DIRETTA SEMPRE VISIBILE ACCANTO AD AVVIA DIRETTA -->
+              <button id="btn-master-ferma-live" type="button" onclick="eseguiArrestoDirettaMaster(this)" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #c0392b, #7f1d1d); color: #ffffff; border: 1.5px solid #e74c3c; border-radius: 8px; padding: 12px 22px; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 16px rgba(231,76,60,0.45); transition: all 0.25s ease;" title="Ferma immediatamente la diretta streaming su Facebook e YouTube">
+                <span style="font-size: 14px;">⏹️</span>
+                <span id="txt-master-stop-btn">FERMA DIRETTA STREAMING</span>
+              </button>
+
+              <button id="btn-master-archivia-fb" type="button" onclick="eseguiArchiviazionePostFBOra(this)" style="display: none; background: linear-gradient(135deg, #4b6584, #1e272c); color: #ffffff; border: 1.5px solid #778ca3; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 800; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(75,101,132,0.35);" title="Sposta subito in archivio il post della diretta su Facebook senza attendere 1 ora">
+                📦 ARCHIVIA POST FB ORA
+              </button>
+
+              <button id="btn-master-pubblica-storie" type="button" onclick="eseguiPubblicaStorieManualMaster(this)" style="background: linear-gradient(135deg, #1d4ed8, #1e40af); color: #ffffff; border: 1.5px solid #60a5fa; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(29,78,216,0.35);" title="Pubblica subito le Storie con Logo e dettagli vendita su Immobiliare Giancani e Antonio Giancani">
+                📸 PUBBLICA STORIE SUI 2 PROFILI
+              </button>
+
+              <button id="btn-master-apri-verticale" type="button" onclick="window.open(location.pathname + '?page=verticale', '_blank')" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #ffffff; border: 1.5px solid #c084fc; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(124,58,237,0.4);" title="Apri pagina Live Verticale 9:16 per Reels/TikTok con Solo DarIA — Immobiliare Giancani">
+                📱 DIRETTA VERTICALE (9:16)
+              </button>
+
+              <button id="btn-master-apri-studiodaria" type="button" onclick="window.open(location.pathname + '?page=studiodaria', '_blank')" style="background: linear-gradient(135deg, #d4a853, #aa7c28); color: #050814; border: 1.5px solid #ffd700; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(212,168,83,0.45);" title="Apri lo Studio DarIA per calibrare espressioni, movimenti e testare il parlato in tempo reale — Immobiliare Giancani">
+                🎭 STUDIO DARIA (Espressioni)
+              </button>
+
+              <button id="btn-master-apri-videoeditor" type="button" onclick="window.open(location.pathname + '?page=video_editor', '_blank')" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: 1.5px solid #38bdf8; border-radius: 8px; padding: 12px 18px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(2,132,199,0.45);" title="Apri il Video Editor Intelligente per montare clip, intro vocale DarIA per stanza, musica BGM e outro recap — Immobiliare Giancani">
+                🎬 VIDEO EDITOR INTELLIGENTE
+              </button>
+
+              <!-- Compatibilità id pulsanti precedenti -->
+              <button id="btn-gen-avvia-live" style="display: none;" onclick="eseguiAvvioDirettaMaster(this)"><span id="txt-gen-live-btn"></span><span id="dot-gen-live"></span></button>
+              <button id="btn-gen-ferma-live" style="display: none;" onclick="eseguiArrestoDirettaMaster(this)"></button>
+            </div>
+          </div>
+
+          <!-- 📝 SEZIONE NOTE FACEBOOK & STORIE SOCIAL FASCE ORARIE (CON CANZONI GRATIS META) -->
+          <div style="background: linear-gradient(135deg, rgba(24,119,242,0.12), rgba(16,185,129,0.08)); border: 1.5px solid rgba(24,119,242,0.35); border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.35);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">📝</span>
+                <div>
+                  <span style="font-size: 13px; font-weight: 900; color: #60a5fa; letter-spacing: 0.3px;">NOTE FACEBOOK &amp; SALUTI GIORNALIERI</span>
+                  <span style="font-size: 10px; color: #a78bfa; font-weight: 700; margin-left: 8px; background: rgba(167,139,250,0.15); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(167,139,250,0.3);">🎵 Canzoni Facebook Royalty-Free 100% Gratis</span>
+                </div>
+              </div>
+              <div style="font-size: 10.5px; color: #94a3b8; font-weight: 600;">
+                Testi Colonna F • Superfici in Metri Quadri • Pagina &amp; Profilo • <span style="color: #fbbf24; font-weight: 800;">— Immobiliare Giancani</span>
+              </div>
+            </div>
+
+            <!-- PULSANTI FASCE ORARIE -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px;">
+              <!-- MATTINA -->
+              <button type="button" onclick="eseguiPubblicaNotaFasciaUI('mattina', this)" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; border: 1px solid #fbbf24; border-radius: 8px; padding: 10px 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(245,158,11,0.3); transition: all 0.2s;" title="Pubblica Nota del Buongiorno (06:00-12:00) con brano royalty-free Vivaldi La Primavera">
+                🌅 <span>Buongiorno (06-12)</span>
+              </button>
+
+              <!-- POMERIGGIO -->
+              <button type="button" onclick="eseguiPubblicaNotaFasciaUI('pomeriggio', this)" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: 1px solid #38bdf8; border-radius: 8px; padding: 10px 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(2,132,199,0.3); transition: all 0.2s;" title="Pubblica Nota del Pomeriggio (12:00-18:00) con brano royalty-free Cheerful Acoustic Lounge">
+                ☕ <span>Pomeriggio (12-18)</span>
+              </button>
+
+              <!-- SERA -->
+              <button type="button" onclick="eseguiPubblicaNotaFasciaUI('sera', this)" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; border: 1px solid #a78bfa; border-radius: 8px; padding: 10px 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(124,58,237,0.3); transition: all 0.2s;" title="Pubblica Nota della Sera (18:00-22:00) con brano royalty-free Luxury Sunset Ambient">
+                🌆 <span>Buona Sera (18-22)</span>
+              </button>
+
+              <!-- NOTTE -->
+              <button type="button" onclick="eseguiPubblicaNotaFasciaUI('notte', this)" style="background: linear-gradient(135deg, #334155, #1e293b); color: #fff; border: 1px solid #94a3b8; border-radius: 8px; padding: 10px 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(51,65,85,0.3); transition: all 0.2s;" title="Pubblica Nota della Notte (22:00-06:00) con brano royalty-free Mozart Serenata Notturna">
+                🌙 <span>Buonanotte (22-06)</span>
+              </button>
+
+              <!-- AUTOMATICA ORA CORRENTE -->
+              <button type="button" onclick="eseguiPubblicaNotaFasciaUI('auto', this)" style="background: linear-gradient(135deg, #10b981, #047857); color: #fff; border: 1px solid #34d399; border-radius: 8px; padding: 10px 12px; font-size: 12px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(16,185,129,0.3); transition: all 0.2s;" title="Riconosce automaticamente l'ora di Roma e pubblica la nota e il saluto corrispondente alla fascia">
+                ⚡ <span>Auto Ora Corrente</span>
+              </button>
+            </div>
+            
+            <div id="status-nota-facebook-ui" style="display: none; margin-top: 10px; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 6px;"></div>
+          </div>
+
+          <!-- GRIGLIA IMPOSTAZIONI REGIA UNIFICATA -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; background: rgba(0,0,0,0.5); padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 14px;">
+            
+            <!-- 1. SELEZIONE IMMOBILE IN ONDA -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+                <label style="font-size: 11.5px; font-weight: 800; color: var(--gold-bright); margin: 0;">
+                  🏠 Immobile da Mandare in Onda:
+                </label>
+                <button type="button" onclick="apriModalModificaImmobile(document.getElementById('select-immobile-live-master').value)" style="background: rgba(243,156,18,0.22); border: 1px solid #f39c12; color: #f1c40f; border-radius: 5px; padding: 2px 8px; font-size: 10.5px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Modifica prezzo, metri quadri o testo colonna F per questo immobile">
+                  ✏️ Modifica Dati
+                </button>
+              </div>
+              <select id="select-immobile-live-master" onchange="gestisciCambioImmobileMaster(this.value)" style="width: 100%; background: #0f0f0f; color: #fbbf24; border: 1.5px solid var(--gold); border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 800; cursor: pointer;">
+                <option value="tutti" selected>🌟 Tutti gli Immobili (Rotazione Continua)</option>
+              </select>
+
+              <!-- Mini-Card di Conferma Visiva Immobile Master -->
+              <div id="mini-card-immobile-master" style="margin-top: 8px; background: rgba(15,15,15,0.95); border: 1px solid rgba(201,163,94,0.5); border-radius: 8px; padding: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <img id="mini-card-img-master" src="" alt="Anteprima Immobile" style="width: 65px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(201,163,94,0.3); background: #000; flex-shrink: 0;" onerror="this.src='https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=400'">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                      <span id="mini-card-titolo-master" style="font-size: 11.5px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nome</span>
+                      <div style="display: flex; align-items: center; gap: 4px;">
+                        <span id="mini-card-prezzo-master" style="font-size: 11px; font-weight: 800; color: var(--gold-bright); white-space: nowrap;">€ ---</span>
+                        <button type="button" onclick="apriModalModificaImmobile(document.getElementById('select-immobile-live-master').value)" style="background: rgba(201,163,94,0.2); border: 1px solid var(--gold); color: var(--gold-bright); border-radius: 3px; padding: 1px 4px; font-size: 9.5px; font-weight: 700; cursor: pointer;" title="Modifica">✏️</button>
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 4px; font-size: 10px; color: #bbb; margin-top: 2px;">
+                      <span id="mini-card-mq-master" style="background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px;">120 metri quadri</span>
+                      <span id="mini-card-foto-master" style="background: rgba(56,189,248,0.12); color: #38bdf8; padding: 1px 4px; border-radius: 3px;">📸 10 foto</span>
+                    </div>
+                    <div id="mini-card-testo-master" style="font-size: 10px; color: #facc15; margin-top: 3px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                      Colonna F... — Immobiliare Giancani
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. MODALITÀ DI TRASMISSIONE -->
+            <div>
+              <label style="font-size: 11.5px; font-weight: 800; color: #38bdf8; display: block; margin-bottom: 6px;">
+                ⚡ Modalità Streaming:
+              </label>
+              <select id="select-modalita-live-master" onchange="toggleModalitaLiveMaster(this.value)" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #38bdf8; border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="immediata" selected>⚡ Diretta Immediata Standard</option>
+                <option value="maratona">🔄 Maratona Continua H24 (Con Pause DarIA)</option>
+                <option value="programmata">⏰ Diretta Programmata (Data &amp; Ora)</option>
+              </select>
+              <input type="datetime-local" id="input-live-programmata-dt" style="display: none; width: 100%; margin-top: 6px; background: #111; color: #fff; border: 1px solid #38bdf8; border-radius: 6px; padding: 6px 8px; font-size: 11px;">
+            </div>
+
+            <!-- 3. DURATA / LIMITE TRASMISSIONE -->
+            <div>
+              <label style="font-size: 11.5px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 6px;">
+                ⏱️ Durata / Limite Sessione:
+              </label>
+              <select id="select-durata-live-master" onchange="aggiornaVisualizzazioneOrarioStopMaster()" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #f59e0b; border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="1">1 Ora</option>
+                <option value="2">2 Ore</option>
+                <option value="3">3 Ore</option>
+                <option value="4">4 Ore</option>
+                <option value="6" selected>6 Ore (Massima Sessione Cloud)</option>
+                <option value="custom_stop">🛑 Stop ad Ora Precisa...</option>
+              </select>
+              <input type="time" id="input-live-stop-time-master" style="display: none; width: 100%; margin-top: 6px; background: #111; color: #fff; border: 1px solid #f59e0b; border-radius: 6px; padding: 6px 8px; font-size: 11px;" title="Ora esatta in cui spegnere automaticamente la trasmissione">
+            </div>
+
+            <!-- 4. PAUSA DI RIPOSO DARIA -->
+            <div id="col-pausa-daria-master">
+              <label style="font-size: 11.5px; font-weight: 800; color: #a78bfa; display: block; margin-bottom: 6px;">
+                ☕ Ritmo DarIA &amp; Pause (Musica/Spot):
+              </label>
+              <select id="select-pausa-daria-master" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #a78bfa; border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="0">⚡ Voce Continua (Nessuna Pausa)</option>
+                <option value="3_ogni_immobile" selected>☕ Pausa 3 min dopo ogni Immobile (Musica + Spot)</option>
+                <option value="5_ogni_immobile">☕ Pausa 5 min dopo ogni Immobile (Musica + Teatrino)</option>
+                <option value="5_ogni_30m">☕ Pausa 5 min ogni 30 min di diretta</option>
+                <option value="10_ogni_60m">☕ Pausa 10 min ogni 60 min di diretta</option>
+              </select>
+            </div>
+
+            <!-- 5. QUALITÀ & BITRATE FFMPEG -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label style="font-size: 11.5px; font-weight: 800; color: #2ecc71;">
+                  ⚙️ Risoluzione &amp; Bitrate FFmpeg:
+                </label>
+                <span id="badge-ffmpeg-quality" style="font-size: 10px; color: #2ecc71; font-weight: 700;">1080p Standard</span>
+              </div>
+              <select id="select-qualita-live-master" onchange="salvaParametriQualitaMaster()" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #2ecc71; border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="1080p_high">🌟 Ultra HD 1080p — 6000 kbps (Massima Nitidezza)</option>
+                <option value="1080p_std" selected>🚀 Full HD 1080p Standard — 4500 kbps (Consigliata &amp; Bilanciata)</option>
+                <option value="1080p_eco">⚡ Full HD 1080p Eco — 3500 kbps (Fluida)</option>
+                <option value="720p_hq">💎 HD 720p HQ — 3000 kbps (Alta Qualità Leggera)</option>
+                <option value="720p_std">📱 HD 720p Standard — 2200 kbps (Ideale per Social)</option>
+                <option value="720p_eco">🍃 HD 720p Eco — 1600 kbps (Zero Lag &amp; Risparmio Banda)</option>
+                <option value="480p">📉 SD 480p Risparmio — 1000 kbps (Minimo Consumo)</option>
+                <option value="custom">🛠️ Personalizzata (Bitrate &amp; Risoluzione Libera)...</option>
+              </select>
+              <div id="box-qualita-custom-master" style="display: none; margin-top: 6px; gap: 6px; grid-template-columns: 1fr 1fr;">
+                <input type="text" id="input-custom-bitrate" onchange="salvaParametriQualitaMaster()" placeholder="Bitrate (es. 4000k)" style="background: #111; color: #fff; border: 1px solid #2ecc71; border-radius: 4px; padding: 6px; font-size: 11px;">
+                <input type="text" id="input-custom-res" onchange="salvaParametriQualitaMaster()" placeholder="Risoluzione (es. 1920:1080)" style="background: #111; color: #fff; border: 1px solid #2ecc71; border-radius: 4px; padding: 6px; font-size: 11px;">
+              </div>
+            </div>
+
+            <!-- 6. SCALA BROWSER & ZOOM DIRETTA IN TEMPO REALE -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label style="font-size: 11.5px; font-weight: 800; color: #eab308;">
+                  🖥️ Scala Viewport &amp; Zoom Live:
+                </label>
+                <span id="label-zoom-diretta-val" style="font-size: 11px; font-weight: 900; color: #fbbf24; background: rgba(251,191,36,0.15); padding: 1px 6px; border-radius: 4px;">Zoom 125%</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <select id="select-scale-live-master" onchange="salvaParametriQualitaMaster()" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #eab308; border-radius: 6px; padding: 6px 8px; font-size: 11px; font-weight: 700; cursor: pointer;" title="Scala viewport browser">
+                  <option value="0.9">🖥️ 90% Panoramico</option>
+                  <option value="1.0" selected>🖥️ 100% Nativo 1:1</option>
+                  <option value="1.15">🔍 115% Zoom</option>
+                  <option value="1.25">🔎 125% Zoom</option>
+                  <option value="1.35">🔎 135% Ravvicinato</option>
+                  <option value="1.50">🔬 150% Massimo</option>
+                </select>
+                <div style="display: flex; align-items: center; gap: 4px; background: #0f0f0f; border: 1px solid #eab308; border-radius: 6px; padding: 2px 8px;" title="Muovi lo slider per zoomare la stanza 360°/foto istantaneamente in diretta">
+                  <span style="font-size: 10px; color: #eab308; font-weight: 800;">360°:</span>
+                  <input type="range" id="master-live-zoom-slider" min="50" max="250" step="5" value="125" oninput="cambiaZoomDinamicoMaster(this.value)" style="width: 100%; cursor: pointer;">
+                </div>
+              </div>
+            </div>
+
+            <!-- 6-BIS. DIMENSIONE LOGO AGENZIA IN DIRETTA (INGRANDIRE / RIMPICCIOLIRE IN TEMPO REALE) -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label style="font-size: 11.5px; font-weight: 800; color: #38bdf8;">
+                  🏷️ Dimensione Logo Agenzia in Diretta:
+                </label>
+                <span id="label-scala-logo-val" style="font-size: 11px; font-weight: 900; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 6px; border-radius: 4px;">Scala 100%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; background: #0f0f0f; border: 1px solid #38bdf8; border-radius: 6px; padding: 4px 8px;">
+                <input type="range" id="slider-scala-logo-agenzia" min="50" max="250" step="5" value="100" oninput="cambiaScalaLogoDinamico(this.value)" style="flex: 1; cursor: pointer;" title="Regola la grandezza del logo dell'agenzia in diretta">
+                <div style="display: flex; gap: 3px;">
+                  <button type="button" onclick="impostaPresetScalaLogo(75)" style="background: rgba(255,255,255,0.08); border: 1px solid #444; color: #cbd5e1; font-size: 10px; font-weight: 700; padding: 2px 4px; border-radius: 4px; cursor: pointer;">75%</button>
+                  <button type="button" onclick="impostaPresetScalaLogo(100)" style="background: rgba(56,189,248,0.2); border: 1px solid #38bdf8; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 4px; border-radius: 4px; cursor: pointer;">100%</button>
+                  <button type="button" onclick="impostaPresetScalaLogo(135)" style="background: rgba(255,255,255,0.08); border: 1px solid #444; color: #cbd5e1; font-size: 10px; font-weight: 700; padding: 2px 4px; border-radius: 4px; cursor: pointer;">135%</button>
+                  <button type="button" onclick="impostaPresetScalaLogo(175)" style="background: rgba(255,255,255,0.08); border: 1px solid #444; color: #cbd5e1; font-size: 10px; font-weight: 700; padding: 2px 4px; border-radius: 4px; cursor: pointer;">175%</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6-TER. 🎨 STILE GRAFICO DIRETTA STREAMING (4 STILI PROFESSIONALI & ROTAZIONE ORARIA) -->
+            <div style="background: rgba(15,23,42,0.65); border: 1.5px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label style="font-size: 11.5px; font-weight: 800; color: var(--gold-bright); display: flex; align-items: center; gap: 6px;">
+                  <span>🎨</span> Stile Grafico Diretta:
+                </label>
+                <span id="badge-stile-grafica-attivo" style="font-size: 10.5px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.3);">
+                  🔄 Rotazione Oraria
+                </span>
+              </div>
+
+              <!-- Master Pulsante: Rotazione Automatica Ogni Ora -->
+              <button type="button" class="btn-stile-regia active" id="btn-stile-auto" onclick="selezionaStileGraficaDiretta('auto')" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30,58,138,0.9), rgba(15,23,42,0.95)); border: 1.5px solid #38bdf8; border-radius: 6px; padding: 8px 10px; cursor: pointer; text-align: left; margin-bottom: 6px; transition: all 0.2s;">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 11.5px; font-weight: 800; color: #ffffff;">🔄 ROTAZIONE AUTOMATICA OGNI ORA (ATTIVA)</span>
+                  <span id="label-rotazione-oraria-dettaglio" style="font-size: 9.5px; color: #93c5fd;">Stile in onda ora: calcolo in corso...</span>
+                </div>
+                <span id="dot-stile-auto" style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; display: inline-block;"></span>
+              </button>
+              
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;" id="grid-selettore-stili-grafica">
+                <!-- 1. Modern Broadcast -->
+                <button type="button" class="btn-stile-regia" id="btn-stile-modern_broadcast" onclick="selezionaStileGraficaDiretta('modern_broadcast')" style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: rgba(15,23,42,0.95); border: 1.5px solid #444; border-radius: 6px; padding: 7px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <span style="font-size: 11px; font-weight: 800; color: #fff;">📡 Modern Broadcast</span>
+                    <span class="stile-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; display: inline-block;"></span>
+                  </div>
+                  <span style="font-size: 9.5px; color: #94a3b8;">News TV • Layout L • Navy/Oro</span>
+                </button>
+
+                <!-- 2. Editorial Minimal -->
+                <button type="button" class="btn-stile-regia" id="btn-stile-editorial_minimal" onclick="selezionaStileGraficaDiretta('editorial_minimal')" style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: rgba(24,24,27,0.95); border: 1.5px solid #444; border-radius: 6px; padding: 7px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <span style="font-size: 11px; font-weight: 800; color: #f5f0e6;">🏛️ Editorial Minimal</span>
+                    <span class="stile-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #c26d53; display: inline-block;"></span>
+                  </div>
+                  <span style="font-size: 9.5px; color: #a1a1aa;">Luxury Serif • Sabbia/Terracotta</span>
+                </button>
+
+                <!-- 3. Tech & Dark UI -->
+                <button type="button" class="btn-stile-regia" id="btn-stile-tech_dark" onclick="selezionaStileGraficaDiretta('tech_dark')" style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: rgba(18,18,24,0.95); border: 1.5px solid #444; border-radius: 6px; padding: 7px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <span style="font-size: 11px; font-weight: 800; color: #38bdf8;">⚡ Tech & Dark UI</span>
+                    <span class="stile-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #7c3aed; display: inline-block;"></span>
+                  </div>
+                  <span style="font-size: 9.5px; color: #818cf8;">Glass Neon • Viola/Ciano HUD</span>
+                </button>
+
+                <!-- 4. Comic Pop -->
+                <button type="button" class="btn-stile-regia" id="btn-stile-comic_pop" onclick="selezionaStileGraficaDiretta('comic_pop')" style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: rgba(30,20,10,0.95); border: 1.5px solid #444; border-radius: 6px; padding: 7px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <span style="font-size: 11px; font-weight: 900; color: #facc15;">💥 Fumetto Pop</span>
+                    <span class="stile-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                  </div>
+                  <span style="font-size: 9.5px; color: #fbbf24;">Pop Art • Outlines • Giallo/Rosso</span>
+                </button>
+              </div>
+
+              <!-- Indicatore stato sincronizzazione -->
+              <div id="status-stile-grafica-msg" style="margin-top: 6px; font-size: 10px; color: #94a3b8; text-align: right; display: none;"></div>
+            </div>
+
+            <!-- 7. FILTRO CONTENUTI MEDIA IN ONDA -->
+            <div>
+              <label style="font-size: 11.5px; font-weight: 800; color: var(--gold-bright); display: block; margin-bottom: 6px;">
+                🎬 Contenuti in Diretta:
+              </label>
+              <select id="select-filtro-media-master" onchange="salvaFiltroMediaLiveUI(this.value)" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid var(--gold); border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="tutti" selected>🌟 Tutti i Media (Foto + 360° Sferiche + Video)</option>
+                <option value="solo_360">🌐 Solo Panorami 360° Sferici (Tour Immersivo)</option>
+                <option value="solo_foto">🖼️ Solo Foto Standard (Gallery Tradizionale)</option>
+                <option value="solo_video">🎥 Solo Video &amp; Clip Canale</option>
+                <option value="manuale">☑️ Selezione Manuale (Abilitati in Galleria)</option>
+              </select>
+            </div>
+
+            <!-- 8. LOOP CONTINUO -->
+            <div id="col-loop-master">
+              <label style="font-size: 11.5px; font-weight: 800; color: #10b981; display: block; margin-bottom: 6px;">
+                🔄 Loop Tra Dirette Cloud:
+              </label>
+              <select id="select-loop-master" style="width: 100%; background: #0f0f0f; color: #fff; border: 1px solid #10b981; border-radius: 6px; padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                <option value="false">🏁 Singola Sessione (Termina dopo la durata)</option>
+                <option value="true_1" selected>🔁 Loop Infinito: Pausa 1h e Ripartenza</option>
+                <option value="true_2">🔁 Loop Infinito: Pausa 2h e Ripartenza</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- RIGA CANALI SOCIAL STREAMING -->
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;">
+            <div style="font-size: 11px; font-weight: 800; color: var(--gold-bright); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+              <span>🌐 Canali Streaming Collegati Simultaneamente:</span>
+              <span style="font-size: 10px; color: var(--sand-dim);">Trasmissione sincronizzata in tempo reale</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
+              <!-- FB -->
+              <div style="background: rgba(24, 119, 242, 0.1); border: 1px solid rgba(24, 119, 242, 0.25); border-radius: 6px; padding: 6px 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: #60a5fa;">📘 Facebook Live</div>
+                <div style="font-size: 10px; color: #2ecc71; font-weight: 700;">✅ Token Pagina &amp; Profilo Attivi</div>
+              </div>
+              <!-- YT -->
+              <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 6px; padding: 6px 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: #f87171; display: flex; justify-content: space-between;">
+                  <span>🔴 YouTube Live:</span>
+                  <button type="button" onclick="incollaChiaveYouTubeUI()" style="background: none; border: none; color: #fbbf24; font-size: 10px; font-weight: 800; cursor: pointer; padding: 0;">📋 Incolla</button>
+                </div>
+                <input type="text" id="input-yt-stream-key" value="byga-0tdf-uu9w-zetp-392s" placeholder="Incolla Chiave YouTube..." style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 6px; font-size: 10px;" onchange="salvaChiaveYouTubeRapida(this.value)">
+              </div>
+              <!-- IG -->
+              <div style="background: rgba(225, 48, 108, 0.1); border: 1px solid rgba(225, 48, 108, 0.25); border-radius: 6px; padding: 6px 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: #f472b6; display: flex; justify-content: space-between;">
+                  <span>📸 Instagram Live:</span>
+                  <button type="button" onclick="incollaChiaveInstagramUI()" style="background: none; border: none; color: #fbbf24; font-size: 10px; font-weight: 800; cursor: pointer; padding: 0;">📋 Incolla</button>
+                </div>
+                <input type="text" id="input-ig-stream-key" placeholder="Automatica con Cookie (o incolla manuale)..." style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 6px; font-size: 10px;" onchange="salvaChiaveInstagramRapida(this.value)">
+                <div id="status-ig-live-box" style="font-size: 9.5px; color: #34d399; margin-top: 3px; font-weight: 700;">✅ Cookie attivi: Estrazione automatica &amp; Go Live integrato!</div>
+              </div>
+              <!-- TK -->
+              <div style="background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.25); border-radius: 6px; padding: 6px 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: #00f2fe; display: flex; justify-content: space-between;">
+                  <span>🎵 TikTok Live:</span>
+                  <button type="button" onclick="incollaChiaveTikTokUI()" style="background: none; border: none; color: #fbbf24; font-size: 10px; font-weight: 800; cursor: pointer; padding: 0;">📋 Incolla</button>
+                </div>
+                <input type="text" id="input-tk-stream-key" placeholder="Automatica con Cookie (o incolla manuale)..." style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 6px; font-size: 10px;" onchange="salvaChiaveTikTokRapida(this.value)">
+                <div id="status-tk-live-box" style="font-size: 9.5px; color: #34d399; margin-top: 3px; font-weight: 700;">✅ Cookie attivi: Collegamento automatico cloud verificato!</div>
+              </div>
+              <!-- GH TOKEN -->
+              <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 6px; padding: 6px 10px;">
+                <div style="font-size: 11px; font-weight: 700; color: #a78bfa; display: flex; justify-content: space-between;">
+                  <span>🐙 GitHub Token (PAT):</span>
+                  <button type="button" onclick="salvaGitHubTokenUI()" style="background: none; border: none; color: #fbbf24; font-size: 10px; font-weight: 800; cursor: pointer; padding: 0;">💾 Salva</button>
+                </div>
+                <input type="password" id="input-gh-pat-token" value="" placeholder="ghp_... precaricato da memoria protetta" style="width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 6px; font-size: 10px;" onchange="salvaGitHubTokenUI()">
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD STATO DIRETTA IN CORSO CON LINK RAPIDI -->
+          <div id="gen-live-status-card" style="display: none; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); border-radius: 8px; padding: 12px 16px; margin-top: 10px;">
+            <div style="font-weight: 800; color: var(--gold-bright); font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+              <span>🔗 Link Diretta in Corso &amp; Monitoraggio:</span>
+              <span style="font-size: 10px; color: #2ecc71;">● IN ONDA ORA</span>
+            </div>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <a id="gen-link-fb" href="https://www.facebook.com/immobiliaregiancani/live" target="_blank" style="color: #60a5fa; text-decoration: none; font-weight: 700; font-size: 11.5px;">📘 Facebook Live ↗</a>
+              <a id="gen-link-yt" href="https://www.youtube.com/@immobiliaregiancani761/live" target="_blank" style="color: #f87171; text-decoration: none; font-weight: 700; font-size: 11.5px;">🔴 YouTube Live ↗</a>
+              <a id="gen-link-ig" href="https://www.instagram.com/immobiliaregiancani/live" target="_blank" style="color: #f472b6; text-decoration: none; font-weight: 700; font-size: 11.5px;">📸 Instagram Live ↗</a>
+              <a href="https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec" target="_blank" style="color: var(--gold-bright); text-decoration: none; font-weight: 700; font-size: 11.5px;">📺 Player Web 360° ↗</a>
+            </div>
+            <div id="gen-live-msg" style="margin-top: 8px; font-size: 11.5px; color: var(--sand); font-weight: 600;"></div>
+          </div>
+
+          <div id="box-maratona-info" style="display: none; margin-top: 10px; font-size: 11px; color: #fbbf24; background: rgba(245, 158, 11, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.2);"></div>
+
+        </div>
+
+        <!-- 🎬 SEZIONE DEDICATA: CARICA & TRASMETTI VIDEO YOUTUBE IN DIRETTA -->
+        <div class="section-card" style="background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(15,15,15,0.95)); border: 1.5px solid #ef4444; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 6px 25px rgba(239,68,68,0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(239,68,68,0.3); padding-bottom: 10px;">
+            <div style="color: #f87171; font-size: 14px; font-weight: 900; display: flex; align-items: center; gap: 8px; letter-spacing: 0.03em;">
+              🎬 CARICA &amp; TRASMETTI VIDEO YOUTUBE IN DIRETTA
+            </div>
+            <span style="font-size: 11px; color: var(--sand); background: rgba(239,68,68,0.2); padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(239,68,68,0.4); font-weight: 700;">
+              🔴 Supporta Qualsiasi Link YouTube &amp; Shorts
+            </span>
+          </div>
+
+          <p style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px; line-height: 1.5;">
+            Incolla qui il link di qualsiasi video del tuo canale YouTube (es. <code>https://www.youtube.com/watch?v=...</code> oppure <code>https://youtu.be/...</code> o Shorts). Puoi mandarlo <strong>subito in onda</strong> in diretta, aggiungerlo al catalogo <strong>Post_YouTube</strong> o trasmetterlo sullo <strong>Schermo Centrale</strong> tra DarIA e DarIO!
+          </p>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 10.5px; font-weight: 800; color: #fca5a5; display: block; margin-bottom: 4px;">🔗 LINK VIDEO YOUTUBE (Obbligatorio):</label>
+              <input type="text" id="input-yt-regia-url" placeholder="Incolla https://www.youtube.com/watch?v=... o https://youtu.be/..." style="width: 100%; background: #000; color: #fff; border: 1.5px solid #ef4444; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 700;" oninput="anteprimaVideoYouTubeRegiaUI(this.value)">
+            </div>
+            <div>
+              <label style="font-size: 10.5px; font-weight: 800; color: var(--gold-bright); display: block; margin-bottom: 4px;">🏠 TITOLO IMMOBILE (Opzionale):</label>
+              <input type="text" id="input-yt-regia-titolo" placeholder="Es. Villa Favara Rifinita..." style="width: 100%; background: #000; color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 11.5px;">
+            </div>
+            <div>
+              <label style="font-size: 10.5px; font-weight: 800; color: #10b981; display: block; margin-bottom: 4px;">📐 SUPERFICIE (metri quadri):</label>
+              <input type="text" id="input-yt-regia-mq" placeholder="Es. 140 metri quadri" value="140 metri quadri" style="width: 100%; background: #000; color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 11.5px;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label style="font-size: 10.5px; font-weight: 800; color: var(--sand); display: block; margin-bottom: 4px;">💰 PREZZO / VALORE:</label>
+              <input type="text" id="input-yt-regia-prezzo" placeholder="Es. 185.000 €" value="Trattativa Riservata" style="width: 100%; background: #000; color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 11.5px;">
+            </div>
+            <div>
+              <label style="font-size: 10.5px; font-weight: 800; color: var(--sand); display: block; margin-bottom: 4px;">🎙️ TESTO COLONNA F PER DARIA (Opzionale - generato in automatico):</label>
+              <input type="text" id="input-yt-regia-testof" placeholder="Lascia vuoto per generazione automatica da IA con firma Immobiliare Giancani..." style="width: 100%; background: #000; color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 11.5px;">
+            </div>
+          </div>
+
+          <!-- ANTEPRIMA MINIATURA RAPIDA -->
+          <div id="yt-regia-preview-box" style="display: none; align-items: center; gap: 14px; background: rgba(0,0,0,0.5); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px;">
+            <img id="yt-regia-preview-img" src="" style="width: 120px; height: 68px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gold);">
+            <div>
+              <div id="yt-regia-preview-title" style="font-weight: 800; color: #fff; font-size: 12px;"></div>
+              <div id="yt-regia-preview-id" style="font-size: 10.5px; color: #fca5a5; font-family: monospace;"></div>
+            </div>
+          </div>
+
+          <!-- PULSANTI AZIONE -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" onclick="inviaVideoYouTubeRegia('live_immediato')" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; border: none; border-radius: 8px; padding: 11px 16px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(239,68,68,0.4);">
+              🔴 MANDA SUBITO IN ONDA IN DIRETTA
+            </button>
+            <button type="button" onclick="inviaVideoYouTubeRegia('post_youtube')" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 8px; padding: 11px 16px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(37,99,235,0.4);">
+              💾 AGGIUNGI AL CATALOGO POST_YOUTUBE
+            </button>
+            <button type="button" onclick="inviaVideoYouTubeRegia('schermo_centrale')" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #d97706, #b45309); color: #fff; border: none; border-radius: 8px; padding: 11px 16px; font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(217,119,6,0.4);">
+              📺 PROIETTA SU SCHERMO CENTRALE
+            </button>
+          </div>
+          <div id="yt-regia-status-msg" style="margin-top: 10px; font-size: 12px; font-weight: 700; display: none;"></div>
+        </div>
+
+        <!-- 🎭 BANNER PROMINENTE: ACCESSO RAPIDO SEZIONE AVATAR, ZOOM & VOCI -->
+        <div style="background: linear-gradient(135deg, rgba(201,163,94,0.25), rgba(18,12,4,0.95)); border: 1.5px solid var(--gold); border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 6px 25px rgba(0,0,0,0.5);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="font-size: 28px; background: rgba(201,163,94,0.2); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); flex-shrink: 0;">🎭</div>
+            <div>
+              <div style="font-size: 14px; font-weight: 800; color: var(--gold-bright); letter-spacing: 0.03em;">
+                SEZIONE SPECIALE: AVATAR &amp; CONDUTTORI (DARIA, ANTONIO GIANCANI, DARIO), ZOOM &amp; VOCI
+              </div>
+              <div style="font-size: 12px; color: var(--sand); margin-top: 2px;">
+                Metti/Togli Avatar, seleziona in conduzione <strong>Antonio Giancani</strong> (Direttore Generale) o DarIO assieme a DarIA, regola lo zoom dal 50% al 250%, configura le voci ufficiali ed estrai da Colonna F con branding Immobiliare Giancani.
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn-gold" style="width: auto; padding: 9px 20px; font-size: 12px; font-weight: 800; border-radius: 20px;" onclick="mostraTab('tab-avatar')">
+              👉 APRI SEZIONE AVATAR &amp; ZOOM
+            </button>
+            <a href="https://docs.google.com/spreadsheets/d/1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE/edit" target="_blank" class="btn-tutorial-trigger" style="text-decoration: none; padding: 8px 16px;">
+              📊 Apri Google Spreadsheet ↗
+            </a>
+          </div>
+        </div>
+
+        
+        <!-- 🚀 BANNER PROMINENTE: DEVELOPER & BOT STORIE SOCIAL -->
+        <div style="background: linear-gradient(135deg, rgba(230,126,34,0.35), rgba(243,156,18,0.2), rgba(18,12,4,0.95)); border: 2px solid #f39c12; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 6px 25px rgba(230,126,34,0.35);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="font-size: 28px; background: rgba(243,156,18,0.25); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid #f39c12; flex-shrink: 0; box-shadow: 0 0 15px rgba(243,156,18,0.4);">🎬</div>
+            <div>
+              <div style="font-size: 14.5px; font-weight: 900; color: #fbbf24; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px;">
+                <span>🚀 DEVELOPER: CENTRO CONTROLLO BOT STORIE SOCIAL (FB, IG, YT SHORTS, TIKTOK)</span>
+                <span style="font-size: 10px; background: #e67e22; color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 800;">LIVE DEV</span>
+              </div>
+              <div style="font-size: 12px; color: #fde68a; margin-top: 3px;">
+                Esegui storie offline e snapshot live, seleziona immobili e stanze (Colonna F), applica i 10 stili grafici e temi giornalieri, o personalizza storie non immobiliari con testo e foto custom — <strong>Immobiliare Giancani</strong>.
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn-gold" style="background: linear-gradient(135deg, #e67e22, #d35400); border: 1.5px solid #f39c12; color: #fff; width: auto; padding: 10px 22px; font-size: 12.5px; font-weight: 900; border-radius: 20px; box-shadow: 0 4px 15px rgba(230,126,34,0.5); cursor: pointer;" onclick="mostraTab('tab-bot-storie')">
+              👉 APRI DEVELOPER BOT STORIE
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB NAVIGATION BAR / SIDEBAR (DUAL-MODE: WINDOWS SIDEBAR & ANDROID DOCK) -->
+        <div class="tab-nav" id="main-tab-nav">
+
+          <!-- ⚡ SEZIONE 1: GLI STUDI CREATIVI & PRIORITÀ REGIA -->
+          <div class="nav-group-header nav-header-priority" style="background: linear-gradient(90deg, rgba(201,163,94,0.25), transparent); border-left: 3px solid var(--gold-bright);">
+            <span class="nav-group-icon">⭐</span>
+            <span class="nav-group-title">STUDI CREATIVI PRIORITARI</span>
+          </div>
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-timeline-editor" onclick="mostraTab('tab-timeline-editor')" title="Studio Timeline Multi-Traccia & Montatore Ritmico (9:16)" style="border-color:var(--gold-bright); background:rgba(201,163,94,0.15); box-shadow:0 0 12px rgba(201,163,94,0.25);">
+            <span class="tab-btn-icon">🎬</span>
+            <span class="tab-btn-label">Editor Video Timeline</span>
+          </button>
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-canzoni-suno" onclick="mostraTab('tab-canzoni-suno')" title="Studio Canzoni Suno AI — Componi Brani e Canzoni per i tuoi Immobili e Video" style="border-color:#38bdf8; background:rgba(56,189,248,0.15); box-shadow:0 0 12px rgba(56,189,248,0.25);">
+            <span class="tab-btn-icon">🎵</span>
+            <span class="tab-btn-label">Suno Canzoni AI</span>
+          </button>
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-live" onclick="mostraTab('tab-live')" title="Controllo Regia Live & Streaming">
+            <span class="tab-btn-icon">🔴</span>
+            <span class="tab-btn-label">Diretta Live</span>
+          </button>
+
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-galleria" onclick="mostraTab('tab-galleria')" title="Galleria Foto, 360° e Caricamento">
+            <span class="tab-btn-icon">🖼️</span>
+            <span class="tab-btn-label">Galleria &amp; 360°</span>
+          </button>
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-palinsesto" onclick="mostraTab('tab-palinsesto')" title="Palinsesto TV, Scaletta e Notizie">
+            <span class="tab-btn-icon">⏰</span>
+            <span class="tab-btn-label">Palinsesto TV</span>
+          </button>
+
+                              
+
+          
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-bot-storie" onclick="mostraTab('tab-bot-storie')" title="Pubblicazione Storie Social sui 2 Profili">
+            <span class="tab-btn-icon">📸</span>
+            <span class="tab-btn-label">Bot Storie Social</span>
+          </button>
+
+          <button class="tab-btn tab-btn-priority active" id="btn-tab-analytics" onclick="mostraTab('tab-analytics')" title="Analytics, Visualizzazioni e Prestazioni">
+            <span class="tab-btn-icon">📈</span>
+            <span class="tab-btn-label">Analytics &amp; Report</span>
+          </button>
+
+          <button class="tab-btn tab-btn-priority" id="btn-tab-telegram" onclick="mostraTab('tab-telegram')" title="Bot Telegram e Alert Staff">
+            <span class="tab-btn-icon">📱</span>
+            <span class="tab-btn-label">Telegram Staff</span>
+          </button>
+
+          <!-- 🛠️ SEZIONE 2: STUDIO & CONFIGURAZIONE AVANZATA -->
+          <div class="nav-group-header nav-header-secondary">
+            <span class="nav-group-icon">🛠️</span>
+            <span class="nav-group-title">STUDIO &amp; CONFIGURAZIONE</span>
+          </div>
+
+          <button class="tab-btn tab-btn-secondary" id="btn-tab-avatar" onclick="mostraTab('tab-avatar')" title="Regia Avatar: DarIA, Antonio Giancani &amp; DarIO, Voci e Zoom">
+            <span class="tab-btn-icon">🎭</span>
+            <span class="tab-btn-label">Avatar &amp; Conduttori</span>
+          </button>
+
+          <button class="tab-btn tab-btn-secondary" id="btn-tab-ruoli" onclick="mostraTab('tab-ruoli')" title="Ruoli Conduzione e Frasi Diretta">
+            <span class="tab-btn-icon">🎯</span>
+            <span class="tab-btn-label">Ruoli Conduzione</span>
+          </button>
+
+          <button class="tab-btn tab-btn-secondary" id="btn-tab-autovision" onclick="mostraTab('tab-autovision')" title="Computer Vision AI Groq / Gemini">
+            <span class="tab-btn-icon">🤖</span>
+            <span class="tab-btn-label">Auto-Vision AI</span>
+          </button>
+
+          <button class="tab-btn tab-btn-secondary" id="btn-tab-azuretts" onclick="mostraTab('tab-azuretts')" title="Generatore Massivo Audio Drive">
+            <span class="tab-btn-icon">🎙️</span>
+            <span class="tab-btn-label">Audio Massivo</span>
+          </button>
+
+          <button class="tab-btn tab-btn-secondary" id="btn-tab-impostazioni" onclick="mostraTab('tab-impostazioni')" title="Impostazioni Regia, Tempi e Playlist">
+            <span class="tab-btn-icon">🎛️</span>
+            <span class="tab-btn-label">Impostazioni</span>
+          </button>
+        </div>
+
+        <!-- 📱 BARRA DI NAVIGAZIONE RAPIDA TOUCH ANDROID (BOTTOM DOCK) -->
+        <div id="android-bottom-bar" class="android-bottom-bar">
+          <button type="button" class="android-nav-item" onclick="mostraTab('tab-live')" id="android-nav-live">
+            <span class="android-nav-icon">🔴</span>
+            <span class="android-nav-label">Diretta</span>
+          </button>
+          <button type="button" class="android-nav-item" onclick="mostraTab('tab-galleria')" id="android-nav-galleria">
+            <span class="android-nav-icon">🖼️</span>
+            <span class="android-nav-label">Galleria</span>
+          </button>
+          <button type="button" class="android-nav-item" onclick="mostraTab('tab-palinsesto')" id="android-nav-palinsesto">
+            <span class="android-nav-icon">⏰</span>
+            <span class="android-nav-label">Palinsesto</span>
+          </button>
+          <button type="button" class="android-nav-item" onclick="mostraTab('tab-bot-storie')" id="android-nav-storie">
+            <span class="android-nav-icon">📸</span>
+            <span class="android-nav-label">Storie</span>
+          </button>
+          <button type="button" class="android-nav-item" onclick="toggleAndroidMenuSheet()" id="android-nav-more">
+            <span class="android-nav-icon">☰</span>
+            <span class="android-nav-label">Altro</span>
+          </button>
+        </div>
+
+        <!-- 📱 BOTTOM SHEET MENU EXTRA PER ANDROID -->
+        <div id="android-menu-sheet" class="android-menu-sheet" style="display:none;">
+          <div class="sheet-backdrop" onclick="toggleAndroidMenuSheet()"></div>
+          <div class="sheet-content">
+            <div class="sheet-header">
+              <span class="sheet-title">Tutte le Funzioni Regia</span>
+              <button type="button" class="sheet-close-btn" onclick="toggleAndroidMenuSheet()">✕</button>
+            </div>
+            <div class="sheet-grid">
+                            <button type="button" class="sheet-item" onclick="mostraTab('tab-timeline-editor'); toggleAndroidMenuSheet();" title="Timeline Editor Multi-Traccia">
+                <span class="sheet-icon">🎞️</span>
+                <span class="sheet-label">Timeline</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-canzoni-suno'); toggleAndroidMenuSheet();" title="Studio Canzoni Suno AI">
+                <span class="sheet-icon">🎵</span>
+                <span class="sheet-label">Suno AI</span>
+              </button>
+<button type="button" class="sheet-item" onclick="mostraTab('tab-analytics'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">📈</span>
+                <span class="sheet-label">Analytics</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-telegram'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">📱</span>
+                <span class="sheet-label">Telegram</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-avatar'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">🎭</span>
+                <span class="sheet-label">Avatar &amp; Conduttori</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-ruoli'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">🎯</span>
+                <span class="sheet-label">Ruoli</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-autovision'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">🤖</span>
+                <span class="sheet-label">Auto-Vision</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-azuretts'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">🎙️</span>
+                <span class="sheet-label">Audio</span>
+              </button>
+              <button type="button" class="sheet-item" onclick="mostraTab('tab-impostazioni'); toggleAndroidMenuSheet();">
+                <span class="sheet-icon">🎛️</span>
+                <span class="sheet-label">Impostazioni</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     🎨 SCRIPT CONTROLLER DUAL-MODE (WINDOWS & ANDROID + CLASSIC FALLBACK)
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  function _safeGet(k) {
+    try { return localStorage.getItem(k); } catch(e) {}
+    try { return sessionStorage.getItem(k); } catch(e) {}
+    return null;
+  }
+  function _safeSet(k, v) {
+    try { localStorage.setItem(k, v); } catch(e) {}
+    try { sessionStorage.setItem(k, v); } catch(e) {}
+  }
+  window._giancaniStoreGet = _safeGet;
+  window._giancaniStoreSet = _safeSet;
+
+  // Inizializza layout: windows, android, o classic
+  var saved = _safeGet('giancani_layout_mode');
+  if (!saved) {
+    // Rileva automaticamente dispositivo
+    var isMobile = (window.innerWidth < 900) || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    saved = isMobile ? 'android' : 'windows';
+  }
+  applicaLayoutMode(saved);
+})();
+
+function applicaLayoutMode(mode) {
+  var b = document.body;
+  b.classList.remove('mode-windows', 'mode-android', 'mode-classic');
+  b.classList.add('mode-' + mode);
+
+  var badge = document.getElementById('sys-layout-badge');
+  var btnSwitch = document.getElementById('btn-switch-layout');
+  var iconSwitch = document.getElementById('icon-switch-layout');
+  var lblSwitch = document.getElementById('label-switch-layout');
+
+  var btnClassic = document.getElementById('btn-toggle-classic');
+  var iconClassic = document.getElementById('icon-toggle-classic');
+  var lblClassic = document.getElementById('label-toggle-classic');
+
+  if (mode === 'windows') {
+    if (badge) badge.textContent = '🖥️ WINDOWS MODE';
+    if (iconSwitch) iconSwitch.textContent = '📱';
+    if (lblSwitch) lblSwitch.textContent = 'PASSA AD ANDROID';
+    if (lblClassic) lblClassic.textContent = 'GRAFICA VECCHIA';
+    if (iconClassic) iconClassic.textContent = '↩️';
+  } else if (mode === 'android') {
+    if (badge) badge.textContent = '📱 ANDROID MODE';
+    if (iconSwitch) iconSwitch.textContent = '🖥️';
+    if (lblSwitch) lblSwitch.textContent = 'PASSA A WINDOWS';
+    if (lblClassic) lblClassic.textContent = 'GRAFICA VECCHIA';
+    if (iconClassic) iconClassic.textContent = '↩️';
+  } else if (mode === 'classic') {
+    if (badge) badge.textContent = '🏛️ GRAFICA VECCHIA';
+    if (iconSwitch) iconSwitch.textContent = '✨';
+    if (lblSwitch) lblSwitch.textContent = 'MODALITÀ MODERNA';
+    if (lblClassic) lblClassic.textContent = 'RIATTIVA MODERNA';
+    if (iconClassic) iconClassic.textContent = '✨';
+  }
+  window._giancaniStoreSet('giancani_layout_mode', mode);
+}
+
+function toggleLayoutModeGiancani() {
+  var current = window._giancaniStoreGet('giancani_layout_mode') || 'windows';
+  if (current === 'classic') {
+    applicaLayoutMode('windows');
+  } else if (current === 'windows') {
+    applicaLayoutMode('android');
+  } else {
+    applicaLayoutMode('windows');
+  }
+}
+
+function toggleClassicThemeGiancani() {
+  var current = window._giancaniStoreGet('giancani_layout_mode') || 'windows';
+  if (current === 'classic') {
+    // Ripristina la modalità moderna
+    var isMobile = (window.innerWidth < 900);
+    applicaLayoutMode(isMobile ? 'android' : 'windows');
+  } else {
+    // Torna alla grafica vecchia
+    applicaLayoutMode('classic');
+  }
+}
+
+function toggleAndroidMenuSheet() {
+  var sheet = document.getElementById('android-menu-sheet');
+  if (!sheet) return;
+  if (sheet.style.display === 'none' || !sheet.style.display) {
+    sheet.style.display = 'block';
+  } else {
+    sheet.style.display = 'none';
+  }
+}
+</script>

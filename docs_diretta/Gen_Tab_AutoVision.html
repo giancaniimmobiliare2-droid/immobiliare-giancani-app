@@ -1,0 +1,38 @@
+        <!-- 🤖 TAB 8: AUTO-VISION AI GENERATOR -->
+        <div id="tab-autovision" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title" style="display:flex; align-items:center;">🤖 Auto-Vision AI Generator <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-autovision-generator')" title="Guida & Mini Tutorial: 🤖 Auto-Vision AI Generator">❓</button></div>
+<div id="tut-autovision-generator" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🤖 Auto-Vision AI Generator</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Analizza con l'Intelligenza Artificiale tutte le immagini dell'immobile e compila automaticamente i testi descrittivi di vendita in Colonna F.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Scegli l'immobile da elaborare.</li><li>Clicca <em>'Genera Testi con Vision AI'</em> per creare le descrizioni complete per ogni singola stanza.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-autovision-generator')">✖️ Chiudi Guida</div>
+</div>
+            <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-autovision')">❓ Tutorial & Guida</button>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">🤖 Auto-Vision AI Regia Generator <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-autovision-regia')" title="Guida & Mini Tutorial: 🤖 Auto-Vision AI Regia Generator">❓</button></div>
+<div id="tut-autovision-regia" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🤖 Auto-Vision AI Regia Generator</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Genera in automatico i testi di presentazione e i dialoghi influencer per la regia live analizzando le foto con Gemini Vision.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Seleziona l'immobile di regia.</li><li>Clicca <em>'Genera Testi Regia AI'</em> per aggiornare i dialoghi e i testi parlati.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-autovision-regia')">✖️ Chiudi Guida</div>
+</div>
+            <form onsubmit="event.preventDefault(); avviaGenerazioneRegiaAutoVision();">
+              <div class="form-grid"><div class="form-group full"><label>Link o ID Cartella Drive:</label><input type="text" id="autovision-drive-url" required></div></div>
+              <button type="submit" class="btn-gold" style="margin-top: 16px;">🚀 GENERA REGIA LIVE</button>
+            </form>
+          </div>
+        </div>
+

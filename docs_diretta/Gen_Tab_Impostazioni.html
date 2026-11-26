@@ -1,0 +1,146 @@
+        <!-- 🎛️ TAB 5: TEMPI REGIA & CHIAVI AI -->
+        <div id="tab-impostazioni" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title">🎛️ Configurazione Tempi & Chiavi AI</div>
+            <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-impostazioni')">❓ Tutorial & Guida</button>
+          </div>
+
+          <!-- CARD 1: TEMPI REGIA LIVE -->
+          <div class="section-card" style="background: rgba(243, 156, 18, 0.06); border-color: #f39c12;">
+            <div class="section-title" style="color: #f39c12;">⏱️ Configurazione Tempi Palinsesto Regia (Foglio Configurazione_Tempi) <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-tempi-regia')" title="Guida: Tempi Palinsesto">❓</button></div>
+<div id="tut-tempi-regia" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: ⏱️ Configurazione Tempi Palinsesto Regia</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Definisce la durata di ogni foto, la frequenza dello spot YouTube 60s (ogni 5 min), e gli intervalli per meteo, notizie e sponsor.</div>
+  <div class="tut-steps">
+    <ol>
+      <li>Regola i secondi per foto e i minuti di intervallo.</li>
+      <li>Clicca <em>'Salva Tempi Regia'</em> per sincronizzare il foglio di calcolo.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-tempi-regia')">✖️ Chiudi Guida</div>
+</div>
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+              <div class="form-group">
+                <label>🖼️ Permanenza Singola Foto:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-durata-foto" value="12" min="5" max="60" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">secondi</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>🎬 Frequenza Spot YouTube 60s:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-freq-yt" value="5" min="1" max="120" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">minuti</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>📺 Frequenza Spot Pubblicitari:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-freq-pubb" value="10" min="1" max="120" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">minuti</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>⛅ Frequenza Bollettino Meteo:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-freq-meteo" value="15" min="1" max="120" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">minuti</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>📰 Frequenza Flash Notizie:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-freq-notizie" value="10" min="1" max="120" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">minuti</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>🎭 Frequenza Sketch Teatrino:</label>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <input type="number" id="cfg-freq-teatrino" value="5" min="1" max="120" style="text-align: center;">
+                  <span style="font-size: 11px; color: var(--sand);">minuti</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="salvaTempiRegiaUI()" class="btn-gold" style="margin-top: 14px; background: linear-gradient(135deg, #f39c12, #d35400); color: white;">
+              💾 SALVA TEMPI REGIA NEL FOGLIO
+            </button>
+            <div id="tempi-status-msg" style="margin-top: 8px; font-size: 11.5px; color: #2ecc71; display: none;"></div>
+          </div>
+
+          <!-- CARD 2: PIPER TTS LOCALE -->
+          <div class="section-card" style="background: rgba(155,89,182,0.1); border-color: #9b59b6;">
+            <div class="section-title" style="color: #9b59b6;">🎙️ Configurazione Piper TTS Locale (10% Dynamic Audio) <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-piper-tts')" title="Guida & Mini Tutorial: 🎙️ Configurazione Piper TTS Locale">❓</button></div>
+<div id="tut-piper-tts" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🎙️ Configurazione Piper TTS Locale</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Collega il server vocale locale Piper TTS ad altissima velocità e costo zero tramite tunnel Cloudflare o Ngrok.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Avvia il server Piper TTS sul tuo computer locale.</li><li>Incolla l'URL pubblico del tunnel (es. <code>https://xxx.trycloudflare.com</code>) e clicca <em>'Salva Endpoint'</em>.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-piper-tts')">✖️ Chiudi Guida</div>
+</div>
+            <p style="font-size: 12px; color: var(--sand); margin-bottom: 10px;">
+              Inserisci l'URL del tuo tunnel Ngrok o Cloudflare per collegare la sintesi locale (voce <em>Paola Medium</em>):
+            </p>
+            <div class="form-group full">
+              <label>Endpoint Tunnel Piper TTS:</label>
+              <input type="text" id="input-piper-endpoint" placeholder="es. https://xxxx.ngrok-free.app/synthesize">
+            </div>
+            <button onclick="salvaPiperEndpointWeb()" class="btn-gold" style="margin-top: 12px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white;">💾 SALVA PIPER TTS TUNNEL</button>
+          </div>
+
+          <!-- CARD 3: POOL MULTI-KEY GROQ AI -->
+          <div class="section-card" style="background: rgba(46, 204, 113, 0.06); border-color: #2ecc71;">
+            <div class="section-title" style="color: #2ecc71;">🔑 Pool Multi-Key Groq AI (3 Chiavi Round-Robin & Failover Istantaneo) <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-groq-pool')" title="Guida: Pool Groq AI">❓</button></div>
+<div id="tut-groq-pool" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🔑 Pool Multi-Key Groq AI</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Gestisce 3 chiavi API Groq in rotazione automatica per rispondere istantaneamente ai commenti della live chat eliminando i limiti di frequenza.</div>
+  <div class="tut-steps">
+    <ol>
+      <li>Il sistema passa automaticamente alla chiave successiva in caso di esaurimento token.</li>
+      <li>Puoi aggiornare le chiavi gsk_ in qualsiasi momento.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-groq-pool')">✖️ Chiudi Guida</div>
+</div>
+            <div style="font-size: 12px; color: var(--sand); margin-bottom: 10px;">
+              3 chiavi API Groq collegate per risposte ultra-veloci (modello <code>llama-3.3-70b-versatile</code>):
+            </div>
+            <div class="form-grid">
+              <div class="form-group full"><label>Chiave Groq #1:</label><input type="password" id="groq-key-1" placeholder="gsk_..."></div>
+              <div class="form-group full"><label>Chiave Groq #2:</label><input type="password" id="groq-key-2" placeholder="gsk_..."></div>
+              <div class="form-group full"><label>Chiave Groq #3:</label><input type="password" id="groq-key-3" placeholder="gsk_..."></div>
+            </div>
+            <button type="button" onclick="salvaChiaviGroqPoolUI()" class="btn-gold" style="margin-top: 12px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white;">💾 SALVA CHIAVI GROQ POOL</button>
+            <div id="groq-status-msg" style="margin-top: 8px; font-size: 11.5px; color: #2ecc71; display: none;"></div>
+          </div>
+
+          <!-- CARD 4: GEMINI VISION API -->
+          <div class="section-card" style="background: rgba(52, 152, 219, 0.1); border-color: #3498db;">
+            <div class="section-title" style="color: #3498db;">🤖 Configurazione Google Gemini Vision API <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-gemini-vision')" title="Guida & Mini Tutorial: 🤖 Configurazione Google Gemini Vision API">❓</button></div>
+<div id="tut-gemini-vision" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🤖 Configurazione Google Gemini Vision API</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Collega la chiave API di Google Gemini per l'analisi intelligente delle foto degli immobili e la scrittura automatica delle descrizioni di vendita.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Ottieni la chiave gratuita su Google AI Studio.</li><li>Incolla la chiave API nel campo e clicca <em>'Verifica & Salva Chiave'</em>.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-gemini-vision')">✖️ Chiudi Guida</div>
+</div>
+            <p style="font-size: 12px; color: var(--sand); margin-bottom: 10px;">
+              Inserisci la tua chiave API di Gemini per attivare l'Auto-Riconoscimento delle Stanze.
+            </p>
+            <div class="form-group full">
+              <label>Chiave API Gemini (AI Studio):</label>
+              <input type="password" id="input-gemini-key" placeholder="Incolla qui la chiave API (es. AIzaSy...)">
+            </div>
+            <button onclick="salvaGeminiKeyWeb()" class="btn-gold" style="margin-top: 12px; background: linear-gradient(135deg, #3498db, #2980b9); color: white;">💾 SALVA CHIAVE GEMINI</button>
+          </div>
+        </div>
+

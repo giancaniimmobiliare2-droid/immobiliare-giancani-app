@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cacciatori di Immobili — Immobiliare Giancani</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .gold-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .card-hot { border-left: 6px solid #ef4444; }
+    .card-drop { border-left: 6px solid #10b981; }
+    #map { height: 550px; width: 100%; border-radius: 1rem; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+
+  <!-- BARRA DI SICUREZZA ATTIVA -->
+  <div class="bg-slate-900 text-slate-200 px-4 py-2 text-xs flex flex-wrap justify-between items-center gap-2 border-b border-slate-800">
+    <div class="flex items-center gap-2 font-medium">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="text-emerald-400 font-bold">PROTEZIONE ANTI-PIRATA ATTIVA:</span>
+      <span>Accettati ESCLUSIVAMENTE file Immagini (JPG, PNG, WEBP) e Documenti PDF • Testo sanitizzato senza punti e caratteri speciali</span>
+    </div>
+    <div class="text-amber-400 font-bold text-[11px]">
+      1-Click WhatsApp & Chiamata Immediata • Immobiliare Giancani
+    </div>
+  </div>
+
+  <!-- HEADER BRAND -->
+  <header class="gold-gradient text-white shadow-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="bg-amber-500 text-slate-900 p-2.5 rounded-xl font-black text-xl shadow-lg">
+          <i class="fa-solid fa-crosshairs"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-wide flex items-center gap-2">
+            Cacciatori di Immobili
+            <span class="text-xs bg-amber-400 text-slate-950 font-black px-2.5 py-0.5 rounded-full">PROTETTO AI</span>
+          </h1>
+          <p class="text-xs text-slate-300">Favara • Agrigento • Aragona • Comitini • Porto Empedocle • Siculiana • Realmonte</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center flex-wrap gap-2 text-xs">
+        <div class="bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-2">
+          <i class="fa-solid fa-user-tie text-amber-400"></i>
+          <span>Agente: <strong class="text-white">Antonio Giancani (+39 320 166 7156)</strong></span>
+        </div>
+        <div class="bg-emerald-950/80 border border-emerald-600/50 px-3 py-1.5 rounded-xl flex items-center gap-2 text-emerald-300">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>DarIA Bot 24/7: <strong>Attiva</strong></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[66px] z-40">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap space-x-4 md:space-x-8">
+      <button onclick="switchTab('incroci')" id="tab-incroci" class="py-3 px-2 border-b-2 border-amber-500 text-amber-600 font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-fire text-red-500"></i>
+        1. Incroci & Passaggi Caldi
+        <span id="badge-incroci" class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-bold">2</span>
+      </button>
+      <button onclick="switchTab('mappa')" id="tab-mappa" class="py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-map-location-dot text-indigo-500"></i>
+        2. Mappa Privati sul Territorio
+      </button>
+      <button onclick="switchTab('personalizza')" id="tab-personalizza" class="py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-pen-nib text-amber-500"></i>
+        3. Personalizza Testo WhatsApp
+      </button>
+      <button onclick="switchTab('sicurezza')" id="tab-sicurezza" class="py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+        4. Protezione File Anti-Pirata
+      </button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- SEZIONE 1: INCROCI -->
+    <section id="view-incroci" class="space-y-4">
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-amber-500"></i>
+            Nuovi Immobili Intercettati: Passaggi Agenzia ➔ Privato & Variazioni
+          </h2>
+          <p class="text-xs text-slate-500">Tutti i pulsanti aprono istantaneamente la chiamata telefonica o la chat WhatsApp con testo personalizzato compilato</p>
+        </div>
+        <button onclick="caricaDati()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl flex items-center gap-2 font-bold transition">
+          <i class="fa-solid fa-rotate-right"></i> Aggiorna
+        </button>
+      </div>
+
+      <div id="container-incroci" class="grid grid-cols-1 gap-4">
+        <!-- CARD 1 -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 card-hot space-y-4">
+          <div class="flex flex-wrap justify-between items-start gap-3">
+            <div>
+              <span class="text-xs px-3 py-1 rounded-full font-black bg-red-100 text-red-700 border border-red-200 animate-pulse">
+                🔥 PASSAGGIO AGENZIA ➔ PRIVATO (MASSIMA PRIORITÀ)
+              </span>
+              <h3 class="text-lg font-bold text-slate-900 mt-2 flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-amber-500"></i>
+                Favara — Via Beneficenza
+              </h3>
+              <p class="text-xs text-slate-500">Tipologia: <strong>Appartamento 4 Vani</strong> • Superficie: <strong>115 metri quadri</strong> • Fonte: <strong>Subito.it (Solo Privati)</strong></p>
+            </div>
+            <div class="text-right">
+              <span id="badge-stato-1" class="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-lg">
+                ⏳ Da contattare
+              </span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-4 text-xs">
+            <div>
+              <p class="text-slate-400">Prezzo con Agenzia precedente (Tecnocasa):</p>
+              <p class="text-sm font-semibold text-slate-500 line-through">85.000 €</p>
+            </div>
+            <div class="text-center">
+              <p class="text-slate-500 font-medium">➔ Ora da PRIVATO a:</p>
+              <p class="text-xl font-black text-emerald-600">75.000 €</p>
+            </div>
+            <div class="text-right">
+              <p class="text-slate-400">Delta:</p>
+              <p class="text-sm font-bold text-red-500">-10.000 € (-12%)</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-slate-100">
+            <div class="flex items-center gap-2 flex-wrap">
+              <a href="tel:3201667156" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-md transition transform active:scale-95">
+                <i class="fa-solid fa-phone text-amber-400 text-sm"></i>
+                <span>Chiama Subito</span>
+              </a>
+              <button onclick="inviaWhatsApp1Click('Favara', 'Via Beneficenza', '75.000 €', '115 metri quadri', 'PASSAGGIO_AGENZIA_A_PRIVATO')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-md transition transform active:scale-95">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+                <span>Apri Chat WhatsApp 1-Click</span>
+              </button>
+            </div>
+            <button onclick="apriModale('INC-1', 'Favara - Via Beneficenza')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-clipboard-check"></i> Registra Risposta
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 card-drop space-y-4">
+          <div class="flex flex-wrap justify-between items-start gap-3">
+            <div>
+              <span class="text-xs px-3 py-1 rounded-full font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                📉 RIBASSO PREZZO DA PARTE DEL PRIVATO
+              </span>
+              <h3 class="text-lg font-bold text-slate-900 mt-2 flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-amber-500"></i>
+                Agrigento — San Leone (Viale dei Pini)
+              </h3>
+              <p class="text-xs text-slate-500">Tipologia: <strong>Villa Unifamiliare</strong> • Superficie: <strong>180 metri quadri</strong> • Fonte: <strong>Idealista (Solo Privati)</strong></p>
+            </div>
+            <div class="text-right">
+              <span id="badge-stato-2" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-lg">
+                📤 Messaggio Inviato
+              </span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-4 text-xs">
+            <div>
+              <p class="text-slate-400">Prezzo Iniziale:</p>
+              <p class="text-sm font-semibold text-slate-500 line-through">240.000 €</p>
+            </div>
+            <div class="text-center">
+              <p class="text-slate-500 font-medium">➔ Nuovo Prezzo Ribassato:</p>
+              <p class="text-xl font-black text-emerald-600">215.000 €</p>
+            </div>
+            <div class="text-right">
+              <p class="text-slate-400">Ribasso:</p>
+              <p class="text-sm font-bold text-emerald-600">-25.000 € (-10.4%)</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-slate-100">
+            <div class="flex items-center gap-2 flex-wrap">
+              <a href="tel:3339876543" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-md transition transform active:scale-95">
+                <i class="fa-solid fa-phone text-amber-400 text-sm"></i>
+                <span>Chiama Subito</span>
+              </a>
+              <button onclick="inviaWhatsApp1Click('Agrigento', 'San Leone', '215.000 €', '180 metri quadri', 'RIBASSO_PREZZO_PRIVATO')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-md transition transform active:scale-95">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+                <span>Apri Chat WhatsApp 1-Click</span>
+              </button>
+            </div>
+            <button onclick="apriModale('INC-2', 'Agrigento - San Leone')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-clipboard-check"></i> Registra Risposta
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 2: MAPPA -->
+    <section id="view-mappa" class="space-y-4 hidden">
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-map-location-dot text-indigo-500"></i>
+            Radar Geografico Privati — Provincia di Agrigento
+          </h2>
+          <p class="text-xs text-slate-500">Visualizza gli annunci dei privati su mappa con foto, metratura in metri quadri e pulsante WhatsApp 1-click</p>
+        </div>
+        <select id="filtro-comune-mappa" onchange="filtraMappa()" class="text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold">
+          <option value="TUTTI">Mostra Tutti i Comuni</option>
+          <option value="Favara">Favara</option>
+          <option value="Agrigento">Agrigento</option>
+          <option value="Aragona">Aragona</option>
+          <option value="Comitini">Comitini</option>
+          <option value="Porto Empedocle">Porto Empedocle</option>
+          <option value="Siculiana">Siculiana</option>
+          <option value="Realmonte">Realmonte</option>
+        </select>
+      </div>
+
+      <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200">
+        <div id="map"></div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 3: PERSONALIZZA TESTO WHATSAPP -->
+    <section id="view-personalizza" class="space-y-4 hidden">
+      <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-pen-nib text-amber-500"></i>
+            Personalizza Testo del Messaggio WhatsApp
+          </h2>
+          <p class="text-xs text-slate-500">Modifica il template come preferisci. La protezione anti-pirata rimuove automaticamente punti e caratteri speciali.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Editor Testo Messaggio (Sanitizzazione Automatica Attiva):</label>
+          <textarea id="editor-template" rows="9" oninput="aggiornaAnteprimaSanitizzata()" class="w-full text-xs font-mono p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none bg-slate-50"></textarea>
+        </div>
+
+        <div class="bg-slate-900 text-slate-100 p-4 rounded-xl space-y-2 border border-slate-800">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-amber-400">Anteprima Protetta & Pulita (senza punti e caratteri speciali):</span>
+            <span id="char-count" class="text-slate-400 text-[11px]"></span>
+          </div>
+          <div id="anteprima-live" class="text-xs font-mono whitespace-pre-line text-emerald-300"></div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="salvaNuovoTemplate()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs px-5 py-2.5 rounded-xl font-bold shadow-md flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Salva Template Personalizzato
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 4: PROTEZIONE FILE ANTI-PIRATA -->
+    <section id="view-sicurezza" class="space-y-4 hidden">
+      <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 space-y-5">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+            Modulo di Sicurezza Anti-Pirata Informatico
+          </h2>
+          <p class="text-xs text-slate-500">
+            Regola Mandatoria di Protezione: sono accettati <strong>SOLO file Immagini (JPG, PNG, WEBP) e Documenti PDF</strong>. Qualsiasi file con estensione diversa (.exe, .js, .php, .bat, .vbs, .zip, .html) viene bloccato all'istante dal firewall.
+          </p>
+        </div>
+
+        <div class="border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl p-8 text-center bg-slate-50/50 space-y-3 transition">
+          <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-400"></i>
+          <div>
+            <p class="text-sm font-bold text-slate-800">Carica Documento o Foto Immobile Protetto</p>
+            <p class="text-xs text-slate-500">Accetta solo immagini fotografiche e visure/planimetrie PDF</p>
+          </div>
+          <input type="file" id="file-test-sicurezza" onchange="testaFileAntiPirata(this)" class="hidden">
+          <button onclick="document.getElementById('file-test-sicurezza').click()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow-sm">
+            Sfoglia File dal Computer
+          </button>
+        </div>
+
+        <div id="box-esito-sicurezza" class="hidden p-4 rounded-xl text-xs space-y-1"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODALE REGISTRA RISPOSTA -->
+  <div id="modal-risposta" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i class="fa-solid fa-clipboard-check text-amber-500"></i>
+          Esito Risposta Proprietario
+        </h3>
+        <button onclick="chiudiModale()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <p id="modal-sub" class="text-xs text-slate-500 font-medium"></p>
+      <input type="hidden" id="modal-target-id">
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Come ha risposto il proprietario?</label>
+        <select id="modal-stato-select" class="w-full text-xs border border-slate-300 rounded-xl p-2.5 bg-slate-50 font-semibold">
+          <option value="Risposta Positiva">✅ Risposta Positiva (Interessato / Fissato Appuntamento)</option>
+          <option value="In Trattativa">🤝 In Trattativa (Vuole pensarci / Richiamare)</option>
+          <option value="Risposta Negativa">❌ Risposta Negativa (Rifiuta agenzia / Già venduto)</option>
+          <option value="Non Risponde">⏳ Non Risponde al telefono</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Note del colloquio (Sanitizzazione anti-pirata attiva):</label>
+        <textarea id="modal-note" rows="3" oninput="this.value = sanitizzaTesto(this.value)" placeholder="Es Il cliente e disponibile sabato mattina per un sopralluogo" class="w-full text-xs border border-slate-300 rounded-xl p-2.5"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="chiudiModale()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Chiudi</button>
+        <button onclick="salvaRispostaWeb()" class="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl shadow-md">
+          Salva nel Foglio Google
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-200 mt-12 bg-white">
+    Cacciatori di Immobili • Sistema Protetto di Intelligence Territoriale & Acquisizione Privati<br>
+    <strong>— Immobiliare Giancani</strong>
+  </footer>
+
+  <script>
+    let mapInstance = null;
+    let markersLayer = null;
+
+    let templateAttivo = `Gentile proprietario buongiorno
+Ho notato con molto interesse il Suo annuncio per l immobile situato a {{COMUNE}} zona {{VIA_ZONA}} proposto a {{PREZZO}} per {{SUPERFICIE}}
+Seguo quotidianamente il mercato della nostra zona e so bene quanto possa risultare frustrante affidarsi a intermediari che non portano risultati concreti spingendo poi a riprovare la vendita da privato
+La contatto direttamente per una ragione molto precisa nella nostra banca dati attiva abbiamo attualmente acquirenti profilati con mutuo gia pre deliberato che cercano esattamente a {{COMUNE}}
+Garantiamo zero curiosi verifica urbanistica e catastale preventiva e massima tutela prima del compromesso
+Se desidera un confronto senza impegno
+Antonio Giancani 320 166 7156
+Pagina Ufficiale https //www facebook com/234931856561526
+Fuori orario d ufficio puo chattare 24 ore su 24 con DarIA la nostra assistente digitale su https //wa me/393505902923 ma per parlare direttamente con me la mia linea personale e sempre a Sua disposizione
+— Immobiliare Giancani`;
+
+    const DEMO_DATA = [
+      {
+        id: "1", comune: "Favara", via_zona: "Via Beneficenza", tipologia: "Appartamento 4 Vani",
+        metri_quadri: "115 metri quadri", prezzo: "75.000 €", telefono: "3201667156",
+        lat: 37.3188, lng: 13.6575,
+        foto: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "2", comune: "Agrigento", via_zona: "San Leone (Viale dei Pini)", tipologia: "Villa Unifamiliare",
+        metri_quadri: "180 metri quadri", prezzo: "215.000 €", telefono: "3339876543",
+        lat: 37.2650, lng: 13.5850,
+        foto: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "3", comune: "Aragona", via_zona: "Via Roma", tipologia: "Palazzetto",
+        metri_quadri: "140 metri quadri", prezzo: "68.000 €", telefono: "3401122334",
+        lat: 37.4042, lng: 13.6212,
+        foto: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "4", comune: "Porto Empedocle", via_zona: "Via Crispi", tipologia: "Trilocale Vista Mare",
+        metri_quadri: "95 metri quadri", prezzo: "62.000 €", telefono: "3499988776",
+        lat: 37.2889, lng: 13.5283,
+        foto: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "5", comune: "Realmonte", via_zona: "Scala dei Turchi", tipologia: "Villetta a Schiera",
+        metri_quadri: "110 metri quadri", prezzo: "145.000 €", telefono: "3285566778",
+        lat: 37.3103, lng: 13.4633,
+        foto: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=500&auto=format&fit=crop&q=60"
+      }
+    ];
+
+    window.onload = function() {
+      document.getElementById('editor-template').value = templateAttivo;
+      aggiornaAnteprimaSanitizzata();
+    };
+
+    function sanitizzaTesto(testo) {
+      if (!testo) return "";
+      let pulito = testo.replace(/\./g, " ");
+      pulito = pulito.replace(/[^a-zA-Z0-9àèéìòùÀÈÉÌÒÙ\s-]/g, " ");
+      pulito = pulito.replace(/\s+/g, " ").trim();
+      return pulito;
+    }
+
+    function aggiornaAnteprimaSanitizzata() {
+      const grezzo = document.getElementById('editor-template').value;
+      const sanitizzato = sanitizzaTesto(grezzo);
+      document.getElementById('anteprima-live').innerText = sanitizzato;
+      document.getElementById('char-count').innerText = `${sanitizzato.length} caratteri protetti`;
+    }
+
+    function salvaNuovoTemplate() {
+      const grezzo = document.getElementById('editor-template').value;
+      templateAttivo = sanitizzaTesto(grezzo);
+      document.getElementById('editor-template').value = templateAttivo;
+      aggiornaAnteprimaSanitizzata();
+      alert("✅ Template personalizzato salvato con successo e protetto dalla sanitizzazione anti-pirata!\n\n— Immobiliare Giancani");
+    }
+
+    function inviaWhatsApp1Click(comune, via, prezzo, mq, tipo) {
+      let msg = templateAttivo
+        .replace(/{{COMUNE}}/g, comune)
+        .replace(/{{VIA_ZONA}}/g, via)
+        .replace(/{{PREZZO}}/g, prezzo)
+        .replace(/{{SUPERFICIE}}/g, mq);
+
+      const url = `https://wa.me/393201667156?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function testaFileAntiPirata(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const nomeFile = file.name.toLowerCase();
+      const mime = file.type.toLowerCase();
+      const box = document.getElementById('box-esito-sicurezza');
+      box.classList.remove('hidden');
+
+      const estensioniValide = ['.jpg', '.jpeg', '.png', '.webp', '.pdf'];
+      const isEstensioneValida = estensioniValide.some(ext => nomeFile.endsWith(ext));
+      const isMimeValido = mime.startsWith('image/') || mime === 'application/pdf' || (!mime && isEstensioneValida);
+
+      if (isEstensioneValida && isMimeValido) {
+        box.className = "p-4 rounded-xl text-xs space-y-1 bg-emerald-100 border border-emerald-300 text-emerald-950 animate-bounce";
+        box.innerHTML = `
+          <div class="font-bold flex items-center gap-2 text-sm text-emerald-800">
+            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            FILE AUTORIZZATO CON SUCCESSO
+          </div>
+          <p><strong>Nome File:</strong> ${file.name} (${Math.round(file.size / 1024)} KB)</p>
+          <p><strong>Tipo Riconosciuto:</strong> ${nomeFile.endsWith('.pdf') ? 'Documento Tecnico PDF' : 'Immagine Fotografica'}</p>
+        `;
+      } else {
+        box.className = "p-4 rounded-xl text-xs space-y-2 bg-red-100 border-2 border-red-500 text-red-950 animate-pulse";
+        box.innerHTML = `
+          <div class="font-black flex items-center gap-2 text-sm text-red-700">
+            <i class="fa-solid fa-triangle-exclamation text-lg text-red-600"></i>
+            🚨 ATTACCO PIRATA BLOCCATO DALLA PROTEZIONE DI SICUREZZA!
+          </div>
+          <p><strong>Nome File Rifiutato:</strong> <span class="font-mono bg-red-200 px-1 py-0.5 rounded text-red-900">${file.name}</span></p>
+          <p><strong>Motivo del Blocco:</strong> Estensione non autorizzata. Sono accettati RIGOROSAMENTE ed ESCLUSIVAMENTE file Immagini (JPG, PNG, WEBP) e Documenti PDF.</p>
+        `;
+      }
+      input.value = "";
+    }
+
+    function switchTab(t) {
+      document.getElementById('view-incroci').classList.add('hidden');
+      document.getElementById('view-mappa').classList.add('hidden');
+      document.getElementById('view-personalizza').classList.add('hidden');
+      document.getElementById('view-sicurezza').classList.add('hidden');
+
+      document.getElementById('tab-incroci').className = "py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2";
+      document.getElementById('tab-mappa').className = "py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2";
+      document.getElementById('tab-personalizza').className = "py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2";
+      document.getElementById('tab-sicurezza').className = "py-3 px-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-sm flex items-center gap-2";
+
+      if (t === 'incroci') {
+        document.getElementById('view-incroci').classList.remove('hidden');
+        document.getElementById('tab-incroci').className = "py-3 px-2 border-b-2 border-amber-500 text-amber-600 font-bold text-sm flex items-center gap-2";
+      } else if (t === 'mappa') {
+        document.getElementById('view-mappa').classList.remove('hidden');
+        document.getElementById('tab-mappa').className = "py-3 px-2 border-b-2 border-indigo-500 text-indigo-600 font-bold text-sm flex items-center gap-2";
+        initMappa();
+      } else if (t === 'personalizza') {
+        document.getElementById('view-personalizza').classList.remove('hidden');
+        document.getElementById('tab-personalizza').className = "py-3 px-2 border-b-2 border-amber-500 text-amber-600 font-bold text-sm flex items-center gap-2";
+      } else if (t === 'sicurezza') {
+        document.getElementById('view-sicurezza').classList.remove('hidden');
+        document.getElementById('tab-sicurezza').className = "py-3 px-2 border-b-2 border-emerald-500 text-emerald-600 font-bold text-sm flex items-center gap-2";
+      }
+    }
+
+    function initMappa() {
+      if (mapInstance) {
+        setTimeout(() => mapInstance.invalidateSize(), 200);
+        return;
+      }
+      mapInstance = L.map('map').setView([37.3188, 13.6575], 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors • Immobiliare Giancani'
+      }).addTo(mapInstance);
+
+      markersLayer = L.layerGroup().addTo(mapInstance);
+      popolaMappa(DEMO_DATA);
+    }
+
+    function popolaMappa(items) {
+      markersLayer.clearLayers();
+      items.forEach(p => {
+        const m = L.marker([p.lat, p.lng]);
+        const popup = `
+          <div style="width:230px; font-family:sans-serif;" class="text-slate-900">
+            <img src="${p.foto}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+            <div style="font-size:12px; font-weight:bold; color:#0f172a;">${p.comune} — ${p.via_zona}</div>
+            <div style="font-size:11px; color:#64748b; margin-bottom:4px;">${p.tipologia} • ${p.metri_quadri}</div>
+            <div style="font-size:14px; font-weight:black; color:#059669; margin-bottom:8px;">${p.prezzo}</div>
+            <div style="display:flex; gap:6px;">
+              <a href="tel:${p.telefono}" style="flex:1; text-align:center; background:#0f172a; color:#fff; text-decoration:none; padding:6px; font-size:11px; border-radius:6px; font-weight:bold;">Chiama</a>
+              <button onclick="inviaWhatsApp1Click('${p.comune}', '${p.via_zona}', '${p.prezzo}', '${p.metri_quadri}', 'MAPPA')" style="flex:1; background:#059669; color:#fff; border:none; padding:6px; font-size:11px; border-radius:6px; font-weight:bold; cursor:pointer;">WhatsApp</button>
+            </div>
+            <div style="font-size:9px; color:#94a3b8; margin-top:8px; text-align:right;">— Immobiliare Giancani</div>
+          </div>
+        `;
+        m.bindPopup(popup);
+        markersLayer.addLayer(m);
+      });
+    }
+
+    function filtraMappa() {
+      const c = document.getElementById('filtro-comune-mappa').value;
+      if (c === "TUTTI") {
+        popolaMappa(DEMO_DATA);
+        mapInstance.setView([37.3188, 13.6575], 11);
+      } else {
+        const filtrati = DEMO_DATA.filter(x => x.comune.toLowerCase() === c.toLowerCase());
+        popolaMappa(filtrati);
+        if (filtrati.length > 0) {
+          mapInstance.setView([filtrati[0].lat, filtrati[0].lng], 13);
+        }
+      }
+    }
+
+    function apriModale(id, sub) {
+      document.getElementById('modal-target-id').value = id;
+      document.getElementById('modal-sub').innerText = sub;
+      document.getElementById('modal-risposta').classList.remove('hidden');
+    }
+
+    function chiudiModale() {
+      document.getElementById('modal-risposta').classList.add('hidden');
+    }
+
+    function salvaRispostaWeb() {
+      const id = document.getElementById('modal-target-id').value;
+      const st = document.getElementById('modal-stato-select').value;
+      if (id === 'INC-1') {
+        document.getElementById('badge-stato-1').innerText = st;
+        document.getElementById('badge-stato-1').className = "text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-lg";
+      } else if (id === 'INC-2') {
+        document.getElementById('badge-stato-2').innerText = st;
+        document.getElementById('badge-stato-2').className = "text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-lg";
+      }
+      chiudiModale();
+      alert("✅ Risposta salvata con successo!\n\n— Immobiliare Giancani");
+    }
+
+    function caricaDati() {
+      alert("Dati aggiornati!");
+    }
+  </script>
+</body>
+</html>

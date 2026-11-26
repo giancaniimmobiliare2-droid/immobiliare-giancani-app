@@ -1,0 +1,233 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     🧭 NAVIGAZIONE SEMPLIFICATA V2 — Immobiliare Giancani
+     • ANDROID: Home a card grandi con immagini (stile "B")
+     • PC:      Flusso guidato a 4 fasi (stile "C")
+     Nessuna funzione rimossa: i tab, gli ID e le funzioni originali restano invariati.
+     Questo file aggiunge solo un livello di navigazione sopra a mostraTab().
+═══════════════════════════════════════════════════════════════════ -->
+<style id="style-nav-v2">
+  /* ── Selettore Android | PC ── */
+  .nav2-seg { display: inline-flex; background: rgba(0,0,0,0.45); border: 1px solid rgba(201,163,94,0.5); border-radius: 12px; padding: 3px; gap: 3px; }
+  .nav2-seg button { border: none; background: transparent; color: #d9c5ab; font-weight: 800; font-size: 12px; padding: 7px 14px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .nav2-seg button.on { background: linear-gradient(135deg, #f5d485, #c9a35e); color: #1a1209; }
+  #btn-switch-layout { display: none !important; }
+
+  /* ── Elementi nascosti di default ── */
+  #nav2-pc-flow, #nav2-android-home, #nav2-android-back { display: none; }
+
+  /* ═════════ PC — FLUSSO A 4 FASI ═════════ */
+  body.mode-windows #nav2-pc-flow { display: block; margin-bottom: 18px; }
+  body.mode-windows .tab-nav { display: none !important; }
+  /* Il pannello master e i box di regia si vedono solo nella sezione Diretta Live */
+  body.mode-windows.nav2-notlive .nav2-livearea, body.mode-android.nav2-notlive:not(.nav2-home) .nav2-livearea { display: none !important; }
+  body.mode-windows #main-panel { display: block !important; }
+  body.mode-windows .tab-content { grid-column: auto !important; }
+
+  .nav2-steps { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .nav2-step { flex: 1; min-width: 190px; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; cursor: pointer;
+    background: rgba(14,18,28,0.88); border: 1.5px solid rgba(255,255,255,0.1); color: #d9c5ab; transition: all .15s; }
+  .nav2-step:hover { border-color: rgba(201,163,94,0.6); }
+  .nav2-step .num { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; flex-shrink: 0; }
+  .nav2-step .txt b { display: block; font-size: 14px; color: #fff; }
+  .nav2-step .txt span { font-size: 11px; opacity: .85; }
+  .nav2-step.on { border-color: #f5d485; background: linear-gradient(135deg, rgba(201,163,94,0.28), rgba(201,163,94,0.08)); box-shadow: 0 0 0 2px rgba(201,163,94,0.2); }
+  .nav2-step.on .num { background: linear-gradient(135deg, #f5d485, #c9a35e); color: #1a1209; }
+  .nav2-pills { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 12px; background: rgba(8,10,16,0.92); border: 1px solid rgba(201,163,94,0.25); border-radius: 14px; }
+  .nav2-pill { border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: #e8dcc8; font-weight: 700; font-size: 13px; padding: 9px 16px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+  .nav2-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav2-pill.on { background: linear-gradient(135deg, #f5d485, #c9a35e); color: #1a1209; border-color: transparent; }
+
+  /* ═════════ ANDROID — HOME A CARD CON IMMAGINI ═════════ */
+  body.mode-android.nav2-home #nav2-android-home { display: block; }
+  body.mode-android.nav2-home .tab-content,
+  body.mode-android.nav2-home .nav2-livearea,
+  body.mode-android.nav2-home .android-bottom-bar { display: none !important; }
+  body.mode-android:not(.nav2-home) #nav2-android-back { display: flex; }
+  body.mode-android.nav2-home { padding-bottom: 12px; }
+
+  .nav2-greet { color: #fff; font-size: 20px; font-weight: 800; margin: 4px 2px 2px; }
+  .nav2-sub { color: #d9c5ab; font-size: 12.5px; margin: 0 2px 12px; }
+  .nav2-golive { width: 100%; border: none; border-radius: 16px; padding: 18px; font-size: 18px; font-weight: 900; letter-spacing: .5px; color: #fff; cursor: pointer;
+    background: linear-gradient(135deg, #e50914, #a30610); box-shadow: 0 6px 22px rgba(229,9,20,.45); margin-bottom: 8px; }
+  .nav2-golive:active { transform: scale(.98); }
+  .nav2-status { text-align: center; font-size: 12px; color: #d9c5ab; margin-bottom: 14px; }
+  .nav2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .nav2-card { position: relative; height: 128px; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(201,163,94,0.55); cursor: pointer; padding: 0; text-align: left;
+    background: #121820 center/cover no-repeat; box-shadow: 0 6px 16px rgba(0,0,0,.6); }
+  .nav2-card:active { transform: scale(.97); }
+  .nav2-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 25%, rgba(5,8,16,.92) 100%); }
+  .nav2-card .ic { position: absolute; top: 8px; left: 10px; font-size: 24px; text-shadow: 0 2px 6px #000; }
+  .nav2-card .tt { position: absolute; left: 11px; right: 8px; bottom: 9px; color: #fff; }
+  .nav2-card .tt b { display: block; font-size: 15px; font-weight: 800; line-height: 1.15; }
+  .nav2-card .tt span { font-size: 10.5px; color: #f5d485; }
+  .nav2-brand { text-align: center; color: #f5d485; font-weight: 800; margin: 18px 0 6px; font-size: 13px; }
+
+  #nav2-android-back { position: sticky; top: 0; z-index: 9000; align-items: center; gap: 10px; background: rgba(14,10,8,.97); border-bottom: 1px solid #c9a35e; padding: 8px 6px; margin: -4px -4px 10px; }
+  #nav2-android-back button { border: none; background: linear-gradient(135deg, #f5d485, #c9a35e); color: #1a1209; font-weight: 900; font-size: 14px; border-radius: 12px; padding: 10px 16px; cursor: pointer; }
+  #nav2-android-back span { color: #fff; font-weight: 800; font-size: 14px; }
+</style>
+
+<!-- 🖥️ PC: FLUSSO GUIDATO A 4 FASI -->
+<div id="nav2-pc-flow">
+  <div class="nav2-steps" id="nav2-steps"></div>
+  <div class="nav2-pills" id="nav2-pills"></div>
+</div>
+
+<!-- 📱 ANDROID: BARRA "TORNA ALLA HOME" + HOME A CARD -->
+<div id="nav2-android-back">
+  <button type="button" onclick="nav2GoHome()">🏠 Home</button>
+  <span id="nav2-back-title"></span>
+</div>
+
+<div id="nav2-android-home">
+  <div class="nav2-greet">👋 Ciao! Cosa vuoi fare?</div>
+  <div class="nav2-sub">Tocca una card per aprire la sezione.</div>
+  <button type="button" class="nav2-golive" onclick="eseguiAvvioDirettaMaster(this)">🔴 AVVIA DIRETTA</button>
+  <div class="nav2-status" id="nav2-status"></div>
+  <div class="nav2-grid" id="nav2-grid"></div>
+  <div class="nav2-brand">— Immobiliare Giancani</div>
+</div>
+
+<script>
+(function() {
+  // Etichette di tutte le sezioni (le stesse funzioni di prima, nulla rimosso)
+  var TABS = {
+    'tab-live':        { i: '🔴', n: 'Diretta Live' },
+    'tab-galleria':    { i: '🖼️', n: 'Galleria & 360°' },
+    'tab-palinsesto':  { i: '⏰', n: 'Palinsesto TV' },
+    'tab-bot-storie':  { i: '📸', n: 'Storie Social' },
+    'tab-analytics':   { i: '📈', n: 'Analytics' },
+    'tab-telegram':    { i: '📱', n: 'Telegram Staff' },
+    'tab-avatar':      { i: '🎭', n: 'Avatar & Conduttori' },
+    'tab-ruoli':       { i: '🎯', n: 'Ruoli Conduzione' },
+    'tab-autovision':  { i: '🤖', n: 'Auto-Vision AI' },
+    'tab-azuretts':    { i: '🎙️', n: 'Audio Massivo' },
+    'tab-impostazioni':{ i: '🎛️', n: 'Impostazioni' }
+  };
+  // PC: 4 fasi
+  var PHASES = [
+    { n: 'Prepara',      d: 'Foto, AI, audio, scaletta', tabs: ['tab-galleria','tab-autovision','tab-azuretts','tab-palinsesto'] },
+    { n: 'Vai in onda',  d: 'Diretta, avatar, ruoli',    tabs: ['tab-live','tab-avatar','tab-ruoli'] },
+    { n: 'Social',       d: 'Storie e Telegram',         tabs: ['tab-bot-storie','tab-telegram'] },
+    { n: 'Controlla',    d: 'Analytics e impostazioni',  tabs: ['tab-analytics','tab-impostazioni'] }
+  ];
+  // Android: 6 card con immagine
+  var CARDS = [
+    { t: 'tab-live',       i: '🔴', n: 'Diretta Live',   d: 'Vai in onda',        img: 'live' },
+    { t: 'tab-bot-storie', i: '📸', n: 'Storie Social',  d: 'Pubblica le storie', img: 'storie' },
+    { t: 'tab-palinsesto', i: '⏰', n: 'Palinsesto TV',  d: 'Scaletta e notizie', img: 'palinsesto' },
+    { t: 'tab-galleria',   i: '🖼️', n: 'Foto & 360°',    d: 'Galleria immobili',  img: 'foto360' },
+    { t: 'tab-avatar',     i: '🎭', n: 'Avatar & Voci',  d: 'DarIA e DarIO',      img: 'avatar' },
+    { t: '__menu',         i: '⚙️', n: 'Strumenti',      d: 'AI, audio, Telegram, ruoli, analytics, impostazioni', img: 'strumenti' }
+  ];
+
+  function phaseOf(tabId) {
+    for (var p = 0; p < PHASES.length; p++) if (PHASES[p].tabs.indexOf(tabId) !== -1) return p;
+    return 1;
+  }
+  var currentTab = 'tab-live';
+
+  function renderPC() {
+    var ph = phaseOf(currentTab);
+    document.body.classList.toggle('nav2-notlive', currentTab !== 'tab-live');
+    var steps = document.getElementById('nav2-steps');
+    var pills = document.getElementById('nav2-pills');
+    if (!steps || !pills) return;
+    steps.innerHTML = PHASES.map(function(p, idx) {
+      return '<div class="nav2-step' + (idx === ph ? ' on' : '') + '" onclick="mostraTab(\'' + p.tabs[0] + '\')">' +
+        '<div class="num">' + (idx + 1) + '</div><div class="txt"><b>' + p.n + '</b><span>' + p.d + '</span></div></div>';
+    }).join('');
+    pills.innerHTML = PHASES[ph].tabs.map(function(t) {
+      return '<button type="button" class="nav2-pill' + (t === currentTab ? ' on' : '') + '" onclick="mostraTab(\'' + t + '\')">' + TABS[t].i + ' ' + TABS[t].n + '</button>';
+    }).join('');
+  }
+
+  function renderCards() {
+    var g = document.getElementById('nav2-grid');
+    if (!g) return;
+    var imgs = window.NAV_IMG || {};
+    g.innerHTML = CARDS.map(function(c) {
+      var bg = imgs[c.img] ? 'background-image:url(' + imgs[c.img] + ');' : 'background-image:linear-gradient(135deg,#1b2a4a,#0d1424);';
+      var act = c.t === '__menu' ? 'toggleAndroidMenuSheet()' : "mostraTab('" + c.t + "')";
+      return '<button type="button" class="nav2-card" style="' + bg + '" onclick="' + act + '">' +
+        '<span class="ic">' + c.i + '</span><span class="tt"><b>' + c.n + '</b><span>' + c.d + '</span></span></button>';
+    }).join('');
+  }
+
+  window.nav2GoHome = function() {
+    document.body.classList.add('nav2-home');
+    window.scrollTo(0, 0);
+  };
+
+  function setSeg() {
+    var mode = (window._giancaniStoreGet && window._giancaniStoreGet('giancani_layout_mode')) || 'windows';
+    var a = document.getElementById('nav2-seg-android'), p = document.getElementById('nav2-seg-pc');
+    if (a) a.classList.toggle('on', mode === 'android');
+    if (p) p.classList.toggle('on', mode === 'windows');
+  }
+
+  function insertSegment() {
+    var host = document.querySelector('.sys-mode-actions');
+    if (!host || document.getElementById('nav2-seg')) return;
+    var seg = document.createElement('div');
+    seg.className = 'nav2-seg'; seg.id = 'nav2-seg';
+    seg.innerHTML = '<button type="button" id="nav2-seg-android">📱 Android</button><button type="button" id="nav2-seg-pc">🖥️ PC</button>';
+    host.insertBefore(seg, host.firstChild);
+    document.getElementById('nav2-seg-android').onclick = function() { applicaLayoutMode('android'); };
+    document.getElementById('nav2-seg-pc').onclick = function() { applicaLayoutMode('windows'); };
+  }
+
+  function init() {
+    insertSegment(); renderCards(); renderPC(); setSeg();
+    // Marca il pannello master e i box collegati (fino alla barra tab) come 'area diretta'
+    var _lm = document.getElementById('master-live-regia-box');
+    for (var _e = _lm; _e && _e.id !== 'main-tab-nav'; _e = _e.nextElementSibling) { if (_e.id !== 'nav2-pc-flow') _e.classList.add('nav2-livearea'); }
+    var _m = document.getElementById('master-live-regia-box'), _f = document.getElementById('nav2-pc-flow');
+    if (_m && _f && _m.parentNode) _m.parentNode.insertBefore(_f, _m); // flusso a fasi in cima
+
+    // Aggancia mostraTab: dopo la logica originale aggiorna fasi, pill e stato Home
+    var orig = window.mostraTab;
+    if (typeof orig === 'function' && !orig.__nav2) {
+      window.mostraTab = function(tabId) {
+        try {
+          return orig.apply(this, arguments);
+        } finally {
+          currentTab = tabId;
+          document.body.classList.remove('nav2-home');
+          var t = document.getElementById('nav2-back-title');
+          if (t && TABS[tabId]) t.textContent = TABS[tabId].i + ' ' + TABS[tabId].n;
+          renderPC();
+        }
+      };
+      window.mostraTab.__nav2 = true;
+    }
+
+    // Aggancia cambio modalità
+    var origMode = window.applicaLayoutMode;
+    if (typeof origMode === 'function' && !origMode.__nav2) {
+      window.applicaLayoutMode = function(mode) {
+        var r = origMode.apply(this, arguments);
+        if (mode === 'android') document.body.classList.add('nav2-home'); else document.body.classList.remove('nav2-home');
+        setSeg();
+        return r;
+      };
+      window.applicaLayoutMode.__nav2 = true;
+    }
+
+    // Avvio: Android parte dalla Home, PC dalla fase "Vai in onda"
+    var mode = (window._giancaniStoreGet && window._giancaniStoreGet('giancani_layout_mode')) || 'windows';
+    if (mode === 'android') document.body.classList.add('nav2-home');
+    else if (typeof window.mostraTab === 'function') { try { window.mostraTab('tab-live'); } catch (e) {} }
+
+    // Stato diretta nella Home (copia del badge già esistente)
+    setInterval(function() {
+      var b = document.getElementById('badge-master-live-status'), s = document.getElementById('nav2-status');
+      if (b && s) s.textContent = '● Stato: ' + (b.textContent || '').trim();
+    }, 2000);
+  }
+
+  // Esegue dopo che tutti gli script della regia sono stati caricati
+  if (document.readyState === 'complete') setTimeout(init, 0);
+  else window.addEventListener('load', function() { setTimeout(init, 0); });
+})();
+</script>

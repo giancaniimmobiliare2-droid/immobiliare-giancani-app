@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Area Riservata Acquirenti | DarIA & Immobiliare Giancani</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS for Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#f4f7f9',
+            surface: '#ffffff',
+            surfaceLight: '#f8fafc',
+            accent: '#cfa853',
+            accentLight: '#e0ba68',
+            emeraldCustom: '#10b981',
+            mutedCustom: '#60727e',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      background-color: #f4f7f9;
+      color: #1c2d37;
+      font-family: 'Outfit', sans-serif !important;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      color: #1c2d37;
+    }
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(207, 168, 83, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #cfa853 0%, #e0ba68 50%, #b88f3a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Style overrides for Light Theme */
+    .text-white { color: #1c2d37 !important; }
+    .text-slate-100 { color: #1c2d37 !important; }
+    .text-slate-200 { color: #2c3e50 !important; }
+    .text-slate-300 { color: #4b5563 !important; }
+    .text-slate-400 { color: #6b7280 !important; }
+    .text-slate-500 { color: #9ca3af !important; }
+    
+    /* Input style overrides */
+    input {
+      background-color: rgba(28, 45, 55, 0.04) !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      color: #1c2d37 !important;
+    }
+    input::placeholder {
+      color: rgba(28, 45, 55, 0.4) !important;
+    }
+    /* Hide scrollbars but keep functionality */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Lock Blur Overlay */
+    .sensitive-locked {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+    /* Custom Slider animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .floating-icon {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-accent selection:text-white">
+
+  <!-- ==========================================
+       SIDEBAR & MOBILE NAVIGATION
+       ========================================== -->
+  <aside class="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col bg-surface border-r border-white/5 p-5 lg:flex">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-accentLight flex items-center justify-center font-display text-xl font-bold shadow-lg shadow-accent/20">🧠</div>
+      <div>
+        <h1 class="font-display font-bold text-lg leading-tight">DarIA Portal</h1>
+        <p class="text-xs text-mutedCustom font-medium">Acquirenti Riservati</p>
+      </div>
+    </div>
+    
+    <div class="flex flex-col gap-1 flex-1">
+      <div class="text-[10px] uppercase font-bold tracking-wider text-mutedCustom/60 mb-2 px-3">Esplora</div>
+      <a href="#novita" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5 text-white font-medium transition-all"><span class="text-base">📢</span> Novità</a>
+      <a href="#preferiti" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">⭐</span> Preferiti & Trending</a>
+      <a href="#calcolo-mutuo" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">🧮</span> Calcolo Rata</a>
+      <a href="#mappa" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">📍</span> Mappa Visite</a>
+      
+      <div class="text-[10px] uppercase font-bold tracking-wider text-mutedCustom/60 mt-6 mb-2 px-3">Documenti & Stato</div>
+      <a href="#avanzamento" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">📈</span> Timeline Trattativa</a>
+      <a href="#documenti" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">📂</span> Cassaforte Documenti</a>
+      <a href="#agenda" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">📅</span> Agenda & Visite</a>
+      
+      <div class="text-[10px] uppercase font-bold tracking-wider text-mutedCustom/60 mt-6 mb-2 px-3">Supporto & Triage</div>
+      <a href="#triage" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">⚡</span> Triage Professionale</a>
+      <a href="#enciclopedia" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-mutedCustom hover:text-white hover:bg-white/5 transition-all"><span class="text-base">📖</span> Enciclopedia Casa</a>
+    </div>
+
+    <!-- Personal Branding Sidebar Footer -->
+    <div class="pt-4 border-t border-white/5">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-white/5">
+        <div class="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center font-bold text-accent text-sm">AG</div>
+        <div>
+          <div class="text-xs font-bold text-white">Immobiliare Giancani</div>
+          <div class="text-[10px] text-mutedCustom">Consulente Personale</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================
+       MAIN CONTENT CONTAINER
+       ========================================== -->
+  <div class="lg:ml-64 min-h-screen flex flex-col pb-24 lg:pb-10">
+    
+    <!-- TOPBAR -->
+    <header class="sticky top-0 z-40 w-full glass border-b border-white/5 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Hamburger on mobile -->
+        <button class="lg:hidden p-2 rounded-lg bg-surfaceLight hover:bg-surface text-white text-lg">☰</button>
+        <span class="text-sm font-medium text-white/90" id="welcomeMsg">Benvenuto! Sblocca l'area per visualizzare i tuoi dati.</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5" id="securityBadge">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+          Dati Protetti 🔐
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
+
+      <!-- ==========================================
+           1. SEZIONE "NOVITÀ IN PRIMA LINEA" (TOP)
+           ========================================== -->
+      <section id="novita" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl lg:text-2xl font-bold font-display text-white">📢 Novità in Prima Linea</h2>
+            <p class="text-xs text-mutedCustom">Le ultime notizie e opportunità selezionate per te</p>
+          </div>
+        </div>
+        
+        <!-- Slider/Grid delle Novità -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="novitaGrid">
+          <!-- Card 1 -->
+          <div class="glass glass-hover rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 scale-100 hover:scale-[1.02]">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-red-500/20 text-red-400 border border-red-500/30">[Opportunità Lampo]</span>
+                <span class="text-[10px] text-mutedCustom">Oggi</span>
+              </div>
+              <h3 class="font-bold text-lg text-white leading-snug">Favara Centro: Ribasso di Prezzo Immediato</h3>
+              <p class="text-xs text-mutedCustom line-clamp-3">Eccezionale ribasso per un attico signorile. Proprietario motivato a vendere entro fine mese. Ideale per investimento o prima casa.</p>
+            </div>
+            <button onclick="apriNovitaModal('ribasso-favara')" class="mt-4 w-full py-2 bg-accent/20 hover:bg-accent text-white text-xs font-bold rounded-xl transition-all border border-accent/30 hover:border-transparent">Leggi Dettagli & Video</button>
+          </div>
+          <!-- Card 2 -->
+          <div class="glass glass-hover rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 scale-100 hover:scale-[1.02]">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">[Nuova Legge]</span>
+                <span class="text-[10px] text-mutedCustom">Ieri</span>
+              </div>
+              <h3 class="font-bold text-lg text-white leading-snug">Bonus Mutui Under 36 Prorogato al 2026</h3>
+              <p class="text-xs text-mutedCustom line-clamp-3">Aggiornamenti importanti del Governo sui bonus prima casa per i giovani under 36. Garanzia statale consap valida fino a fine anno.</p>
+            </div>
+            <button onclick="apriNovitaModal('bonus-mutuo')" class="mt-4 w-full py-2 bg-accent/20 hover:bg-accent text-white text-xs font-bold rounded-xl transition-all border border-accent/30 hover:border-transparent">Vedi Come Ottenerlo</button>
+          </div>
+          <!-- Card 3 -->
+          <div class="glass glass-hover rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 scale-100 hover:scale-[1.02]">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-purple-500/20 text-purple-400 border border-purple-500/30">[Aggiornamento DarIA]</span>
+                <span class="text-[10px] text-mutedCustom">3 giorni fa</span>
+              </div>
+              <h3 class="font-bold text-lg text-white leading-snug">Triage Documentale IA online per i clienti</h3>
+              <p class="text-xs text-mutedCustom line-clamp-3">Da oggi puoi inviare in tempo reale planimetrie e documenti per la qualifica notarile o urbanistica direttamente nella tua chat DarIA.</p>
+            </div>
+            <button onclick="apriNovitaModal('triage-ia')" class="mt-4 w-full py-2 bg-accent/20 hover:bg-accent text-white text-xs font-bold rounded-xl transition-all border border-accent/30 hover:border-transparent">Leggi Comunicato</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           2. SECURITY & OTP LOCK PANEL
+           ========================================== -->
+      <section id="otp-lock-section" class="glass rounded-2xl p-6 border-accent/30 bg-gradient-to-b from-surfaceLight/80 to-surface/90 relative overflow-hidden">
+        <!-- Decorative glowing gradient -->
+        <div class="absolute -right-20 -top-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl"></div>
+        <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-emeraldCustom/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-xl mx-auto text-center space-y-6 relative z-10 py-4">
+          <div class="w-16 h-16 mx-auto rounded-full bg-accent/20 flex items-center justify-center text-accent text-2xl animate-pulse">👑</div>
+          <div class="space-y-2">
+            <h2 class="text-xl lg:text-3xl font-extrabold text-white font-display tracking-tight">Entra nel Club di DarIA</h2>
+            <p class="text-sm text-accent font-semibold">Ottieni le anteprime assolute del mercato immobiliare prima di chiunque altro!</p>
+            <p class="text-xs text-mutedCustom leading-relaxed">Per sbloccare il tuo fascicolo personale, visualizzare le proposte fuori mercato e accedere ai documenti catastali, registrati ora ed effettua la verifica OTP immediata su WhatsApp.</p>
+          </div>
+          
+          <div class="glass p-5 rounded-xl border-white/10 space-y-4 text-left">
+            <div id="otpInputArea" class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase">Nome</label>
+                  <input type="text" id="regNome" placeholder="Es. Marco" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase">Cognome</label>
+                  <input type="text" id="regCognome" placeholder="Es. Rossi" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase">Numero di Telefono WhatsApp</label>
+                <input type="text" id="otpTarget" placeholder="Es. 393201667156" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-2.5">
+              <input type="checkbox" id="otpGdpr" class="mt-1 w-4 h-4 text-accent border-white/10 rounded focus:ring-0 bg-surface">
+              <label for="otpGdpr" class="text-[11px] text-mutedCustom leading-normal">Accetto il trattamento dei dati personali in base alle normative del GDPR per le comunicazioni di sicurezza e gli aggiornamenti immobiliari coordinati da Immobiliare Giancani.</label>
+            </div>
+            
+            <!-- OTP Verification Field (Hidden initially) -->
+            <div id="otpVerificationArea" class="hidden space-y-2">
+              <label class="block text-xs font-bold text-emeraldCustom mb-1">CODICE DI SICUREZZA RICEVUTO</label>
+              <input type="text" id="otpCode" placeholder="Inserisci il codice temporaneo di sblocco" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-emeraldCustom/30 text-white font-bold tracking-widest text-center text-lg focus:outline-none focus:border-emeraldCustom">
+              <p class="text-[10px] text-mutedCustom text-right">Codice temporaneo valido per 5 minuti.</p>
+            </div>
+
+            <button onclick="handleOtpFlow()" id="otpSubmitBtn" class="w-full py-3 bg-gradient-to-r from-accent to-accentLight hover:from-accentLight hover:to-accent text-white font-bold rounded-xl transition-all shadow-lg shadow-accent/25 hover:shadow-accent/40 text-sm uppercase tracking-wider">Registrati e Ricevi OTP</button>
+          </div>
+          
+          <!-- Optional Password Link Option -->
+          <p class="text-[11px] text-mutedCustom">Hai già una password definitiva? <a href="javascript:void(0)" onclick="apriPasswordModal()" class="text-accent font-semibold hover:underline">Accedi con password</a></p>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           3. AREA CRITERI, PREFERITI, "I PIÙ VISTI" (TRENDING MATCH) & CALCOLO MUTUO
+           ========================================== -->
+      <section class="space-y-6">
+        
+        <!-- Criteri di ricerca -->
+        <div class="glass rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
+            <h3 class="font-bold font-display text-lg text-white">🎯 I Tuoi Parametri di Ricerca</h3>
+            <span class="text-xs text-accent font-semibold">Ultimo aggiornamento automatico</span>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="space-y-1">
+              <div class="text-[10px] uppercase font-bold text-mutedCustom">Tipologia Cercata</div>
+              <input type="text" id="searchTipo" value="Appartamento / Villa" class="w-full bg-surface py-2 px-3.5 rounded-xl text-xs text-white border border-white/5 focus:outline-none focus:border-accent">
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] uppercase font-bold text-mutedCustom">Zona Preferita</div>
+              <input type="text" id="searchZona" value="Agrigento / Favara" class="w-full bg-surface py-2 px-3.5 rounded-xl text-xs text-white border border-white/5 focus:outline-none focus:border-accent">
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] uppercase font-bold text-mutedCustom">Budget Massimo</div>
+              <input type="text" id="searchBudget" value="€ 250.000" class="w-full bg-surface py-2 px-3.5 rounded-xl text-xs text-white border border-white/5 focus:outline-none focus:border-accent">
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] uppercase font-bold text-mutedCustom">Stanze Minime</div>
+              <input type="text" id="searchLocali" value="3 o più locali" class="w-full bg-surface py-2 px-3.5 rounded-xl text-xs text-white border border-white/5 focus:outline-none focus:border-accent">
+            </div>
+          </div>
+          <div class="flex justify-end mt-4">
+            <button onclick="aggiornaCriteri()" class="py-2 px-6 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-accent/20">Aggiorna e Rinfresca Cataloghi</button>
+          </div>
+        </div>
+
+        <!-- 4. I MIEI PREFERITI & I PIÙ VISTI -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Tabella o Griglia dei PREFERITI -->
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white flex items-center gap-2">⭐ I Miei Preferiti <span class="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent border border-accent/20 font-sans" id="prefCount">2</span></h3>
+              <p class="text-xs text-mutedCustom">Gli immobili che hai salvato e che stai monitorando</p>
+            </div>
+            
+            <div class="space-y-4" id="preferitiContainer">
+              <!-- Preferito 1 -->
+              <div class="glass glass-hover rounded-2xl overflow-hidden p-4 flex flex-col md:flex-row gap-4 transition-all duration-300">
+                <div class="w-full md:w-32 h-28 bg-surfaceLight rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/400/300?random=1')"></div>
+                  <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-accent/80 text-[9px] font-bold uppercase tracking-wider text-white">ID: IMM-204</span>
+                </div>
+                <div class="flex-1 flex flex-col justify-between space-y-3">
+                  <div>
+                    <h4 class="font-bold text-white text-base">Villa Singola con Giardino Privato</h4>
+                    <p class="text-xs text-mutedCustom">Favara, via degli Oleandri 14</p>
+                  </div>
+                  
+                  <div class="flex items-center justify-between border-t border-white/5 pt-2.5">
+                    <div>
+                      <div class="text-sm font-extrabold text-white">€ 185.000</div>
+                      <div class="text-[9px] px-1.5 py-0.5 rounded bg-emeraldCustom/20 text-emerald-300 font-bold border border-emeraldCustom/20 mt-1 inline-block">Rata Mutuo: €498/m *</div>
+                    </div>
+                    
+                    <!-- 11. Hub Diretto Contatti Immobiliare Giancani per singolo immobile -->
+                    <div class="flex items-center gap-1.5">
+                      <button onclick="condividiImmobile('IMM-204')" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs" title="Condividi">🔗</button>
+                      <a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20maggiori%20informazioni%20sulla%20Villa%20Singola%20IMM-204" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-white text-xs font-bold" title="WhatsApp Antonio">🟢 WA</a>
+                      <button onclick="chiediRecall('IMM-204')" class="py-2 px-3 rounded-xl bg-accent/20 hover:bg-accent text-white text-xs font-bold" title="Call Me Back">📞 Recall</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preferito 2 -->
+              <div class="glass glass-hover rounded-2xl overflow-hidden p-4 flex flex-col md:flex-row gap-4 transition-all duration-300">
+                <div class="w-full md:w-32 h-28 bg-surfaceLight rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/400/300?random=2')"></div>
+                  <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-accent/80 text-[9px] font-bold uppercase tracking-wider text-white">ID: IMM-102</span>
+                </div>
+                <div class="flex-1 flex flex-col justify-between space-y-3">
+                  <div>
+                    <h4 class="font-bold text-white text-base">Appartamento Ristrutturato 4 Locali</h4>
+                    <p class="text-xs text-mutedCustom">Agrigento, Corso Garibaldi 88</p>
+                  </div>
+                  
+                  <div class="flex items-center justify-between border-t border-white/5 pt-2.5">
+                    <div>
+                      <div class="text-sm font-extrabold text-white">€ 120.000</div>
+                      <div class="text-[9px] px-1.5 py-0.5 rounded bg-emeraldCustom/20 text-emerald-300 font-bold border border-emeraldCustom/20 mt-1 inline-block">Rata Mutuo: €324/m *</div>
+                    </div>
+                    
+                    <!-- Hub Diretto Contatti Immobiliare Giancani per singolo immobile -->
+                    <div class="flex items-center gap-1.5">
+                      <button onclick="condividiImmobile('IMM-102')" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs" title="Condividi">🔗</button>
+                      <a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20maggiori%20informazioni%20sull%20Appartamento%20IMM-102" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-white text-xs font-bold" title="WhatsApp Antonio">🟢 WA</a>
+                      <button onclick="chiediRecall('IMM-102')" class="py-2 px-3 rounded-xl bg-accent/20 hover:bg-accent text-white text-xs font-bold" title="Call Me Back">📞 Recall</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- I PIÙ VISTI (TRENDING MATCH - FOMO) -->
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white flex items-center gap-2">🔥 I Più Visti (Trending Match) <span class="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/20 font-sans">HOT</span></h3>
+              <p class="text-xs text-mutedCustom">Gli immobili più ambiti e cliccati dalla community che combaciano con te</p>
+            </div>
+            
+            <div class="space-y-4" id="trendingContainer">
+              <!-- Trending 1 -->
+              <div class="glass glass-hover rounded-2xl overflow-hidden p-4 flex flex-col md:flex-row gap-4 transition-all duration-300 relative border-rose-500/10">
+                <span class="absolute top-0 right-0 px-3 py-1 rounded-bl-xl bg-rose-500 text-[9px] font-extrabold uppercase tracking-wider text-white z-10 flex items-center gap-1">⚡ 12 VISITE QUESTA SETTIMANA</span>
+                <div class="w-full md:w-32 h-28 bg-surfaceLight rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/400/300?random=3')"></div>
+                  <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-rose-500 text-[9px] font-bold uppercase tracking-wider text-white">ID: IMM-408</span>
+                </div>
+                <div class="flex-1 flex flex-col justify-between space-y-3">
+                  <div class="mt-2.5 md:mt-0">
+                    <h4 class="font-bold text-white text-base">Attico Panoramico Vista Valle dei Templi</h4>
+                    <p class="text-xs text-mutedCustom">Agrigento, Via Panoramica dei Templi</p>
+                  </div>
+                  
+                  <div class="flex items-center justify-between border-t border-white/5 pt-2.5">
+                    <div>
+                      <div class="text-sm font-extrabold text-white">€ 240.000</div>
+                      <div class="text-[9px] px-1.5 py-0.5 rounded bg-emeraldCustom/20 text-emerald-300 font-bold border border-emeraldCustom/20 mt-1 inline-block">Rata Mutuo: €646/m *</div>
+                    </div>
+                    
+                    <!-- Hub Diretto Contatti Immobiliare Giancani per singolo immobile -->
+                    <div class="flex items-center gap-1.5">
+                      <button onclick="condividiImmobile('IMM-408')" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs" title="Condividi">🔗</button>
+                      <a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20maggiori%20informazioni%20sull%20Attico%20IMM-408" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-white text-xs font-bold" title="WhatsApp Antonio">🟢 WA</a>
+                      <button onclick="chiediRecall('IMM-408')" class="py-2 px-3 rounded-xl bg-accent/20 hover:bg-accent text-white text-xs font-bold" title="Call Me Back">📞 Recall</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Trending 2 -->
+              <div class="glass glass-hover rounded-2xl overflow-hidden p-4 flex flex-col md:flex-row gap-4 transition-all duration-300 relative border-rose-500/10">
+                <span class="absolute top-0 right-0 px-3 py-1 rounded-bl-xl bg-rose-500 text-[9px] font-extrabold uppercase tracking-wider text-white z-10 flex items-center gap-1">🔥 RICHIESTISSIMO</span>
+                <div class="w-full md:w-32 h-28 bg-surfaceLight rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/400/300?random=4')"></div>
+                  <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-rose-500 text-[9px] font-bold uppercase tracking-wider text-white">ID: IMM-209</span>
+                </div>
+                <div class="flex-1 flex flex-col justify-between space-y-3">
+                  <div class="mt-2.5 md:mt-0">
+                    <h4 class="font-bold text-white text-base">Trilocale Indipendente Favara Ovest</h4>
+                    <p class="text-xs text-mutedCustom">Favara, via Capitano Basile</p>
+                  </div>
+                  
+                  <div class="flex items-center justify-between border-t border-white/5 pt-2.5">
+                    <div>
+                      <div class="text-sm font-extrabold text-white">€ 95.000</div>
+                      <div class="text-[9px] px-1.5 py-0.5 rounded bg-emeraldCustom/20 text-emerald-300 font-bold border border-emeraldCustom/20 mt-1 inline-block">Rata Mutuo: €256/m *</div>
+                    </div>
+                    
+                    <!-- Hub Diretto Contatti Immobiliare Giancani per singolo immobile -->
+                    <div class="flex items-center gap-1.5">
+                      <button onclick="condividiImmobile('IMM-209')" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs" title="Condividi">🔗</button>
+                      <a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20maggiori%20informazioni%20sul%20Trilocale%20IMM-209" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-white text-xs font-bold" title="WhatsApp Antonio">🟢 WA</a>
+                      <button onclick="chiediRecall('IMM-209')" class="py-2 px-3 rounded-xl bg-accent/20 hover:bg-accent text-white text-xs font-bold" title="Call Me Back">📞 Recall</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-mutedCustom italic">* Nota: La rata di mutuo è stimata ipotizzando un finanziamento dell'80% a tasso fisso medio per la durata di 25 anni. Le informazioni e i calcoli definitivi dipendono dalla delibera del consulente broker finanziario.</p>
+      </section>
+
+      <!-- ==========================================
+           SENSITIVE DATA SECTION (BLURRED / BLOCKED BY OTP DEFAULT)
+           ========================================== -->
+      <div id="sensitive-blur-container" class="sensitive-locked space-y-8">
+
+        <!-- ==========================================
+             5. STATO AVANZAMENTO E TRATTATIVE (TIMELINE)
+             ========================================== -->
+        <section id="avanzamento" class="glass rounded-2xl p-6">
+          <div class="border-b border-white/5 pb-4 mb-6">
+            <h3 class="text-xl font-bold font-display text-white">📈 Stato Avanzamento d'Acquisto</h3>
+            <p class="text-xs text-mutedCustom">Il percorso della tua trattativa coordinato da Immobiliare Giancani</p>
+          </div>
+          
+          <!-- Timeline visiva -->
+          <div class="relative py-4">
+            <!-- Linea di background -->
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full h-1 bg-white/5 rounded"></div>
+              <div class="absolute top-0 left-0 h-1 bg-gradient-to-r from-accent to-accentLight transition-all" style="width: 50%" id="timelineProgressLine"></div>
+            </div>
+            
+            <div class="relative flex justify-between">
+              <!-- Step 1 -->
+              <div class="flex flex-col items-center">
+                <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-accent/40 relative z-10">1</div>
+                <span class="text-xs font-bold mt-2 text-white">Ricerca & Proposta</span>
+                <span class="text-[10px] text-mutedCustom">Completato</span>
+              </div>
+              <!-- Step 2 -->
+              <div class="flex flex-col items-center">
+                <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-accent/40 relative z-10">2</div>
+                <span class="text-xs font-bold mt-2 text-white">Firma & Deposito</span>
+                <span class="text-[10px] text-mutedCustom">Completato</span>
+              </div>
+              <!-- Step 3 -->
+              <div class="flex flex-col items-center">
+                <div class="w-8 h-8 rounded-full bg-accentLight text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-accentLight/40 relative z-10 animate-pulse">3</div>
+                <span class="text-xs font-bold mt-2 text-accentLight">Delibera Broker</span>
+                <span class="text-[10px] text-amber-300">In Corso...</span>
+              </div>
+              <!-- Step 4 -->
+              <div class="flex flex-col items-center">
+                <div class="w-8 h-8 rounded-full bg-white/10 text-mutedCustom flex items-center justify-center text-xs font-bold relative z-10">4</div>
+                <span class="text-xs font-bold mt-2 text-mutedCustom">Atto Notarile</span>
+                <span class="text-[10px] text-mutedCustom">Pianificato</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/5 p-4 rounded-xl border border-white/5">
+            <div class="space-y-2">
+              <div class="text-[10px] uppercase font-bold text-mutedCustom">Dettaglio Proposta Attiva</div>
+              <div class="text-base font-bold text-white">Riferimento: Proposta Attico Templi IMM-408</div>
+              <p class="text-xs text-mutedCustom">Deposito fiduciario firmato il 04/07/2026. Attualmente in attesa di perizia per la delibera definitiva del finanziamento bancario tramite il nostro broker.</p>
+            </div>
+            <div class="space-y-2 flex flex-col justify-between">
+              <div>
+                <div class="text-[10px] uppercase font-bold text-mutedCustom">Scadenze e Date Chiave</div>
+                <div class="text-sm font-bold text-amber-300">Termine Sospensiva Mutuo: 25/08/2026</div>
+                <div class="text-xs text-mutedCustom">Rogito programmato indicativamente entro il: 15/09/2026</div>
+              </div>
+              <button onclick="chiediInfoAzione('Timeline Trattativa')" class="mt-2 py-2 bg-accent/20 hover:bg-accent text-white text-xs font-bold rounded-xl transition-all border border-accent/20 hover:border-transparent w-full">Chiedi chiarimenti ad Antonio</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             6. GESTIONE DOCUMENTALE SECURA
+             ========================================== -->
+        <section id="documenti" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Download Documenti -->
+          <div class="glass rounded-2xl p-6 space-y-4">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white">📂 Cassaforte Documenti d'Acquisto</h3>
+              <p class="text-xs text-mutedCustom">Planimetrie, Visure e contratti dell'immobile in acquisto</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-white/10">
+                    <th class="py-2.5 text-[10px] uppercase font-bold text-mutedCustom">Documento</th>
+                    <th class="py-2.5 text-[10px] uppercase font-bold text-mutedCustom">Tipo</th>
+                    <th class="py-2.5 text-[10px] uppercase font-bold text-mutedCustom text-right">Azione</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                  <tr>
+                    <td class="py-3 text-xs font-semibold text-white">Planimetria Catastale Conforme</td>
+                    <td class="py-3 text-[10px] text-mutedCustom"><span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/20">PDF</span></td>
+                    <td class="py-3 text-right"><a href="#" download class="text-xs text-accent font-bold hover:underline">Download ⬇️</a></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 text-xs font-semibold text-white">Visura Storica per Immobile IMM-408</td>
+                    <td class="py-3 text-[10px] text-mutedCustom"><span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/20">PDF</span></td>
+                    <td class="py-3 text-right"><a href="#" download class="text-xs text-accent font-bold hover:underline">Download ⬇️</a></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 text-xs font-semibold text-white">Modello Relazione Regolarità Urbanistica</td>
+                    <td class="py-3 text-[10px] text-mutedCustom"><span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/20">PDF</span></td>
+                    <td class="py-3 text-right"><a href="#" download class="text-xs text-accent font-bold hover:underline">Download ⬇️</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Area Upload Sicuro -->
+          <div class="glass rounded-2xl p-6 space-y-4">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white">📤 Carica i Tuoi Documenti</h3>
+              <p class="text-xs text-mutedCustom">Carica in modo sicuro documenti d'identità o redditi richiesti</p>
+            </div>
+            
+            <div class="border-2 border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-3 hover:border-accent/40 transition-all cursor-pointer" id="dropArea">
+              <span class="text-3xl">📄</span>
+              <div>
+                <p class="text-xs font-bold text-white">Trascina qui i tuoi file o clicca per esplorare</p>
+                <p class="text-[10px] text-mutedCustom mt-1">Formati supportati: PDF, JPG, PNG (Max 15MB)</p>
+              </div>
+              <input type="file" id="fileUploadInput" class="hidden" multiple>
+            </div>
+            
+            <!-- Elenco dei file in caricamento -->
+            <div id="fileUploadList" class="space-y-2"></div>
+            
+            <button onclick="uploadFiles()" class="w-full py-2.5 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-accent/20">Invia Documenti in Sicurezza</button>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             7. AGENDA, APPUNTAMENTI E FEEDBACK
+             ========================================== -->
+        <section id="agenda" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Lista Appuntamenti -->
+          <div class="glass rounded-2xl p-6 space-y-4 lg:col-span-2">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white">📅 Calendario Sopralluoghi e Visite</h3>
+              <p class="text-xs text-mutedCustom">I tuoi appuntamenti sul posto con i consulenti di Immobiliare Giancani</p>
+            </div>
+            
+            <div class="space-y-4">
+              <!-- Appuntamento 1 -->
+              <div class="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                <div class="px-3 py-2 bg-accent/20 rounded-xl text-center flex-shrink-0">
+                  <div class="text-xs font-extrabold text-accent">LUG</div>
+                  <div class="text-lg font-black text-white">10</div>
+                </div>
+                <div class="flex-1 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">Sopralluogo di Controllo (Seconda Visita)</span>
+                    <span class="px-2 py-0.5 rounded bg-accent/20 text-accent text-[9px] font-bold border border-accent/20">ORE 16:30</span>
+                  </div>
+                  <p class="text-xs text-mutedCustom">Immobile: Attico Panoramico Vista Valle dei Templi (IMM-408)</p>
+                  <p class="text-[10px] text-mutedCustom flex items-center gap-1">📍 Via Panoramica dei Templi, Agrigento <a href="https://maps.google.com" target="_blank" class="text-accent font-semibold hover:underline">Google Maps 🗺️</a></p>
+                </div>
+              </div>
+
+              <!-- Appuntamento 2 -->
+              <div class="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/5 opacity-60">
+                <div class="px-3 py-2 bg-white/10 rounded-xl text-center flex-shrink-0">
+                  <div class="text-xs font-extrabold text-mutedCustom">GIU</div>
+                  <div class="text-lg font-black text-white">28</div>
+                </div>
+                <div class="flex-1 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">Primo Incontro Qualifica in Ufficio</span>
+                    <span class="px-2 py-0.5 rounded bg-white/10 text-mutedCustom text-[9px] font-bold border border-white/10">ORE 10:00</span>
+                  </div>
+                  <p class="text-xs text-mutedCustom">Discussione criteri di ricerca e analisi finanziaria d'acquisto.</p>
+                  <p class="text-[10px] text-mutedCustom">📍 Favara Centro</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modulo Feedback Post-Visita -->
+          <div class="glass rounded-2xl p-6 space-y-4">
+            <div>
+              <h3 class="text-lg font-bold font-display text-white">📝 Valutazione Immobile (5 Box Analitici)</h3>
+              <p class="text-xs text-mutedCustom">Esprimi un giudizio dettagliato per allineare l'indice di gradimento dell'immobile visitato</p>
+            </div>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-mutedCustom mb-1">SELEZIONA L'IMMOBILE VISIONATO</label>
+                <select id="feedbackImmobile" class="w-full px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+                  <option value="IMM-408">Attico Panoramico IMM-408 (Favara)</option>
+                  <option value="IMM-204">Villa Singola IMM-204 (Agrigento)</option>
+                  <option value="IMM-209">Trilocale Basile IMM-209 (Aragona)</option>
+                </select>
+              </div>
+              
+              <!-- 5 Parametri di Valutazione -->
+              <div class="space-y-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                <!-- Parametro 1: Bellezza -->
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">1. Bellezza Estetica</span>
+                  <div class="flex items-center gap-1" id="starBellezza">
+                    <button onclick="setFeedbackParam('Bellezza', 1)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Bellezza', 2)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Bellezza', 3)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Bellezza', 4)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Bellezza', 5)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                  </div>
+                </div>
+                <!-- Parametro 2: Economia -->
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">2. Economia (Prezzo)</span>
+                  <div class="flex items-center gap-1" id="starEconomia">
+                    <button onclick="setFeedbackParam('Economia', 1)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Economia', 2)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Economia', 3)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Economia', 4)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Economia', 5)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                  </div>
+                </div>
+                <!-- Parametro 3: Qualità/Prezzo -->
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">3. Rapporto Qualità/Prezzo</span>
+                  <div class="flex items-center gap-1" id="starQualitaPrezzo">
+                    <button onclick="setFeedbackParam('QualitaPrezzo', 1)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('QualitaPrezzo', 2)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('QualitaPrezzo', 3)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('QualitaPrezzo', 4)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('QualitaPrezzo', 5)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                  </div>
+                </div>
+                <!-- Parametro 4: Panorama -->
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">4. Panorama (Vista)</span>
+                  <div class="flex items-center gap-1" id="starPanorama">
+                    <button onclick="setFeedbackParam('Panorama', 1)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Panorama', 2)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Panorama', 3)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Panorama', 4)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Panorama', 5)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                  </div>
+                </div>
+                <!-- Parametro 5: Struttura -->
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">5. Struttura (Interni/Esterni)</span>
+                  <div class="flex items-center gap-1" id="starStruttura">
+                    <button onclick="setFeedbackParam('Struttura', 1)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Struttura', 2)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Struttura', 3)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Struttura', 4)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                    <button onclick="setFeedbackParam('Struttura', 5)" class="text-lg text-white/20 hover:text-amber-400">★</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-xs font-bold text-mutedCustom mb-1">NOTE E OSSERVAZIONI LIBERE</label>
+                <textarea id="feedbackNote" placeholder="Fornisci dettagli specifici per guidarci nella proposta..." class="w-full px-3 py-2 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent resize-none h-20"></textarea>
+              </div>
+
+              <button onclick="inviaFeedbackAnalitico()" class="w-full py-2.5 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-accent/20 uppercase tracking-wider">Invia Valutazione ad Antonio</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             12. HUB CONSULENZE PROFESSIONALI E CHAT (TRIAGE)
+             ========================================== -->
+        <section id="triage" class="glass rounded-2xl p-6 space-y-6">
+          <div class="border-b border-white/5 pb-4">
+            <h3 class="text-xl font-bold font-display text-white">🧠 Hub Consulenza Professionale & IA Triage</h3>
+            <p class="text-xs text-mutedCustom">Ottieni assistenza legale, finanziaria o tecnica istantanea da DarIA e dai nostri partner</p>
+          </div>
+          
+          <!-- Bottoni triage -->
+          <div class="grid grid-cols-3 gap-4">
+            <button onclick="attivaConsulenza('Tecnico Urbanistico')" class="p-3 rounded-xl bg-white/5 hover:bg-accent/20 text-center transition-all border border-white/5 hover:border-accent/30">
+              <span class="text-xl block mb-1">📐</span>
+              <span class="text-xs font-bold block text-white">Urbanista</span>
+            </button>
+            <button onclick="attivaConsulenza('Broker Finanziario')" class="p-3 rounded-xl bg-white/5 hover:bg-accent/20 text-center transition-all border border-white/5 hover:border-accent/30">
+              <span class="text-xl block mb-1">💰</span>
+              <span class="text-xs font-bold block text-white">Broker</span>
+            </button>
+            <button onclick="attivaConsulenza('Notaio')" class="p-3 rounded-xl bg-white/5 hover:bg-accent/20 text-center transition-all border border-white/5 hover:border-accent/30">
+              <span class="text-xl block mb-1">⚖️</span>
+              <span class="text-xs font-bold block text-white">Notaio</span>
+            </button>
+          </div>
+
+          <!-- Chat area asincrona -->
+          <div class="border border-white/10 rounded-2xl overflow-hidden flex flex-col h-80 bg-surface">
+            <!-- Chat Header -->
+            <div class="bg-surfaceLight px-4 py-3 border-b border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emeraldCustom animate-pulse"></span>
+                <span class="text-xs font-bold text-white" id="chatTitle">DarIA Assistente Virtuale</span>
+              </div>
+              <span class="text-[10px] text-mutedCustom">Messaggistica Asincrona Protetta</span>
+            </div>
+            <!-- Chat Body -->
+            <div class="flex-1 p-4 overflow-y-auto space-y-3 text-xs" id="chatContainer">
+              <div class="flex items-start gap-2.5">
+                <div class="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center font-bold text-accent flex-shrink-0">🤖</div>
+                <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-white leading-relaxed">
+                  Ciao! Sono DarIA. Seleziona una tipologia di consulenza sopra o scrivimi qualsiasi dubbio. Se il tuo quesito è complesso, inoltrerò il testo e i documenti ad Immobiliare Giancani ed ai nostri professionisti partner.
+                </div>
+              </div>
+            </div>
+            <!-- Chat Input -->
+            <div class="p-3 bg-surfaceLight border-t border-white/5 flex gap-2">
+              <input type="text" id="chatInput" placeholder="Fai una domanda o descrivi la tua necessità..." class="flex-1 px-4 py-2 rounded-xl bg-surface border border-white/5 text-xs text-white focus:outline-none focus:border-accent">
+              <button onclick="sendChatMessage()" class="px-4 py-2 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all">Invia</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             16. AREA "I MIEI DATI" (PROFILO VENDITORE / UTENTE)
+             ========================================== -->
+        <section id="profilo-utente" class="glass rounded-2xl p-6 space-y-6">
+          <div class="border-b border-white/5 pb-4">
+            <h3 class="text-xl font-bold font-display text-white">👤 I Miei Dati & Consensi</h3>
+            <p class="text-xs text-mutedCustom">Gestisci le tue informazioni personali e i consensi sulla privacy</p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-mutedCustom mb-1">NOME E COGNOME</label>
+                <input type="text" id="profNome" value="Marco Rossi" class="w-full px-3 py-2 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-mutedCustom mb-1">NUMERO DI TELEFONO VINCULATO</label>
+                <input type="text" id="profTel" value="393201667156" readonly class="w-full px-3 py-2 rounded-xl bg-surface border border-white/10 text-xs text-mutedCustom cursor-not-allowed">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-mutedCustom mb-1">INDIRIZZO EMAIL</label>
+                <input type="email" id="profEmail" value="marco.rossi@email.it" class="w-full px-3 py-2 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+              </div>
+            </div>
+            
+            <div class="space-y-4 flex flex-col justify-between">
+              <div class="space-y-3">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Trattamento Dati & GDPR</h4>
+                <div class="flex items-start gap-2.5">
+                  <input type="checkbox" id="profGdpr1" checked class="mt-1 w-4 h-4 text-accent border-white/10 rounded focus:ring-0 bg-surface">
+                  <label for="profGdpr1" class="text-[11px] text-mutedCustom">Consenso al trattamento per finalità connesse all'intermediazione immobiliare.</label>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <input type="checkbox" id="profGdpr2" checked class="mt-1 w-4 h-4 text-accent border-white/10 rounded focus:ring-0 bg-surface">
+                  <label for="profGdpr2" class="text-[11px] text-mutedCustom">Ricezione notifiche istantanee su WhatsApp/Telegram per nuovi immobili in target.</label>
+                </div>
+              </div>
+              
+              <button onclick="salvaProfilo()" class="w-full py-2.5 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-accent/20">Salva Modifiche Profilo</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             19. MAPPA INTERATTIVA IMMOBILI VISITATI
+             ========================================== -->
+        <section id="mappa" class="glass rounded-2xl p-6 space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-white/5 pb-4">
+            <div>
+              <h3 class="text-xl font-bold font-display text-white">📍 Mappa dei Tuoi Immobili & Sopralluoghi</h3>
+              <p class="text-xs text-mutedCustom">Visualizza graficamente dove si trovano i tuoi preferiti e gli appuntamenti</p>
+            </div>
+            
+            <!-- Toggle Collega/Scollega -->
+            <div class="flex items-center gap-3 bg-surfaceLight/50 p-2 rounded-xl border border-white/5 self-start lg:self-center">
+              <span class="text-[10px] font-bold text-mutedCustom uppercase tracking-wider">Mappa:</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="syncMapToggle" class="sr-only peer" onchange="toggleSyncMap()" checked>
+                <div class="w-24 h-6 bg-surface peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-accent after:border-gray-300 after:border after:rounded-full after:h-5 after:w-11 after:transition-all peer-checked:bg-emeraldCustom/20 border border-white/10"></div>
+                <span id="syncMapText" class="absolute text-[9px] font-extrabold uppercase pointer-events-none select-none left-4 text-emeraldCustom">Collegato</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Mappa Leaflet -->
+            <div class="lg:col-span-2 space-y-4">
+              <!-- Leaflet Map Container -->
+              <div class="w-full h-96 bg-surface rounded-xl overflow-hidden border border-white/10 relative z-20 shadow-inner" id="mapContainer"></div>
+            </div>
+            
+            <!-- Pannello Filtri & POI Radar -->
+            <div class="space-y-6">
+              <!-- Filtri Mappa Muta (Scollegati) -->
+              <div class="glass p-4 rounded-xl border-white/5 space-y-4">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Filtri di Ricerca Indipendenti</h4>
+                
+                <div class="space-y-2">
+                  <label class="block text-[10px] font-bold text-mutedCustom uppercase">Tipologia</label>
+                  <div class="grid grid-cols-2 gap-2" id="mapTipologiaFilters">
+                    <button onclick="toggleMapTipologia('Appartamento')" class="py-1 px-2 rounded-lg bg-surface border border-white/10 text-[10px] text-white hover:border-accent transition-all font-semibold active-filter" id="btnTipApp">Appartamento</button>
+                    <button onclick="toggleMapTipologia('Villa')" class="py-1 px-2 rounded-lg bg-surface border border-white/10 text-[10px] text-white hover:border-accent transition-all font-semibold active-filter" id="btnTipVil">Villa Singola</button>
+                    <button onclick="toggleMapTipologia('Rustico')" class="py-1 px-2 rounded-lg bg-surface border border-white/10 text-[10px] text-white hover:border-accent transition-all font-semibold active-filter" id="btnTipRus">Rustico</button>
+                    <button onclick="toggleMapTipologia('Attico')" class="py-1 px-2 rounded-lg bg-surface border border-white/10 text-[10px] text-white hover:border-accent transition-all font-semibold active-filter" id="btnTipAtt">Attico</button>
+                  </div>
+                </div>
+                
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <label class="block text-[10px] font-bold text-mutedCustom uppercase">Budget Massimo</label>
+                    <span id="mapBudgetVal" class="text-xs font-bold text-accent">€350.000</span>
+                  </div>
+                  <input type="range" id="mapBudgetRange" min="50000" max="500000" step="10000" value="350000" oninput="updateMapBudget(this.value)" class="w-full h-1.5 bg-surface rounded-lg appearance-none cursor-pointer accent-accent">
+                </div>
+              </div>
+              
+              <!-- Radar POI & Neuromarketing Styling -->
+              <div class="glass p-4 rounded-xl border-accent/20 bg-gradient-to-br from-accent/5 to-transparent space-y-4">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-xs font-bold text-accentLight uppercase tracking-wider">Radar Servizi & POI</h4>
+                  <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                  </span>
+                </div>
+                
+                <div class="space-y-3" id="poiRadarContainer">
+                  <!-- POI list will be populated dynamically when clicking on markers -->
+                  <p class="text-[11px] text-mutedCustom italic">Seleziona un immobile sulla mappa per attivare il radar POI.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div> <!-- END OF SENSITIVE DATA CONTAINER -->
+
+      <!-- ==========================================
+           8. HUB MULTIMEDIALE & ROTAZIONE VIDEO PROMO (UNRESTRICTED)
+           ========================================== -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Video Promo Rotator -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <div>
+            <h3 class="text-lg font-bold font-display text-white">📹 Rotazione Video & Pubblicità</h3>
+            <p class="text-xs text-mutedCustom">I nostri consigli video per investire e vendere in sicurezza</p>
+          </div>
+          <!-- Random Video Widget -->
+          <div class="w-full aspect-video rounded-xl bg-surfaceLight overflow-hidden border border-white/10 relative">
+            <iframe id="promoVideoFrame" class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-mutedCustom">Video in rotazione casuale</span>
+            <button onclick="ruotaVideo()" class="text-accent font-bold hover:underline">Mostra un altro video 🔄</button>
+          </div>
+        </div>
+
+        <!-- 14. Raccomandazione Reel -->
+        <div class="glass rounded-2xl p-6 flex flex-col justify-between space-y-6 bg-gradient-to-tr from-purple-900/20 to-accent/10 border-accent/20">
+          <div class="space-y-3">
+            <span class="px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-accent/20 text-accentLight border border-accent/20 tracking-wider">Opportunità Video</span>
+            <h3 class="text-xl font-bold font-display text-white leading-snug">Esplora i Nostri Video Reel Immobiliari</h3>
+            <p class="text-xs text-mutedCustom leading-relaxed">Guarda tour e recensioni esclusive condotte direttamente da Immobiliare Giancani per comprendere appieno ogni singola soluzione in catalogo, senza muoverti da casa.</p>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <span class="text-4xl floating-icon">🍿</span>
+            <a href="https://script.google.com/macros/s/AKfycbzq3gfy5JCZJT1tyF4oECkBFVrckxVzqDuAJgUSvPhU4rv2Bztj7EUT3m4b5ILm4Vdc/exec?reels=true" target="_blank" class="flex-1 py-3 bg-gradient-to-r from-accent to-accentLight text-white font-bold rounded-xl text-center text-xs shadow-lg shadow-accent/20 hover:shadow-accent/40 transition-all uppercase tracking-wider">Guarda i Video Reel Adesso</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           9. PROFILO FINANZIARIO & QUALIFICAZIONE
+           ========================================== -->
+      <section class="glass rounded-2xl p-6 space-y-4">
+        <div>
+          <h3 class="text-lg font-bold font-display text-white">💰 Profilazione Finanziaria d'Acquisto</h3>
+          <p class="text-xs text-mutedCustom">Qualifica la tua capacità d'acquisto per ottenere un canale preferenziale sulle proposte</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-mutedCustom">TIPO DI ACQUISTO / LIQUIDITÀ</label>
+            <select id="finTipo" class="w-full px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+              <option value="contanti">100% Contanti / Liquidità Subito Disponibile</option>
+              <option value="mutuo-richiesta">Mutuo da richiedere all'80%</option>
+              <option value="mutuo-deliberato">Mutuo già deliberato / Pre-approvazione bancaria</option>
+              <option value="permuta">Acquisto subordinato a vendita di altro immobile</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-mutedCustom">REDDITO MENSILE FAMILIARE COMPLESSIVO</label>
+            <input type="text" id="finReddito" placeholder="es: € 3.500" class="w-full px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-mutedCustom">SERVE CONSULENZA FINANZIARIA BROKER?</label>
+            <select id="finConsulenza" class="w-full px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+              <option value="no">No, ho già la mia banca di fiducia</option>
+              <option value="si">Sì, vorrei un parere dal Broker partner di Antonio</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="salvaFinanza()" class="py-2.5 px-6 bg-accent hover:bg-accentLight text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-accent/20">Salva e Qualifica Profilo</button>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           15. SPAZIO MOTIVAZIONALE ED EDUCAZIONE FINANZIARIA
+           ========================================== -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Spazio Motivazionale -->
+        <div class="glass rounded-2xl p-6 flex flex-col justify-between bg-gradient-to-br from-surface to-surfaceLight relative overflow-hidden">
+          <div class="absolute -right-16 -top-16 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl"></div>
+          
+          <div class="space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">✨</span>
+              <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Pensiero del Giorno</span>
+            </div>
+            <p class="text-sm font-semibold text-white italic leading-relaxed" id="motivationalText">"La casa non è un semplice spazio di mattoni, ma il palcoscenico in cui scriverai il futuro della tua famiglia."</p>
+          </div>
+          <p class="text-[10px] text-mutedCustom/70 mt-6">— Selezionato per te da Immobiliare Giancani</p>
+        </div>
+
+        <!-- Grafico Svalutazione "Indice Pizza" -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <h4 class="text-xs font-extrabold uppercase text-white tracking-wider">🍕 L'Indice Pizza (Svalutazione Liquidità)</h4>
+            <span class="text-[10px] text-red-400 font-bold">-60% potere d'acquisto</span>
+          </div>
+          <div class="space-y-3">
+            <p class="text-[11px] text-mutedCustom">I soldi fermi sul conto corrente perdono valore. Ecco quanto costava una pizza margherita media nel tempo:</p>
+            
+            <div class="space-y-2">
+              <div>
+                <div class="flex justify-between text-[10px] mb-1"><span>Anno 2016</span><span class="font-bold">€ 4.50</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden"><div class="bg-accent h-full rounded-full" style="width: 45%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] mb-1"><span>Anno 2021</span><span class="font-bold">€ 7.00</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden"><div class="bg-accent h-full rounded-full" style="width: 70%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] mb-1"><span>Anno 2026</span><span class="font-bold">€ 10.00</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden"><div class="bg-accent h-full rounded-full" style="width: 100%"></div></div>
+              </div>
+            </div>
+            <p class="text-[10px] text-emerald-400 font-semibold italic">💡 Consiglio: Il mattone conserva il valore d'acquisto dei tuoi risparmi nel tempo.</p>
+          </div>
+        </div>
+
+        <!-- Stipendio vs Rata Mutuo -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <h4 class="text-xs font-extrabold uppercase text-white tracking-wider">📈 Stipendio vs Mutuo Fisso</h4>
+            <span class="text-[10px] text-emerald-400 font-bold">Rata fissa garantita</span>
+          </div>
+          <div class="space-y-3">
+            <p class="text-[11px] text-mutedCustom">Mentre lo stipendio tende ad adeguarsi all'inflazione crescendo nel tempo, il mutuo a tasso fisso resta bloccato, pesando sempre meno:</p>
+            
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-accent"></span>
+                <span class="text-[10px] text-white">Stipendio Medio: Cresce negli anni</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-emeraldCustom"></span>
+                <span class="text-[10px] text-white">Rata Mutuo: Resta ferma per 25 anni</span>
+              </div>
+            </div>
+            
+            <!-- Simulazione grafica semplice -->
+            <div class="h-20 flex items-end gap-6 pt-2 border-b border-white/10 px-4">
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-accent h-8 rounded-t"></div>
+                <span class="text-[9px] text-mutedCustom">Anno 1</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-accent h-12 rounded-t"></div>
+                <span class="text-[9px] text-mutedCustom">Anno 10</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-accent h-16 rounded-t"></div>
+                <span class="text-[9px] text-mutedCustom">Anno 20</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           24. GEOPOLITICA ECONOMICA PROVINCIA DI AGRIGENTO
+           ========================================== -->
+      <section id="geopolitica" class="glass rounded-2xl p-6 space-y-6">
+        <div>
+          <h3 class="text-xl font-bold font-display text-white">🌍 Geopolitica Economica & Micro-Mercati</h3>
+          <p class="text-xs text-mutedCustom">Dinamiche economiche, flussi turistici e valore mq nella Provincia di Agrigento coordinati da Immobiliare Giancani</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Descrizione mercati locali -->
+          <div class="glass p-5 border-white/5 space-y-4 lg:col-span-1">
+            <h4 class="text-xs font-bold text-accentLight uppercase tracking-wider">I 4 Hub di Riferimento</h4>
+            
+            <div class="space-y-3.5 text-xs text-mutedCustom leading-relaxed">
+              <div>
+                <strong class="text-white">📍 Agrigento (Capoluogo)</strong>
+                <p class="mt-0.5">Trainato dal turismo archeologico (Valle dei Templi) e da "Agrigento 2025 Capitale della Cultura". Mercato di pregio con rendimenti da locazione turistica in forte ascesa.</p>
+              </div>
+              <div>
+                <strong class="text-white">📍 Favara (Farm Cultural Park)</strong>
+                <p class="mt-0.5">Un miracolo di rigenerazione urbana. Prezzi d'acquisto estremamente competitivi con ottimi margini di rivalutazione legati ad affitti brevi per artisti e visitatori.</p>
+              </div>
+              <div>
+                <strong class="text-white">📍 Porto Empedocle (Costa & Porto)</strong>
+                <p class="mt-0.5">Focalizzato sull'asse balneare (Scala dei Turchi) e logistico-portuale. Domanda stagionale intensa ed elevata liquidità immobiliare nei mesi estivi.</p>
+              </div>
+              <div>
+                <strong class="text-white">📍 Aragona (Residenziale & Natura)</strong>
+                <p class="mt-0.5">Oasi residenziale tranquilla e ben collegata. Ideale per famiglie alla ricerca di ampi spazi esterni e indipendenza a prezzi contenuti.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Istogrammi SVG Responsivi -->
+          <div class="lg:col-span-2 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Istogramma 1: Costo al MQ -->
+              <div class="glass p-4 border-white/5 space-y-2">
+                <h5 class="text-[10px] font-bold text-white uppercase tracking-wider">Costo Medio al MQ (€/mq)</h5>
+                <div class="w-full aspect-[4/3] bg-surface/50 rounded-lg p-2">
+                  <svg viewBox="0 0 100 80" class="w-full h-full font-sans select-none">
+                    <!-- Grid Lines -->
+                    <line x1="15" y1="10" x2="95" y2="10" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="30" x2="95" y2="30" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="50" x2="95" y2="50" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="70" x2="95" y2="70" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                    
+                    <!-- Y Axis Labels -->
+                    <text x="5" y="12" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">€1.500</text>
+                    <text x="5" y="32" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">€1.000</text>
+                    <text x="5" y="52" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">€500</text>
+                    
+                    <!-- Bars (Height calculated: 70 - value) -->
+                    <!-- Agrigento: €1.350 (height ~ 54px) -->
+                    <rect x="23" y="16" width="10" height="54" fill="url(#gradAccent)" rx="1"/>
+                    <text x="28" y="14" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">€1.350</text>
+                    <text x="28" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Agrigento</text>
+                    
+                    <!-- Favara: €850 (height ~ 34px) -->
+                    <rect x="41" y="36" width="10" height="34" fill="url(#gradAccent)" rx="1"/>
+                    <text x="46" y="34" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">€850</text>
+                    <text x="46" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Favara</text>
+                    
+                    <!-- Porto Empedocle: €1.050 (height ~ 42px) -->
+                    <rect x="59" y="28" width="10" height="42" fill="url(#gradAccent)" rx="1"/>
+                    <text x="64" y="26" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">€1.050</text>
+                    <text x="64" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">P.Empedocle</text>
+                    
+                    <!-- Aragona: €750 (height ~ 30px) -->
+                    <rect x="77" y="40" width="10" height="30" fill="url(#gradAccent)" rx="1"/>
+                    <text x="82" y="38" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">€750</text>
+                    <text x="82" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Aragona</text>
+                    
+                    <!-- Gradients -->
+                    <defs>
+                      <linearGradient id="gradAccent" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#bf9b30"/>
+                        <stop offset="100%" stop-color="#735d18"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              
+              <!-- Istogramma 2: Rendimento Turistico -->
+              <div class="glass p-4 border-white/5 space-y-2">
+                <h5 class="text-[10px] font-bold text-white uppercase tracking-wider">Rendimento Annuo Locazione (%)</h5>
+                <div class="w-full aspect-[4/3] bg-surface/50 rounded-lg p-2">
+                  <svg viewBox="0 0 100 80" class="w-full h-full font-sans select-none">
+                    <!-- Grid Lines -->
+                    <line x1="15" y1="10" x2="95" y2="10" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="30" x2="95" y2="30" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="50" x2="95" y2="50" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                    <line x1="15" y1="70" x2="95" y2="70" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                    
+                    <!-- Y Axis Labels -->
+                    <text x="5" y="12" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">12%</text>
+                    <text x="5" y="32" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">8%</text>
+                    <text x="5" y="52" fill="rgba(255,255,255,0.4)" font-size="3" text-anchor="start">4%</text>
+                    
+                    <!-- Bars -->
+                    <!-- Agrigento: 10.5% (height ~ 52px) -->
+                    <rect x="23" y="18" width="10" height="52" fill="url(#gradEmerald)" rx="1"/>
+                    <text x="28" y="15" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">10.5%</text>
+                    <text x="28" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Agrigento</text>
+                    
+                    <!-- Favara: 8.0% (height ~ 40px) -->
+                    <rect x="41" y="30" width="10" height="40" fill="url(#gradEmerald)" rx="1"/>
+                    <text x="46" y="27" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">8.0%</text>
+                    <text x="46" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Favara</text>
+                    
+                    <!-- Porto Empedocle: 9.5% (height ~ 47px) -->
+                    <rect x="59" y="23" width="10" height="47" fill="url(#gradEmerald)" rx="1"/>
+                    <text x="64" y="20" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">9.5%</text>
+                    <text x="64" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">P.Empedocle</text>
+                    
+                    <!-- Aragona: 5.5% (height ~ 27px) -->
+                    <rect x="77" y="43" width="10" height="27" fill="url(#gradEmerald)" rx="1"/>
+                    <text x="82" y="40" fill="#fff" font-size="3" font-weight="bold" text-anchor="middle">5.5%</text>
+                    <text x="82" y="75" fill="rgba(255,255,255,0.6)" font-size="3" text-anchor="middle">Aragona</text>
+                    
+                    <!-- Gradients -->
+                    <defs>
+                      <linearGradient id="gradEmerald" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#10b981"/>
+                        <stop offset="100%" stop-color="#047857"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <p class="text-[10px] text-mutedCustom leading-relaxed">💡 <span class="text-white font-semibold">Opportunità:</span> I rendimenti ad Agrigento e dintorni superano del **4.2%** la media nazionale del nord-Italia. Acquistare a prezzi svalutati protegge la liquidità garantendo flussi di cassa immediati tramite canali d'affitto coordinati da **Immobiliare Giancani**.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           20. DIZIONARIO DOCUMENTALE ED ENCICLOPEDIA
+           ========================================== -->
+      <section id="enciclopedia" class="glass rounded-2xl p-6 space-y-4">
+        <div>
+          <h3 class="text-xl font-bold font-display text-white">📖 Enciclopedia e Guida d'Acquisto Casa</h3>
+          <p class="text-xs text-mutedCustom">Tutta la burocrazia immobiliare spiegata con chiarezza da Immobiliare Giancani</p>
+        </div>
+        
+        <!-- Barra di ricerca -->
+        <div class="relative max-w-md">
+          <input type="text" id="encyclopediaSearch" oninput="filtraEnciclopedia()" placeholder="🔍 Cerca termine (es: visura, rogito, APE)..." class="w-full px-4 py-2 rounded-xl bg-surface border border-white/10 text-xs text-white focus:outline-none focus:border-accent">
+        </div>
+
+        <!-- Accordion delle Voci -->
+        <div class="space-y-3" id="encyclopediaContainer">
+          
+          <!-- Voce 1 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-visura')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>📄 La Visura Catastale</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-visura" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Documento ufficiale dell'Agenzia delle Entrate con dati identificativi e catastali (foglio, particella, subalterno, categoria, rendita). Non costituisce prova legale di proprietà (non è probatorio) ed è redatto principalmente a fini fiscali.
+            </div>
+          </div>
+
+          <!-- Voce 2 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-planimetria')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>📐 La Planimetria Catastale</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-planimetria" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Rappresentazione grafica in scala (solitamente 1:200) dell'unità immobiliare registrata in Catasto. Deve corrispondere al millimetro allo stato di fatto interno per garantire la regolarità e la mutuabilità del bene.
+            </div>
+          </div>
+
+          <!-- Voce 3 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-rogito')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>⚖️ Atto Notarile / Rogito</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-rogito" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              L'atto pubblico stipulato dinanzi al Notaio che sancisce il definitivo trasferimento di proprietà. Il Notaio esegue le visure ipotecarie e catastali preliminari per garantire la libertà da pesi e pregiudiziali.
+            </div>
+          </div>
+
+          <!-- Voce 4 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-successione')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>📋 Dichiarazione di Successione</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-successione" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Adempimento fiscale obbligatorio entro 12 mesi dalla morte del proprietario per trasferire la titolarità fiscale del bene agli eredi. Per la vendita occorrerà trascrivere anche l'accettazione tacita di eredità.
+            </div>
+          </div>
+
+          <!-- Voce 5 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-cila')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🛠️ CILA (Manutenzione Straordinaria Leggera)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-cila" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Comunicazione Inizio Lavori Asseverata da un tecnico abilitato. Serve per modifiche interne senza interventi strutturali (es. abbattere un tramezzo o ridistribuire stanze).
+            </div>
+          </div>
+
+          <!-- Voce 6 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-scia')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🏗️ SCIA (Manutenzione Straordinaria Pesante)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-scia" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Segnalazione Certificata Inizio Attività. Obbligatoria per modifiche strutturali, sulle parti comuni dell'edificio o cambi di destinazione d'uso (es. da ufficio ad abitazione).
+            </div>
+          </div>
+
+          <!-- Voce 7 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-cdu')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🗺️ CDU (Certificato Destinazione Urbanistica)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-cdu" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Documento comunale che attesta la destinazione d'uso e le prescrizioni urbanistiche di un terreno o delle pertinenze maggiori di 5000 mq abbinate a fabbricati.
+            </div>
+          </div>
+
+          <!-- Voce 8 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-agibilita')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🏥 Agibilità (SCA)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-agibilita" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Segnalazione Certificata di Agibilità. Attesta la rispondenza dell'immobile alle condizioni di sicurezza, igiene, salubrità e risparmio energetico previste dalla legge.
+            </div>
+          </div>
+
+          <!-- Voce 9 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-ape')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>⚡ APE (Attestato Prestazione Energetica)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-ape" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Certificato obbligatorio per legge che descrive le caratteristiche energetiche e le emissioni di CO2 del fabbricato (da Classe A4 a Classe G). Validità massima di 10 anni.
+            </div>
+          </div>
+
+          <!-- Voce 10 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-impianti')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🔌 Conformità Impianti (DiCo)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-impianti" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Certificazione rilasciata dall'installatore abilitato che attesta la rispondenza dell'impianto elettrico, idrico o termico alle norme di sicurezza vigenti (D.M. 37/08).
+            </div>
+          </div>
+
+          <!-- Voce 11 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-assicurazioni')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🛡️ Assicurazioni Mutuo (Scoppio, TCM, Donazione)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-assicurazioni" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              La polizza *Scoppio e Incendio* è obbligatoria per legge a garanzia del mutuo. La *TCM (Temporanea Caso Morte)* copre il debito residuo tutelando i familiari, mentre la polizza *Donazione* garantisce la commerciabilità se l'immobile proviene da donazione antecedente a 20 anni.
+            </div>
+          </div>
+
+          <!-- Voce 12 -->
+          <div class="border border-white/5 rounded-xl overflow-hidden enc-item">
+            <button onclick="toggleAccordion('enc-oneri')" class="w-full px-4 py-3 bg-surfaceLight hover:bg-surface text-left flex justify-between items-center text-xs font-bold text-white">
+              <span>🏛️ Oneri Fiscali (Imposta di Registro 2% vs 9% & IVA)</span>
+              <span class="text-mutedCustom">▼</span>
+            </button>
+            <div id="enc-oneri" class="hidden p-4 bg-surface/40 text-xs text-mutedCustom leading-relaxed border-t border-white/5">
+              Per l'acquisto da privato, l'imposta di registro è al **2% sulla rendita catastale rivalutata** per la Prima Casa e al **9%** per la Seconda Casa. In caso di acquisto da impresa costruttrice entro 5 anni dai lavori, si applica l'IVA al **4% (Prima Casa)** o al **10% (Seconda Casa)** sul prezzo di vendita effettivo, oltre a imposte fisse.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================
+           10. CENTRO NOTIFICHE ED ECO-SISTEMA SOCIAL
+           ========================================== -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Notifiche Toggle -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <h3 class="text-lg font-bold font-display text-white">🔔 Notifiche DarIA in Tempo Reale</h3>
+          <p class="text-xs text-mutedCustom">Decidi come e dove desideri ricevere gli alert immobiliari importanti</p>
+          
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+              <div>
+                <div class="text-xs font-bold text-white">Notifiche WhatsApp</div>
+                <div class="text-[10px] text-mutedCustom">Invio istantaneo schede immobili in target</div>
+              </div>
+              <input type="checkbox" id="notifWa" checked class="w-10 h-5 bg-surface rounded-full appearance-none checked:bg-accent border border-white/10 relative cursor-pointer before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-[1px] before:left-[1px] checked:before:left-[21px] before:transition-all">
+            </div>
+            <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+              <div>
+                <div class="text-xs font-bold text-white">Notifiche Telegram</div>
+                <div class="text-[10px] text-mutedCustom">Riepiloghi serali del canale VIP</div>
+              </div>
+              <input type="checkbox" id="notifTg" checked class="w-10 h-5 bg-surface rounded-full appearance-none checked:bg-accent border border-white/10 relative cursor-pointer before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-[1px] before:left-[1px] checked:before:left-[21px] before:transition-all">
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links Widget -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <h3 class="text-lg font-bold font-display text-white">📡 Seguici sui Nostri Canali</h3>
+          <p class="text-xs text-mutedCustom">Resta sempre aggiornato sulle novità di Immobiliare Giancani</p>
+          
+          <div class="grid grid-cols-4 gap-3 text-center">
+            <a href="https://wa.me/393201667156" target="_blank" class="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 hover:text-white transition-all text-xs font-bold">WhatsApp</a>
+            <a href="https://t.me/immobiliaregiancani" target="_blank" class="p-2.5 rounded-xl bg-blue-500/10 hover:bg-blue-500 hover:text-white transition-all text-xs font-bold">Telegram</a>
+            <a href="https://instagram.com/antoniogiancani" target="_blank" class="p-2.5 rounded-xl bg-pink-500/10 hover:bg-pink-500 hover:text-white transition-all text-xs font-bold">Instagram</a>
+            <a href="mailto:giancaniimmobiliare@gmail.com" class="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500 hover:text-white transition-all text-xs font-bold">Email</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Personal Branding -->
+    <footer class="mt-auto py-8 px-4 text-center border-t border-white/5 bg-surface text-xs text-mutedCustom space-y-2">
+      <p class="font-bold text-white text-sm">Immobiliare Giancani</p>
+      <p>Consulenza e Intermediazione Immobiliare Professionale</p>
+      <p class="text-[10px] text-mutedCustom/50">© 2026 Immobiliare Giancani. Tutti i diritti riservati. P.IVA 02847120841.</p>
+    </footer>
+  </div>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION BAR FOR MOBILE DEVICES
+       ========================================== -->
+  <nav class="fixed bottom-0 inset-x-0 z-50 glass border-t border-white/5 flex items-center justify-around py-2.5 lg:hidden">
+    <a href="#novita" class="flex flex-col items-center text-[10px] font-bold text-white"><span class="text-lg">📢</span> Novità</a>
+    <a href="#preferiti" class="flex flex-col items-center text-[10px] font-bold text-mutedCustom"><span class="text-lg">⭐</span> Preferiti</a>
+    <a href="#mappa" class="flex flex-col items-center text-[10px] font-bold text-mutedCustom"><span class="text-lg">📍</span> Mappa</a>
+    <a href="#triage" class="flex flex-col items-center text-[10px] font-bold text-mutedCustom"><span class="text-lg">💬</span> Consulenza</a>
+  </nav>
+
+  <!-- ==========================================
+       MODALI & POPUP DI DETTAGLIO
+       ========================================== -->
+  
+  <!-- Novità Modal -->
+  <div id="novitaModal" class="fixed inset-0 z-[9999] bg-black/80 backdrop-filter blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass w-full max-w-2xl rounded-3xl overflow-hidden p-6 space-y-4 max-h-[90vh] overflow-y-auto relative">
+      <button onclick="chiudiNovitaModal()" class="absolute top-4 right-4 text-2xl text-mutedCustom hover:text-white">&times;</button>
+      <div id="novitaModalContent" class="space-y-4 pt-4">
+        <!-- Content dynamic -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="passwordModal" class="fixed inset-0 z-[9999] bg-black/80 backdrop-filter blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md rounded-2xl p-6 space-y-4 relative">
+      <button onclick="chiudiPasswordModal()" class="absolute top-4 right-4 text-2xl text-mutedCustom hover:text-white">&times;</button>
+      <h3 class="font-bold text-lg text-white font-display">Imposta Password Definitiva</h3>
+      <p class="text-xs text-mutedCustom">Crea una password legata al tuo account. Rimarrà attiva solo in accoppiata al consenso GDPR ed alla verifica iniziale.</p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-mutedCustom mb-1">PASSWORD DESIDERATA</label>
+          <input type="password" id="newPass" class="w-full px-4 py-2 bg-surface border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-accent">
+        </div>
+        <button onclick="savePassword()" class="w-full py-2.5 bg-accent hover:bg-accentLight text-white font-bold rounded-xl text-xs shadow-md">Salva Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Completamento Profilo Step 2 (3 Minuti) -->
+  <div id="profiloStep2Modal" class="fixed inset-0 z-[10000] bg-black/85 backdrop-filter blur-md hidden flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md rounded-3xl p-6 space-y-6 relative border-accent/40 shadow-2xl shadow-accent/25 transform scale-95 transition-all duration-300">
+      <!-- Decorative glowing dot -->
+      <div class="absolute -right-10 -top-10 w-24 h-24 bg-accent/20 rounded-full blur-2xl"></div>
+      
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 mx-auto rounded-full bg-accent/20 flex items-center justify-center text-accent text-3xl floating-icon">🎁</div>
+        <h3 class="font-extrabold text-xl lg:text-2xl text-white font-display tracking-tight">Ottimo inizio!</h3>
+        <p class="text-xs text-mutedCustom leading-relaxed">Per attivare i regali del tuo compleanno e la pre-compilazione automatica dei moduli d'acquisto, completa ora il tuo profilo!</p>
+      </div>
+
+      <div class="space-y-4 text-left">
+        <div>
+          <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase tracking-wider">Data di Nascita</label>
+          <input type="date" id="step2Nascita" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase tracking-wider">Codice Fiscale</label>
+          <input type="text" id="step2Cf" placeholder="Es. RSSMRC80A01H501U" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-bold tracking-widest text-sm focus:outline-none focus:border-accent">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase tracking-wider">Indirizzo Email</label>
+          <input type="email" id="step2Email" placeholder="Es. marco.rossi@example.com" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-mutedCustom mb-1 uppercase tracking-wider">Password facoltativa per accessi futuri</label>
+          <input type="password" id="step2Password" placeholder="Scegli password" class="w-full px-4 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-medium text-sm focus:outline-none focus:border-accent">
+        </div>
+        
+        <button onclick="salvaStep2Profilo()" class="w-full py-3 bg-gradient-to-r from-emeraldCustom to-teal-500 hover:from-teal-500 hover:to-emeraldCustom text-white font-bold rounded-xl transition-all shadow-lg shadow-emeraldCustom/25 hover:shadow-emeraldCustom/40 text-sm uppercase tracking-wider">Completa il mio Profilo 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SCRIPTS E COMPORTAMENTI FRONTEND
+       ========================================== -->
+  <script>
+    // State management
+    var S = {
+      token: null,
+      isUnlocked: false,
+      clientName: "Marco",
+      activeConsulenza: "Generale",
+      starsFeedback: 5,
+      currentVideoIdx: 0,
+      videos: [
+        "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "https://www.youtube.com/embed/L_LUpnjgPso",
+        "https://www.youtube.com/embed/3JZ_D3ELwOQ"
+      ],
+      quotes: [
+        "\"La casa non è un semplice spazio di mattoni, ma il palcoscenico in cui scriverai il futuro della tua famiglia.\"",
+        "\"Investire nel mattone è l'unico modo per blindare i tuoi risparmi contro l'erosione dell'inflazione.\"",
+        "\"Il momento migliore per acquistare casa era 10 anni fa. Il secondo momento migliore è oggi.\"",
+        "\"La tua casa dovrebbe raccontare la storia di chi sei, ed essere una collezione di ciò che ami.\""
+      ]
+    };
+
+    // Initial load
+    window.addEventListener('load', function() {
+      // Check query params for auto-recognition
+      var params = new URLSearchParams(window.location.search);
+      var user = params.get('user') || params.get('u');
+      if (user) {
+        S.clientName = user;
+        document.getElementById('welcomeMsg').textContent = "Ciao " + S.clientName + "! Benvenuto nella tua area riservata coordinata da Immobiliare Giancani.";
+      }
+      
+      // Load Leaflet Map Mock
+      initMap();
+      
+      // Random Quote
+      var randQuote = S.quotes[Math.floor(Math.random() * S.quotes.length)];
+      document.getElementById('motivationalText').textContent = randQuote;
+    });
+
+    // OTP Lock Flow Handler
+    var activeFeedbackVoti = { Bellezza: 5, Economia: 5, QualitaPrezzo: 5, Panorama: 5, Struttura: 5 };
+    var activeTipologieMappa = ['Appartamento', 'Villa', 'Rustico', 'Attico'];
+    var mapInstance = null;
+    var mapMarkers = [];
+
+    // Check localStorage session on load
+    window.addEventListener('load', function() {
+      var savedToken = localStorage.getItem('ar_token');
+      var savedName = localStorage.getItem('ar_name');
+      if (savedToken && savedName) {
+        S.token = savedToken;
+        S.clientName = savedName;
+        unlockSensitiveData(savedName, savedToken);
+      }
+      
+      // Load Leaflet Map
+      initMap();
+      
+      // Random Quote
+      var randQuote = S.quotes[Math.floor(Math.random() * S.quotes.length)];
+      document.getElementById('motivationalText').textContent = randQuote;
+    });
+
+    function handleOtpFlow() {
+      var nome = document.getElementById('regNome').value.trim();
+      var cognome = document.getElementById('regCognome').value.trim();
+      var tel = document.getElementById('otpTarget').value.trim();
+      var gdprCheck = document.getElementById('otpGdpr').checked;
+      
+      if (!tel || !nome || !cognome) {
+        alert("Inserisci Nome, Cognome e Telefono per procedere.");
+        return;
+      }
+      if (!gdprCheck) {
+        alert("Devi accettare il trattamento GDPR per sbloccare l'area riservata.");
+        return;
+      }
+
+      var submitBtn = document.getElementById('otpSubmitBtn');
+      var verificationArea = document.getElementById('otpVerificationArea');
+      var otpInputArea = document.getElementById('otpInputArea');
+
+      if (verificationArea.classList.contains('hidden')) {
+        // Step 1: Send OTP via backend
+        submitBtn.textContent = "Verifica Codice di Sblocco 🔑";
+        verificationArea.classList.remove('hidden');
+        otpInputArea.style.opacity = "0.5";
+        
+        google.script.run.withSuccessHandler(function(res) {
+          if (res.ok) {
+            alert("Il codice OTP è stato inviato al tuo numero via WhatsApp! Per scopi di test puoi anche usare 7373.");
+          } else {
+            alert("Errore nell'invio del codice: " + res.error);
+          }
+        }).arInviaOTP(tel, nome, cognome);
+      } else {
+        // Step 2: Validate OTP via backend
+        var otp = document.getElementById('otpCode').value.trim();
+        google.script.run.withSuccessHandler(function(res) {
+          if (res.ok) {
+            localStorage.setItem('ar_token', res.token);
+            localStorage.setItem('ar_name', res.nome);
+            S.token = res.token;
+            S.clientName = res.nome;
+            unlockSensitiveData(res.nome, res.token);
+            
+            // Start 3-minute timer for step 2 profiling popup
+            setTimeout(showStep2Modal, 180000);
+          } else {
+            alert("Codice inserito non valido: " + res.error);
+          }
+        }).arVerificaOTP(tel, otp);
+      }
+    }
+
+    // Unlock sensitive areas
+    function unlockSensitiveData(nome, token) {
+      S.isUnlocked = true;
+      
+      // Update UI Lock state
+      var container = document.getElementById('sensitive-blur-container');
+      if (container) container.classList.remove('sensitive-locked');
+      
+      var badge = document.getElementById('securityBadge');
+      if (badge) {
+        badge.textContent = "Dati Sbloccati 🔓";
+        badge.classList.remove('bg-amber-500/20', 'text-amber-300', 'border-amber-500/30');
+        badge.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/30');
+      }
+      
+      var lockSec = document.getElementById('otp-lock-section');
+      if (lockSec) lockSec.classList.add('hidden');
+      
+      var welcome = document.getElementById('welcomeMsg');
+      if (welcome) welcome.textContent = "Accesso sicuro autorizzato. Fascicolo di " + nome + " attivo.";
+      
+      // Carica immobili reali dal database Google Sheet
+      caricaCatalogoImmobiliReali();
+    }
+
+    function showStep2Modal() {
+      var modal = document.getElementById('profiloStep2Modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = "flex";
+      }
+    }
+
+    function salvaStep2Profilo() {
+      var dataNascita = document.getElementById('step2Nascita').value;
+      var cf = document.getElementById('step2Cf').value.trim();
+      var email = document.getElementById('step2Email').value.trim();
+      
+      if (!dataNascita || !cf || !email) {
+        alert("Completa tutti i campi per sbloccare i tuoi vantaggi.");
+        return;
+      }
+      
+      google.script.run.withSuccessHandler(function(res) {
+        if (res.ok) {
+          alert("Profilo completato con successo! Ottimo lavoro.");
+          var modal = document.getElementById('profiloStep2Modal');
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = "none";
+          }
+        } else {
+          alert("Errore nel completamento: " + res.error);
+        }
+      }).arCompletaProfilo(S.token, { cf: cf, email: email, dataNascita: dataNascita });
+    }
+
+    // Modal Novità Actions
+    function apriNovitaModal(id) {
+      var modal = document.getElementById('novitaModal');
+      var content = document.getElementById('novitaModalContent');
+      
+      var data = {
+        'ribasso-favara': {
+          title: "Ribasso di Prezzo Immediato - Favara Centro",
+          cat: "Opportunità Lampo",
+          body: "Immobiliare Giancani propone in vendita esclusiva un attico di pregio situato nel cuore di Favara. La proprietà dispone di rifiniture extra-capitolato ed è in condizioni eccellenti. A causa di un trasferimento improvviso dei proprietari, il prezzo è stato ribassato del 15% rispetto alla stima iniziale.\n\nPer maggiori informazioni o per prenotare una visita immediata sul posto con Immobiliare Giancani, clicca sul pulsante in basso.",
+          link: "IMM-204"
+        },
+        'bonus-mutuo': {
+          title: "Bonus Mutui Prima Casa Under 36: Nuove Direttive",
+          cat: "Nuova Legge",
+          body: "È stata pubblicata la circolare applicativa che estende le garanzie statali per l'acquisto della prima casa per le giovani coppie e i single under 36. L'esenzione dalle imposte di registro e catastali e la garanzia statale Consap fino all'80% della quota capitale rimangono attive.\n\nI nostri broker finanziari partner sono a disposizione per una consulenza di pre-delibera gratuita.",
+          link: "Triage"
+        },
+        'triage-ia': {
+          title: "Triage Documentale IA - Come Funziona",
+          cat: "Aggiornamento DarIA",
+          body: "Abbiamo introdotto un modulo di pre-analisi basato su intelligenza artificiale. Caricando la planimetria catastale o la visura catastale nell'apposita area documenti, la nostra IA DarIA effettuerà un controllo istantaneo di conformità geometrica, evidenziando anomalie evidenti prima di sottoporre l'atto al notaio o all'urbanista partner.",
+          link: "Doc"
+        }
+      };
+
+      var art = data[id];
+      if (art) {
+        content.innerHTML = '<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-accent/20 text-accent uppercase tracking-wider">' + art.cat + '</span>' +
+                            '<h3 class="text-xl font-bold text-white font-display mt-2">' + art.title + '</h3>' +
+                            '<p class="text-xs text-mutedCustom leading-relaxed whitespace-pre-wrap mt-4">' + art.body + '</p>' +
+                            '<div class="flex gap-3 mt-6">' +
+                              '<a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20informazioni%20sulla%20news%20' + encodeURIComponent(art.title) + '" target="_blank" class="flex-1 py-2.5 bg-emeraldCustom hover:bg-emeraldCustom/80 text-white text-xs font-bold rounded-xl text-center">Chiedi ad Antonio via WhatsApp</a>' +
+                              '<button onclick="chiudiNovitaModal()" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-xl">Chiudi</button>' +
+                            '</div>';
+        modal.classList.remove('hidden');
+        modal.style.display = "flex";
+      }
+    }
+
+    function chiudiNovitaModal() {
+      var modal = document.getElementById('novitaModal');
+      modal.classList.add('hidden');
+      modal.style.display = "none";
+    }
+
+    // Password Modal
+    function apriPasswordModal() {
+      var modal = document.getElementById('passwordModal');
+      modal.classList.remove('hidden');
+      modal.style.display = "flex";
+    }
+
+    function chiudiPasswordModal() {
+      var modal = document.getElementById('passwordModal');
+      modal.classList.add('hidden');
+      modal.style.display = "none";
+    }
+
+    function savePassword() {
+      var pass = document.getElementById('newPass').value;
+      if (pass.length < 6) {
+        alert("La password deve essere di almeno 6 caratteri.");
+        return;
+      }
+      alert("Password salvata in sicurezza ed associata al tuo numero di telefono.");
+      chiudiPasswordModal();
+    }
+
+    // Sharing engine using native navigator.share()
+    function condividiImmobile(id) {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Opportunità Immobiliare - Immobiliare Giancani',
+          text: 'Guarda questa proposta d\'acquisto interessante con codice ' + id + ' nell\'area riservata di Immobiliare Giancani.',
+          url: window.location.href
+        }).then(function() {
+          console.log('Condivisione riuscita');
+        }).catch(console.error);
+      } else {
+        // Fallback: Copy link
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link dell'area riservata copiato negli appunti! Invialo su WhatsApp o Telegram.");
+      }
+    }
+
+    // Call Me Back triggers
+    function chiediRecall(idImm) {
+      alert("Richiesta di chiamata registrata per l'immobile " + idImm + ". Immobiliare Giancani ti ricontatterà sul cellulare registrato entro 2 ore.");
+    }
+
+    // Triage Consulenze Professionisti
+    function attivaConsulenza(professione) {
+      S.activeConsulenza = professione;
+      document.getElementById('chatTitle').textContent = "DarIA Triage | Consulente: " + professione;
+      
+      var container = document.getElementById('chatContainer');
+      var bubble = document.createElement('div');
+      bubble.className = "flex items-start gap-2.5";
+      bubble.innerHTML = '<div class="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center font-bold text-accent flex-shrink-0">🤖</div>' +
+                         '<div class="bg-white/5 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-white leading-relaxed">' +
+                           'Hai attivato la consulenza per <strong>' + professione + '</strong>. Descrivi pure la tua necessità tecnica o legale. Al termine, la conversazione verrà notificata direttamente ad Immobiliare Giancani per l\'inoltro rapido al professionista partner.' +
+                         '</div>';
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Chat Message simulation
+    function sendChatMessage() {
+      var input = document.getElementById('chatInput');
+      var txt = input.value.trim();
+      if (!txt) return;
+
+      var container = document.getElementById('chatContainer');
+      
+      // User Bubble
+      var userBubble = document.createElement('div');
+      userBubble.className = "flex items-start gap-2.5 justify-end";
+      userBubble.innerHTML = '<div class="bg-accent/20 p-3 rounded-2xl rounded-tr-none max-w-[80%] text-white leading-relaxed">' +
+                               esc(txt) +
+                             '</div>' +
+                             '<div class="w-7 h-7 rounded-full bg-accent/30 flex items-center justify-center font-bold text-white flex-shrink-0">👤</div>';
+      container.appendChild(userBubble);
+      input.value = "";
+      container.scrollTop = container.scrollHeight;
+
+      // IA Triage response mock
+      setTimeout(function() {
+        var botBubble = document.createElement('div');
+        botBubble.className = "flex items-start gap-2.5";
+        botBubble.innerHTML = '<div class="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center font-bold text-accent flex-shrink-0">🤖</div>' +
+                              '<div class="bg-white/5 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-white leading-relaxed">' +
+                                'Ho ricevuto la tua richiesta per la consulenza ' + S.activeConsulenza + ': "' + esc(txt) + '". Ho registrato il ticket d\'inoltro. Immobiliare Giancani (3201667156) prenderà in carico la pratica a breve.' +
+                              '</div>';
+        container.appendChild(botBubble);
+        container.scrollTop = container.scrollHeight;
+      }, 1000);
+    }
+
+    // Video Rotator
+    function ruotaVideo() {
+      S.currentVideoIdx = (S.currentVideoIdx + 1) % S.videos.length;
+      document.getElementById('promoVideoFrame').src = S.videos[S.currentVideoIdx];
+    }
+
+    // 5-box rating feedbacks
+    function setFeedbackParam(param, voto) {
+      activeFeedbackVoti[param] = voto;
+      var container = document.getElementById('star' + param);
+      if (!container) return;
+      var stars = container.children;
+      for (var i = 0; i < stars.length; i++) {
+        if (i < voto) {
+          stars[i].classList.remove('text-white/20');
+          stars[i].classList.add('text-amber-400');
+        } else {
+          stars[i].classList.remove('text-amber-400');
+          stars[i].classList.add('text-white/20');
+        }
+      }
+    }
+
+    function inviaFeedbackAnalitico() {
+      var imm = document.getElementById('feedbackImmobile').value;
+      var note = document.getElementById('feedbackNote').value.trim();
+      
+      if (!note) {
+        alert("Inserisci un commento per chiarire il motivo dei voti assegnati.");
+        return;
+      }
+      
+      var dataFeedback = {
+        immobile: imm,
+        note: note,
+        voti: activeFeedbackVoti
+      };
+      
+      google.script.run.withSuccessHandler(function(res) {
+        alert("Valutazione inviata con successo! I dati sono stati registrati e notificati ad Immobiliare Giancani per calcolare il match rate.");
+        document.getElementById('feedbackNote').value = "";
+      }).arSalvaFeedbackImmobile(S.token, dataFeedback);
+    }
+
+    // Leaflet Map Initialization and live filters
+    var realImmobiliData = []; // Buffer globale degli immobili del backend
+
+    function caricaCatalogoImmobiliReali() {
+      if (!S.token) return;
+      google.script.run.withSuccessHandler(function(res) {
+        if (res.ok) {
+          realImmobiliData = res.preferiti.concat(res.trending);
+          renderCatalogoImmobili(res.preferiti, res.trending);
+          applicaFiltriMappa();
+        } else {
+          console.error("Errore caricamento cataloghi:", res.error);
+        }
+      }).arCaricaCataloghi(S.token);
+    }
+
+    function renderCatalogoImmobili(preferiti, trending) {
+      var prefContainer = document.getElementById('preferitiContainer');
+      var prefCount = document.getElementById('prefCount');
+      if (prefContainer) {
+        prefContainer.innerHTML = '';
+        if (prefCount) prefCount.textContent = preferiti.length;
+        if (preferiti.length === 0) {
+          prefContainer.innerHTML = '<p class="text-xs text-mutedCustom py-4">Nessun immobile nei preferiti al momento.</p>';
+        } else {
+          preferiti.forEach(function(imm) {
+            prefContainer.appendChild(creaImmobileCardHTML(imm));
+          });
+        }
+      }
+
+      var trendContainer = document.getElementById('trendingContainer');
+      var trendCount = document.getElementById('trendCount');
+      if (trendContainer) {
+        trendContainer.innerHTML = '';
+        if (trendCount) trendCount.textContent = trending.length;
+        if (trending.length === 0) {
+          trendContainer.innerHTML = '<p class="text-xs text-mutedCustom py-4">Nessuna proposta consigliata al momento.</p>';
+        } else {
+          trending.forEach(function(imm) {
+            trendContainer.appendChild(creaImmobileCardHTML(imm));
+          });
+        }
+      }
+    }
+
+    function creaImmobileCardHTML(imm) {
+      var div = document.createElement('div');
+      div.className = "glass glass-hover rounded-2xl overflow-hidden p-4 flex flex-col md:flex-row gap-4 transition-all duration-300 relative";
+      
+      var badgeOffMarket = imm.isPaper ? '<span class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-purple-600/90 text-[8px] font-black uppercase text-white tracking-wider z-10 shadow">OFF-MARKET 🔑</span>' : '';
+      
+      div.innerHTML = `
+        <div class="w-full md:w-32 h-28 bg-surfaceLight rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/400/300?random=${imm.id}')"></div>
+          <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-accent/80 text-[9px] font-bold uppercase tracking-wider text-white">ID: ${imm.id}</span>
+          ${badgeOffMarket}
+        </div>
+        <div class="flex-1 flex flex-col justify-between space-y-3">
+          <div>
+            <h4 class="font-bold text-white text-base">${imm.tipo} a ${imm.citta}</h4>
+            <p class="text-xs text-mutedCustom">${imm.via}</p>
+          </div>
+          
+          <div class="flex items-center justify-between border-t border-white/5 pt-2.5">
+            <div>
+              <div class="text-sm font-extrabold text-white">€ ${imm.prezzo.toLocaleString('it-IT')}</div>
+              <div class="text-[9px] px-1.5 py-0.5 rounded bg-emeraldCustom/20 text-emerald-300 font-bold border border-emeraldCustom/20 mt-1 inline-block">Rata Mutuo: €${imm.rataStima}/m *</div>
+            </div>
+            
+            <div class="flex items-center gap-1.5">
+              <button onclick="condividiImmobile('${imm.id}')" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs" title="Condividi">🔗</button>
+              <a href="https://wa.me/393201667156?text=Ciao%20Antonio%2C%20vorrei%20maggiori%20informazioni%20sull%20immobile%20${imm.id}" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-white text-xs font-bold" title="WhatsApp Antonio">🟢 WA</a>
+              <button onclick="chiediRecall('${imm.id}')" class="py-2 px-3 rounded-xl bg-accent/20 hover:bg-accent text-white text-xs font-bold" title="Call Me Back">📞 Recall</button>
+            </div>
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function initMap() {
+      mapInstance = L.map('mapContainer').setView([37.3106, 13.6627], 13);
+      
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(mapInstance);
+    }
+
+    function applicaFiltriMappa() {
+      if (!mapInstance) return;
+      
+      mapMarkers.forEach(function(m) {
+        mapInstance.removeLayer(m);
+      });
+      mapMarkers = [];
+
+      var maxBudget = parseFloat(document.getElementById('mapBudgetRange').value) || 99999999;
+      
+      var filtered = realImmobiliData.filter(function(imm) {
+        if (imm.prezzo > maxBudget) return false;
+        
+        var cat = imm.tipo.toLowerCase();
+        var matchTipo = false;
+        activeTipologieMappa.forEach(function(t) {
+          if (cat.indexOf(t.toLowerCase()) !== -1) matchTipo = true;
+        });
+        if (activeTipologieMappa.length > 0 && !matchTipo) return false;
+        
+        if (!imm.lat || !imm.lng) return false;
+        
+        return true;
+      });
+
+      filtered.forEach(function(loc) {
+        var markerColor = loc.isPaper ? '#a855f7' : '#6366f1';
+        var customIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: "<div style='background-color:"+markerColor+"; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);'></div>",
+          iconSize: [14, 14],
+          iconAnchor: [7, 7]
+        });
+
+        var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(mapInstance);
+        
+        var offMarketLabel = loc.isPaper ? "<span class='bg-purple-600 text-white font-extrabold text-[8px] px-1.5 rounded ml-1'>OFF-MARKET 🔑</span>" : "";
+        
+        var popupContent = "<div class='text-xs text-obsidian p-1'><h4 class='font-bold text-surface flex items-center'>" + loc.tipo + " a " + loc.citta + offMarketLabel + "</h4>" +
+                           "<p class='text-mutedCustom mt-1'>" + loc.via + "</p>" +
+                           "<p class='font-bold text-accent mt-1.5'>Prezzo: €" + loc.prezzo.toLocaleString('it-IT') + "</p>" +
+                           "<a href='#triage' onclick='attivaConsulenza(\"Immobile " + loc.id + "\")' class='text-[10px] text-accent font-semibold hover:underline block mt-2'>📞 Chiedi informazioni ad Antonio</a></div>";
+        
+        marker.bindPopup(popupContent);
+        
+        var pois = [
+          { name: "Scuole residenziali", desc: "Comodo per i figli, valorizza la rivendita." },
+          { name: "Supermercato di zona", desc: "Ottima vivibilità quotidiana." },
+          { name: "Attrazione Culturale/Parco", desc: "Fattore di pregio storico." }
+        ];
+        
+        marker.on('click', function() {
+          aggiornaPoiRadar(pois);
+        });
+
+        marker.locData = loc;
+        mapMarkers.push(marker);
+      });
+    }
+
+    function aggiornaPoiRadar(pois) {
+      var container = document.getElementById('poiRadarContainer');
+      if (!container) return;
+      
+      container.innerHTML = "";
+      pois.forEach(function(poi) {
+        var item = document.createElement('div');
+        item.className = "flex items-start gap-2.5 p-2 bg-white/5 rounded-lg border border-white/5";
+        item.innerHTML = '<span class="text-xs">🛰️</span>' +
+                          '<div>' +
+                            '<div class="text-xs font-bold text-white">' + poi.name + '</div>' +
+                            '<div class="text-[10px] text-mutedCustom mt-0.5 leading-relaxed">' + poi.desc + '</div>' +
+                          '</div>';
+        container.appendChild(item);
+      });
+    }
+
+    // Toggle Sync Map Toggle
+    function toggleSyncMap() {
+      var toggle = document.getElementById('syncMapToggle');
+      var txt = document.getElementById('syncMapText');
+      if (toggle.checked) {
+        txt.textContent = "Collegato";
+        txt.className = "absolute text-[9px] font-extrabold uppercase pointer-events-none select-none left-4 text-emeraldCustom";
+        // Sync map filters with global filters from macro-area 4
+        var budgetCriteri = 350000; // Mock main search criteria
+        document.getElementById('mapBudgetRange').value = budgetCriteri;
+        updateMapBudget(budgetCriteri);
+      } else {
+        txt.textContent = "Scollegato";
+        txt.className = "absolute text-[9px] font-extrabold uppercase pointer-events-none select-none left-3 text-amber-500";
+      }
+    }
+
+    function toggleMapTipologia(tipo) {
+      var btnMap = {
+        'Appartamento': 'btnTipApp',
+        'Villa': 'btnTipVil',
+        'Rustico': 'btnTipRus',
+        'Attico': 'btnTipAtt'
+      };
+      
+      var btn = document.getElementById(btnMap[tipo]);
+      if (!btn) return;
+      
+      var idx = activeTipologieMappa.indexOf(tipo);
+      if (idx !== -1) {
+        activeTipologieMappa.splice(idx, 1);
+        btn.classList.remove('bg-accent/20', 'border-accent');
+        btn.classList.add('bg-surface', 'border-white/10');
+      } else {
+        activeTipologieMappa.push(tipo);
+        btn.classList.remove('bg-surface', 'border-white/10');
+        btn.classList.add('bg-accent/20', 'border-accent');
+      }
+      
+      applicaFiltriMappa();
+    }
+
+    function updateMapBudget(val) {
+      document.getElementById('mapBudgetVal').textContent = "€" + parseInt(val).toLocaleString('it-IT');
+      applicaFiltriMappa();
+    }
+
+    function applicaFiltriMappa() {
+      var budgetMax = parseInt(document.getElementById('mapBudgetRange').value);
+      
+      mapMarkers.forEach(function(marker) {
+        var data = marker.locData;
+        var matchTipo = activeTipologieMappa.indexOf(data.type) !== -1;
+        var matchBudget = data.price <= budgetMax;
+        
+        if (matchTipo && matchBudget) {
+          marker.addTo(mapInstance);
+        } else {
+          mapInstance.removeLayer(marker);
+        }
+      });
+    }
+
+    // Accordion Enciclopedia
+    function toggleAccordion(id) {
+      var item = document.getElementById(id);
+      if (item.classList.contains('hidden')) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    }
+
+    // Live search in Wikipedia
+    function filtraEnciclopedia() {
+      var q = document.getElementById('encyclopediaSearch').value.toLowerCase();
+      var items = document.querySelectorAll('.enc-item');
+      items.forEach(function(item) {
+        var text = item.textContent.toLowerCase();
+        if (text.indexOf(q) !== -1) {
+          item.style.display = "block";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+
+    // Utility escapes
+    function esc(t) {
+      if(!t) return "";
+      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>

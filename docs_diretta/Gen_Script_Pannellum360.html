@@ -1,0 +1,314 @@
+<script>
+      // =======================================================
+      // 🪐 LOGICA CONTROLLER STUDIO REGIA 360° & PALINSESTO
+      // =======================================================
+      var statoRegia360 = {
+        zoom: 260,
+        modalita: 'giro',
+        velocita: 'media',
+        percorso: 'standard'
+      };
+
+      function inviaComando360Direct(azione, valore) {
+        var cmd = { action: azione, value: valore || '' };
+        console.log('[REGIA-360] 📡 Invio comando live:', cmd);
+
+        // Aggiorna anche l'anteprima visiva nel Generator
+        aggiornaAnteprimaRegia360(azione, valore);
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              console.log('[REGIA-360] ✅ Comando inviato alla diretta:', res);
+            })
+            .withFailureHandler(function(err) {
+              console.error('[REGIA-360] ❌ Errore invio comando:', err);
+            })
+            .inviaComando360Live(cmd);
+        }
+      }
+
+      function aggiornaZoomSliderLive(val) {
+        var z = parseInt(val) || 260;
+        statoRegia360.zoom = z;
+        document.getElementById('valore-slider-zoom-live').innerText = z + '%';
+        document.getElementById('label-stato-360-zoom').innerText = z + '%';
+        inviaComando360Direct('set_zoom', z);
+      }
+
+      function applicaPresetZoom(z) {
+        statoRegia360.zoom = z;
+        var slider = document.getElementById('slider-zoom-360');
+        if (slider) slider.value = z;
+        document.getElementById('valore-slider-zoom-live').innerText = z + '%';
+        document.getElementById('label-stato-360-zoom').innerText = z + '%';
+        inviaComando360Direct('set_zoom', z);
+      }
+
+      function impostaModalita360Live(modalita) {
+        statoRegia360.modalita = modalita;
+        var lbl = '🔄 Giro 360 Continuo';
+        if (modalita === 'pianeta') lbl = '🪐 Little Planet (Pianetino)';
+        if (modalita === 'totale')  lbl = '🏠 Totale Immobile';
+        if (modalita === 'drone')   lbl = '🚁 Effetto Drone Flythrough';
+        if (modalita === 'tour')    lbl = '🎬 Mini-Tour a Tappe';
+        document.getElementById('label-stato-360-modalita').innerText = lbl;
+        inviaComando360Direct('set_mode', modalita);
+      }
+
+      function impostaVelocita360Live(vel, btnEl) {
+        statoRegia360.velocita = vel;
+        var chips = btnEl.parentElement.querySelectorAll('.btn-lang-chip');
+        chips.forEach(function(c){ c.classList.remove('active-lang'); c.style.border = '1px solid rgba(255,255,255,0.2)'; c.style.background = 'rgba(0,0,0,0.4)'; });
+        btnEl.classList.add('active-lang');
+        btnEl.style.border = '1px solid #f1c40f';
+        btnEl.style.background = 'rgba(241,196,15,0.25)';
+
+        var lbl = vel === 'lenta' ? 'Lenta' : vel === 'veloce' ? 'Rapida' : 'Media';
+        document.getElementById('label-stato-360-speed').innerText = lbl;
+        inviaComando360Direct('set_speed', vel);
+      }
+
+      function caricaPresetTour360(val) {
+        statoRegia360.percorso = val;
+        var container = document.getElementById('container-waypoint-tour');
+        if (!container) return;
+
+        if (val === 'focus_dettagli') {
+          container.innerHTML = `
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 1: Infissi &amp; Luce Naturale</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 45° | Pitch: +15° | Zoom: 280%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 2: Pavimenti &amp; Finiture</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 135° | Pitch: -20° | Zoom: 320%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 3: Soffitti &amp; Lampadari</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 225° | Pitch: +25° | Zoom: 240%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 4: Vista di Ritorno</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 0° | Pitch: 0° | Zoom: 200%</div>
+            </div>
+          `;
+        } else if (val === 'panoramico_largo') {
+          container.innerHTML = `
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 1: Visuale d'Insieme Ampia</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 0° | Pitch: 0° | Zoom: 140%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 2: Sweep Pan Esterno/Terrazzo</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 120° | Pitch: +5° | Zoom: 160%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 3: Profondita Ambiente</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 240° | Pitch: 0° | Zoom: 180%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 4: Chiusura Totale Grandangolo</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 360° | Pitch: 0° | Zoom: 120%</div>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 1: Ingresso Stanza</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 0° | Pitch: 0° | Zoom: 200%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 2: Soggiorno &amp; Finestre</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 90° | Pitch: +10° | Zoom: 260%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 3: Cucina &amp; Finiture</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 180° | Pitch: -10° | Zoom: 300%</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px;">
+              <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tappa 4: Vista Panoramica Totale</div>
+              <div style="color: var(--sand); font-size: 10px;">Yaw: 270° | Pitch: 0° | Zoom: 160%</div>
+            </div>
+          `;
+        }
+      }
+
+      function eseguiPercorsoTourLive() {
+        inviaComando360Direct('esegui_percorso', statoRegia360.percorso);
+        var msgEl = document.getElementById('msg-conferma-360-save');
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.style.color = '#e67e22';
+          msgEl.innerText = '🎬 Mini-Tour a Tappe inviato alla diretta in tempo reale!';
+          setTimeout(function(){ msgEl.style.display = 'none'; }, 4000);
+        }
+      }
+
+      function salvaPreimpostazioni360Regia() {
+        var config = {
+          zoom: statoRegia360.zoom,
+          modalita: statoRegia360.modalita,
+          velocita: statoRegia360.velocita,
+          percorso: statoRegia360.percorso
+        };
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              var msgEl = document.getElementById('msg-conferma-360-save');
+              if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.style.color = '#2ecc71';
+                msgEl.innerText = '💾 Pre-impostazioni 360° salvate per tutte le foto del palinsesto!';
+                setTimeout(function(){ msgEl.style.display = 'none'; }, 4500);
+              }
+              alert('✅ Pre-impostazioni 360° salvate con successo! Verranno applicate a tutte le foto panoramiche del palinsesto.');
+            })
+            .withFailureHandler(function(err) {
+              alert('❌ Errore salvataggio impostazioni 360: ' + err.message);
+            })
+            .salvaConfigurazione360(config);
+        }
+      }
+
+      function aggiornaAnteprimaRegia360(azione, valore) {
+        var box = document.getElementById('regia-360-preview-box');
+        if (!box) return;
+        if (azione === 'zoom_in') {
+          box.style.backgroundSize = 'auto 320%';
+        } else if (azione === 'zoom_out') {
+          box.style.backgroundSize = 'auto 160%';
+        } else if (azione === 'set_zoom') {
+          box.style.backgroundSize = 'auto ' + valore + '%';
+        } else if (azione === 'sinistra') {
+          box.style.backgroundPosition = '15% 50%';
+        } else if (azione === 'destra') {
+          box.style.backgroundPosition = '85% 50%';
+        } else if (azione === 'su') {
+          box.style.backgroundPosition = '50% 15%';
+        } else if (azione === 'giu') {
+          box.style.backgroundPosition = '50% 85%';
+        } else if (azione === 'centro') {
+          box.style.backgroundPosition = '50% 50%';
+        }
+      }
+
+
+
+      // =======================================================
+      // 📱 GESTIONE BOT TELEGRAM & NOTIFICHE
+      // =======================================================
+      function caricaConfigurazioneTelegram() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(cfg) {
+              if (cfg) {
+                if (document.getElementById('telegram-token') && cfg.botToken) {
+                  document.getElementById('telegram-token').value = cfg.botToken;
+                }
+                if (document.getElementById('telegram-chatid') && cfg.chatId) {
+                  document.getElementById('telegram-chatid').value = cfg.chatId;
+                }
+                if (document.getElementById('telegram-auto') && cfg.autoNotifica) {
+                  document.getElementById('telegram-auto').value = cfg.autoNotifica;
+                }
+              }
+            })
+            .getTelegramConfig();
+        }
+      }
+
+      function salvaConfigurazioneTelegram() {
+        var token = document.getElementById('telegram-token').value.trim();
+        var chatId = document.getElementById('telegram-chatid').value.trim();
+        var auto = document.getElementById('telegram-auto').value;
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              alert('✅ Configurazione Telegram salvata con successo!');
+            })
+            .withFailureHandler(function(err) {
+              alert('❌ Errore salvataggio Telegram: ' + err.message);
+            })
+            .salvaTelegramConfig(token, chatId, auto);
+        }
+      }
+
+      function inviaNotificaTelegramTestRegia() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          var testoTest = '🔔 *NOTIFICA TEST REGIA IMMOBILIARE GIANCANI*\n\n✅ Il tuo Bot Telegram è collegato e funzionante al 100%!\nRiceverai qui tutti i commenti in diretta di Facebook e YouTube.';
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success) {
+                alert('🚀 Messaggio inviato! Controlla subito il tuo Telegram.');
+              } else {
+                alert('⚠️ Risposta Telegram: ' + (res.message || res.error || JSON.stringify(res)));
+              }
+            })
+            .withFailureHandler(function(err) {
+              alert('❌ Errore test Telegram: ' + err.message);
+            })
+            .inviaNotificaTelegram(testoTest);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // ⏱️ GESTIONE PIANIFICATORE MARATONE LIVE & RIPOSO DARIA
+      // ═══════════════════════════════════════════════════════
+      function toggleDataOraMaratonaCustom(val) {
+        var inputDt = document.getElementById('input-maratona-datetime');
+        if (inputDt) {
+          inputDt.style.display = (val === 'custom') ? 'block' : 'none';
+          if (val === 'custom' && !inputDt.value) {
+            var now = new Date();
+            now.setMinutes(now.getMinutes() + 10);
+            inputDt.value = now.toISOString().slice(0, 16);
+          }
+        }
+      }
+
+      function aggiornaVisualizzazioneOrarioStop() {
+        var selDurata = document.getElementById('sel-maratona-durata');
+        var inputStop = document.getElementById('input-maratona-stop-time');
+        if (selDurata && inputStop) {
+          inputStop.style.display = (selDurata.value === 'custom_stop') ? 'block' : 'none';
+        }
+      }
+
+      function toggleSelezioneCustomImmobili(val) {
+        var boxSel = document.getElementById('box-maratona-selezione-immobili');
+        if (boxSel) {
+          boxSel.style.display = (val === 'custom') ? 'block' : 'none';
+          if (val === 'custom') popolaChecklistImmobiliMaratona();
+        }
+      }
+
+      function popolaChecklistImmobiliMaratona() {
+        var container = document.getElementById('maratona-checklist-immobili');
+        if (!container) return;
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              var list = Array.isArray(res) ? res : (res && res.immobili ? res.immobili : []);
+              if (!list || list.length === 0) {
+                container.innerHTML = '<span style="color: #888;">Nessun immobile disponibile.</span>';
+                return;
+              }
+              container.innerHTML = list.map(function(imm, idx) {
+                var tab = imm.name || imm.tabName || imm;
+                var isChk = (idx < 3) ? 'checked' : '';
+                var richLabel = imm.label || (imm.nome || tab).replace(/_/g, ' ');
+                return '<label style="background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.1);">' +
+                         '<input type="checkbox" class="chk-maratona-immobile" value="' + tab + '" ' + isChk + '> ' +
+                         '🏠 ' + richLabel +
+                       '</label>';
+              }).join('');
+            })
+            .getElencoImmobiliDisponibili();
+        }
+      }
+
+
+</script>

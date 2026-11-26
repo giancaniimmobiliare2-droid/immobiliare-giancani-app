@@ -1,0 +1,237 @@
+    <!-- ═══ MODALE POP-UP TUTORIAL & GUIDA ═══ -->
+    <div id="modal-tutorial" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(8px); padding:16px;">
+      <div class="tutorial-inner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div style="font-size:15px; font-weight:800; color:var(--gold-bright);" id="tutorial-title">❓ Tutorial Schermata</div>
+          <button onclick="chiudiTutorial()" style="background:none; border:none; color:var(--sand); font-size:28px; cursor:pointer; line-height:1; min-height:44px; min-width:44px;">✕</button>
+        </div>
+
+        <div id="tutorial-body-content">
+          <!-- Il contenuto dinamico del tutorial verrà inserito via JS -->
+        </div>
+
+        <div style="margin-top:20px;">
+          <button onclick="chiudiTutorial()" class="btn-gold">HO CAPITO, CHIUDI GUIDA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODALE FINESTRA INTELLIGENTE STANZE & DETTAGLI — IMMOBILIARE GIANCANI ═══ -->
+    <div id="modal-smart-stanze-catalogo" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(8px); padding:16px;">
+      <div style="background:#120d09; border:2px solid var(--gold); border-radius:14px; width:100%; max-width:680px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 15px 50px rgba(0,0,0,0.9); overflow:hidden;">
+        <div style="padding:14px 18px; background:linear-gradient(135deg, rgba(201,163,94,0.18), rgba(166,81,45,0.18)); border-bottom:1px solid rgba(201,163,94,0.3); display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-weight:800; font-size:14px; color:var(--gold); display:flex; align-items:center; gap:8px;">
+            <span>🏠 Finestra Intelligente Stanze & Ambienti</span>
+            <span style="font-size:11px; color:var(--sand); font-weight:600; padding:2px 8px; background:rgba(0,0,0,0.4); border-radius:10px; border:1px solid rgba(201,163,94,0.25);">Immobiliare Giancani</span>
+          </div>
+          <button type="button" onclick="chiudiCatalogoCompletoStanze()" style="background:transparent; border:none; color:#fff; font-size:22px; cursor:pointer; line-height:1; min-width:32px; min-height:32px;">✕</button>
+        </div>
+        <div style="padding:12px 18px; border-bottom:1px solid var(--line-soft); background:rgba(0,0,0,0.35);">
+          <input type="text" id="smart-stanze-search" oninput="filtraCatalogoStanze(this.value)" placeholder="🔍 Cerca ambiente (es. Bagno, Cucina, Salotto, Living, Terrazzo, Mansarda...)" style="width:100%; padding:9px 12px; background:rgba(0,0,0,0.6); border:1px solid rgba(201,163,94,0.4); border-radius:8px; color:#fff; font-size:12px; outline:none;">
+        </div>
+        <div id="smart-stanze-catalog-body" style="padding:16px 18px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:16px;">
+          <!-- Popolato dinamicamente da JS per categorie -->
+        </div>
+        <div style="padding:10px 18px; background:rgba(0,0,0,0.5); border-top:1px solid var(--line-soft); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11px; color:var(--sand);">💡 Clicca sulla stanza: il nome viene inserito e puoi continuare a scrivere subito i tuoi dettagli!</span>
+          <button type="button" onclick="chiudiCatalogoCompletoStanze()" style="background:var(--gold); border:none; border-radius:6px; padding:6px 14px; color:#120c04; font-weight:700; font-size:11px; cursor:pointer;">Chiudi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODALE EDITOR FOTO & 360° AVANZATO ═══ -->
+    <div id="modal-photo-editor" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(8px); padding:16px; overflow-y:auto;">
+      <div class="photo-editor-inner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div style="font-size:14px; font-weight:800; color:var(--gold-bright);">🎨 Editor Foto & Mascheratura 360° — <span id="editor-stanza-label"></span></div>
+          <button onclick="chiudiEditorFoto()" style="background:none; border:none; color:var(--sand); font-size:28px; cursor:pointer; line-height:1; min-height:44px; min-width:44px;">✕</button>
+        </div>
+
+        <canvas id="editor-canvas"></canvas>
+
+        <!-- PRESET FOTOGRAFICI REAL ESTATE CALIBRATI & NATURALI -->
+        <div style="margin-top: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: 12px;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold-bright); text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span>📸 Preset Fotografici Calibrati (Fedeli alla Realtà)</span>
+            <span style="font-size: 10px; color: var(--sand); font-weight: 400;">Zero sballamenti colori</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px;">
+            <button type="button" onclick="impostaPresetFotografico(100, 100, 100)" class="btn-preset-calibrato active-preset" id="preset-realta" style="padding: 6px 8px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--line-soft); border-radius: 6px; cursor: pointer;">
+              🌿 Realtà (100% Originale)
+            </button>
+            <button type="button" onclick="impostaPresetFotografico(104, 103, 102)" class="btn-preset-calibrato" id="preset-realestate" style="padding: 6px 8px; font-size: 11px; font-weight: 700; background: rgba(241,196,15,0.15); color: #f1c40f; border: 1px solid #f1c40f; border-radius: 6px; cursor: pointer;">
+              ✨ Luce Naturale (+3%)
+            </button>
+            <button type="button" onclick="impostaPresetFotografico(108, 98, 101)" class="btn-preset-calibrato" id="preset-ombre" style="padding: 6px 8px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--line-soft); border-radius: 6px; cursor: pointer;">
+              ☀️ Schiarisci Ombre
+            </button>
+            <button type="button" onclick="impostaPresetFotografico(102, 104, 103)" class="btn-preset-calibrato" id="preset-caldo" style="padding: 6px 8px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--line-soft); border-radius: 6px; cursor: pointer;">
+              🌅 Tonalità Calda
+            </button>
+            <button type="button" onclick="impostaPresetFotografico(103, 105, 96)" class="btn-preset-calibrato" id="preset-bianchi" style="padding: 6px 8px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--line-soft); border-radius: 6px; cursor: pointer;">
+              ❄️ Bianchi Puri & Nitidi
+            </button>
+          </div>
+        </div>
+
+        <!-- SLIDER FINI CALIBRATI (80% - 130%) -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+          <div class="slider-row">
+            <div class="slider-label"><span>☀️ Luminosità</span><span id="val-brightness" style="font-weight:800; color:var(--gold-bright);">100%</span></div>
+            <input type="range" id="slider-brightness" min="80" max="130" step="1" value="100" oninput="aggiornaFiltriCanvas()">
+          </div>
+          <div class="slider-row">
+            <div class="slider-label"><span>🌓 Contrasto</span><span id="val-contrast" style="font-weight:800; color:var(--gold-bright);">100%</span></div>
+            <input type="range" id="slider-contrast" min="80" max="130" step="1" value="100" oninput="aggiornaFiltriCanvas()">
+          </div>
+          <div class="slider-row">
+            <div class="slider-label"><span>🎨 Saturazione</span><span id="val-saturation" style="font-weight:800; color:var(--gold-bright);">100%</span></div>
+            <input type="range" id="slider-saturation" min="80" max="130" step="1" value="100" oninput="aggiornaFiltriCanvas()">
+          </div>
+        </div>
+
+        <!-- TASTO MIGLIORAMENTO GRAFICO AUTOMATICO (MANUALE) -->
+        <button type="button" onclick="applicaMiglioramentoGraficoAuto()" style="width: 100%; margin-top: 8px; padding: 10px; background: linear-gradient(135deg, #f1c40f, #e67e22); color: #120c04; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 800; cursor: pointer;">
+          ✨ MIGLIORAMENTO GRAFICO AUTOMATICO (Luce +8%, Contrasto +10%, Saturazione +12%)
+        </button>
+
+        <!-- MASCERA OSCURATRICE PERSONALIZZATA -->
+        <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--line-soft); margin-top: 12px;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; display:flex; justify-content:space-between;">
+            <span>⬛ OSCURATORE PERSONALIZZATO (Targhe, Volti, Dettagli)</span>
+            <label><input type="checkbox" id="chk-enable-mask" onchange="aggiornaFiltriCanvas()"> Attiva Oscuratore</label>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <div class="slider-row">
+              <div class="slider-label"><span>↔️ Posizione Orizzontale (X)</span><span id="val-mask-x">50%</span></div>
+              <input type="range" id="slider-mask-x" min="0" max="100" value="50" oninput="aggiornaFiltriCanvas()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-label"><span>↕️ Posizione Verticale (Y)</span><span id="val-mask-y">50%</span></div>
+              <input type="range" id="slider-mask-y" min="0" max="100" value="50" oninput="aggiornaFiltriCanvas()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-label"><span>📐 Dimensione (Raggio)</span><span id="val-mask-size">80px</span></div>
+              <input type="range" id="slider-mask-size" min="10" max="300" value="80" oninput="aggiornaFiltriCanvas()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-label"><span>👁️ Oscuratezza (Opacità)</span><span id="val-mask-opacity">100%</span></div>
+              <input type="range" id="slider-mask-opacity" min="0" max="100" value="100" oninput="aggiornaFiltriCanvas()">
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROLLO POSIZIONE LOGO / COPERTURA NADIR -->
+        <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--line-soft); margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--sand);" id="logo-mode-label">
+              🏷️ Posizione Logo Agenzia / Watermark:
+            </span>
+            <label style="font-size: 11px; color: var(--gold-bright);">
+              <input type="checkbox" id="chk-enable-logo" checked onchange="aggiornaFiltriCanvas()"> Mostra Logo
+            </label>
+          </div>
+          <select id="editor-logo-position" onchange="aggiornaFiltriCanvas()" style="width: 100%; font-size: 12px; padding: 6px; background: rgba(0,0,0,0.6); color: var(--gold-bright); border: 1px solid var(--gold); border-radius: 6px;">
+            <option value="centrale_semitrasparente" selected>🛡️ Logo Centrale Semitrasparente</option>
+            <option value="360_nadir">⚪ Logo Cerchio Nadir (Fondo 360°)</option>
+            <option value="in_basso_destra">📐 Logo in Basso a Destra</option>
+            <option value="in_basso_sinistra">📐 Logo in Basso a Sinistra</option>
+            <option value="in_alto_destra">📐 Logo in Alto a Destra</option>
+            <option value="in_alto_sinistra">📐 Logo in Alto a Sinistra</option>
+            <option value="nessuno">🚫 Nessun Logo</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+          <button onclick="resetFiltriCanvas()" style="flex:1; min-height:44px; padding:10px; background:rgba(255,255,255,0.06); color:var(--sand); border:1px solid var(--line-soft); border-radius:var(--radius-md); font-size:12px; font-weight:700; cursor:pointer;">↺ Reset Tutto</button>
+          <button onclick="salvaEditorFoto()" style="flex:2; min-height:44px; padding:10px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:#120c04; border:none; border-radius:var(--radius-md); font-size:12px; font-weight:800; cursor:pointer;">💾 SCARICA FOTO CON EDITING</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODALE MODIFICA DATI IMMOBILE (PREZZO, MQ, COLONNA F, ZONA) — IMMOBILIARE GIANCANI ═══ -->
+    <div id="modal-modifica-immobile" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(8px); padding:16px;">
+      <div style="background:#120d09; border:2px solid var(--gold); border-radius:14px; width:100%; max-width:680px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 15px 50px rgba(0,0,0,0.9); overflow:hidden;">
+        
+        <!-- Header -->
+        <div style="padding:14px 18px; background:linear-gradient(135deg, rgba(201,163,94,0.22), rgba(166,81,45,0.22)); border-bottom:1px solid rgba(201,163,94,0.3); display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-weight:800; font-size:15px; color:var(--gold-bright); display:flex; align-items:center; gap:8px;">
+            <span>✏️ Modifica Dati Immobile &amp; Scheda Google Sheets</span>
+            <span style="font-size:10px; color:#fff; font-weight:700; padding:2px 8px; background:#e67e22; border-radius:10px;">MANUALE</span>
+          </div>
+          <button type="button" onclick="chiudiModalModificaImmobile()" style="background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; line-height:1; min-width:32px; min-height:32px;">✕</button>
+        </div>
+
+        <!-- Body Form -->
+        <div style="padding:18px 22px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:14px;">
+          
+          <!-- Selettore Immobile nel Modale -->
+          <div>
+            <label style="font-size:12px; font-weight:800; color:var(--gold); display:block; margin-bottom:5px;">
+              🏠 Seleziona Immobile da Modificare:
+            </label>
+            <select id="mod-immobile-select" onchange="caricaDatiImmobileNelModale(this.value)" style="width:100%; padding:9px 12px; background:rgba(0,0,0,0.65); border:1.5px solid var(--gold); border-radius:8px; color:var(--gold-bright); font-size:13px; font-weight:700; outline:none; cursor:pointer;">
+            </select>
+          </div>
+
+          <!-- Griglia Prezzo & Metri Quadri -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#fff; display:block; margin-bottom:4px;">
+                💰 Prezzo (€):
+              </label>
+              <input type="text" id="mod-immobile-prezzo" placeholder="es. 150000 oppure 150.000 €" style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.5); border:1px solid rgba(201,163,94,0.4); border-radius:6px; color:#fbbf24; font-size:13px; font-weight:800; outline:none;">
+              <span style="font-size:10px; color:var(--sand-dim); display:block; margin-top:2px;">Aggiorna la Colonna B del foglio Google (es. 150000)</span>
+            </div>
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#fff; display:block; margin-bottom:4px;">
+                📐 Superficie (metri quadri):
+              </label>
+              <input type="text" id="mod-immobile-mq" placeholder="es. 120 metri quadri" style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.5); border:1px solid rgba(201,163,94,0.4); border-radius:6px; color:#fff; font-size:13px; font-weight:700; outline:none;">
+              <span style="font-size:10px; color:var(--sand-dim); display:block; margin-top:2px;">Regola aziendale: sempre per esteso <i>metri quadri</i></span>
+            </div>
+          </div>
+
+          <!-- Zona / Posizione -->
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#fff; display:block; margin-bottom:4px;">
+              📍 Zona / Località (Colonna H):
+            </label>
+            <input type="text" id="mod-immobile-zona" placeholder="es. Cannero Riviera (VB) oppure Favara (AG)" style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.5); border:1px solid rgba(201,163,94,0.4); border-radius:6px; color:#fff; font-size:12px; outline:none;">
+          </div>
+
+          <!-- Testo Parlato DarIA Colonna F -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <label style="font-size:11.5px; font-weight:700; color:var(--gold); margin:0;">
+                🎙️ Testo Parlato DarIA &amp; DarIO (Colonna F):
+              </label>
+              <span style="font-size:10px; color:#2ecc71; font-weight:700;">Rigorosamente Colonna F</span>
+            </div>
+            <textarea id="mod-immobile-testo-f" rows="5" placeholder="Inserisci la descrizione parlata dell'immobile..." style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.6); border:1.5px solid rgba(201,163,94,0.5); border-radius:8px; color:#fff; font-size:12px; line-height:1.45; outline:none; resize:vertical; font-family:inherit;"></textarea>
+            <span style="font-size:10px; color:var(--sand-dim); display:block; margin-top:3px;">
+              Verrà salvato nella Colonna F di tutte le righe della scheda. La chiusura <b>— Immobiliare Giancani</b> viene verificata automaticamente.
+            </span>
+          </div>
+
+          <!-- Feedback Status Box -->
+          <div id="mod-immobile-status" style="display:none; padding:10px 14px; border-radius:8px; font-size:12px; font-weight:700; line-height:1.4;"></div>
+
+        </div>
+
+        <!-- Footer Buttons -->
+        <div style="padding:12px 20px; background:rgba(0,0,0,0.6); border-top:1px solid rgba(201,163,94,0.25); display:flex; justify-content:flex-end; align-items:center; gap:10px;">
+          <button type="button" onclick="chiudiModalModificaImmobile()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 16px; color:#fff; font-weight:600; font-size:12px; cursor:pointer;">
+            Annulla
+          </button>
+          <button type="button" id="btn-salva-mod-immobile" onclick="salvaModificheImmobileUI()" style="background:linear-gradient(135deg, #27ae60, #2ecc71); border:none; border-radius:6px; padding:8px 20px; color:#fff; font-weight:800; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(39,174,96,0.4);">
+            <span>💾 Salva Modifiche su Google Sheets</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CANVAS NASCOSTO PER LOGO WATERMARK AUTOMATICO -->
+    <canvas id="watermark-canvas" style="display:none;"></canvas>

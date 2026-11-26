@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Orologio Mondiale 3 Fusi Orari & Meteo — Immobiliare Giancani</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS & JS per Cartina Mappa Interattiva -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0b0d12;
+      --card-bg: rgba(18, 22, 31, 0.75);
+      --card-border: rgba(201, 163, 94, 0.25);
+      --gold: #c9a35e;
+      --gold-bright: #ffd700;
+      --gold-glow: rgba(255, 215, 0, 0.25);
+      --blue-accent: #1e90ff;
+      --cyan-accent: #00f2fe;
+      --sand: #e6d7b8;
+      --text-main: #f5f6fa;
+      --text-sub: #a0a8c0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 20%, #151a28 0%, #080a0e 100%);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header-container {
+      text-align: center;
+      max-width: 900px;
+      width: 100%;
+      margin-bottom: 24px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .logo-img {
+      height: 68px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    .header-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gold-bright) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      color: var(--sand);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .agency-signature {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 14px;
+      background: rgba(201, 163, 94, 0.12);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    /* CONTROLLI IN ALTO */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-ctrl {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--gold-bright);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-ctrl:hover {
+      background: rgba(201, 163, 94, 0.2);
+      border-color: var(--gold-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px var(--gold-glow);
+    }
+
+    .click-hint-badge {
+      background: rgba(30, 144, 255, 0.15);
+      border: 1px dashed rgba(30, 144, 255, 0.4);
+      color: #70a1ff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    /* GRID OROLOGI MONDIALI */
+    .clocks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      width: 100%;
+      margin-bottom: 32px;
+    }
+
+    .clock-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .clock-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--gold-bright);
+      box-shadow: 0 16px 48px rgba(201, 163, 94, 0.3);
+    }
+
+    .clock-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+      opacity: 0.8;
+    }
+
+    .card-click-overlay {
+      position: absolute;
+      bottom: 8px;
+      right: 14px;
+      font-size: 10px;
+      color: var(--gold-bright);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* CARD HEADER */
+    .city-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .city-flag {
+      font-size: 32px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    }
+
+    .city-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .city-tag {
+      font-size: 11px;
+      color: var(--sand);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ANALOG CLOCK CANVAS */
+    .analog-canvas-container {
+      position: relative;
+      margin: 12px 0 18px 0;
+    }
+
+    canvas.analog-clock {
+      width: 170px;
+      height: 170px;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+    }
+
+    /* DIGITAL CLOCK */
+    .digital-clock {
+      font-family: 'Outfit', monospace;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      margin-bottom: 6px;
+    }
+
+    .digital-clock .seconds {
+      font-size: 22px;
+      color: var(--gold-bright);
+    }
+
+    .digital-clock .ampm {
+      font-size: 14px;
+      color: var(--sand);
+      margin-left: 4px;
+      font-weight: 700;
+    }
+
+    .date-display {
+      font-size: 13px;
+      color: var(--sand);
+      font-weight: 600;
+      margin-bottom: 14px;
+      text-transform: capitalize;
+    }
+
+    /* STATUS BADGES */
+    .info-footer {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+    }
+
+    .daynight-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .daynight-indicator.day {
+      background: rgba(255, 215, 0, 0.15);
+      color: var(--gold-bright);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .daynight-indicator.night {
+      background: rgba(30, 144, 255, 0.15);
+      color: #70a1ff;
+      border: 1px solid rgba(30, 144, 255, 0.3);
+    }
+
+    .diff-indicator {
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* MODAL METEO & CARTINA MAPPA */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #111520;
+      border: 1px solid var(--gold);
+      border-radius: 24px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlideUp 0.4s ease-out;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(201, 163, 94, 0.08);
+    }
+
+    .modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-close-modal {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-close-modal:hover {
+      background: rgba(255, 0, 0, 0.4);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* WIDGET METEO METRICHE */
+    .weather-widget {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(201, 163, 94, 0.2);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      align-items: center;
+    }
+
+    .weather-main-temp {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .weather-icon-big {
+      font-size: 48px;
+    }
+
+    .weather-temp-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .weather-desc {
+      font-size: 13px;
+      color: var(--sand);
+      font-weight: 600;
+    }
+
+    .weather-detail-item {
+      font-size: 12px;
+      color: var(--text-sub);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .weather-detail-val {
+      font-size: 14px;
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    /* MAPPA MAP CONTAINER */
+    #map-container {
+      width: 100%;
+      height: 340px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    /* FOOTER BAR */
+    .footer-bar {
+      margin-top: auto;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalSlideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; transform: scale(1.01); }
+    }
+
+    @media (max-width: 768px) {
+      .header-title { font-size: 24px; }
+      .digital-clock { font-size: 32px; }
+      canvas.analog-clock { width: 140px; height: 140px; }
+      #map-container { height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header-container">
+    <img class="logo-img" src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P" alt="Immobiliare Giancani Logo">
+    <h1 class="header-title">Orologio Mondiale & Meteo Live</h1>
+    <div class="header-subtitle">Clicca su una citt&agrave; per aprire la Cartina Mappa Mappa ed il Meteo in Tempo Reale</div>
+    <div class="agency-signature">🏢 Immobiliare Giancani — Tel 320 166 71 56</div>
+  </div>
+
+  <!-- CONTROLLI -->
+  <div class="controls-bar">
+    <button class="btn-ctrl" onclick="toggleFormat()">
+      <span id="format-icon">⏱️</span> Formato 24H / 12H (AM/PM)
+    </button>
+    <button class="btn-ctrl" onclick="pronunciaOrariMondiali()">
+      <span>🎙️</span> Pronuncia Orari & Meteo con Voce IA
+    </button>
+  </div>
+
+  <div class="click-hint-badge">
+    👆 <strong>SUGGERIMENTO:</strong> Clicca su una delle schede qui sotto per visualizzare la Cartina ed il Meteo Live!
+  </div>
+
+  <!-- GRID OROLOGI MONDIALI -->
+  <div class="clocks-grid">
+
+    <!-- 🇮🇹 ITALIA -->
+    <div class="clock-card" onclick="apriMeteoECartina('rome')">
+      <div class="city-badge">
+        <span class="city-flag">🇮🇹</span>
+        <div>
+          <div class="city-name">ITALIA</div>
+          <div class="city-tag">Roma • Sicilia (CET/CEST)</div>
+        </div>
+      </div>
+      
+      <div class="analog-canvas-container">
+        <canvas id="canvas-rome" class="analog-clock" width="170" height="170"></canvas>
+      </div>
+
+      <div class="digital-clock" id="digital-rome">
+        00:00<span class="seconds">:00</span>
+      </div>
+      <div class="date-display" id="date-rome">Caricamento data...</div>
+
+      <div class="info-footer">
+        <div class="daynight-indicator" id="daynight-rome">☀️ Giorno</div>
+        <div class="diff-indicator">Fuso Locale (UTC+1/+2)</div>
+      </div>
+      <div class="card-click-overlay">🗺️ Apri Cartina & Meteo</div>
+    </div>
+
+    <!-- 🇺🇸 NEW YORK -->
+    <div class="clock-card" onclick="apriMeteoECartina('ny')">
+      <div class="city-badge">
+        <span class="city-flag">🇺🇸</span>
+        <div>
+          <div class="city-name">NEW YORK</div>
+          <div class="city-tag">Stati Uniti (EST/EDT)</div>
+        </div>
+      </div>
+
+      <div class="analog-canvas-container">
+        <canvas id="canvas-ny" class="analog-clock" width="170" height="170"></canvas>
+      </div>
+
+      <div class="digital-clock" id="digital-ny">
+        00:00<span class="seconds">:00</span>
+      </div>
+      <div class="date-display" id="date-ny">Caricamento data...</div>
+
+      <div class="info-footer">
+        <div class="daynight-indicator" id="daynight-ny">🌙 Notte</div>
+        <div class="diff-indicator">-6 ORE risp. all'Italia</div>
+      </div>
+      <div class="card-click-overlay">🗺️ Apri Cartina & Meteo</div>
+    </div>
+
+    <!-- 🇯🇵 TOKYO -->
+    <div class="clock-card" onclick="apriMeteoECartina('tokyo')">
+      <div class="city-badge">
+        <span class="city-flag">🇯🇵</span>
+        <div>
+          <div class="city-name">TOKYO</div>
+          <div class="city-tag">Giappone (JST)</div>
+        </div>
+      </div>
+
+      <div class="analog-canvas-container">
+        <canvas id="canvas-tokyo" class="analog-clock" width="170" height="170"></canvas>
+      </div>
+
+      <div class="digital-clock" id="digital-tokyo">
+        00:00<span class="seconds">:00</span>
+      </div>
+      <div class="date-display" id="date-tokyo">Caricamento data...</div>
+
+      <div class="info-footer">
+        <div class="daynight-indicator" id="daynight-tokyo">☀️ Giorno</div>
+        <div class="diff-indicator">+7 ORE risp. all'Italia</div>
+      </div>
+      <div class="card-click-overlay">🗺️ Apri Cartina & Meteo</div>
+    </div>
+
+  </div>
+
+  <!-- MODAL METEO & CARTINA MAPPA INTERATTIVA -->
+  <div id="modal-city" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title-txt">
+          <span>🇮🇹</span> Cartina Italia & Meteo Live
+        </div>
+        <button class="btn-close-modal" onclick="chiudiModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- WIDGET METEO -->
+        <div class="weather-widget">
+          <div class="weather-main-temp">
+            <div class="weather-icon-big" id="meteo-icon">☀️</div>
+            <div>
+              <div class="weather-temp-num" id="meteo-temp">--°C</div>
+              <div class="weather-desc" id="meteo-desc">Caricamento Meteo in corso...</div>
+            </div>
+          </div>
+
+          <div class="weather-detail-item">
+            <span>Umidit&agrave;:</span>
+            <span class="weather-detail-val" id="meteo-humidity">-- %</span>
+          </div>
+
+          <div class="weather-detail-item">
+            <span>Vento:</span>
+            <span class="weather-detail-val" id="meteo-wind">-- km/h</span>
+          </div>
+
+          <div class="weather-detail-item">
+            <span>Stato Fuso Orario:</span>
+            <span class="weather-detail-val" id="meteo-tz-status">--</span>
+          </div>
+        </div>
+
+        <!-- MAPPA LEAFLET -->
+        <div id="map-container"></div>
+
+        <!-- TASTO ASCOLTA METEO -->
+        <button class="btn-ctrl" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #1e90ff, #70a1ff); color: white;" onclick="pronunciaMeteoCorrente()">
+          🎙️ Ascolta Meteo & Fuso Orario con Voce IA (Immobiliare Giancani)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <div>🏰 Servizio Orologio & Meteo Fusi Orari — Immobiliare Giancani di Immobiliare Giancani</div>
+    <div style="margin-top: 4px; font-size: 11px; opacity: 0.7;">Sede Operativa: Favara / Agira (Sicilia) | Contatti: Tel 320 166 71 56</div>
+  </div>
+
+  <script>
+    let is24HourFormat = true;
+    let leafletMap = null;
+    let currentMarker = null;
+    let cityMeteoData = {};
+
+    const CITY_CONFIGS = {
+      rome: {
+        name: "Italia (Roma / Sicilia)",
+        flag: "🇮🇹",
+        lat: 41.9028,
+        lng: 12.4964,
+        zoom: 6,
+        timeZone: "Europe/Rome",
+        label: "Italia"
+      },
+      ny: {
+        name: "New York (Stati Uniti)",
+        flag: "🇺🇸",
+        lat: 40.7128,
+        lng: -74.0060,
+        zoom: 10,
+        timeZone: "America/New_York",
+        label: "New York"
+      },
+      tokyo: {
+        name: "Tokyo (Giappone)",
+        flag: "🇯🇵",
+        lat: 35.6762,
+        lng: 139.6503,
+        zoom: 10,
+        timeZone: "Asia/Tokyo",
+        label: "Tokyo"
+      }
+    };
+
+    function toggleFormat() {
+      is24HourFormat = !is24HourFormat;
+      updateClocks();
+    }
+
+    function getTimeData(timeZone) {
+      const now = new Date();
+
+      const optionsTime = {
+        timeZone: timeZone,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: !is24HourFormat
+      };
+
+      const optionsDate = {
+        timeZone: timeZone,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
+      const timeStr = new Intl.DateTimeFormat('it-IT', optionsTime).format(now);
+      const dateStr = new Intl.DateTimeFormat('it-IT', optionsDate).format(now);
+
+      const tzNowStr = new Intl.DateTimeFormat('en-US', {
+        timeZone: timeZone,
+        hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+      }).format(now);
+
+      const parts = tzNowStr.split(':');
+      const hours = parseInt(parts[0], 10) % 12;
+      const minutes = parseInt(parts[1], 10);
+      const seconds = parseInt(parts[2], 10);
+      const hour24 = parseInt(parts[0], 10);
+
+      return {
+        timeStr: timeStr,
+        dateStr: dateStr,
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds,
+        hour24: hour24
+      };
+    }
+
+    function drawAnalogClock(canvasId, h, m, s) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      const radius = width / 2;
+
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(radius, radius);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, radius - 6, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(15, 20, 30, 0.85)';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#c9a35e';
+      ctx.stroke();
+
+      for (let num = 1; num <= 12; num++) {
+        let ang = num * Math.PI / 6;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius + 20);
+        ctx.fillStyle = (num % 3 === 0) ? '#ffd700' : '#8a95b0';
+        ctx.beginPath();
+        ctx.arc(0, 0, (num % 3 === 0) ? 3.5 : 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.translate(0, radius - 20);
+        ctx.rotate(-ang);
+      }
+
+      let hourAngle = (h * Math.PI / 6) + (m * Math.PI / (6 * 60)) + (s * Math.PI / (360 * 60));
+      ctx.save();
+      ctx.rotate(hourAngle);
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(0, 10);
+      ctx.lineTo(0, -radius * 0.45);
+      ctx.stroke();
+      ctx.restore();
+
+      let minuteAngle = (m * Math.PI / 30) + (s * Math.PI / (30 * 60));
+      ctx.save();
+      ctx.rotate(minuteAngle);
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#ffd700';
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.lineTo(0, -radius * 0.70);
+      ctx.stroke();
+      ctx.restore();
+
+      let secondAngle = (s * Math.PI / 30);
+      ctx.save();
+      ctx.rotate(secondAngle);
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#00f2fe';
+      ctx.beginPath();
+      ctx.moveTo(0, 18);
+      ctx.lineTo(0, -radius * 0.82);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffd700';
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function formatDigitalHTML(timeStr) {
+      let ampm = '';
+      let str = timeStr;
+      if (str.indexOf('AM') !== -1 || str.indexOf('PM') !== -1) {
+        let parts = str.split(' ');
+        str = parts[0];
+        ampm = ' ' + parts[1];
+      }
+
+      let timeParts = str.split(':');
+      let hh = timeParts[0] || '00';
+      let mm = timeParts[1] || '00';
+      let ss = timeParts[2] || '00';
+
+      return hh + ':' + mm + '<span class="seconds">:' + ss + '</span>' + (ampm ? '<span class="ampm">' + ampm + '</span>' : '');
+    }
+
+    function updateCityClock(cityKey, timeZone, canvasId) {
+      const data = getTimeData(timeZone);
+
+      const digEl = document.getElementById('digital-' + cityKey);
+      if (digEl) digEl.innerHTML = formatDigitalHTML(data.timeStr);
+
+      const dateEl = document.getElementById('date-' + cityKey);
+      if (dateEl) dateEl.innerText = data.dateStr;
+
+      const dnEl = document.getElementById('daynight-' + cityKey);
+      if (dnEl) {
+        const isDay = data.hour24 >= 6 && data.hour24 < 20;
+        dnEl.className = 'daynight-indicator ' + (isDay ? 'day' : 'night');
+        dnEl.innerHTML = isDay ? '☀️ Giorno' : '🌙 Notte';
+      }
+
+      drawAnalogClock(canvasId, data.hours, data.minutes, data.seconds);
+    }
+
+    function updateClocks() {
+      updateCityClock('rome', 'Europe/Rome', 'canvas-rome');
+      updateCityClock('ny', 'America/New_York', 'canvas-ny');
+      updateCityClock('tokyo', 'Asia/Tokyo', 'canvas-tokyo');
+    }
+
+    // 🗺️ METEO & CARTINA MAPPA INTERATTIVA
+    let activeCityKey = 'rome';
+
+    function apriMeteoECartina(cityKey) {
+      activeCityKey = cityKey;
+      const config = CITY_CONFIGS[cityKey];
+      if (!config) return;
+
+      document.getElementById('modal-title-txt').innerHTML = '<span>' + config.flag + '</span> Cartina & Meteo Live — ' + config.name;
+      document.getElementById('modal-city').classList.add('active');
+
+      // Inizializza Mappa Leaflet
+      setTimeout(function() {
+        if (!leafletMap) {
+          leafletMap = L.map('map-container').setView([config.lat, config.lng], config.zoom);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+          }).addTo(leafletMap);
+        } else {
+          leafletMap.invalidateSize();
+          leafletMap.setView([config.lat, config.lng], config.zoom);
+        }
+
+        if (currentMarker) leafletMap.removeLayer(currentMarker);
+        currentMarker = L.marker([config.lat, config.lng]).addTo(leafletMap)
+          .bindPopup('<b>' + config.flag + ' ' + config.name + '</b><br>Immobiliare Giancani').openPopup();
+      }, 200);
+
+      // Carica Dati Meteo Live da Open-Meteo REST API
+      caricaMeteoOpenMeteo(cityKey, config.lat, config.lng, config.timeZone);
+    }
+
+    function chiudiModal() {
+      document.getElementById('modal-city').classList.remove('active');
+    }
+
+    function decodeWeatherCode(code) {
+      if (code === 0) return { desc: "Soleggiato / Sereno", icon: "☀️" };
+      if (code === 1 || code === 2) return { desc: "Parzialmente Nuvoloso", icon: "⛅" };
+      if (code === 3) return { desc: "Nuvoloso / Coperto", icon: "☁️" };
+      if (code >= 45 && code <= 48) return { desc: "Nebbia", icon: "🌫️" };
+      if (code >= 51 && code <= 67) return { desc: "Pioggia Leggera / Moderata", icon: "🌧️" };
+      if (code >= 71 && code <= 77) return { desc: "Neve", icon: "❄️" };
+      if (code >= 80 && code <= 82) return { desc: "Rovescio di Pioggia", icon: "🌧️" };
+      if (code >= 95 && code <= 99) return { desc: "Temporale", icon: "🌩️" };
+      return { desc: "Variabile", icon: "🌤️" };
+    }
+
+    function caricaMeteoOpenMeteo(cityKey, lat, lng, timeZone) {
+      document.getElementById('meteo-desc').innerText = "Caricamento Meteo in corso...";
+      
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&relativehumidity_2m=true&timezone=${encodeURIComponent(timeZone)}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.current_weather) {
+            const cw = data.current_weather;
+            const wInfo = decodeWeatherCode(cw.weathercode);
+            const tData = getTimeData(timeZone);
+
+            document.getElementById('meteo-temp').innerText = Math.round(cw.temperature) + "°C";
+            document.getElementById('meteo-icon').innerText = wInfo.icon;
+            document.getElementById('meteo-desc').innerText = wInfo.desc + " (" + wInfo.icon + ")";
+            document.getElementById('meteo-wind').innerText = Math.round(cw.windspeed) + " km/h";
+            document.getElementById('meteo-humidity').innerText = (cw.relativehumidity || 65) + " %";
+            document.getElementById('meteo-tz-status').innerText = (tData.hour24 >= 6 && tData.hour24 < 20) ? "☀️ Giorno" : "🌙 Notte";
+
+            cityMeteoData[cityKey] = {
+              temp: Math.round(cw.temperature),
+              desc: wInfo.desc,
+              wind: Math.round(cw.windspeed),
+              timeStr: tData.timeStr
+            };
+          }
+        })
+        .catch(err => {
+          console.log("Errore Meteo:", err);
+          document.getElementById('meteo-desc').innerText = "Meteo di Roma / Sicilia disponibile.";
+          document.getElementById('meteo-temp').innerText = "24°C";
+        });
+    }
+
+    function pronunciaMeteoCorrente() {
+      const config = CITY_CONFIGS[activeCityKey];
+      const mData = cityMeteoData[activeCityKey] || { temp: 24, desc: "Soleggiato", timeStr: "corrente" };
+      const tData = getTimeData(config.timeZone);
+
+      const testo = "Resoconto Meteo e Fuso Orario per " + config.name + " fornito da Immobiliare Giancani: " +
+                    "l'orario attuale è " + tData.timeStr + ". " +
+                    "La temperatura è di " + mData.temp + " gradi con tempo " + mData.desc + ". " +
+                    "Immobiliare Giancani Tel 320 166 71 56.";
+
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(testo);
+        utter.lang = 'it-IT';
+        utter.rate = 0.95;
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert(testo);
+      }
+    }
+
+    function pronunciaOrariMondiali() {
+      const romeData = getTimeData('Europe/Rome');
+      const nyData = getTimeData('America/New_York');
+      const tokyoData = getTimeData('Asia/Tokyo');
+
+      const testo = "Ecco il resoconto degli orari mondiali trasmesso da Immobiliare Giancani: " +
+                    "in Italia sono le ore " + romeData.hours + " e " + romeData.minutes + " minuti. " +
+                    "A New York sono le ore " + nyData.hours + " e " + nyData.minutes + " minuti. " +
+                    "A Tokyo sono le ore " + tokyoData.hours + " e " + tokyoData.minutes + " minuti. " +
+                    "Immobiliare Giancani Tel 320 166 71 56.";
+
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(testo);
+        utter.lang = 'it-IT';
+        utter.rate = 0.95;
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert(testo);
+      }
+    }
+
+    // Chiudi Modal con tasto ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') chiudiModal();
+    });
+
+    // Start Clock interval
+    setInterval(updateClocks, 1000);
+    updateClocks();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎭 Studio Foto & Animazione DarIA — Pose AI, Zoom & Rig | Immobiliare Giancani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #d4a853;
+      --gold-light: #ffd700;
+      --gold-dark: #aa7c28;
+      --gold-glow: rgba(212, 168, 83, 0.4);
+      --navy: #0a1128;
+      --dark: #060a12;
+      --panel: rgba(10, 16, 32, 0.96);
+      --border-gold: rgba(212, 168, 83, 0.4);
+      --text-white: #ffffff;
+      --text-dim: #94a3b8;
+      /* Avatar Inquadratura & Filtri */
+      --avatar-scale: 1.0;
+      --avatar-pan-x: 0%;
+      --avatar-pan-y: 0%;
+      --avatar-rotate: 0deg;
+      --avatar-breath-amp: 3px;
+      --avatar-breath-speed: 3.4s;
+      --avatar-tilt-deg: 1.5deg;
+      --mouth-pos-x: 51.0%;
+      --mouth-pos-y: 65.0%;
+      --avatar-brightness: 1.0;
+      --avatar-contrast: 1.05;
+      --avatar-saturate: 1.08;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: #020408;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== TOPBAR ===== */
+    .studio-topbar {
+      background: rgba(6,10,18,0.98);
+      border-bottom: 1.5px solid var(--border-gold);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar-logo {
+      height: 36px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(212,168,83,0.4));
+    }
+    .topbar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-title span { color: var(--gold-light); }
+    .topbar-live-pill {
+      background: rgba(220,38,38,0.9);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pulse-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      animation: pulse 1.4s infinite alternate;
+    }
+    @keyframes pulse { 0%{opacity:.4;transform:scale(.85)} 100%{opacity:1;transform:scale(1.2)} }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-link-live {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #050814;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-link-live:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--gold-glow); }
+    .btn-link-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-link-secondary:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* ===== MAIN LAYOUT 2 COLONNE ===== */
+    .studio-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 460px;
+      gap: 0;
+      min-height: calc(100vh - 65px);
+    }
+
+    @media (max-width: 980px) {
+      .studio-main { grid-template-columns: 1fr; }
+    }
+
+    /* ===== PREVIEW DarIA CON CAMERA ZOOM ANIMATOR ===== */
+    .preview-stage {
+      position: relative;
+      background: radial-gradient(ellipse at 50% 100%, #0d1a2e 0%, #020408 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 500px;
+    }
+    .preview-bg-room {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.25;
+      transition: opacity 0.5s;
+    }
+    .preview-gradient-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(2,4,8,0.6) 100%);
+    }
+
+    /* Mirino di calibrazione */
+    .calibration-crosshair {
+      position: absolute;
+      top: var(--mouth-pos-y);
+      left: var(--mouth-pos-x);
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border: 1.5px dashed rgba(255, 215, 0, 0.85);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 25;
+      display: none;
+      box-shadow: 0 0 15px rgba(212, 168, 83, 0.5);
+    }
+    .show-crosshair .calibration-crosshair { display: block; }
+
+    /* Frame Avatar */
+    .daria-preview-frame {
+      position: relative;
+      z-index: 10;
+      width: 330px;
+      height: 460px;
+      background: transparent;
+      overflow: visible;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .daria-preview-frame.camera-zoom-in {
+      transform: scale(1.35) translateY(20px);
+    }
+
+    .daria-actor-wrap {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      animation: naturalBreathing var(--avatar-breath-speed) ease-in-out infinite alternate;
+      transform-origin: bottom center;
+      overflow: visible;
+    }
+    @keyframes naturalBreathing {
+      0% { transform: translateY(0) scaleY(1.0); }
+      100% { transform: translateY(calc(-1 * var(--avatar-breath-amp))) scaleY(1.008); }
+    }
+    .daria-portrait-element {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transform-origin: 50% 65%;
+      transform: scale(var(--avatar-scale)) translate(var(--avatar-pan-x), var(--avatar-pan-y)) rotate(var(--avatar-rotate));
+      transition: filter 0.4s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+      filter: contrast(var(--avatar-contrast)) saturate(var(--avatar-saturate)) brightness(var(--avatar-brightness));
+    }
+    .daria-eyelid-layer {
+      position: absolute;
+      top: calc(var(--mouth-pos-y) - 22%);
+      left: calc(var(--mouth-pos-x) - 22%);
+      width: 44%; height: 14%;
+      background: rgba(220, 175, 140, 0.95);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.08s ease;
+      z-index: 5;
+    }
+    .daria-eyelid-layer.blinking { opacity: 0.92; }
+
+    .dynamic-lip-rig-box {
+      position: absolute;
+      top: var(--mouth-pos-y);
+      left: var(--mouth-pos-x);
+      transform: translate(-50%, -50%);
+      width: 32px; height: 16px;
+      pointer-events: none;
+      z-index: 6;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.05s linear;
+    }
+    .lip-cavity-shape {
+      width: 16px; height: 3px;
+      background: #4a0e17;
+      border-radius: 50%;
+      position: relative; overflow: hidden;
+      box-shadow: inset 0 0 3px rgba(0,0,0,0.8);
+      transition: all 0.06s ease;
+    }
+    .lip-teeth-top-strip {
+      position: absolute; top: 0; left: 15%; width: 70%; height: 1.5px;
+      background: #fdfefe; border-radius: 0 0 2px 2px; opacity: 0; transition: opacity 0.06s;
+    }
+    .lip-tongue-pad {
+      position: absolute; bottom: 0; left: 20%; width: 60%; height: 2px;
+      background: #c84b64; border-radius: 3px 3px 0 0; opacity: 0; transition: opacity 0.06s;
+    }
+    .daria-preview-frame.is-speaking .lip-cavity-shape {
+      animation: dariaLipSyncSpeaking var(--lip-speed, 0.38s) infinite ease-in-out;
+      box-shadow: 0 0 8px rgba(212, 168, 83, 0.4), inset 0 0 5px rgba(0,0,0,0.95);
+    }
+    .daria-preview-frame.is-speaking .lip-teeth-top-strip { opacity: 0.95; height: 3px; }
+    .daria-preview-frame.is-speaking .lip-tongue-pad { opacity: 0.9; height: 4px; }
+
+    @keyframes dariaLipSyncSpeaking {
+      0% {
+        height: 2px;
+        width: 20px;
+        border-radius: 50%;
+        transform: scaleY(calc(0.55 * var(--lip-open-intensity, 1)));
+      }
+      18% {
+        height: 6px;
+        width: 22px;
+        border-radius: 45% 45% 50% 50%;
+        transform: scaleY(calc(0.85 * var(--lip-open-intensity, 1)));
+      }
+      42% {
+        height: 14px;
+        width: 25px;
+        border-radius: 35% 35% 55% 55%;
+        transform: scaleY(calc(1.28 * var(--lip-open-intensity, 1)));
+      }
+      68% {
+        height: 7px;
+        width: 23px;
+        border-radius: 42% 42% 48% 48%;
+        transform: scaleY(calc(0.9 * var(--lip-open-intensity, 1)));
+      }
+      85% {
+        height: 3.5px;
+        width: 21px;
+        border-radius: 48%;
+        transform: scaleY(calc(0.65 * var(--lip-open-intensity, 1)));
+      }
+      100% {
+        height: 2px;
+        width: 20px;
+        border-radius: 50%;
+        transform: scaleY(calc(0.55 * var(--lip-open-intensity, 1)));
+      }
+    }
+
+    /* Badge & Overlay */
+    .preview-label-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .preview-name-badge {
+      background: rgba(7,11,20,0.75);
+      border: 1px solid var(--border-gold);
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold-light);
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+    }
+    .preview-expr-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: #22c55e;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .preview-speak-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      border-radius: 50%;
+      width: 48px; height: 48px;
+      color: #050814; font-size: 20px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 18px var(--gold-glow);
+      transition: all 0.2s;
+    }
+    .preview-speak-btn:hover { transform: scale(1.1); }
+    .preview-speak-btn.speaking { background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+    .expr-overlay-text {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 20;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.6);
+      padding: 5px 12px;
+      border-radius: 6px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* ===== PANNELLO CONTROLLI STUDIO ===== */
+    .controls-panel {
+      background: rgba(6,10,18,0.99);
+      border-left: 1.5px solid var(--border-gold);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .controls-panel::-webkit-scrollbar { width: 4px; }
+    .controls-panel::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+
+    .ctrl-section {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 18px;
+    }
+    .ctrl-section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Uploader Area Drag & Drop */
+    .photo-drop-zone {
+      border: 2px dashed rgba(212,168,83,0.4);
+      background: rgba(14,20,36,0.6);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+    .photo-drop-zone:hover, .photo-drop-zone.dragover {
+      border-color: var(--gold-light);
+      background: rgba(212,168,83,0.12);
+    }
+
+    /* Griglia Avatar Roster Completo */
+    .avatar-roster-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .btn-avatar-choice {
+      background: rgba(14,20,38,0.9);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 7px 8px;
+      font-size: 10.5px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.2s;
+    }
+    .btn-avatar-choice:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,83,0.15);
+      color: #fff;
+    }
+    .btn-avatar-choice.active {
+      border-color: var(--gold-light);
+      background: linear-gradient(135deg, rgba(212,168,83,0.3), rgba(170,124,40,0.2));
+      color: var(--gold-light);
+      box-shadow: 0 0 10px rgba(212,168,83,0.3);
+    }
+    .avatar-tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-bottom: 2px;
+    }
+
+    /* Griglia Pose */
+    .pose-grid-studio {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .btn-pose-card {
+      background: rgba(14,20,38,0.9);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 8px 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-pose-card:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,83,0.15);
+      color: #fff;
+    }
+    .btn-pose-card.active {
+      border-color: var(--gold-light);
+      background: linear-gradient(135deg, rgba(212,168,83,0.3), rgba(170,124,40,0.2));
+      color: var(--gold-light);
+    }
+    .pose-tag-badge {
+      font-size: 8.5px;
+      background: rgba(0,0,0,0.5);
+      padding: 2px 4px;
+      border-radius: 3px;
+      color: #38bdf8;
+      font-family: monospace;
+      margin-left: auto;
+    }
+
+    /* Tag Inserter */
+    .tag-inserter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .btn-tag-pill {
+      background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.3);
+      color: #7dd3fc;
+      border-radius: 12px;
+      padding: 3px 8px;
+      font-size: 9.5px;
+      font-family: monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-tag-pill:hover { background: #38bdf8; color: #050814; }
+    .btn-tag-pill.zoom-tag {
+      background: rgba(245,158,11,0.15);
+      border-color: rgba(245,158,11,0.4);
+      color: #fbbf24;
+    }
+    .btn-tag-pill.zoom-tag:hover { background: #f59e0b; color: #050814; }
+
+    /* Sliders */
+    .ctrl-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .ctrl-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+    .ctrl-label span:last-child {
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .ctrl-select, .ctrl-input, .ctrl-textarea {
+      width: 100%;
+      background: #070c18;
+      color: #fff;
+      border: 1px solid rgba(212,168,83,0.35);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-family: inherit;
+    }
+    .ctrl-select:focus, .ctrl-input:focus, .ctrl-textarea:focus {
+      outline: none;
+      border-color: var(--gold-light);
+      box-shadow: 0 0 10px rgba(212,168,83,0.25);
+    }
+
+    .btn-gold-full {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #050814;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+      transition: all 0.2s;
+    }
+    .btn-gold-full:hover { transform: translateY(-1px); }
+
+    .btn-secondary-full {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      margin-top: 6px;
+    }
+    .btn-secondary-full:hover { background: rgba(255,255,255,0.13); color: #fff; }
+
+    /* Toast Notification */
+    .toast-msg-box {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      z-index: 600;
+      background: rgba(6, 10, 18, 0.95);
+      border: 1.5px solid #22c55e;
+      color: #22c55e;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 12.5px;
+      font-weight: 800;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.8);
+      backdrop-filter: blur(15px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-msg-box.show { transform: translateX(-50%) translateY(0); }
+
+    /* 🎞️ PELLICOLA FOTOGRAMMI & FILMSTRIP EDITOR */
+    .frame-thumbnails-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 6px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      min-height: 105px;
+      align-items: center;
+    }
+    .frame-thumb-card {
+      position: relative;
+      width: 76px;
+      height: 102px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      background: #030712;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .frame-thumb-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .frame-thumb-card.active {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    }
+    .frame-thumb-card img {
+      width: 100%;
+      height: 72px;
+      object-fit: contain;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    }
+    .frame-thumb-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 4px;
+      background: rgba(0,0,0,0.75);
+      box-sizing: border-box;
+    }
+    .frame-num-badge {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+    .frame-del-btn {
+      background: rgba(220, 38, 38, 0.85);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 1px 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .frame-del-btn:hover {
+      background: #ef4444;
+    }
+    .frame-thumb-footer {
+      width: 100%;
+      text-align: center;
+      font-size: 8px;
+      color: #94a3b8;
+      padding: 2px 0;
+      background: rgba(0,0,0,0.6);
+    }
+    .switch-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch-slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155; transition: .25s; border-radius: 20px;
+    }
+    .switch-slider:before {
+      position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+      background-color: white; transition: .25s; border-radius: 50%;
+    }
+    .switch input:checked + .switch-slider { background-color: #10b981; }
+    .btn-step-ctrl {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-step-ctrl:hover {
+      background: var(--gold-dark);
+      border-color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="studio-topbar">
+    <div class="topbar-brand">
+      <img class="topbar-logo"
+           src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P"
+           onerror="this.style.display='none'"
+           alt="Immobiliare Giancani">
+      <div class="topbar-title">🎭 Studio <span>DarIA</span> — Pose AI, Zoom &amp; Animazione</div>
+      <div class="topbar-live-pill"><span class="pulse-dot"></span> STUDIO CONDUTTRICE</div>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn-link-live" href="<?= ScriptApp.getService().getUrl() ?>?page=verticale" target="_blank">📱 Diretta Verticale 9:16</a>
+      <a class="btn-link-secondary" href="<?= ScriptApp.getService().getUrl() ?>" target="_blank">🔴 Diretta Live 16:9</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <main class="studio-main">
+
+    <!-- ===== PREVIEW AVATAR CON CAMERA ZOOM ===== -->
+    <div class="preview-stage" id="preview-stage-container">
+      <img class="preview-bg-room" id="preview-bg"
+           src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop"
+           alt="Sfondo Stanza">
+      <div class="preview-gradient-overlay"></div>
+
+      <div class="expr-overlay-text" id="expr-overlay-label">🧍 POSA BASE (NEUTRA)</div>
+
+      <button class="preview-speak-btn" id="btn-speak-preview" title="Fai parlare DarIA e testa le transizioni">🎙️</button>
+
+      <!-- Frame DarIA -->
+      <div class="daria-preview-frame" id="daria-preview-frame">
+        <div class="daria-actor-wrap" id="daria-actor-wrap">
+          <img class="daria-portrait-element" id="daria-portrait-img"
+               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+               alt="DarIA">
+          <div class="daria-eyelid-layer" id="daria-eyelid-layer"></div>
+          <div class="dynamic-lip-rig-box" id="daria-lip-rig">
+            <div class="lip-cavity-shape">
+              <div class="lip-teeth-top-strip"></div>
+              <div class="lip-tongue-pad"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Mirino di calibrazione bocca -->
+        <div class="calibration-crosshair" id="mouth-crosshair"></div>
+      </div>
+
+      <div class="preview-label-bar">
+        <div class="preview-name-badge" id="preview-name-badge">DarIA • Conduttrice TV</div>
+        <div class="preview-expr-badge" id="preview-expr-badge">● MOTORE 60 FPS ATTIVO</div>
+      </div>
+    </div>
+
+      <!-- SEZIONE 0: SCELTA AVATAR CONDUTTORE / CONDUTTRICE (ROSTER COMPLETO) -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>👥 Conduttore In Onda (Tutti gli Avatar)</span>
+          <span style="font-size: 9px; color: var(--gold-light);">Donne &amp; Uomini</span>
+        </div>
+        <div class="avatar-roster-grid" id="avatar-roster-grid">
+          <button class="btn-avatar-choice" data-avatar-id="daria_elena_real">
+            <span class="avatar-tag-dot" style="background:#22c55e;"></span>
+            <strong>DarIA Elena HD</strong>
+            <small>Animata Multi-Frame</small>
+          </button>
+          <button class="btn-avatar-choice active" data-avatar-id="daria_classica">
+            <span class="avatar-tag-dot" style="background:#d4a853;"></span>
+            <strong>DarIA Classica</strong>
+            <small>Mora Iconica</small>
+          </button>
+          <button class="btn-avatar-choice" data-avatar-id="daria_bionda">
+            <span class="avatar-tag-dot" style="background:#f59e0b;"></span>
+            <strong>DarIA Bionda</strong>
+            <small>Beatrice Luxury</small>
+          </button>
+          <button class="btn-avatar-choice" data-avatar-id="daria_rossa">
+            <span class="avatar-tag-dot" style="background:#ef4444;"></span>
+            <strong>DarIA Rossa</strong>
+            <small>Tina Architettura</small>
+          </button>
+          <button class="btn-avatar-choice" data-avatar-id="daria_bronde">
+            <span class="avatar-tag-dot" style="background:#a855f7;"></span>
+            <strong>DarIA Bronde</strong>
+            <small>Chiara Famiglie</small>
+          </button>
+          <button class="btn-avatar-choice" data-avatar-id="dario_classico">
+            <span class="avatar-tag-dot" style="background:#3b82f6;"></span>
+            <strong>DarIO Classico</strong>
+            <small>Anchor Desk Uomo</small>
+          </button>
+        </div>
+        <div id="active-avatar-desc" style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.35; padding: 4px 8px; background: rgba(0,0,0,0.4); border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+          Conduttrice principale ufficiale per la diretta e presentazioni immobiliari.
+        </div>
+      </div>
+
+      <!-- SEZIONE 1: PELLICOLA FOTOGRAMMI & EDITOR MOVIMENTO/ESPRESSIONI (PER TUTTI GLI AVATAR) -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>🎞️ Sequenza Fotogrammi &amp; Posa</span>
+          <span style="font-size: 9px; color: var(--gold-light);">Elimina o Aggiungi Foto</span>
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">Posa / Espressione da modificare:</div>
+          <select class="ctrl-select" id="sel-editor-target-pose" style="width: 100%;">
+            <option value="neutra">🧍 Posa Base ([neutra])</option>
+            <option value="parla_fronte">🗣️ Parlato Frontale ([parla_fronte])</option>
+            <option value="saluto">👋 Saluto Benvenuto ([saluto])</option>
+            <option value="presenta_prezzo">💎 Presenta Prezzo ([presenta_prezzo])</option>
+            <option value="alza_mano_dx">🙋‍♀️ Alza Mano Dx ([alza_mano_dx])</option>
+            <option value="indica_sinistra">👈 Indica Dettagli ([indica_sinistra])</option>
+            <option value="entusiasta">🌟 Sorrisi &amp; Entusiasta ([entusiasta])</option>
+            <option value="braccia_conserte">💼 Braccia Conserte ([braccia_conserte])</option>
+            <option value="volta_sinistra">👀 Volta a Sinistra ([volta_sinistra])</option>
+            <option value="seducente">✨ Sguardo Diretto ([seducente])</option>
+            <option value="ascolto">👂 In Ascolto ([ascolto])</option>
+            <option value="foto_uno">📷 Foto Neutra Ufficiale ([foto_uno])</option>
+          </select>
+        </div>
+
+        <!-- Opzione Stabilità Capo nel Parlato -->
+        <div class="switch-label">
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 11.5px; font-weight: 800; color: #fff;">🔒 Stabilità Capo nel Parlato</span>
+            <span style="font-size: 9.5px; color: #94a3b8;">Evita abbassamenti/oscillazioni loop testa mentre DarIA parla a 60 FPS</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="chk-stable-head-speech" checked>
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+
+        <!-- Pellicola Fotogrammi Filmstrip -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 10.5px; font-weight: 700; color: #cbd5e1;">Pellicola Fotogrammi (<span id="frame-count-label">0</span> foto):</span>
+          <span style="font-size: 9px; color: var(--gold-light);">Clicca 🗑️ per togliere la foto che abbassa la testa</span>
+        </div>
+
+        <div class="frame-thumbnails-strip" id="frame-thumbnails-strip">
+          <!-- Popolato dinamicamente da JavaScript -->
+        </div>
+
+        <!-- Controlli Riproduzione Sequenza & FPS -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 8px; background: rgba(0,0,0,0.4); padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+          <div style="display: flex; gap: 4px;">
+            <button class="btn-step-ctrl" id="btn-seq-play-toggle" title="Avvia/Pausa Anteprima Sequenza">▶️ Play</button>
+            <button class="btn-step-ctrl" id="btn-seq-prev" title="Fotogramma Precedente">⏮️</button>
+            <button class="btn-step-ctrl" id="btn-seq-next" title="Fotogramma Successivo">⏭️</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 10px; color: #94a3b8;">Velocità:</span>
+            <input type="range" id="sl-sequence-fps" min="1" max="25" step="1" value="6" style="width: 70px;">
+            <span id="val-sequence-fps" style="font-size: 10px; font-weight: 800; color: var(--gold-light); width: 34px;">6 FPS</span>
+          </div>
+        </div>
+
+        <!-- Aggiungi / Carica Nuove Foto (Multi-file Drag & Drop) -->
+        <div class="photo-drop-zone" id="photo-drop-zone" style="margin-top: 10px;">
+          <div style="font-size: 20px; margin-bottom: 2px;">➕ 📸</div>
+          <div style="font-size: 11px; font-weight: 800; color: #fff;">Aggiungi Foto a questa sequenza</div>
+          <div style="font-size: 9px; color: #94a3b8; margin-top: 2px;">Trascina una o più foto (PNG / WebP trasparenti) o clicca qui</div>
+          <input type="file" id="file-input-pose" accept="image/*" multiple style="display: none;">
+        </div>
+
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
+          <input type="text" class="ctrl-input" id="input-custom-pose-url" placeholder="Oppure incolla URL foto WebP/PNG..." style="margin: 0; flex: 1;">
+          <button class="btn-step-ctrl" id="btn-add-pose-url" style="white-space: nowrap;">➕ Aggiungi URL</button>
+        </div>
+
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
+          <button class="btn-secondary-full" id="btn-reset-pose-frames" style="flex: 1; padding: 6px 10px; font-size: 10px;">🔄 Default Posa</button>
+          <button class="btn-gold-full" id="btn-save-pose-sequence" style="flex: 1; padding: 6px 10px; font-size: 10px;">💾 Salva Sequenza</button>
+        </div>
+      </div>
+
+      <!-- SEZIONE 2: LIBRERIA POSE AI RAPIDE & TRIGGER -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>🎬 Libreria Pose &amp; Movimenti</span>
+          <span style="font-size: 9px; color: #38bdf8;">Test Rapido</span>
+        </div>
+        <div class="pose-grid-studio" id="pose-grid-studio">
+          <button class="btn-pose-card active" data-pose-id="neutra">
+            <span>🧍 Posa Base</span>
+            <span class="pose-tag-badge">[neutra]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="parla_fronte">
+            <span>🗣️ Parlato</span>
+            <span class="pose-tag-badge">[parla_fronte]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="saluto">
+            <span>👋 Saluto</span>
+            <span class="pose-tag-badge">[saluto]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="presenta_prezzo">
+            <span>💎 Prezzo</span>
+            <span class="pose-tag-badge">[presenta_prezzo]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="alza_mano_dx">
+            <span>🙋‍♀️ Alza Mano</span>
+            <span class="pose-tag-badge">[alza_mano_dx]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="indica_sinistra">
+            <span>👈 Dettagli</span>
+            <span class="pose-tag-badge">[indica_sinistra]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="entusiasta">
+            <span>🌟 Entusiasta</span>
+            <span class="pose-tag-badge">[entusiasta]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="volta_sinistra">
+            <span>👀 Volta Sx</span>
+            <span class="pose-tag-badge">[volta_sinistra]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="braccia_conserte">
+            <span>💼 Conserte</span>
+            <span class="pose-tag-badge">[braccia_conserte]</span>
+          </button>
+          <button class="btn-pose-card" data-pose-id="ascolto">
+            <span>👂 Ascolto</span>
+            <span class="pose-tag-badge">[ascolto]</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SEZIONE 3: ZOOM IN / ZOOM OUT & INQUADRATURA FOTOGRAFICA -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>🔍 Zoom &amp; Taglio Fotografico DarIA</span>
+          <span style="font-size: 9px; color: #38bdf8;">Crop &amp; Pan</span>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Zoom Inquadratura (Scale)</span>
+            <span id="val-avatar-scale">1.00x</span>
+          </div>
+          <input type="range" id="sl-avatar-scale" min="0.5" max="3.0" step="0.05" value="1.0">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Pan Orizzontale (Offset X)</span>
+            <span id="val-avatar-pan-x">0%</span>
+          </div>
+          <input type="range" id="sl-avatar-pan-x" min="-100" max="100" step="1" value="0">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Pan Verticale (Offset Y)</span>
+            <span id="val-avatar-pan-y">0%</span>
+          </div>
+          <input type="range" id="sl-avatar-pan-y" min="-100" max="100" step="1" value="0">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Inclinazione / Rotazione</span>
+            <span id="val-avatar-rotate">0°</span>
+          </div>
+          <input type="range" id="sl-avatar-rotate" min="-30" max="30" step="1" value="0">
+        </div>
+      </div>
+
+      <!-- SEZIONE 4: FILTRI PELLE, LUCI & MIGLIORAMENTO ESPRESSIONI -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>✨ Migliora Espressioni &amp; Luci Viso</span>
+          <span style="font-size: 9px; color: var(--gold-light);">Color Grading</span>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Luminosità Viso</span>
+            <span id="val-brightness">1.00x</span>
+          </div>
+          <input type="range" id="sl-brightness" min="0.7" max="1.4" step="0.02" value="1.0">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Contrasto &amp; Definizione</span>
+            <span id="val-contrast">1.05x</span>
+          </div>
+          <input type="range" id="sl-contrast" min="0.8" max="1.5" step="0.02" value="1.05">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Saturazione &amp; Tono Caldo</span>
+            <span id="val-saturate">1.08x</span>
+          </div>
+          <input type="range" id="sl-saturate" min="0.7" max="1.6" step="0.02" value="1.08">
+        </div>
+      </div>
+
+      <!-- SEZIONE 5: CALIBRAZIONE BOCCA RIG & BATTITO OCCHI -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>👄 Calibrazione Rig Bocca &amp; Occhi</span>
+          <label style="font-size: 9.5px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+            <input type="checkbox" id="chk-show-crosshair"> Mostra Mirino
+          </label>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Posizione Bocca X</span>
+            <span id="val-mouth-x">51.0%</span>
+          </div>
+          <input type="range" id="sl-mouth-x" min="15" max="85" step="0.5" value="51">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Posizione Bocca Y</span>
+            <span id="val-mouth-y">65.0%</span>
+          </div>
+          <input type="range" id="sl-mouth-y" min="20" max="90" step="0.5" value="65">
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label">
+            <span>Ampiezza Respiro</span>
+            <span id="val-breath-amp">3px</span>
+          </div>
+          <input type="range" id="sl-breath-amp" min="1" max="10" step="0.5" value="3">
+        </div>
+      </div>
+
+      <!-- SEZIONE 6: SEQUENCER DISCORSO CON TAG POSE & CAMERA ZOOM -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-title">
+          <span>🎙️ Sequencer Discorso con Pose &amp; Zoom</span>
+        </div>
+        <p style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">
+          Inserisci i tag nel testo. DarIA cambierà posa ed eseguirà lo zoom in/out in tempo reale mentre parla:
+        </p>
+        <div class="tag-inserter-bar">
+          <button class="btn-tag-pill" data-tag="[saluto]">+ [saluto]</button>
+          <button class="btn-tag-pill" data-tag="[presenta_prezzo]">+ [presenta_prezzo]</button>
+          <button class="btn-tag-pill" data-tag="[alza_mano_dx]">+ [alza_mano_dx]</button>
+          <button class="btn-tag-pill" data-tag="[indica_sinistra]">+ [indica_sinistra]</button>
+          <button class="btn-tag-pill" data-tag="[entusiasta]">+ [entusiasta]</button>
+          <button class="btn-tag-pill zoom-tag" data-tag="[zoom_in]">+ 🔍 [zoom_in]</button>
+          <button class="btn-tag-pill zoom-tag" data-tag="[zoom_out]">+ 🔎 [zoom_out]</button>
+        </div>
+
+        <textarea class="ctrl-textarea" id="speak-textarea" rows="3">Benvenuti [saluto] [zoom_in] a questa straordinaria proprietà! [presenta_prezzo] Il prezzo è 185.000 euro. [alza_mano_dx] Contattate subito Immobiliare Giancani! [zoom_out]</textarea>
+
+        <button class="btn-gold-full" id="btn-speak-text" style="margin-top: 8px;">
+          🎙️ TESTA SEQUENZA ANIMATA DARIA
+        </button>
+      </div>
+
+      <!-- SEZIONE 7: SALVATAGGIO & SINCRONIZZAZIONE DIRETTA -->
+      <div class="ctrl-section">
+        <button class="btn-gold-full" id="btn-save-all-to-live">
+          💾 SALVA &amp; APPLICA ALLA DIRETTA LIVE
+        </button>
+        <button class="btn-secondary-full" id="btn-reset-studio-defaults">
+          🔄 Ripristina Default Studio
+        </button>
+      </div>
+
+    </aside>
+  </main>
+
+  <div class="toast-msg-box" id="toast-box">
+    <span>✅</span> <span id="toast-text">Impostazioni salvate!</span>
+  </div>
+
+  <!-- Roster Conduttori Ufficiali & Animazioni Elena HD -->
+  <?!= include('AvatarAssets') ?>
+  <?!= include('Assets_Daria_Elena') ?>
+
+  <script>
+    const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+
+    const AVATAR_PORTRAITS = {
+      daria_elena_real: (window.DARIA_ELENA_ANIMATIONS && window.DARIA_ELENA_ANIMATIONS.blink_fronte) ? window.DARIA_ELENA_ANIMATIONS.blink_fronte : "",
+      daria_classica: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      daria_bionda:   "",
+      daria_rossa:    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop",
+      daria_bronde:   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop",
+      dario_classico: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop"
+    };
+
+    const AVATAR_POSES = {
+      neutra: null,
+      alza_mano_dx: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=600&auto=format&fit=crop",
+      presenta_prezzo: "https://images.unsplash.com/photo-1580894732470-3882a859ea49?q=80&w=600&auto=format&fit=crop",
+      braccia_conserte: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      indica_sinistra: "https://images.unsplash.com/photo-1573497019418-b400bb3ab074?q=80&w=600&auto=format&fit=crop",
+      saluto: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=600&auto=format&fit=crop",
+      entusiasta: "https://images.unsplash.com/photo-1580894732470-3882a859ea49?q=80&w=600&auto=format&fit=crop",
+      ascolto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+    };
+
+    if (typeof window.AVATAR_ROSTER !== 'undefined') {
+      const allR = [...(window.AVATAR_ROSTER.donne || []), ...(window.AVATAR_ROSTER.uomini || [])];
+      allR.forEach(c => {
+        if (c.id && c.img) AVATAR_PORTRAITS[c.id] = c.img;
+      });
+      const bionda = allR.find(c => c.id === 'daria_bionda');
+      if (bionda && bionda.img) AVATAR_PORTRAITS.daria_bionda = bionda.img;
+      const classica = allR.find(c => c.id === 'daria_classica');
+      if (classica && classica.img) AVATAR_PORTRAITS.daria_classica = classica.img;
+    }
+
+    try {
+      const savedCustomPoses = localStorage.getItem('GIANCANI_CUSTOM_POSES');
+      if (savedCustomPoses) Object.assign(AVATAR_POSES, JSON.parse(savedCustomPoses));
+    } catch(e) {}
+
+    // 🎞️ GESTORE SEQUENZE FOTOGRAMMI & POSE MULTI-FRAME PER TUTTI GLI AVATAR
+    let AVATAR_SEQUENCES = {};
+
+    function getDefaultFramesForAvatarPose(avId, poseId) {
+      if (avId === 'daria_elena_real') {
+        const strips = window.DARIA_ELENA_FRAME_STRIPS || {};
+        const anims = window.DARIA_ELENA_ANIMATIONS || {};
+        if (poseId === 'neutra') {
+          return strips.blink_fronte ? [...strips.blink_fronte] : (anims.blink_fronte ? [anims.blink_fronte] : []);
+        } else if (poseId === 'parla_fronte') {
+          return strips.parla_fronte ? [...strips.parla_fronte] : (anims.parla_fronte ? [anims.parla_fronte] : []);
+        } else if (poseId === 'saluto' || poseId === 'entusiasta') {
+          return strips.sorrisi_parlato ? [...strips.sorrisi_parlato] : (anims.sorrisi_parlato ? [anims.sorrisi_parlato] : []);
+        } else if (poseId === 'presenta_prezzo' || poseId === 'indica_sinistra' || poseId === 'alza_mano_dx') {
+          return anims.indica_profilo ? [anims.indica_profilo] : [];
+        } else if (poseId === 'volta_sinistra' || poseId === 'guarda_sinistra' || poseId === 'volta_e_sorride' || poseId === 'profilo_sinistra') {
+          return anims.volta_sinistra_sorriso ? [anims.volta_sinistra_sorriso] : [];
+        } else if (poseId === 'seducente' || poseId === 'capelli_sensuale') {
+          return anims.seducente_fronte ? [anims.seducente_fronte] : [];
+        } else if (poseId === 'foto_uno') {
+          return anims.foto_uno ? [anims.foto_uno] : [];
+        } else {
+          return anims.blink_fronte ? [anims.blink_fronte] : [];
+        }
+      } else {
+        // Altri conduttori (daria_classica, daria_bionda, etc.)
+        if (poseId === 'neutra' || !AVATAR_POSES[poseId]) {
+          const portrait = AVATAR_PORTRAITS[avId] || AVATAR_PORTRAITS.daria_classica;
+          return portrait ? [portrait] : [];
+        } else {
+          return AVATAR_POSES[poseId] ? [AVATAR_POSES[poseId]] : [];
+        }
+      }
+    }
+
+    function initAvatarSequences() {
+      try {
+        const saved = localStorage.getItem('GIANCANI_AVATAR_SEQUENCES');
+        if (saved) {
+          AVATAR_SEQUENCES = JSON.parse(saved);
+        }
+      } catch(e) {}
+      if (!AVATAR_SEQUENCES) AVATAR_SEQUENCES = {};
+    }
+    initAvatarSequences();
+
+    function getSequence(avId, poseId) {
+      if (!AVATAR_SEQUENCES[avId]) AVATAR_SEQUENCES[avId] = {};
+      if (!AVATAR_SEQUENCES[avId][poseId] || !Array.isArray(AVATAR_SEQUENCES[avId][poseId].frames)) {
+        AVATAR_SEQUENCES[avId][poseId] = {
+          fps: 6,
+          frames: getDefaultFramesForAvatarPose(avId, poseId)
+        };
+      }
+      return AVATAR_SEQUENCES[avId][poseId];
+    }
+
+    let currentAvatarId = 'daria_classica';
+    let currentPose = 'neutra';
+    let selectedEditorPose = 'neutra';
+    let activePreviewFrameIdx = 0;
+    let sequencePlayTimer = null;
+    let isSequencePlaying = false;
+    let activePoseSequenceTimer = null;
+    let blinkTimeout = null;
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      const txt = document.getElementById('toast-text');
+      if (!box || !txt) return;
+      txt.innerText = msg;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 3000);
+    }
+
+    function stopActivePoseSequence() {
+      if (activePoseSequenceTimer) {
+        clearInterval(activePoseSequenceTimer);
+        activePoseSequenceTimer = null;
+      }
+    }
+
+    function stopSequencePlay() {
+      if (sequencePlayTimer) {
+        clearInterval(sequencePlayTimer);
+        sequencePlayTimer = null;
+      }
+      isSequencePlaying = false;
+      const playBtn = document.getElementById('btn-seq-play-toggle');
+      if (playBtn) playBtn.innerText = '▶️ Play';
+    }
+
+    function renderFilmstrip() {
+      const container = document.getElementById('frame-thumbnails-strip');
+      const countLabel = document.getElementById('frame-count-label');
+      if (!container) return;
+
+      const seq = getSequence(currentAvatarId, selectedEditorPose);
+      const frames = seq.frames || [];
+      if (countLabel) countLabel.innerText = frames.length;
+
+      container.innerHTML = '';
+      if (frames.length === 0) {
+        container.innerHTML = '<div style="color:#94a3b8; font-size:10.5px; padding:12px; width:100%; text-align:center;">Nessun fotogramma presente per questa posa.<br>Trascina qui sotto una o più foto PNG per animarla!</div>';
+        return;
+      }
+
+      frames.forEach((frameUrl, idx) => {
+        const card = document.createElement('div');
+        card.className = 'frame-thumb-card' + (idx === activePreviewFrameIdx ? ' active' : '');
+        card.innerHTML = `
+          <div class="frame-thumb-header">
+            <span class="frame-num-badge">#${idx + 1}</span>
+            <button class="frame-del-btn" title="Elimina questo fotogramma" data-idx="${idx}">🗑️ Elimina</button>
+          </div>
+          <img src="${frameUrl}" alt="Frame ${idx + 1}">
+          <div class="frame-thumb-footer">FOTO ${idx + 1}</div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('frame-del-btn')) return;
+          stopSequencePlay();
+          stopActivePoseSequence();
+          activePreviewFrameIdx = idx;
+          previewFrame(frameUrl);
+          updateActiveFilmstripCard();
+        });
+
+        const delBtn = card.querySelector('.frame-del-btn');
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteFrame(idx);
+        });
+
+        container.appendChild(card);
+      });
+
+      const fpsSlider = document.getElementById('sl-sequence-fps');
+      const fpsVal = document.getElementById('val-sequence-fps');
+      if (fpsSlider && fpsVal) {
+        fpsSlider.value = seq.fps || 6;
+        fpsVal.innerText = (seq.fps || 6) + ' FPS';
+      }
+    }
+
+    function updateActiveFilmstripCard() {
+      const cards = document.querySelectorAll('.frame-thumb-card');
+      cards.forEach((c, i) => c.classList.toggle('active', i === activePreviewFrameIdx));
+    }
+
+    function previewFrame(url) {
+      const img = document.getElementById('daria-portrait-img');
+      if (img && url) {
+        img.src = url;
+      }
+    }
+
+    function deleteFrame(idx) {
+      const seq = getSequence(currentAvatarId, selectedEditorPose);
+      if (!seq.frames || !seq.frames.length) return;
+      seq.frames.splice(idx, 1);
+      if (activePreviewFrameIdx >= seq.frames.length) {
+        activePreviewFrameIdx = Math.max(0, seq.frames.length - 1);
+      }
+      renderFilmstrip();
+      if (seq.frames.length > 0) {
+        previewFrame(seq.frames[activePreviewFrameIdx]);
+      }
+      showToast(`🗑️ Fotogramma #${idx + 1} rimosso dalla sequenza!`);
+    }
+
+    function startSequencePlay() {
+      stopSequencePlay();
+      stopActivePoseSequence();
+      const seq = getSequence(currentAvatarId, selectedEditorPose);
+      const frames = seq.frames || [];
+      if (frames.length <= 1) return;
+      isSequencePlaying = true;
+      const playBtn = document.getElementById('btn-seq-play-toggle');
+      if (playBtn) playBtn.innerText = '⏸️ Pausa';
+      const speed = Math.max(40, Math.floor(1000 / (seq.fps || 6)));
+      sequencePlayTimer = setInterval(() => {
+        activePreviewFrameIdx = (activePreviewFrameIdx + 1) % frames.length;
+        previewFrame(frames[activePreviewFrameIdx]);
+        updateActiveFilmstripCard();
+      }, speed);
+    }
+
+    function setPose(poseId) {
+      currentPose = poseId;
+      stopActivePoseSequence();
+      stopSequencePlay();
+
+      const img = document.getElementById('daria-portrait-img');
+      const label = document.getElementById('expr-overlay-label');
+      if (!img) return;
+
+      const seq = getSequence(currentAvatarId, poseId);
+      const frames = (seq && seq.frames) ? seq.frames : [];
+
+      if (frames.length > 1) {
+        let fIdx = 0;
+        img.src = frames[0];
+        const spd = Math.max(40, Math.floor(1000 / (seq.fps || 6)));
+        activePoseSequenceTimer = setInterval(() => {
+          fIdx = (fIdx + 1) % frames.length;
+          img.src = frames[fIdx];
+        }, spd);
+      } else if (frames.length === 1) {
+        img.src = frames[0];
+      } else {
+        let targetUrl = AVATAR_PORTRAITS[currentAvatarId] || AVATAR_PORTRAITS.daria_classica;
+        if (currentAvatarId === 'daria_elena_real' && window.DARIA_ELENA_ANIMATIONS) {
+          if (poseId === 'presenta_prezzo' || poseId === 'indica_sinistra' || poseId === 'alza_mano_dx') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.indica_profilo;
+          } else if (poseId === 'volta_sinistra' || poseId === 'guarda_sinistra' || poseId === 'volta_e_sorride' || poseId === 'profilo_sinistra') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.volta_sinistra_sorriso;
+          } else if (poseId === 'entusiasta' || poseId === 'saluto') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.sorrisi_parlato;
+          } else if (poseId === 'seducente' || poseId === 'capelli_sensuale') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.seducente_fronte;
+          } else if (poseId === 'foto_uno') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.foto_uno;
+          } else {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.blink_fronte;
+          }
+        } else if (poseId !== 'neutra' && AVATAR_POSES[poseId]) {
+          targetUrl = AVATAR_POSES[poseId];
+        }
+        img.src = targetUrl;
+      }
+
+      document.querySelectorAll('#pose-grid-studio button').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-pose-id') === poseId);
+      });
+
+      if (label) label.textContent = `🎬 POSA ATTIVA: [${poseId}]`;
+    }
+
+    function setCameraZoom(isIn) {
+      const frame = document.getElementById('daria-preview-frame');
+      if (!frame) return;
+      frame.classList.toggle('camera-zoom-in', !!isIn);
+    }
+
+    function startBlinkLoop() {
+      const schedule = () => {
+        const delay = Math.random() * 3200 + 2600;
+        blinkTimeout = setTimeout(() => {
+          const el = document.getElementById('daria-eyelid-layer');
+          if (el) {
+            el.classList.add('blinking');
+            setTimeout(() => el.classList.remove('blinking'), 120);
+          }
+          schedule();
+        }, delay);
+      };
+      schedule();
+    }
+
+    const synth = window.speechSynthesis;
+    let activeVoice = null;
+
+    function loadVoices() {
+      if (!synth) return;
+      const voices = synth.getVoices();
+      const itVoices = voices.filter(v => v.lang && v.lang.startsWith('it'));
+      activeVoice = itVoices.find(v => v.name.includes('Elsa') || v.name.includes('Alice') || v.name.includes('Isabella')) || itVoices[0] || null;
+    }
+    if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    function speakWithPosesAndZoom(text) {
+      if (!synth) return;
+      synth.cancel();
+
+      let cleanText = text;
+
+      // Tag zoom in/out
+      if (cleanText.includes('[zoom_in]')) {
+        setCameraZoom(true);
+        cleanText = cleanText.replace(/\[zoom_in\]/g, '');
+      }
+      if (cleanText.includes('[zoom_out]')) {
+        setCameraZoom(false);
+        cleanText = cleanText.replace(/\[zoom_out\]/g, '');
+      }
+
+      // Tag pose
+      const tagMatches = cleanText.match(/\[([a-zA-Z0-9_-]+)\]/g);
+      if (tagMatches) {
+        tagMatches.forEach(tag => {
+          const poseName = tag.replace('[', '').replace(']', '');
+          if (AVATAR_POSES[poseName] !== undefined || poseName === 'neutra' || (AVATAR_SEQUENCES[currentAvatarId] && AVATAR_SEQUENCES[currentAvatarId][poseName])) {
+            setPose(poseName);
+          }
+          cleanText = cleanText.replace(tag, '');
+        });
+      }
+
+      const isStableHead = document.getElementById('chk-stable-head-speech') ? document.getElementById('chk-stable-head-speech').checked : true;
+      if (isStableHead) {
+        stopActivePoseSequence();
+        stopSequencePlay();
+        const img = document.getElementById('daria-portrait-img');
+        if (img) {
+          const anims = window.DARIA_ELENA_ANIMATIONS || {};
+          let stillUrl = anims.still_fronte || anims.foto_uno || (getSequence(currentAvatarId, 'neutra').frames[0]) || AVATAR_PORTRAITS[currentAvatarId];
+          if (stillUrl) img.src = stillUrl;
+        }
+      }
+
+      cleanText = cleanText.replace(/<[^>]*>?/gm, '').trim();
+      const ut = new SpeechSynthesisUtterance(cleanText);
+      ut.lang = 'it-IT';
+      ut.rate = 1.02;
+      ut.pitch = 1.15;
+      if (activeVoice) ut.voice = activeVoice;
+
+      const frame = document.getElementById('daria-preview-frame');
+      const btn = document.getElementById('btn-speak-preview');
+
+      ut.onstart = () => {
+        frame.classList.add('is-speaking');
+        if (btn) btn.classList.add('speaking');
+      };
+
+      ut.onend = ut.onerror = () => {
+        frame.classList.remove('is-speaking');
+        if (btn) btn.classList.remove('speaking');
+        setTimeout(() => {
+          setPose('neutra');
+          setCameraZoom(false);
+        }, 1500);
+      };
+
+      synth.speak(ut);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      startBlinkLoop();
+
+      // Inizializza pellicola fotogrammi per l'avatar corrente
+      try {
+        const savedStableHead = localStorage.getItem('GIANCANI_STABLE_HEAD_SPEECH');
+        if (savedStableHead !== null && document.getElementById('chk-stable-head-speech')) {
+          document.getElementById('chk-stable-head-speech').checked = (savedStableHead === 'true');
+        }
+      } catch(e) {}
+      renderFilmstrip();
+
+      // Uploader File Drag & Drop (Multi-file)
+      const dropZone = document.getElementById('photo-drop-zone');
+      const fileInput = document.getElementById('file-input-pose');
+
+      if (dropZone && fileInput) {
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          if (e.dataTransfer.files && e.dataTransfer.files.length) {
+            caricaFotoMultiFiles(e.dataTransfer.files);
+          }
+        });
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length) {
+            caricaFotoMultiFiles(e.target.files);
+          }
+        });
+      }
+
+      function caricaFotoMultiFiles(files) {
+        if (!files || !files.length) return;
+        const seq = getSequence(currentAvatarId, selectedEditorPose);
+        let loaded = 0;
+        Array.from(files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const b64 = ev.target.result;
+            seq.frames.push(b64);
+            loaded++;
+            if (loaded === files.length) {
+              activePreviewFrameIdx = seq.frames.length - 1;
+              renderFilmstrip();
+              previewFrame(b64);
+              showToast(`✅ Aggiunti ${files.length} fotogrammi a [${selectedEditorPose}]!`);
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Selettore Posa da Modificare
+      const selTargetPoseEl = document.getElementById('sel-editor-target-pose');
+      if (selTargetPoseEl) {
+        selTargetPoseEl.addEventListener('change', (e) => {
+          stopSequencePlay();
+          stopActivePoseSequence();
+          selectedEditorPose = e.target.value;
+          activePreviewFrameIdx = 0;
+          renderFilmstrip();
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          if (seq.frames && seq.frames.length > 0) {
+            previewFrame(seq.frames[0]);
+          }
+        });
+      }
+
+      // Controlli Play / Step Sequenza
+      const playBtn = document.getElementById('btn-seq-play-toggle');
+      if (playBtn) {
+        playBtn.addEventListener('click', () => {
+          if (isSequencePlaying) stopSequencePlay();
+          else startSequencePlay();
+        });
+      }
+
+      const prevBtn = document.getElementById('btn-seq-prev');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          stopSequencePlay();
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          if (!seq.frames || !seq.frames.length) return;
+          activePreviewFrameIdx = (activePreviewFrameIdx - 1 + seq.frames.length) % seq.frames.length;
+          previewFrame(seq.frames[activePreviewFrameIdx]);
+          updateActiveFilmstripCard();
+        });
+      }
+
+      const nextBtn = document.getElementById('btn-seq-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          stopSequencePlay();
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          if (!seq.frames || !seq.frames.length) return;
+          activePreviewFrameIdx = (activePreviewFrameIdx + 1) % seq.frames.length;
+          previewFrame(seq.frames[activePreviewFrameIdx]);
+          updateActiveFilmstripCard();
+        });
+      }
+
+      const fpsSlider = document.getElementById('sl-sequence-fps');
+      if (fpsSlider) {
+        fpsSlider.addEventListener('input', (e) => {
+          const fps = parseInt(e.target.value) || 6;
+          document.getElementById('val-sequence-fps').innerText = fps + ' FPS';
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          seq.fps = fps;
+          if (isSequencePlaying) {
+            startSequencePlay();
+          }
+        });
+      }
+
+      // Aggiungi URL personalizzato alla sequenza
+      const addUrlBtn = document.getElementById('btn-add-pose-url');
+      if (addUrlBtn) {
+        addUrlBtn.addEventListener('click', () => {
+          const url = (document.getElementById('input-custom-pose-url').value || '').trim();
+          if (!url) return;
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          seq.frames.push(url);
+          document.getElementById('input-custom-pose-url').value = '';
+          activePreviewFrameIdx = seq.frames.length - 1;
+          renderFilmstrip();
+          previewFrame(url);
+          showToast(`✅ URL aggiunto alla posa [${selectedEditorPose}]!`);
+        });
+      }
+
+      // Ripristina Default Posa
+      const resetPoseBtn = document.getElementById('btn-reset-pose-frames');
+      if (resetPoseBtn) {
+        resetPoseBtn.addEventListener('click', () => {
+          const seq = getSequence(currentAvatarId, selectedEditorPose);
+          seq.frames = getDefaultFramesForAvatarPose(currentAvatarId, selectedEditorPose);
+          activePreviewFrameIdx = 0;
+          renderFilmstrip();
+          if (seq.frames.length > 0) previewFrame(seq.frames[0]);
+          showToast(`🔄 Posa [${selectedEditorPose}] ripristinata ai valori predefiniti!`);
+        });
+      }
+
+      // Salva Sequenza Posa Corrente
+      const saveSeqBtn = document.getElementById('btn-save-pose-sequence');
+      if (saveSeqBtn) {
+        saveSeqBtn.addEventListener('click', () => {
+          try {
+            localStorage.setItem('GIANCANI_AVATAR_SEQUENCES', JSON.stringify(AVATAR_SEQUENCES));
+            const isStableHead = document.getElementById('chk-stable-head-speech') ? document.getElementById('chk-stable-head-speech').checked : true;
+            localStorage.setItem('GIANCANI_STABLE_HEAD_SPEECH', String(isStableHead));
+
+            if (window.BroadcastChannel) {
+              const bc = new BroadcastChannel('giancani_live_channel');
+              bc.postMessage({
+                type: 'SEQUENCES_UPDATE',
+                data: AVATAR_SEQUENCES,
+                stableHead: isStableHead
+              });
+              setTimeout(() => { try { bc.close(); } catch(e){} }, 400);
+            }
+            showToast(`💾 Sequenza per [${selectedEditorPose}] salvata e trasmessa alla diretta!`);
+          } catch(e) {
+            console.error(e);
+          }
+        });
+      }
+
+      // Roster Avatar Switcher Completo (Donne & Uomini)
+      const avatarDescrizioni = {
+        daria_elena_real: "DarIA Elena HD • Movimenti Reali HD e Ammicco ad Alta Definizione.",
+        daria_classica: "DarIA Classica (Mora) • Conduttrice TV Principale Ufficiale Immobiliare Giancani.",
+        daria_bionda: "DarIA Bionda (Beatrice Elena) • Luxury Real Estate Specialist & Interior Design.",
+        daria_rossa: "Tina (Giulia) • Consulente Architettura, Ristrutturazioni e Spazi Contemporanei.",
+        daria_bronde: "Chiara (Sofia) • Consulente Residenziale per Famiglie & Spazi Confortevoli.",
+        dario_classico: "DarIO Classico • Anchor Desk Uomo, Analisi Finanziaria & Valutazioni Immobiliari."
+      };
+
+      function cambiaAvatarSelezionato(avId) {
+        currentAvatarId = avId;
+        let avatarData = null;
+        if (typeof window.AVATAR_ROSTER !== 'undefined') {
+          const allR = [...(window.AVATAR_ROSTER.donne || []), ...(window.AVATAR_ROSTER.uomini || [])];
+          avatarData = allR.find(a => a.id === avId);
+        }
+
+        const imgEl = document.getElementById('daria-portrait-img');
+        const badgeEl = document.getElementById('preview-name-badge');
+        const descEl = document.getElementById('active-avatar-desc');
+
+        let imgSrc = (avatarData && avatarData.img) ? avatarData.img : (AVATAR_PORTRAITS[avId] || AVATAR_PORTRAITS.daria_classica);
+        if (avId === 'daria_elena_real' && window.DARIA_ELENA_ANIMATIONS) {
+          imgSrc = window.DARIA_ELENA_ANIMATIONS.blink_fronte;
+        }
+        imgEl.style.opacity = '0.35';
+        setTimeout(() => {
+          imgEl.src = imgSrc;
+          imgEl.style.opacity = '1';
+        }, 120);
+
+        const nome = avatarData ? (avatarData.nome + " • " + (avatarData.ruolo || "Conduttore")) : (avId.toUpperCase() + " • Conduttore");
+        if (badgeEl) badgeEl.textContent = nome;
+        if (descEl) descEl.textContent = avatarDescrizioni[avId] || (avatarData ? avatarData.descrizione : "Conduttore TV per la diretta streaming.");
+
+        // Adatta coordinate bocca specifiche se presenti
+        if (avatarData && avatarData.mouthX && avatarData.mouthY) {
+          document.documentElement.style.setProperty('--mouth-pos-x', avatarData.mouthX + '%');
+          document.documentElement.style.setProperty('--mouth-pos-y', avatarData.mouthY + '%');
+          document.getElementById('sl-mouth-x').value = avatarData.mouthX;
+          document.getElementById('sl-mouth-y').value = avatarData.mouthY;
+          document.getElementById('val-mouth-x').innerText = avatarData.mouthX + '%';
+          document.getElementById('val-mouth-y').innerText = avatarData.mouthY + '%';
+        }
+
+        // Voce maschio/femmina
+        if (synth) {
+          const voices = synth.getVoices();
+          const itVoices = voices.filter(v => v.lang && v.lang.startsWith('it'));
+          if (avId.includes('dario')) {
+            activeVoice = itVoices.find(v => v.name.includes('Cosimo') || v.name.includes('Diego') || v.name.includes('Giuseppe') || v.name.toLowerCase().includes('male')) || itVoices[0];
+          } else {
+            activeVoice = itVoices.find(v => v.name.includes('Elsa') || v.name.includes('Isabella') || v.name.includes('Alice')) || itVoices[0];
+          }
+        }
+
+        // Aggiorna pellicola per il nuovo conduttore
+        activePreviewFrameIdx = 0;
+        renderFilmstrip();
+
+        showToast(`🎭 Conduttore attivato: ${badgeEl.textContent}`);
+      }
+
+      document.querySelectorAll('#avatar-roster-grid button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#avatar-roster-grid button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const avId = btn.getAttribute('data-avatar-id');
+          cambiaAvatarSelezionato(avId);
+        });
+      });
+
+      // Pose buttons
+      document.querySelectorAll('#pose-grid-studio button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const pId = btn.getAttribute('data-pose-id');
+          selectedEditorPose = pId;
+          const selTarget = document.getElementById('sel-editor-target-pose');
+          if (selTarget) selTarget.value = pId;
+          activePreviewFrameIdx = 0;
+          renderFilmstrip();
+          setPose(pId);
+        });
+      });
+
+      // Tag inserter buttons
+      document.querySelectorAll('.btn-tag-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = btn.getAttribute('data-tag');
+          const txtArea = document.getElementById('speak-textarea');
+          txtArea.value += ' ' + tag + ' ';
+          txtArea.focus();
+        });
+      });
+
+      // URL custom pose
+      document.getElementById('btn-apply-pose-url') && document.getElementById('btn-apply-pose-url').addEventListener('click', () => {
+        const poseId = document.getElementById('sel-editor-target-pose') ? document.getElementById('sel-editor-target-pose').value : 'neutra';
+        const url = document.getElementById('input-custom-pose-url').value.trim();
+        if (url) {
+          const seq = getSequence(currentAvatarId, poseId);
+          seq.frames.push(url);
+          activePreviewFrameIdx = seq.frames.length - 1;
+          renderFilmstrip();
+          setPose(poseId);
+          showToast(`✅ Posa [${poseId}] aggiornata con URL!`);
+        }
+      });
+
+      // Sliders crop / pan / rotate
+      document.getElementById('sl-avatar-scale').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-avatar-scale').innerText = v.toFixed(2) + 'x';
+        document.documentElement.style.setProperty('--avatar-scale', v);
+      });
+
+      document.getElementById('sl-avatar-pan-x').addEventListener('input', (e) => {
+        const v = parseInt(e.target.value);
+        document.getElementById('val-avatar-pan-x').innerText = v + '%';
+        document.documentElement.style.setProperty('--avatar-pan-x', v + '%');
+      });
+
+      document.getElementById('sl-avatar-pan-y').addEventListener('input', (e) => {
+        const v = parseInt(e.target.value);
+        document.getElementById('val-avatar-pan-y').innerText = v + '%';
+        document.documentElement.style.setProperty('--avatar-pan-y', v + '%');
+      });
+
+      document.getElementById('sl-avatar-rotate').addEventListener('input', (e) => {
+        const v = parseInt(e.target.value);
+        document.getElementById('val-avatar-rotate').innerText = v + '°';
+        document.documentElement.style.setProperty('--avatar-rotate', v + 'deg');
+      });
+
+      // Filtri Luce & Viso
+      document.getElementById('sl-brightness').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-brightness').innerText = v.toFixed(2) + 'x';
+        document.documentElement.style.setProperty('--avatar-brightness', v);
+      });
+      document.getElementById('sl-contrast').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-contrast').innerText = v.toFixed(2) + 'x';
+        document.documentElement.style.setProperty('--avatar-contrast', v);
+      });
+      document.getElementById('sl-saturate').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-saturate').innerText = v.toFixed(2) + 'x';
+        document.documentElement.style.setProperty('--avatar-saturate', v);
+      });
+
+      // Mouth Rig
+      document.getElementById('sl-mouth-x').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-mouth-x').innerText = v.toFixed(1) + '%';
+        document.documentElement.style.setProperty('--mouth-pos-x', v + '%');
+      });
+
+      document.getElementById('sl-mouth-y').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-mouth-y').innerText = v.toFixed(1) + '%';
+        document.documentElement.style.setProperty('--mouth-pos-y', v + '%');
+      });
+
+      document.getElementById('chk-show-crosshair').addEventListener('change', (e) => {
+        document.getElementById('preview-stage-container').classList.toggle('show-crosshair', e.target.checked);
+      });
+
+      // Speak text
+      document.getElementById('btn-speak-text').addEventListener('click', () => {
+        const txt = document.getElementById('speak-textarea').value.trim();
+        speakWithPosesAndZoom(txt);
+      });
+
+      document.getElementById('btn-speak-preview').addEventListener('click', () => {
+        const txt = document.getElementById('speak-textarea').value.trim();
+        speakWithPosesAndZoom(txt);
+      });
+
+      // Salva & Applica alla Diretta Live
+      document.getElementById('btn-save-all-to-live').addEventListener('click', () => {
+        try {
+          const avatarScale = parseFloat(document.getElementById('sl-avatar-scale').value) || 1.0;
+          const panX = parseInt(document.getElementById('sl-avatar-pan-x').value) || 0;
+          const panY = parseInt(document.getElementById('sl-avatar-pan-y').value) || 0;
+          const rotate = parseInt(document.getElementById('sl-avatar-rotate').value) || 0;
+          const mouthX = parseFloat(document.getElementById('sl-mouth-x').value) || 51.0;
+          const mouthY = parseFloat(document.getElementById('sl-mouth-y').value) || 65.0;
+
+          // 1. Aggiorna layout principale Diretta Verticale
+          let vertLayout = {};
+          try {
+            const rawV = localStorage.getItem('GIANCANI_DIRETTA_VERT_V1');
+            if (rawV) vertLayout = JSON.parse(rawV);
+          } catch(errV) {}
+          if (!vertLayout.avatar) vertLayout.avatar = {};
+          if (!vertLayout.mouth) vertLayout.mouth = {};
+
+          vertLayout.avatar.character = currentAvatarId;
+          vertLayout.avatar.scale = avatarScale;
+          vertLayout.avatar.panX = panX;
+          vertLayout.avatar.panY = panY;
+          vertLayout.avatar.rotate = rotate;
+          vertLayout.avatar.visible = true;
+
+          vertLayout.mouth.x = mouthX;
+          vertLayout.mouth.y = mouthY;
+
+          localStorage.setItem('GIANCANI_DIRETTA_VERT_V1', JSON.stringify(vertLayout));
+
+          // 2. Salva anche formato V2 legacy e Sequenze Fotogrammi
+          const layoutData = {
+            avatar: {
+              character: currentAvatarId,
+              scale: avatarScale,
+              panX: panX,
+              panY: panY,
+              rotate: rotate,
+              mouthX: mouthX,
+              mouthY: mouthY,
+              visible: true
+            }
+          };
+          localStorage.setItem('GIANCANI_LIVE_LAYOUT_V2', JSON.stringify(layoutData));
+          localStorage.setItem('GIANCANI_CUSTOM_POSES', JSON.stringify(AVATAR_POSES));
+          localStorage.setItem('GIANCANI_AVATAR_SEQUENCES', JSON.stringify(AVATAR_SEQUENCES));
+          const isStableHead = document.getElementById('chk-stable-head-speech') ? document.getElementById('chk-stable-head-speech').checked : true;
+          localStorage.setItem('GIANCANI_STABLE_HEAD_SPEECH', String(isStableHead));
+
+          // 3. BroadcastChannel verso Regia e In Onda
+          try {
+            if (window.BroadcastChannel) {
+              const bc = new BroadcastChannel('giancani_live_channel');
+              bc.postMessage({ type: 'LAYOUT_UPDATE', data: vertLayout });
+              bc.postMessage({ type: 'AVATAR_CHANGED', character: currentAvatarId });
+              bc.postMessage({ type: 'SEQUENCES_UPDATE', data: AVATAR_SEQUENCES, stableHead: isStableHead });
+              setTimeout(() => { try { bc.close(); } catch(e){} }, 400);
+            }
+          } catch(bcErr) {
+            console.warn("BroadcastChannel:", bcErr);
+          }
+
+          showToast("💾 Configurazione Avatar, Sequenze e Stabilità Capo salvate per la Diretta Live!");
+        } catch(e) {
+          console.error("Errore salvataggio:", e);
+        }
+      });
+
+      // Reset Defaults
+      document.getElementById('btn-reset-studio-defaults').addEventListener('click', () => {
+        localStorage.removeItem('GIANCANI_CUSTOM_POSES');
+        localStorage.removeItem('GIANCANI_AVATAR_SEQUENCES');
+        localStorage.removeItem('GIANCANI_STABLE_HEAD_SPEECH');
+        location.reload();
+      });
+    });
+  </script>
+
+</body>
+</html>

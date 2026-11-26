@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#f8fafc">
+  <title>Immobiliare Giancani App</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./assets/icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="stylesheet" href="./css/app.css?v=10">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <button id="btnOpenDrawer" type="button" class="hamburger-btn" title="Apri Menu Laterale" aria-label="Menu Laterale">
+        <span></span><span></span><span></span>
+      </button>
+      <img id="imgLogoHeader" src="./assets/logo_default.png" alt="Logo Immobiliare Giancani Scontornato" style="cursor:pointer;" title="Torna alla Home Aree">
+      <div style="min-width:0; cursor:pointer;" id="brandHomeClick">
+        <div class="brand-title">Immobiliare Giancani App</div>
+        <div class="brand-sub" id="lblCurrentAreaTop">🏠 Home Aree • Hub Agenzia</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnGoHomeTop" type="button" class="btn btn-gold btn-sm" style="width:auto;" title="Torna alla Home con le Aree">🏠 Home</button>
+      <button id="btnOpenTutorialTop" type="button" class="btn btn-outline btn-sm" style="width:auto;" title="Apri Tutorial & Guida App">📖 Guida</button>
+      <button id="btnInstallPwa" class="btn btn-emerald btn-sm" style="display:none;">📲 App</button>
+      <button id="btnGlobalSync" type="button" class="btn btn-cyan btn-sm" title="Sincronizza Cloud 30gg, Drive & Sheet">🔄 Sync</button>
+      <label class="btn btn-outline btn-sm" style="margin:0;" title="Carica Logo Scontornato">
+        🖼️
+        <input id="inpLogoFile" type="file" accept="image/*" style="display:none;">
+      </label>
+      <button id="btnOpenSettings" type="button" class="btn btn-outline btn-sm">⚙️</button>
+    </div>
+  </header>
+
+  <!-- MENU LATERALE A SCOMPARSA (HAMBURGER DRAWER CHIARO) -->
+  <div id="sideDrawerOverlay" class="drawer-overlay"></div>
+  <aside id="sideDrawer" class="side-drawer" aria-label="Menu Laterale Agenzia">
+    <div class="drawer-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img id="imgLogoDrawer" src="./assets/logo_default.png" alt="Logo Giancani" style="height:42px; width:auto;">
+        <div>
+          <div style="font-weight:900; font-size:15px; color:#92400e;">Immobiliare Giancani</div>
+          <div style="font-size:11.5px; color:#475569;">Menu Rapido Aree &amp; Strumenti</div>
+        </div>
+      </div>
+      <button id="btnCloseDrawer" type="button" class="btn btn-outline btn-sm">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-section-label">AREE PRINCIPALI AGENZIA</div>
+      <button type="button" class="drawer-item active" data-drawer-step="0">
+        <div class="drawer-icon" style="background:#fef3c7; color:#b45309;">🏠</div>
+        <div class="drawer-item-text">
+          <strong>Home — Aree con Immagini</strong>
+          <span>Panoramica visuale Venditori &amp; Acquirenti</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" data-drawer-step="1">
+        <div class="drawer-icon" style="background:#ffedd5; color:#c2410c;">🏷️</div>
+        <div class="drawer-item-text">
+          <strong>Area Venditori &amp; Cacciatori</strong>
+          <span>Coda 1-Click, Privati, Memoria 30gg (<strong id="drawerBadgeVnd">0</strong>)</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" data-drawer-step="2">
+        <div class="drawer-icon" style="background:#d1fae5; color:#047857;">🤝</div>
+        <div class="drawer-item-text">
+          <strong>Area Acquirenti &amp; Smart Match</strong>
+          <span>Richieste clienti e incroci AI (<strong id="drawerBadgeAcq">0</strong>)</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" data-drawer-step="3">
+        <div class="drawer-icon" style="background:#fef9c3; color:#a16207;">🖼️</div>
+        <div class="drawer-item-text">
+          <strong>Area Galleria &amp; Foto (Generator DarIA)</strong>
+          <span>Carica Foto/360° con Descrizione Colonna F &amp; Drive (<strong id="drawerBadgeIns">0</strong>)</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" data-drawer-step="4">
+        <div class="drawer-icon" style="background:#e0e7ff; color:#4338ca;">🎬</div>
+        <div class="drawer-item-text">
+          <strong>Area Studio Video &amp; Timeline</strong>
+          <span>Anteprima sopra Timeline + Effetti Animati (<strong id="drawerBadgeClip">0</strong>)</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" data-drawer-step="5">
+        <div class="drawer-icon" style="background:#fee2e2; color:#b91c1c;">📺</div>
+        <div class="drawer-item-text">
+          <strong>Area Regia Live TV 24H &amp; Share</strong>
+          <span>DarIA in Onda, Copertine HD &amp; Storie 9:16</span>
+        </div>
+      </button>
+
+      <div class="drawer-section-label" style="margin-top:14px;">STRUMENTI RAPIDI</div>
+      <button type="button" class="drawer-item" id="btnDrawerOpenTutorial">
+        <div class="drawer-icon" style="background:#fef3c7; color:#b45309;">📖</div>
+        <div class="drawer-item-text">
+          <strong>Tutorial &amp; Guida Completa App</strong>
+          <span>Come è composta e come usare ogni area</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" id="btnDrawerOpenSuno">
+        <div class="drawer-icon" style="background:#e0f2fe; color:#0369a1;">🎵</div>
+        <div class="drawer-item-text">
+          <strong>Compositore Canzone 3+ Minuti</strong>
+          <span>Crea brani immobiliari con Google AI / Suno</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" id="btnDrawerOpenArchivio">
+        <div class="drawer-icon" style="background:#f1f5f9; color:#334155;">📜</div>
+        <div class="drawer-item-text">
+          <strong>Archivio Testi Colonna F</strong>
+          <span>Copioni ufficiali in metri quadri</span>
+        </div>
+      </button>
+
+      <button type="button" class="drawer-item" id="btnDrawerSyncCloud">
+        <div class="drawer-icon" style="background:#ecfdf5; color:#059669;">☁️</div>
+        <div class="drawer-item-text">
+          <strong>Sincronizza Cloud 30gg &amp; Drive</strong>
+          <span>Aggiorna numeri contattati e fogli Sheet</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="drawer-footer">
+      <strong>— Immobiliare Giancani</strong>
+    </div>
+  </aside>
+
+  <!-- STRISCIA RAPIDA CONTATORI & PONTI -->
+  <div class="agency-kpi-strip">
+    <button type="button" class="agency-kpi-pill" data-jump-step="0">🏠 <strong>Home Aree</strong></button>
+    <button type="button" class="agency-kpi-pill" data-jump-step="1">🏷️ Venditori: <strong id="kpiStripVenditori">0</strong></button>
+    <button type="button" class="agency-kpi-pill" data-jump-step="2">🤝 Acquirenti: <strong id="kpiStripAcquirenti">0</strong></button>
+    <button type="button" class="agency-kpi-pill" data-jump-step="3">🖼️ Galleria &amp; Foto: <strong id="kpiStripInserzioni">0</strong></button>
+    <button type="button" class="agency-kpi-pill" data-jump-step="4">🎬 Studio Video: <strong id="kpiStripClip">0</strong> clip</button>
+    <button type="button" class="agency-kpi-pill" data-jump-step="5">📺 Regia Live 24H</button>
+    <button type="button" class="agency-kpi-pill" id="btnKpiTutorial" style="background:#fef3c7; border-color:#f59e0b; color:#92400e;">📖 <strong>Tutorial</strong></button>
+  </div>
+
+  <main>
+    <!-- ════════════════════════════════════════════════════════════════════════
+         STEP 0: HOME A AREE CON IMMAGINI ILLUSTRATIVE (COLORI CHIARI)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel active" data-step="0" id="tab-home-aree">
+      <div class="home-welcome-banner">
+        <div>
+          <span class="home-eyebrow">✨ ECOSISTEMA UNIFICATO • TEMA CHIARO</span>
+          <h1>Scegli l'Area Operativa</h1>
+          <p>Tocca una delle aree fotografiche qui sotto oppure usa il menu <strong>☰ Hamburger</strong> in alto a sinistra per passare subito a Venditori, Acquirenti, Inserzioni Drive o Studio Video.</p>
+        </div>
+      </div>
+
+      <!-- 4 GRANDI CARD PRINCIPALI DI PARI LIVELLO: VENDITORI, ACQUIRENTI, GALLERIA & FOTO (GENERATOR DARIA), STUDIO VIDEO -->
+      <div class="home-primary-areas-grid">
+        <!-- 1. AREA VENDITORI -->
+        <article class="area-photo-card area-venditori-card" data-jump-step="1">
+          <div class="area-photo-visual">
+            <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" class="area-illustration-svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="skyVnd" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#bae6fd"/>
+                  <stop offset="100%" stop-color="#fef3c7"/>
+                </linearGradient>
+                <linearGradient id="poolVnd" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#38bdf8"/>
+                  <stop offset="100%" stop-color="#0284c7"/>
+                </linearGradient>
+              </defs>
+              <rect width="420" height="200" fill="url(#skyVnd)"/>
+              <circle cx="355" cy="42" r="24" fill="#fbbf24" opacity="0.88"/>
+              <path d="M0 142 Q120 124 240 138 T420 132 L420 200 L0 200 Z" fill="#bbf7d0"/>
+              <rect x="82" y="58" width="256" height="86" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
+              <polygon points="68,60 210,18 352,60" fill="#ea580c"/>
+              <rect x="105" y="76" width="54" height="42" rx="5" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+              <rect x="180" y="74" width="60" height="68" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+              <rect x="260" y="76" width="54" height="42" rx="5" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+              <rect x="96" y="154" width="228" height="32" rx="14" fill="url(#poolVnd)" stroke="#ffffff" stroke-width="3"/>
+            </svg>
+            <span class="area-floating-badge badge-amber">🏷️ <span id="homeBadgeVenditori">277</span> Privati Pronti</span>
+          </div>
+          <div class="area-photo-body">
+            <div class="area-title-row">
+              <h2>🏷️ Area Venditori &amp; Cacciatori</h2>
+              <span class="area-pill-tag">Memoria 30gg</span>
+            </div>
+            <p class="area-desc">
+              Acquisizione immobili da privati verificati, coda rapida WhatsApp ed Email 1-Click, controllo sospetti agenzie, ribassi di prezzo e 20+ portali minori.
+            </p>
+            <div class="area-quick-subbtns">
+              <button type="button" class="btn btn-gold" data-home-vnd="coda">🚀 Apri Area Venditori (Coda 1-Click)</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-vnd="privati">👤 Privati</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-vnd="sospetti">🕵️ Sospetti</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-vnd="portali">➕ Nuovo</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. AREA ACQUIRENTI -->
+        <article class="area-photo-card area-acquirenti-card" data-jump-step="2">
+          <div class="area-photo-visual">
+            <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" class="area-illustration-svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="skyAcq" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#d1fae5"/>
+                  <stop offset="100%" stop-color="#e0f2fe"/>
+                </linearGradient>
+              </defs>
+              <rect width="420" height="200" fill="url(#skyAcq)"/>
+              <rect x="44" y="26" width="332" height="148" rx="16" fill="#ffffff" stroke="#10b981" stroke-width="3"/>
+              <rect x="66" y="46" width="136" height="106" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+              <path d="M92 98 L134 64 L176 98 L176 138 L92 138 Z" fill="#10b981" opacity="0.22"/>
+              <circle cx="134" cy="102" r="24" fill="#10b981"/>
+              <path d="M123 102 L131 110 L147 93" stroke="#ffffff" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+              <rect x="218" y="48" width="136" height="24" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+              <rect x="218" y="82" width="118" height="16" rx="5" fill="#d1fae5"/>
+              <rect x="218" y="106" width="132" height="16" rx="5" fill="#e0f2fe"/>
+              <rect x="218" y="130" width="96" height="22" rx="7" fill="#10b981"/>
+            </svg>
+            <span class="area-floating-badge badge-emerald">🤝 <span id="homeBadgeAcquirenti">0</span> Richieste Attive</span>
+          </div>
+          <div class="area-photo-body">
+            <div class="area-title-row">
+              <h2>🤝 Area Acquirenti &amp; Smart Match</h2>
+              <span class="area-pill-tag tag-emerald">Incrocio AI</span>
+            </div>
+            <p class="area-desc">
+              Gestione clienti che cercano casa, budget, zona e superficie in <strong>metri quadri</strong>. Incrocio automatico con i Fogli Sheet e i Venditori Privati con invio WhatsApp.
+            </p>
+            <div class="area-quick-subbtns">
+              <button type="button" class="btn btn-emerald" data-home-acq="list" style="width:100%;">🤝 Apri Area Acquirenti &amp; Incroci</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-acq="new" style="flex:1;">➕ Nuovo Acquirente</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. AREA GALLERIA & FOTO (GENERATOR.HTML DARIA PER DIRETTA) — IN EGUAL MISURA -->
+        <article class="area-photo-card area-inserzioni-card" data-jump-step="3">
+          <div class="area-photo-visual">
+            <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" class="area-illustration-svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="skyGal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fef3c7"/>
+                  <stop offset="100%" stop-color="#e0f2fe"/>
+                </linearGradient>
+              </defs>
+              <rect width="420" height="200" fill="url(#skyGal)"/>
+              <!-- Fotografia & Camera 360° + Chip Stanze & Colonna F -->
+              <rect x="26" y="24" width="176" height="152" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
+              <rect x="38" y="36" width="152" height="96" rx="10" fill="#bae6fd"/>
+              <circle cx="72" cy="62" r="14" fill="#fbbf24"/>
+              <polygon points="42,126 94,78 134,108 158,90 186,126" fill="#10b981"/>
+              <!-- Badge Nadir 360 & Logo -->
+              <circle cx="114" cy="116" r="15" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+              <text x="114" y="120" text-anchor="middle" font-size="9" font-weight="900" fill="#b45309">360°</text>
+              <rect x="38" y="140" width="152" height="24" rx="6" fill="#fef3c7"/>
+              <!-- Colonna destra: Chip Stanze (Bagno, Cucina, Living) + Descrizione Colonna F + Upload Drive -->
+              <rect x="218" y="24" width="176" height="34" rx="9" fill="#ffffff" stroke="#0284c7" stroke-width="2"/>
+              <rect x="228" y="33" width="66" height="16" rx="8" fill="#e0f2fe"/>
+              <rect x="302" y="33" width="78" height="16" rx="8" fill="#fef3c7"/>
+              <rect x="218" y="68" width="176" height="62" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+              <rect x="230" y="80" width="152" height="10" rx="4" fill="#fde68a"/>
+              <rect x="230" y="96" width="136" height="10" rx="4" fill="#e2e8f0"/>
+              <rect x="230" y="112" width="114" height="10" rx="4" fill="#bbf7d0"/>
+              <rect x="218" y="140" width="176" height="36" rx="10" fill="#d97706"/>
+            </svg>
+            <span class="area-floating-badge badge-amber">🖼️ Studio Galleria &amp; Foto DarIA (<span id="homeBadgeGalleria">0</span>)</span>
+          </div>
+          <div class="area-photo-body">
+            <div class="area-title-row">
+              <h2>🖼️ Area Galleria &amp; Foto (Generator DarIA)</h2>
+              <span class="area-pill-tag">Upload + Colonna F</span>
+            </div>
+            <p class="area-desc">
+              Sistema completo di <strong>Generator.html (DarIA per Diretta)</strong>: caricamento foto/video/360° con descrizione automatica stanze, chip particolari, Scheda Immobile DarIA, Editor Foto/Privacy/Nadir 360°, Sync 1-Tap Cartelle Drive e Galleria AI con switch <em>🟢 In Onda Diretta</em>.
+            </p>
+            <div class="area-quick-subbtns">
+              <button type="button" class="btn btn-gold" data-home-ins="upload" style="width:100%;">📤 Carica Foto con Descrizione &amp; Scheda DarIA</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-ins="galleria" style="flex:1;">🖼️ Galleria Foto &amp; 360°</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-ins="cartelle" style="flex:1;">📂 Sync Cartelle Drive</button>
+              <button type="button" class="btn btn-outline btn-sm" data-home-ins="storie" style="flex:1;">🎬 Storie &amp; Basi Drive</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. AREA STUDIO VIDEO & TIMELINE -->
+        <article class="area-photo-card area-video-card" data-jump-step="4">
+          <div class="area-photo-visual">
+            <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" class="area-illustration-svg" aria-hidden="true">
+              <rect width="420" height="200" fill="#eef2ff"/>
+              <rect x="26" y="20" width="178" height="160" rx="14" fill="#1e293b" stroke="#4f46e5" stroke-width="3"/>
+              <polygon points="102,76 102,124 144,100" fill="#f5c542"/>
+              <rect x="220" y="24" width="174" height="42" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+              <rect x="220" y="78" width="174" height="36" rx="8" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2"/>
+              <rect x="220" y="126" width="174" height="50" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+              <line x1="296" y1="16" x2="296" y2="184" stroke="#e11d48" stroke-width="3.5"/>
+            </svg>
+            <span class="area-floating-badge badge-indigo">🎬 Studio Video 1–5 Minuti</span>
+          </div>
+          <div class="area-photo-body">
+            <div class="area-title-row">
+              <h2>🎬 Studio Video &amp; Timeline Touch</h2>
+              <span class="area-pill-tag" style="background:#e0e7ff; color:#4338ca; border-color:#6366f1;">Effetti Animati</span>
+            </div>
+            <p class="area-desc">
+              Grande anteprima video sopra la Timeline Touch, Linea del Suono, Clip Centrale (-4..+7), Rewind e galleria visuale con immagini/icone sugli effetti animati.
+            </p>
+            <div class="area-quick-subbtns">
+              <button type="button" class="btn btn-cyan" data-jump-step="4" style="width:100%;">🎬 Apri Studio Montaggio Video</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- AREA REGIA LIVE TV 24H & CONDIVISIONE -->
+      <div class="home-secondary-areas-grid">
+        <article class="area-photo-card area-live-card" data-jump-step="5">
+          <div class="area-photo-visual small-visual">
+            <svg viewBox="0 0 380 140" xmlns="http://www.w3.org/2000/svg" class="area-illustration-svg" aria-hidden="true">
+              <rect width="380" height="140" fill="#fee2e2"/>
+              <rect x="28" y="18" width="324" height="104" rx="14" fill="#ffffff" stroke="#ef4444" stroke-width="2.5"/>
+              <circle cx="72" cy="70" r="26" fill="#ef4444"/>
+              <polygon points="65,56 65,84 87,70" fill="#ffffff"/>
+              <rect x="116" y="42" width="198" height="22" rx="6" fill="#fee2e2"/>
+              <rect x="116" y="74" width="154" height="18" rx="5" fill="#fef3c7"/>
+            </svg>
+            <span class="area-floating-badge badge-rose">🔴 LIVE 24H &amp; 19:00</span>
+          </div>
+          <div class="area-photo-body">
+            <h2>📺 Regia Live TV DarIA &amp; Condivisione</h2>
+            <p class="area-desc">Comanda la diretta YouTube 24H e Facebook 19:00, genera Copertine HD e applica Frasi Prestigio Colonna F.</p>
+            <button type="button" class="btn btn-outline" data-jump-step="5" style="width:100%; border-color:#ef4444; color:#b91c1c;">📺 Apri Regia Live &amp; Share</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- AREA AGENDA DEL GIORNO & CENTRALE OPERATIVA -->
+      <div class="card" id="homeAgendaCard" style="margin-top:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <h2 style="margin:0;">📅 Agenda del Giorno &amp; Centrale Operativa</h2>
+          <span class="area-pill-tag">giancaniimmobiliare@gmail.com</span>
+        </div>
+        <form id="agendaQuickForm" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+          <input id="agOra" type="time" value="10:30" style="width:110px;">
+          <select id="agCat" style="width:130px;">
+            <option value="Visita">📝 Visita</option>
+            <option value="Incarico">📄 Incarico</option>
+            <option value="Cacciatori">🕵️ Cacciatori</option>
+            <option value="Diretta">📺 Diretta</option>
+            <option value="Rogito">⚖️ Rogito</option>
+          </select>
+          <input id="agTitolo" type="text" placeholder="Es. Visita appartamento 110 metri quadri..." style="flex:1; min-width:160px;">
+          <button type="submit" class="btn btn-gold btn-sm">+ Aggiungi</button>
+        </form>
+        <div id="agendaListContainer" style="margin-top:8px;"></div>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+          <strong style="font-size:12.5px; color:#b45309;">📂 Moduli Agenda &amp; Centrale Operativa (Offline in App)</strong>
+          <div id="sectorDocsAgenda" class="sector-docs-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         CATEGORIA 1: VENDITORI & CACCIATORI (MEMORIA 30 GIORNI + PONTI)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel" data-step="1" id="tab-venditori">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+          <h2 style="margin:0;">🏷️ 1. Venditori &amp; Cacciatori (Memoria 15gg)</h2>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button id="btnVndSyncCloud" type="button" class="btn btn-cyan btn-sm">☁️ Sync 15gg</button>
+            <button id="btnVndOpenCfgMsg" type="button" class="btn btn-outline btn-sm">💬 Msg &amp; YT</button>
+          </div>
+        </div>
+
+        <!-- Configurazione Messaggio & Video YT (collassabile) -->
+        <div id="vndConfigMsgBox" style="display:none; background:rgba(11,17,32,0.85); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <label style="margin-top:0;">🎥 Link Video YouTube Presentazione Antonio Giancani</label>
+          <input id="cfgYoutubeUrl" type="text" placeholder="https://www.youtube.com/watch?v=...">
+          <label>💬 Messaggio WhatsApp / Email (Variabili: {{NOME}}, {{COMUNE}}, {{VIA_ZONA}}, {{METRI_QUADRI}}, {{PREZZO}}, {{LINK_YOUTUBE}})</label>
+          <textarea id="cfgMessaggioWa" style="min-height:110px;"></textarea>
+          <div class="row-actions">
+            <button id="btnCfgSavePresentazione" type="button" class="btn btn-gold" style="flex:2;">💾 Salva Messaggio in Memoria</button>
+            <button id="btnCfgResetPresentazione" type="button" class="btn btn-outline btn-sm" style="flex:1;">↺ Default</button>
+          </div>
+        </div>
+
+        <!-- Sotto-Navigazione Venditori -->
+        <div class="sub-nav-pills" id="vndSubNav">
+          <button type="button" class="sub-pill active" data-vnd-sub="coda">🚀 Coda Rapida <span class="sub-badge" id="badgeVndCoda">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="privati">👤 Privati <span class="sub-badge" id="badgeVndPrivati">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="senza_recapiti">📭 Senza Recapiti <span class="sub-badge" id="badgeVndSenzaRecapiti">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="sospetti">🕵️ Sospetti <span class="sub-badge" id="badgeVndSospetti">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="agenzie">🏢 Agenzie &amp; Ribassi <span class="sub-badge" id="badgeVndAgenzie">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="visti">👁️ Visti / 15gg <span class="sub-badge" id="badgeVndVisti">0</span></button>
+          <button type="button" class="sub-pill" data-vnd-sub="fogli_visita">📝 Fogli Visita &amp; Incarichi</button>
+          <button type="button" class="sub-pill" data-vnd-sub="portali">🧭 Portali &amp; +Nuovo</button>
+        </div>
+
+        <!-- Filtro Comune + Ricerca -->
+        <div class="chips" id="vndComuneChips">
+          <button type="button" class="chip active" data-vnd-com="TUTTI">Tutti</button>
+          <button type="button" class="chip" data-vnd-com="Favara">Favara</button>
+          <button type="button" class="chip" data-vnd-com="Agrigento">Agrigento</button>
+          <button type="button" class="chip" data-vnd-com="Aragona">Aragona</button>
+          <button type="button" class="chip" data-vnd-com="Comitini">Comitini</button>
+          <button type="button" class="chip" data-vnd-com="Porto Empedocle">Porto Empedocle</button>
+          <button type="button" class="chip" data-vnd-com="Siculiana">Siculiana</button>
+          <button type="button" class="chip" data-vnd-com="Realmonte">Realmonte</button>
+        </div>
+        <input id="vndSearchInput" type="text" placeholder="🔍 Cerca nome, numero, via, prezzo, Colonna F..." style="margin-top:8px;">
+      </div>
+
+      <!-- SUB 1: CODA RAPIDA 1-CLICK (WHATSAPP PRIORITÀ + EMAIL + MEMORIA 30GG) -->
+      <div id="vndPanelCoda">
+        <div id="vndHighlightCard" class="card"></div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" class="chip active" data-vnd-filter="DA_CONTATTARE">🟢 Pronti (<span id="lblVndCountReady">0</span>)</button>
+              <button type="button" class="chip" data-vnd-filter="IN_MEMORIA_30GG">⏳ In Memoria 30gg (<span id="lblVndCountMem">0</span>)</button>
+              <button type="button" class="chip" data-vnd-filter="TUTTI">📋 Tutti (<span id="lblVndCountAll">0</span>)</button>
+            </div>
+            <button id="btnVndEmailAll" type="button" class="btn btn-emerald btn-sm">✉️ Invia Email a Tutti (0)</button>
+          </div>
+          <div id="vndCodaList" class="crm-grid"></div>
+        </div>
+      </div>
+
+      <!-- SUB 2..5: LISTE PRIVATI / SOSPETTI / AGENZIE / VISTI -->
+      <div id="vndPanelCards" style="display:none;">
+        <div id="vndAgenzieToolbar" class="card" style="display:none;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button id="btnToggleRibassi" type="button" class="btn btn-outline btn-sm">📉 Solo Ribassi</button>
+            <select id="selVndAgenziaNome" style="flex:1; min-width:160px;">
+              <option value="TUTTE">🏢 Tutte le Agenzie Concorrenti</option>
+            </select>
+          </div>
+        </div>
+        <div id="vndCardsGrid" class="crm-grid"></div>
+      </div>
+
+      <!-- SUB 6: PORTALI MINORI + INSERIMENTO MANUALE VENDITORE -->
+      <div id="vndPanelPortali" style="display:none;">
+        <div class="card">
+          <h2>➕ Nuovo Venditore / Acquisizione Ufficio</h2>
+          <div class="grid-2">
+            <div>
+              <label>Nome Proprietario</label>
+              <input id="newVndNome" type="text" placeholder="Es. Mario Rossi">
+            </div>
+            <div>
+              <label>Telefono WhatsApp</label>
+              <input id="newVndTel" type="text" placeholder="Es. 320 123 4567">
+            </div>
+            <div>
+              <label>Comune</label>
+              <input id="newVndComune" type="text" value="Favara" placeholder="Favara, Agrigento...">
+            </div>
+            <div>
+              <label>Tipologia</label>
+              <input id="newVndTipo" type="text" value="Appartamento" placeholder="Appartamento, Villa...">
+            </div>
+            <div>
+              <label>Superficie (salvata in "metri quadri")</label>
+              <input id="newVndMq" type="number" value="120" placeholder="120">
+            </div>
+            <div>
+              <label>Prezzo (€)</label>
+              <input id="newVndPrezzo" type="text" placeholder="Es. 125.000 €">
+            </div>
+          </div>
+          <label>Via / Zona &amp; Descrizione Colonna F</label>
+          <textarea id="newVndDesc" placeholder="Es. Appartamento luminoso di 120 metri quadri in zona centrale con 3 camere e terrazzo..."></textarea>
+          <div class="row-actions">
+            <button id="btnAddManualVendor" type="button" class="btn btn-gold">✅ Salva Venditore &amp; Incrocia con Acquirenti</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🧭 20+ Portali Immobiliari Minori &amp; Solo Privati</h2>
+          <div id="vndPortaliGrid" class="crm-grid"></div>
+        </div>
+      </div>
+
+      <!-- SUB 7: FOGLI VISITA DIGITALI, INCARICHI & PORTALE TECNICO -->
+      <div id="vndPanelFogliVisita" style="display:none;">
+        <div class="card">
+          <h2>📝 Foglio Visita Digitale Rapido + Firma Touch</h2>
+          <p class="muted" style="margin:0 0 8px;">Compila sul posto durante la visita, acquisisci la firma del cliente e invia il riepilogo WhatsApp (con superfici in <strong>metri quadri</strong> e chiusura <strong>— Immobiliare Giancani</strong>).</p>
+          <form id="fvQuickForm">
+            <div class="grid-2">
+              <div>
+                <label>Nome &amp; Cognome Visitatore</label>
+                <input id="fvNome" type="text" placeholder="Es. Marco Bianchi" required>
+              </div>
+              <div>
+                <label>Telefono WhatsApp</label>
+                <input id="fvTelefono" type="tel" placeholder="Es. 333 123 4567">
+              </div>
+              <div>
+                <label>Codice Fiscale / Documento</label>
+                <input id="fvCf" type="text" placeholder="Es. BNCMRC85A01A089Z">
+              </div>
+              <div>
+                <label>Immobile Visitato (metri quadri e zona)</label>
+                <input id="fvImmobile" type="text" placeholder="Es. Appartamento 115 metri quadri - Favara" required>
+              </div>
+              <div>
+                <label>Data Visita</label>
+                <input id="fvData" type="date">
+              </div>
+              <div>
+                <label>Ora Visita</label>
+                <input id="fvOra" type="time">
+              </div>
+            </div>
+            <label>Note &amp; Osservazioni Cliente</label>
+            <textarea id="fvNote" style="min-height:56px;" placeholder="Es. Interessato con mutuo 80%, valuta cucina abitabile..."></textarea>
+            <label>✍️ Firma Digitale Visitatore (disegna col dito)</label>
+            <div class="fv-sign-box">
+              <canvas id="fvSignCanvas" width="520" height="160"></canvas>
+            </div>
+            <div class="row-actions">
+              <button id="btnFvClearSign" type="button" class="btn btn-outline btn-sm" style="flex:1;">🧹 Pulisci Firma</button>
+              <button type="submit" class="btn btn-emerald" style="flex:2;">💾 Salva Foglio Visita</button>
+            </div>
+          </form>
+          <div style="margin-top:12px;">
+            <strong style="font-size:12.5px; color:#b45309;">📋 Ultimi Fogli Visita Salvati</strong>
+            <div id="fvSavedList"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>📂 Tutti i Moduli Venditori, Fogli Visita, Incarichi &amp; Tecnico</h2>
+          <div id="sectorDocsVenditori" class="sector-docs-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         CATEGORIA 2: ACQUIRENTI & INCROCI INTELLIGENTI (SMART MATCH)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel" data-step="2" id="tab-acquirenti">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <h2 style="margin:0;">🤝 2. Acquirenti &amp; Incroci Intelligenti</h2>
+          <button id="btnToggleAcqForm" type="button" class="btn btn-gold btn-sm" style="width:auto;">➕ Nuovo Acquirente</button>
+        </div>
+        <p class="muted" style="margin:6px 0 0;">
+          Il motore confronta automaticamente ogni richiesta con le <strong>Inserzioni Ufficiali (Fogli Sheet)</strong> e con i <strong>Venditori Privati (Cacciatori)</strong>, esprimendo tutte le metrature in <strong>"metri quadri"</strong> e chiudendo ogni proposta con <strong>— Immobiliare Giancani</strong>.
+        </p>
+
+        <div id="acqFormBox" style="display:none; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+          <input id="acqEditId" type="hidden" value="">
+          <div class="grid-2">
+            <div>
+              <label>Nome &amp; Cognome Acquirente</label>
+              <input id="acqNome" type="text" placeholder="Es. Famiglia Greco">
+            </div>
+            <div>
+              <label>Telefono WhatsApp</label>
+              <input id="acqTel" type="text" placeholder="Es. 333 123 4567">
+            </div>
+            <div>
+              <label>Comune / Zona Cercata</label>
+              <input id="acqComune" type="text" value="Favara" placeholder="Favara, Agrigento, Aragona...">
+            </div>
+            <div>
+              <label>Tipologia Cercata</label>
+              <input id="acqTipo" type="text" value="Appartamento" placeholder="Appartamento, Villa...">
+            </div>
+            <div>
+              <label>Budget Massimo (€)</label>
+              <input id="acqBudget" type="number" value="140000" placeholder="140000">
+            </div>
+            <div>
+              <label>Superficie Minima (in "metri quadri")</label>
+              <input id="acqMqMin" type="number" value="100" placeholder="100">
+            </div>
+          </div>
+          <label>Urgenza / Mutuo</label>
+          <select id="acqUrgenza">
+            <option value="🔥 Pronto (Mutuo già approvato)">🔥 Pronto (Mutuo già approvato)</option>
+            <option value="⚡ Ricerca attiva">⚡ Ricerca attiva</option>
+            <option value="💼 Investimento / Cash">💼 Investimento / Cash</option>
+            <option value="🌱 Prima casa con calma">🌱 Prima casa con calma</option>
+          </select>
+          <label>Note &amp; Desideri (terrazzo, ascensore, garage...)</label>
+          <textarea id="acqNote" style="min-height:66px;" placeholder="Es. Piano basso o con ascensore, 3 camere, cucina abitabile..."></textarea>
+          <div class="row-actions">
+            <button id="btnAcqSave" type="button" class="btn btn-gold" style="flex:2;">💾 Salva Richiesta Acquirente</button>
+            <button id="btnAcqCancel" type="button" class="btn btn-outline" style="flex:1;">Annulla</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banner Contesto quando arrivi da "Incrocia con Acquirenti" su un Immobile -->
+      <div id="acqMatchContextBanner" class="card gold-banner" style="display:none;"></div>
+
+      <!-- SIMULATORE MUTUO 80% + MODULI ACQUIRENTI -->
+      <div class="card">
+        <h2>🏦 Simulatore Mutuo Rapido &amp; Strumenti Acquirenti</h2>
+        <div class="grid-2">
+          <div>
+            <label>Valore Immobile (€)</label>
+            <input id="mutuoPrezzo" type="number" value="150000" step="5000">
+          </div>
+          <div>
+            <label>Percentuale Mutuo (LTV %)</label>
+            <input id="mutuoLtv" type="number" value="80" min="10" max="100">
+          </div>
+          <div>
+            <label>Durata (Anni)</label>
+            <input id="mutuoAnni" type="number" value="25" min="5" max="40">
+          </div>
+          <div>
+            <label>Tasso Annuo (TAN %)</label>
+            <input id="mutuoTan" type="number" value="3.4" step="0.1">
+          </div>
+        </div>
+        <div class="mutuo-result-box">
+          <div><span>Rata Mensile</span><strong id="mutuoRataOut">594 € / mese</strong></div>
+          <div><span>Importo Finanziato</span><strong id="mutuoImportoOut">120.000 € (80%)</strong></div>
+          <div><span>Totale Rimborso</span><strong id="mutuoTotaleOut">178.200 €</strong></div>
+        </div>
+        <div style="margin-top:12px;">
+          <strong style="font-size:12.5px; color:#047857;">📂 Portali Acquirenti, Mappe &amp; Vetrine</strong>
+          <div id="sectorDocsAcquirenti" class="sector-docs-grid"></div>
+        </div>
+      </div>
+
+      <div id="acqListContainer"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         CATEGORIA 3: STUDIO GALLERIA & FOTO (SISTEMA TOTALE GENERATOR.HTML DARIA)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel" data-step="3" id="tab-inserzioni">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+          <h2 style="margin:0;">🖼️ 3. Studio Galleria &amp; Foto (Generator DarIA per Diretta)</h2>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <a id="btnOpenMasterSheet" href="https://docs.google.com/spreadsheets/d/1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE/edit" target="_blank" class="btn btn-outline btn-sm">📊 Foglio Master ↗</a>
+          </div>
+        </div>
+        <div class="sub-nav-pills" id="insSubNav">
+          <button type="button" class="sub-pill active" data-ins-sub="upload">📤 1. Carica Foto &amp; Descrizioni</button>
+          <button type="button" class="sub-pill" data-ins-sub="galleria">🖼️ 2. Galleria Foto, 360° &amp; Colonna F</button>
+          <button type="button" class="sub-pill" data-ins-sub="cartelle">📂 3. Sync 1-Tap Cartelle Drive</button>
+          <button type="button" class="sub-pill" data-ins-sub="storie">🎬 4. Storie 9:16, Reel &amp; Basi Drive</button>
+        </div>
+      </div>
+
+      <!-- SUB 1: CARICAMENTO FOTO / VIDEO / 360° CON DESCRIZIONE & SCHEDA IMMOBILE DARIA (IDENTICO A GENERATOR.HTML) -->
+      <div id="insPanelUpload">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <h2 style="margin:0;">📤 Caricamento Foto / Video / 360° con Descrizione &amp; Regia DarIA</h2>
+            <span class="area-pill-tag">Colonna F + Watermark</span>
+          </div>
+          <p class="muted" style="margin:6px 0 10px;">
+            Crea una nuova cartella su Google Drive (o aggiorna un immobile esistente), applica il watermark con il logo o il cerchio Nadir 360°, riconosce la stanza e genera automaticamente i testi parlati della <strong>Colonna F</strong> per DarIA!
+          </p>
+
+          <label>📂 Scegli Cartella Drive Esistente (oppure scrivi un nuovo nome sotto)</label>
+          <select id="drvUploadSelectExisting">
+            <option value="">✨ Crea nuova cartella &amp; nuovo Foglio Sheet (scrivi il nome sotto)...</option>
+          </select>
+
+          <label>🏷️ Nome Cartella / Proprietà (es. "Casa Poggio" o "Villa Favara Via Roma")</label>
+          <input id="drvUploadFolderName" type="text" placeholder="Es. Casa Poggio oppure Villa Favara Via Roma">
+
+          <div class="grid-2" style="margin-top:4px;">
+            <div>
+              <label>🏠 Tipo di Immobile (18 categorie)</label>
+              <select id="drvTipo"></select>
+            </div>
+            <div>
+              <label>📐 Metri Quadri (sempre salvato come "metri quadri")</label>
+              <input id="drvMq" type="text" placeholder="Es. 120">
+            </div>
+            <div>
+              <label>💰 Prezzo (€ o vuoto per Tratt. Riservata)</label>
+              <input id="drvPrezzo" type="text" placeholder="Es. 145.000 €">
+            </div>
+            <div>
+              <label>📍 Zona / Città / Posizione</label>
+              <input id="drvZona" type="text" value="Favara" placeholder="Es. Favara centro, Agrigento Via Atenea...">
+            </div>
+            <div>
+              <label>✨ Stato / Finiture Principali (7 livelli)</label>
+              <select id="drvStato"></select>
+            </div>
+            <div>
+              <label>🔍 Dettagli Finiture (Opzionale)</label>
+              <input id="drvStatoDettaglio" type="text" placeholder="Es. parquet rovere, infissi taglio termico">
+            </div>
+          </div>
+
+          <label>🎙️ Spazio Libero — Istruzioni di Regia per DarIA (Guida per i commenti automatici alle foto)</label>
+          <textarea id="drvNoteDaria" style="min-height:64px;" placeholder="Indica qui dettagli da far commentare a DarIA nelle foto (es. luminosità favolosa, vista mozzafiato, esposizione a sud, ideale per famiglie o B&amp;B)..."></textarea>
+
+          <label>📝 Descrizione Principale Immobile (Colonna F)</label>
+          <textarea id="drvDescGenerale" placeholder="Descrizione completa per la Colonna F (metri quadri per esteso + chiusura — Immobiliare Giancani)"></textarea>
+          <div class="row-actions" style="margin-top:6px;">
+            <button id="btnDrvAutoDescGen" type="button" class="btn btn-outline btn-sm">🪄 Genera da Scheda (Colonna F)</button>
+            <button id="btnDrvTtsDescGen" type="button" class="btn btn-outline btn-sm">🔊 Ascolta Voce DarIA</button>
+          </div>
+
+          <!-- BARRA RAPIDA SMART STANZE + PARTICOLARI -->
+          <label style="margin-top:12px;">🏷️ Inserimento Rapido Stanza &amp; Particolari (20 Top + Catalogo 6 Categorie)</label>
+          <div id="drvSmartStanzeBar" class="smart-stanze-scroll"></div>
+          <div id="drvSmartSubDetailsBar" class="smart-subdetails-bar" style="display:none;"></div>
+
+          <div class="grid-2" style="margin-top:8px;">
+            <div>
+              <label>🎨 Posizione &amp; Tipo Logo Watermark / 360° Nadir</label>
+              <select id="drvWatermarkPos"></select>
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <div class="check-row" style="margin:6px 0;">
+                <input id="drvChkWatermark" type="checkbox" checked>
+                <span>Applica Logo Watermark (max 1920px)</span>
+              </div>
+            </div>
+          </div>
+
+          <label class="upload-box" style="margin-top:10px;">
+            <strong>📸 Seleziona Foto, Video o 360° dallo Smartphone</strong>
+            <span class="muted">Riconoscimento automatico stanza (wc→Bagno, cucina→Cucina...) • Chip Particolari • Editor Foto/Privacy/Nadir 360° • Gemini Vision</span>
+            <input id="drvUploadFiles" type="file" accept="image/*,video/*" multiple>
+          </label>
+
+          <!-- CODA MINIATURE FOTO / VIDEO CON STANZA, SOTTO-DETTAGLI, COLONNA F, 360° & EDITOR -->
+          <div id="drvUploadFilesList" style="margin-top:12px;"></div>
+
+          <div class="row-actions" style="margin-top:12px;">
+            <button id="btnDrvCreateSheetOnly" type="button" class="btn btn-outline" style="flex:1;">📄 Crea Solo Sheet</button>
+            <button id="btnDrvUploadAll" type="button" class="btn btn-gold" style="flex:2;">🚀 CARICA SU DRIVE &amp; RIGENERA REGIA LIVE</button>
+          </div>
+          <div class="row-actions">
+            <button id="btnDrvSendToMontaggio" type="button" class="btn btn-emerald" style="flex:1;">🎬 Porta nel Montatore Video</button>
+            <button id="btnDrvMatchBuyers" type="button" class="btn btn-cyan" style="flex:1;">🤝 Incrocia con Acquirenti</button>
+            <button id="btnDrvUploadOpenSuno" type="button" class="btn btn-outline" style="flex:1;">🎵 Crea Canzone 3+ Min</button>
+          </div>
+
+          <!-- BARRA DI AVANZAMENTO & REPORT SINGOLI FILE COME GENERATOR.HTML -->
+          <div id="drvUploadProgress" class="progress-wrap">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+              <strong id="drvUploadTitle" style="font-size:12.5px; color:#b45309;">⏳ Caricamento File su Google Drive...</strong>
+              <strong id="drvUploadPct" style="font-size:13px; color:#059669;">0%</strong>
+            </div>
+            <div class="progress-bar"><div id="drvUploadBar" class="progress-fill"></div></div>
+            <div id="drvUploadStatus" class="progress-label">In attesa...</div>
+            <div id="drvUploadFilesReportBox" class="upload-report-list"></div>
+          </div>
+          <div id="drvUploadResultBox" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- SUB 2: GALLERIA AVANZATA IMMOBILE ATTIVO (FILTRI FOTO/VIDEO/360°, VISION AI MASSIVA, IN ONDA DIRETTA, SALVA 1-CLICK) -->
+      <div id="insPanelGalleria" style="display:none;">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <h2 style="margin:0;">🖼️ Galleria Foto, 360° &amp; Testi Parlati Colonna F</h2>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button id="btnGalEditSchedaDaria" type="button" class="btn btn-outline btn-sm">📋 Scheda Immobile &amp; DarIA</button>
+              <button id="btnGalOpenReelModal" type="button" class="btn btn-emerald btn-sm">🎬 Genera Reel 9:16</button>
+              <button id="btnGalOpenSunoModal" type="button" class="btn btn-gold btn-sm" style="width:auto;">🎵 Canzone 3+ Min</button>
+            </div>
+          </div>
+
+          <label>📁 Immobile Attivo (Foglio Google Sheet):</label>
+          <div style="display:flex; gap:8px;">
+            <select id="drvSheetSelect" style="flex:1;">
+              <option value="">⏳ Caricamento fogli immobili...</option>
+            </select>
+            <button id="btnDrvLoadSheetMedia" type="button" class="btn btn-cyan btn-sm">👁️ Carica Galleria</button>
+          </div>
+
+          <!-- FILTRI TIPO MEDIA (TUTTI / FOTO / VIDEO / 360°) -->
+          <div class="chips" id="galMediaTypeFilters" style="margin-top:10px;">
+            <button type="button" class="chip active" data-gal-filter="tutti">📷 Tutti (<span id="galCntTutti">0</span>)</button>
+            <button type="button" class="chip" data-gal-filter="foto">🖼️ Foto (<span id="galCntFoto">0</span>)</button>
+            <button type="button" class="chip" data-gal-filter="video">🎥 Video (<span id="galCntVideo">0</span>)</button>
+            <button type="button" class="chip" data-gal-filter="360">🌐 360° (<span id="galCnt360">0</span>)</button>
+          </div>
+
+          <!-- BARRA AZIONI BULK & SALVATAGGIO COMPLETO COME GENERATOR.HTML -->
+          <div id="drvSheetActionsBar" class="gal-bulk-bar" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
+              <strong id="galSelCountLabel" style="font-size:12px; color:#92400e;">0 selezionati</strong>
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                <button id="btnGalBulkVisionAI" type="button" class="btn btn-cyan btn-sm">🤖 AI Visione Stanze</button>
+                <button id="btnDrvSaveColF" type="button" class="btn btn-gold btn-sm" style="width:auto;">💾 Salva Tutte le Modifiche (1-Click)</button>
+                <button id="btnGalSelectAll" type="button" class="btn btn-outline btn-sm">☑ Tutte</button>
+                <button id="btnGalSelectNone" type="button" class="btn btn-outline btn-sm">✕ Nessuna</button>
+                <button id="btnGalDeleteSelected" type="button" class="btn btn-danger btn-sm">🗑️ Elimina</button>
+              </div>
+            </div>
+            <div class="row-actions" style="width:100%; margin-top:8px;">
+              <button id="btnDrvUseSheetInMontaggio" type="button" class="btn btn-emerald btn-sm" style="flex:1;">🎬 Porta Tutto nello Studio Video</button>
+              <button id="btnDrvSheetMatchBuyers" type="button" class="btn btn-cyan btn-sm" style="flex:1;">🤝 Incrocia con Acquirenti</button>
+              <button id="btnDrvSendSheetToLive" type="button" class="btn btn-outline btn-sm" style="flex:1;">📺 Manda in Onda Live 24H</button>
+            </div>
+          </div>
+
+          <!-- GRIGLIA CARD GALLERIA (FOTO / VIDEO / 360° CON CHIP STANZE, COLONNA F, TTS, VISION AI, EDITOR, IN ONDA) -->
+          <div id="drvSheetItemsList" class="gallery-cards-grid" style="margin-top:12px;"></div>
+
+          <!-- BOX SALVATAGGIO COMPLETO IN FONDO COME GENERATOR.HTML -->
+          <div id="galBottomSaveBox" class="card gold-banner" style="display:none; margin-top:14px; text-align:center;">
+            <strong style="font-size:14px;">💾 SALVATAGGIO COMPLETO DI TUTTE LE MODIFICHE DELLA GALLERIA</strong>
+            <p class="muted" style="margin:4px 0 10px; color:#78350f;">
+              Hai modificato nomi di stanze, testi descrittivi Colonna F o convertito foto in 360°? Salva tutte le modifiche in una volta sola sul Foglio Google!
+            </p>
+            <button id="btnDrvSaveColFBottom" type="button" class="btn btn-emerald" style="width:100%;">💾 SALVA TUTTE LE MODIFICHE DELLA GALLERIA (1-Click)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB 3: CARTELLE GOOGLE DRIVE & SINCRONIZZAZIONE IMMOBILI 1-TAP -->
+      <div id="insPanelCartelle" style="display:none;">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <h2 style="margin:0;">📂 Cartelle Google Drive &amp; Sincronizzazione 1-Tap</h2>
+            <button id="btnDrvRefreshFolders" type="button" class="btn btn-cyan btn-sm">🔄 Aggiorna Cartelle Drive</button>
+          </div>
+          <p class="muted" style="margin:4px 0 8px;">
+            Tocca una cartella Google Drive nella griglia qui sotto (o incolla nome/link/ID) per vedere l'anteprima visuale delle foto e sincronizzare l'immobile sullo Sheet con testi dalla Colonna F!
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <label>🔍 Cerca Cartella Google Drive</label>
+              <input id="drvSearchFolder" type="text" placeholder="Digita nome immobile o cartella (es. Villa Favara)...">
+            </div>
+            <div>
+              <label>📱 Seleziona Cartella Drive (Menu Rapido 1-Tap)</label>
+              <select id="drvSelectFolderPicker">
+                <option value="">⏳ Scansione cartelle Google Drive...</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="drvFoldersCount" class="muted" style="margin-top:6px; font-weight:700;">Caricamento cartelle Google Drive...</div>
+          <div id="drvFoldersGrid" class="drive-grid"></div>
+
+          <div class="grid-2" style="margin-top:10px;">
+            <div>
+              <label>📂 Nome o URL / ID Cartella (Manuale o Selezionata)</label>
+              <input id="drvSyncManualFolderInput" type="text" placeholder="Es. Villa Favara oppure link/ID Cartella">
+            </div>
+            <div>
+              <label>🎨 Posizione &amp; Tipo Logo Watermark</label>
+              <select id="drvSyncLogoPos">
+                <option value="360_nadir">⚪ Logo Cerchiato Bianco sul Fondo (Nadir Foto 360°)</option>
+                <option value="centrale_semitrasparente" selected>🛡️ Logo Centrale Semitrasparente (Foto Semplici)</option>
+                <option value="in_basso_destra">📐 Logo in Basso a Destra (Standard)</option>
+                <option value="in_basso_sinistra">📐 Logo in Basso a Sinistra</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="drvFolderDetailBox" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+              <strong id="drvSelectedFolderTitle" style="color:#b45309;">Cartella Selezionata</strong>
+              <a id="drvSelectedFolderLink" href="#" target="_blank" class="btn btn-outline btn-sm">📂 Apri in Drive ↗</a>
+            </div>
+            <div id="drvFolderPreviewGrid" class="drive-preview-row"></div>
+          </div>
+
+          <div class="row-actions" style="margin-top:12px;">
+            <button id="btnDrvSyncSelected" type="button" class="btn btn-gold" style="flex:2;">🔄 1-TAP: SINCRONIZZA QUESTA CARTELLA SULLO SHEET &amp; IN GALLERIA</button>
+            <button id="btnDrvImportFolderToMontaggio" type="button" class="btn btn-emerald" style="flex:1;">🎬 Porta nello Studio Video</button>
+          </div>
+          <div id="drvSyncStatusMsg" class="info-banner" style="display:none; margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- SUB 4: STORIE 9:16 DA VIDEO DRIVE SENZA TESTO, GENERATORE REEL 9:16 & BASI MUSICALI DRIVE (GENERATOR.HTML) -->
+      <div id="insPanelStorieDrive" style="display:none;">
+        <!-- BOX BASI MUSICALI PROFESSIONALI DRIVE -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <h2 style="margin:0;">🎵 Basi Musicali Professionali (Google Drive)</h2>
+            <span id="badgeBasiMusicaliGal" class="area-pill-tag">Drive MP3</span>
+          </div>
+          <p class="muted" style="margin:6px 0 10px;">
+            Cartella Google Drive dedicata per i file MP3/audio dei video Reel 9:16, dello Studio Montaggio e della Regia Live.
+          </p>
+          <div class="row-actions">
+            <a id="linkCartellaBasiDriveGal" href="https://drive.google.com/drive/folders/1ftayZvmtRjwIxZd_ctBSy0wuTH_3lijM" target="_blank" class="btn btn-gold btn-sm" style="width:auto; flex:1;">📂 Apri Cartella Basi Musicali su Drive ↗</a>
+            <button id="btnRefreshBasiGal" type="button" class="btn btn-outline btn-sm">🔄 Aggiorna Brani</button>
+          </div>
+          <label>🎼 Seleziona Base Musicale da Google Drive:</label>
+          <select id="selBasiMusicaliGal">
+            <option value="">Traccia Predefinita (Sicilian Sunset)</option>
+          </select>
+        </div>
+
+        <!-- BOX STORIE 9:16 DA VIDEO SENZA TESTO (DRIVE) & FRASI PRESTIGIO COLONNA F -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <h2 style="margin:0;">🎬 Storie 9:16 da Video Senza Testo (Drive) &amp; Frasi Prestigio</h2>
+            <button id="btnRefreshStorieDriveGal" type="button" class="btn btn-cyan btn-sm">🔄 Ricarica Dati</button>
+          </div>
+          <p class="muted" style="margin:6px 0 10px;">
+            Crea Storie Verticali 9:16 partendo dai video grezzi senza parlato caricati su Drive con Logo Giancani in alto e card semitrasparente al 60% in basso con frase dalla <strong>Colonna F</strong>.
+          </p>
+          <div class="row-actions" style="margin-bottom:10px;">
+            <a id="linkVideoPromozionaliDrive" href="https://drive.google.com/drive/folders/1ftayZvmtRjwIxZd_ctBSy0wuTH_3lijM" target="_blank" class="btn btn-outline btn-sm" style="flex:1;">📂 1. Video Promozionali ↗</a>
+            <a id="linkMusicaIaDrive" href="https://drive.google.com/drive/folders/1ftayZvmtRjwIxZd_ctBSy0wuTH_3lijM" target="_blank" class="btn btn-outline btn-sm" style="flex:1;">🎵 2. Musica IA Storie ↗</a>
+            <a id="linkFoglioFrasiColF" href="https://docs.google.com/spreadsheets/d/1s68pw0WEUcV0ZqltiahAqCp_r5rsycSjxKNh0VZQq_g/edit" target="_blank" class="btn btn-outline btn-sm" style="flex:1;">📜 3. Foglio Frasi Colonna F ↗</a>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label>1. Video Senza Testo (Drive)</label>
+              <select id="selVideoSenzaTestoGal">
+                <option value="">-- Seleziona un video senza testo da Drive --</option>
+              </select>
+            </div>
+            <div>
+              <label>2. Frase Prestigio / Curiosità (Colonna F)</label>
+              <select id="selFraseStoriaGal"></select>
+            </div>
+          </div>
+
+          <label>✍️ Oppure scrivi Frase Personalizzata Istantanea (chiusura automatica — Immobiliare Giancani)</label>
+          <input id="inpFraseCustomStoriaGal" type="text" placeholder="Es. La vista perfetta per iniziare ogni giornata con serenità e stile.">
+
+          <div id="boxAnteprimaColonnaFGal" class="info-banner gold-banner" style="margin-top:10px;"></div>
+
+          <div class="row-actions" style="margin-top:10px;">
+            <button id="btnAvviaStoria916Drive" type="button" class="btn btn-gold" style="flex:2;">🚀 GENERA STORIA 9:16 &amp; RICEVI PER EMAIL</button>
+            <button id="btnUseFraseInStudioVideo" type="button" class="btn btn-emerald" style="flex:1;">🎬 Usa nello Studio Video</button>
+          </div>
+          <div id="storiaDriveStatusMsg" class="info-banner" style="display:none; margin-top:8px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         CATEGORIA 4: STUDIO VIDEO, ANTEPRIMA SOPRA TIMELINE & EFFETTI ILLUSTRATI
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel" data-step="4" id="tab-monta-video">
+      <!-- 1. STUDIO PRINCIPALE: GRANDE ANTEPRIMA VIDEO SOPRA LA TIMELINE + GALLERIA EFFETTI ANIMATI -->
+      <div class="card timeline-studio" id="timelineStudioCard">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <h2 style="margin:0;">🎬 Studio Video: Anteprima sopra Timeline &amp; Effetti</h2>
+          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <span class="timeline-total-pill" id="timelineTotalBadge">0 clip • 0:00</span>
+            <label class="btn btn-gold btn-sm" style="margin:0; width:auto; cursor:pointer;">
+              ➕ Aggiungi Clip/Foto
+              <input id="inpMediaFilesQuick" type="file" accept="video/*,image/*" multiple style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <!-- GRANDE ANTEPRIMA DEL VIDEO POSIZIONATA SOPRA LA TIMELINE -->
+        <div class="timeline-monitor-wrap" style="margin-top:10px;">
+          <div class="monitor-top-badges">
+            <span class="monitor-badge">📺 Anteprima Live Video &amp; Effetti</span>
+            <span id="timelineTimeReadout" class="timeline-time-badge">00:00.0 / 00:00.0</span>
+          </div>
+          <canvas id="timelinePreviewCanvas" width="440" height="264"></canvas>
+          <div class="timeline-transport">
+            <button id="btnTimelinePlay" type="button" class="btn btn-gold btn-sm" style="width:auto; flex:1.4;">▶️ Play Anteprima Timeline</button>
+            <button id="btnTimelineResetPlayhead" type="button" class="btn btn-outline btn-sm">⏮️ Inizio</button>
+            <button id="btnTimelineSplitClip" type="button" class="btn btn-outline btn-sm" style="flex:1;">✂️ Dividi Clip (Split)</button>
+            <button id="btnTimelineSnapBeats" type="button" class="btn btn-cyan btn-sm" style="flex:1;">🧲 Allinea ai Beat</button>
+          </div>
+        </div>
+
+        <!-- TIMELINE MULTITRACCIA SUBITO SOTTO L'ANTEPRIMA VIDEO -->
+        <div class="timeline-scroll-wrap" id="timelineScrollWrap">
+          <div class="timeline-canvas-inner" id="timelineInnerTrack">
+            <div class="timeline-playhead-line" id="timelinePlayheadLine" style="left:0px;"></div>
+            <div class="timeline-ruler" id="timelineRuler"></div>
+            <div class="timeline-track-label">🎬 Traccia Clip Video &amp; Foto (Trascina, Sposta o Allunga con Maniglia Oro →)</div>
+            <div class="timeline-track-clips" id="timelineClipsTrack"></div>
+            <div class="timeline-track-label">⚡ Transizioni &amp; Effetti Animati sui Tagli (Con Icone Visive — Tocca per Modificare)</div>
+            <div class="timeline-track-trans" id="timelineTransitionsTrack"></div>
+            <div class="timeline-track-label">🎵 Linea del Suono &amp; Battiti Musicali</div>
+            <div class="timeline-waveform-box">
+              <canvas id="timelineWaveformCanvas" width="760" height="78"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- GALLERIA VISUALE CON IMMAGINI / ICONE ANIMATE SUGLI EFFETTI & TRANSIZIONI -->
+        <div class="fx-visual-gallery-box">
+          <div class="fx-gallery-header">
+            <strong>✨ Effetti Animati &amp; Transizioni (Tocca l'immagine per applicarla alla clip selezionata o a tutto il video)</strong>
+            <button id="btnApplyFxToAllClips" type="button" class="btn btn-outline btn-sm">🪄 Applica a Tutte le Clip</button>
+          </div>
+          <div id="visualTransitionsGallery" class="fx-visual-grid"></div>
+        </div>
+
+        <!-- Ispettore Touch per Singola Clip -->
+        <div class="timeline-inspector" id="timelineClipInspector" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <strong id="lblInspectorTitle" style="color:var(--gold-dark); font-size:14px;">Clip Selezionata</strong>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button id="btnClipMoveLeft" type="button" class="btn btn-outline btn-sm">⬅️ Prima</button>
+              <button id="btnClipMoveRight" type="button" class="btn btn-outline btn-sm">Dopo ➡️</button>
+              <button id="btnClipDuplicate" type="button" class="btn btn-cyan btn-sm">📑 Duplica</button>
+              <button id="btnClipDelete" type="button" class="btn btn-danger btn-sm">🗑️ Cancella</button>
+            </div>
+          </div>
+
+          <div class="timeline-inspector-grid">
+            <div>
+              <label style="margin-top:6px;">⏪ Rewind (Torna Indietro) &amp; Velocità</label>
+              <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <button id="btnClipRewindToggle" type="button" class="btn btn-outline btn-sm" style="flex:1;">⏪ Rewind: OFF</button>
+                <select id="selClipSpeed" style="flex:1;">
+                  <option value="-4">-4 (0.60x Molto Lenta)</option>
+                  <option value="-3">-3 (0.70x)</option>
+                  <option value="-2">-2 (0.80x)</option>
+                  <option value="-1">-1 (0.90x)</option>
+                  <option value="0" selected>0 (1.00x Normale)</option>
+                  <option value="1">+1 (1.15x)</option>
+                  <option value="2">+2 (1.30x)</option>
+                  <option value="3">+3 (1.50x)</option>
+                  <option value="4">+4 (1.75x)</option>
+                  <option value="5">+5 (2.00x)</option>
+                  <option value="6">+6 (2.50x)</option>
+                  <option value="7">+7 (3.00x Super Veloce)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style="margin-top:6px;">↔️ Durata Clip (<span id="lblClipDurationVal">4.0s</span>)</label>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button id="btnClipDurMinus" type="button" class="btn btn-outline btn-sm">-0.5s</button>
+                <input id="rngClipDuration" type="range" min="1" max="45" step="0.5" value="4" style="flex:1; accent-color:var(--gold-dark);">
+                <button id="btnClipDurPlus" type="button" class="btn btn-outline btn-sm">+0.5s</button>
+              </div>
+            </div>
+          </div>
+
+          <label style="margin-top:8px;">🔀 Transizione su questa Clip (oppure tocca le card illustrate sopra)</label>
+          <select id="selClipTransition">
+            <option value="zoom_in_fast">⚡ Zoom Entrata Velocissimo</option>
+            <option value="zoom_out_fast">💨 Zoom Uscita Velocissimo</option>
+            <option value="zoom_punch_combo">💥 Zoom Uscita + Entrata Rapido</option>
+            <option value="wipe_top">⬇️ Linea da Sopra a Sotto</option>
+            <option value="wipe_bottom">⬆️ Linea da Sotto a Sopra</option>
+            <option value="wipe_right_to_left">⬅️ Linea da Destra a Sinistra</option>
+            <option value="wipe_left_to_right">➡️ Linea da Sinistra a Destra</option>
+            <option value="shape_star">⭐ Transizione a Stella</option>
+            <option value="shape_circle">⭕ Transizione a Cerchio</option>
+            <option value="mix_all">🎲 Mix Automatico (Zoom/Linee/Forme)</option>
+            <option value="glow">✨ Bagliore di Luce (Glow)</option>
+            <option value="fade_color">🎨 Sfumatura Colorata Oro</option>
+            <option value="fade_black">🌑 Sfumatura Nera</option>
+            <option value="fade_white">⬜ Sfumatura Bianca</option>
+          </select>
+
+          <label style="margin-top:8px;">🎨 Effetto Colore &amp; Luce sulla Clip (Con Anteprima Icona)</label>
+          <div class="fx-color-cards-row" id="clipEffectChips">
+            <button type="button" class="chip fx-color-chip active" data-clipefx="none">
+              <span class="fx-swatch swatch-natural"></span>🎞️ Naturale
+            </button>
+            <button type="button" class="chip fx-color-chip" data-clipefx="warm_gold">
+              <span class="fx-swatch swatch-gold"></span>✨ Oro Caldo
+            </button>
+            <button type="button" class="chip fx-color-chip" data-clipefx="hdr_bright">
+              <span class="fx-swatch swatch-hdr"></span>☀️ HDR Solare
+            </button>
+            <button type="button" class="chip fx-color-chip" data-clipefx="cinema_contrast">
+              <span class="fx-swatch swatch-cinema"></span>🎬 Cinema
+            </button>
+            <button type="button" class="chip fx-color-chip" data-clipefx="bw_luxury">
+              <span class="fx-swatch swatch-bw"></span>🖤 B&amp;N Luxury
+            </button>
+            <button type="button" class="chip fx-color-chip" data-clipefx="sunset_glow">
+              <span class="fx-swatch swatch-sunset"></span>🌅 Tramonto
+            </button>
+          </div>
+
+          <div class="grid-2" style="margin-top:8px;">
+            <div>
+              <label>🏷️ Callout Alto su questa Clip (Opzionale)</label>
+              <input id="inpClipCallout" type="text" placeholder="Es. ZONA LIVING • 120 METRI QUADRI">
+            </div>
+            <div>
+              <label>💬 Sottotitolo Scena Colonna F (Opzionale)</label>
+              <input id="inpClipSubtitle" type="text" placeholder="Frase per questa scena (in metri quadri)">
+            </div>
+            <div>
+              <label>🔤 Font Tipografico (6 Scelte)</label>
+              <select id="selClipFont">
+                <option value="montserrat">Montserrat Modern</option>
+                <option value="cinzel">Cinzel Luxury Serif</option>
+                <option value="playfair">Playfair Editorial</option>
+                <option value="bebas">Bebas Neue Impact</option>
+                <option value="outfit">Outfit Geometric</option>
+                <option value="inter">Inter Clean TV</option>
+              </select>
+            </div>
+            <div>
+              <label>✨ Stile Sottotitolo / Box</label>
+              <select id="selClipSubStyle">
+                <option value="karaoke_gold">✨ Karaoke Glow Oro</option>
+                <option value="cinema_box">🎬 Box Cinema 60% Scurito</option>
+                <option value="pop_dynamic">💥 Pop Dinamico Bordo Alto</option>
+                <option value="minimal_clean">🤍 Minimal Pulito Luxury</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. LIBRERIA CLIP MEDIA, CLIP CENTRALE & PLAYLIST MUSICALE -->
+      <div class="card">
+        <h2>📂 Libreria Clip, Clip Centrale &amp; Playlist Canzoni</h2>
+        <label class="upload-box">
+          <strong>📸 Tocca per scegliere Video o Foto</strong>
+          <span class="muted">Dalla Galleria o importati da Venditori / Drive / Inserzioni</span>
+          <input id="inpMediaFiles" type="file" accept="video/*,image/*" multiple>
+        </label>
+        <div id="mediaPreviewList" style="margin-top:8px;">
+          <span class="muted">Nessun file selezionato.</span>
+        </div>
+
+        <div id="centralClipBox" class="central-box" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <strong style="color:var(--gold-dark); font-size:13.5px;">⭐ Clip Centrale (Giro Immobile): <span id="lblCentralName"></span></strong>
+            <button id="btnClearCentral" type="button" class="btn btn-outline btn-sm">✕ Rimuovi Ruolo</button>
+          </div>
+          <div id="lblCentralStatus" class="muted" style="margin-top:5px;"></div>
+          <div class="row-actions" style="margin-top:8px;">
+            <button id="btnOpenCentralModal" type="button" class="btn btn-gold">🎬 Anteprima con Musica &amp; Regola Velocità (-4 .. +7)</button>
+          </div>
+        </div>
+
+        <label style="margin-top:14px;">🎵 Canzoni &amp; Posizione Audio (1° Prima, 2° Seconda, 3° Terza...)</label>
+        <div class="row-actions" style="margin-top:4px;">
+          <label class="btn btn-outline" style="flex:1; margin:0;">
+            ➕ Dal Telefono
+            <input id="inpAudioFile" type="file" accept="audio/*" multiple style="display:none;">
+          </label>
+          <button id="btnOpenBasiDriveModal" type="button" class="btn btn-cyan" style="flex:1;">☁️ Basi Drive</button>
+          <button id="btnOpenSunoModal" type="button" class="btn btn-outline" style="flex:1;">🤖 Canzone 3+ Min</button>
+          <button id="btnClearAudio" type="button" class="btn btn-outline btn-sm" style="display:none;">🗑️</button>
+        </div>
+
+        <div id="audioPlaylistBox" class="playlist-box"></div>
+        <div id="audioPlaylistSummary" class="muted" style="margin-top:6px;">
+          Nessuna traccia audio caricata (ritmo base automatico o scegli Canzoni sopra).
+        </div>
+
+        <label>🔄 Se il Video dura più della Canzone:</label>
+        <select id="selAudioOverflow">
+          <option value="loop_cut" selected>🔁 1 canzone: Raddoppia/Ripeti e taglia a fine video (2+ canzoni: in ordine e taglia)</option>
+          <option value="multi_seq">🎵 Concatena 2+ canzoni in ordine (1° Prima, 2° Seconda...) e taglia alla fine</option>
+        </select>
+      </div>
+
+      <!-- 3. DATI IMMOBILE (COLONNA F) & TESTI 3-IN-1 -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <h2 style="margin:0;">📝 Dati Immobile &amp; Copy Colonna F</h2>
+          <button id="btnOpenArchivio" type="button" class="btn btn-outline btn-sm">📂 Archivio Colonna F</button>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Zona / Comune</label>
+            <input id="inpZona" type="text" value="Favara" placeholder="Favara, Agrigento...">
+            <div class="chips">
+              <button type="button" class="chip" data-chip-target="#inpZona" data-val="Favara">Favara</button>
+              <button type="button" class="chip" data-chip-target="#inpZona" data-val="Agrigento">Agrigento</button>
+              <button type="button" class="chip" data-chip-target="#inpZona" data-val="Aragona">Aragona</button>
+            </div>
+          </div>
+          <div>
+            <label>Tipologia</label>
+            <input id="inpTipo" type="text" value="Appartamento" placeholder="Appartamento, Villa...">
+            <div class="chips">
+              <button type="button" class="chip" data-chip-target="#inpTipo" data-val="Appartamento">Appartamento</button>
+              <button type="button" class="chip" data-chip-target="#inpTipo" data-val="Villa">Villa</button>
+              <button type="button" class="chip" data-chip-target="#inpTipo" data-val="Attico">Attico</button>
+            </div>
+          </div>
+        </div>
+
+        <label>Superficie (sempre in "metri quadri")</label>
+        <input id="inpMq" type="number" value="120" placeholder="Es. 120">
+
+        <label>Descrizione Principale (Colonna F)</label>
+        <textarea id="inpDesc" placeholder="4 camere, cucina abitabile, bagno, vista panoramica...">4 camere, cucina abitabile, bagno, vista panoramica</textarea>
+        <label>Temi Positivi (Famiglia &amp; Felicità)</label>
+        <input id="inpTemi" type="text" value="ti crei la famiglia, la felicità è dentro la famiglia">
+
+        <div class="row-actions">
+          <button id="btnGeneraTesti" type="button" class="btn btn-gold">✨ Genera Testi 3-in-1 (Colonna F)</button>
+        </div>
+
+        <div class="tabs" style="margin-top:10px;">
+          <button type="button" class="tab-btn active" data-tab="#tabCanzone">🎤 Sottotitoli / Canzone</button>
+          <button type="button" class="tab-btn" data-tab="#tabDesc">📝 Descrizione</button>
+          <button type="button" class="tab-btn" data-tab="#tabSocial">📱 Copy Social</button>
+        </div>
+        <textarea id="txtCanzone" class="tab-area active" placeholder="Testo per sottotitoli cinetici..."></textarea>
+        <textarea id="txtDescrizione" class="tab-area" placeholder="Descrizione immobile in metri quadri..."></textarea>
+        <textarea id="txtSocial" class="tab-area" placeholder="Copy social pronto con — Immobiliare Giancani..."></textarea>
+      </div>
+
+      <!-- 4. DURATA FINO A 5 MINUTI, LOGO SCONTORNATO & AVVIO MONTAGGIO -->
+      <div class="card">
+        <h2>⏱️ Durata (1–5 Min), Logo Scontornato &amp; Rendering</h2>
+        <label>⏱️ Scegli la Durata del Video</label>
+        <select id="selDurataVideo">
+          <option value="durata_canzone" selected>🎵 Opzione Durata Canzone (segue tutta la canzone o playlist)</option>
+          <option value="durata_video">🎬 Opzione Durata Video (segue la somma delle clip/foto)</option>
+          <option value="20">⚡ 20 Secondi (Spot Flash)</option>
+          <option value="30">📱 30 Secondi (Reels / Storie)</option>
+          <option value="60">⏱️ 1 Minuto (60 Secondi)</option>
+          <option value="120">⏱️ 2 Minuti (120 Secondi)</option>
+          <option value="180">⏱️ 3 Minuti (180 Secondi)</option>
+          <option value="240">⏱️ 4 Minuti (240 Secondi)</option>
+          <option value="300">⏱️ 5 Minuti (300 Secondi — Durata Massima)</option>
+        </select>
+        <div id="lblDurataPreviewInfo" class="info-banner"></div>
+
+        <div class="grid-2">
+          <div>
+            <label>📐 Formato Video</label>
+            <select id="selFormato">
+              <option value="9:16">📱 Verticale 9:16 (Reels, Stories, TikTok, Shorts)</option>
+              <option value="16:9">🖥️ Orizzontale 16:9 (YouTube, TV, Facebook)</option>
+              <option value="entrambi">⚡ Entrambi (9:16 + 16:9)</option>
+            </select>
+          </div>
+          <div>
+            <label>✨ Transizione Predefinita sui Beat</label>
+            <select id="selEffetto">
+              <option value="zoom_in_fast" selected>⚡ Zoom Entrata Velocissimo</option>
+              <option value="zoom_out_fast">💨 Zoom Uscita Velocissimo</option>
+              <option value="zoom_punch_combo">💥 Zoom Uscita + Entrata Rapido</option>
+              <option value="wipe_top">⬇️ Linea da Sopra a Sotto</option>
+              <option value="wipe_bottom">⬆️ Linea da Sotto a Sopra</option>
+              <option value="wipe_right_to_left">⬅️ Linea da Destra a Sinistra</option>
+              <option value="wipe_left_to_right">➡️ Linea da Sinistra a Destra</option>
+              <option value="shape_star">⭐ Transizione a Stella</option>
+              <option value="shape_circle">⭕ Transizione a Cerchio</option>
+              <option value="mix_all">🎲 Mix Automatico (Zoom/Linee/Forme)</option>
+              <option value="glow">✨ Bagliore di Luce (Glow)</option>
+              <option value="fade_color">🎨 Sfumatura Colorata Oro</option>
+              <option value="fade_black">🌑 Sfumatura Nera</option>
+              <option value="fade_white">⬜ Sfumatura Bianca</option>
+            </select>
+          </div>
+        </div>
+
+        <label>🏛️ Mostra Logo Agenzia nei Video (Predisposto: Sì)</label>
+        <select id="selMostraLogo">
+          <option value="si" selected>✅ Sì — Logo Immobiliare Giancani Scontornato (Predefinito)</option>
+          <option value="no">🚫 No — Non mostrare il Logo</option>
+        </select>
+
+        <div id="logoAnimGroup">
+          <label>✨ Animazione del Logo nel Video</label>
+          <select id="selLogoAnim">
+            <option value="shimmer_glow" selected>✨ Bagliore che passa sul Logo (Effetto Cinema)</option>
+            <option value="diamond_sparkle">💎 Luccichio tipo Diamante</option>
+            <option value="pulse_beat">💓 Pulsazione Oro a Ritmo Musicale</option>
+            <option value="golden_halo">🌟 Aureola Dorata Luxury</option>
+            <option value="static_clean">🏛️ Logo Scontornato Fisso Pulito</option>
+          </select>
+          <div class="logo-preview-wrap">
+            <canvas id="logoPreviewCanvas" width="380" height="118"></canvas>
+            <div style="margin-top:8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+              <label class="btn btn-outline btn-sm" style="margin:0;">🖼️ Cambia Logo <input id="inpLogoFileStep2" type="file" accept="image/*" style="display:none;"></label>
+              <button id="btnResetLogoDefault" type="button" class="btn btn-outline btn-sm">🏛️ Ripristina Scontornato</button>
+            </div>
+          </div>
+        </div>
+
+        <label>⏳ Outro Finale Animato</label>
+        <select id="selOutro">
+          <option value="3">3 secondi</option>
+          <option value="4" selected>4 secondi</option>
+          <option value="5">5 secondi</option>
+        </select>
+
+        <div class="check-row"><input id="chkSubs" type="checkbox" checked><span>Sottotitoli cinetici (Colonna F)</span></div>
+        <div class="check-row"><input id="chkAntiShake" type="checkbox" checked><span>Ritaglio anti-tremolio automatico</span></div>
+        <div class="check-row"><input id="chkContatti" type="checkbox" checked><span>Mostra numero telefono nell'outro</span></div>
+
+        <div class="row-actions">
+          <button id="btnAvviaMontaggio" type="button" class="btn btn-gold">🎬 AVVIA MONTAGGIO VIDEO FINALE</button>
+        </div>
+        <div id="progressBox" class="progress-wrap">
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+          <div id="progressLabel" class="progress-label">Preparazione...</div>
+        </div>
+      </div>
+
+      <!-- MODULI STUDIO VIDEO, BOT STORIE 15M & EDITOR DARIA -->
+      <div class="card">
+        <h2>🤖 Bot Storie 15 Minuti, Video Editor &amp; Report (DarIA)</h2>
+        <div id="sectorDocsStudio" class="sector-docs-grid"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         CATEGORIA 5: REGIA LIVE TV 24H, STORIE PRESTIGIO & CONDIVISIONE
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="step-panel" data-step="5" id="tab-condividi">
+      <!-- A. ESPORTAZIONE & CONDIVISIONE VIDEO -->
+      <div class="card">
+        <h2>📤 5A. Esportazione, Copertina HD &amp; Condivisione</h2>
+        <button id="btnCondividiNativo" type="button" class="btn btn-gold">📤 CONDIVIDI SU WHATSAPP, IG, FB, TIKTOK</button>
+        <div class="row-actions">
+          <button id="btnGenQuickCover" type="button" class="btn btn-cyan" style="flex:1;">🖼️ Genera Copertina HD</button>
+          <button id="btnCopySocialStep3" type="button" class="btn btn-outline" style="flex:1;">📋 Copia Testo Social</button>
+          <button id="btnShareToBuyerMatch" type="button" class="btn btn-emerald" style="flex:1;">🤝 Invia ad Acquirenti Compatibili</button>
+        </div>
+        <div id="risultatiContainer" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- B. CONTROLLO RAPIDO REGIA LIVE TV 24H -->
+      <div class="card">
+        <h2>📺 5B. Controllo Rapido Regia Live TV DarIA 24H</h2>
+        <div class="info-banner">
+          Comanda dal telefono la diretta TV YouTube 24H e Facebook serale delle 19:00 con zero schermo nero.
+        </div>
+        <div class="row-actions">
+          <button id="btnLiveAvatarOn" type="button" class="btn btn-emerald" style="flex:1;">✅ METTI AVATAR IN ONDA</button>
+          <button id="btnLiveAvatarOff" type="button" class="btn btn-danger" style="flex:1;">❌ SOLO IMMOBILE</button>
+        </div>
+
+        <label>🎭 Conduttori in Diretta</label>
+        <select id="selLiveCoppia">
+          <option value="daria_dario">👩👨 DarIA + DarIO (Coppia TV)</option>
+          <option value="daria_antonio">👩👔 DarIA + Antonio Giancani</option>
+          <option value="solo_daria">👩 Solo DarIA</option>
+          <option value="solo_antonio">👔 Solo Antonio Giancani</option>
+        </select>
+
+        <label>🔍 Zoom Diretta Live TV (<span id="lblLiveZoomVal">125%</span>)</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input id="rngLiveZoom" type="range" min="50" max="250" step="5" value="125" style="flex:1; accent-color:var(--gold);">
+          <button id="btnLiveApplyZoom" type="button" class="btn btn-cyan btn-sm">Applica Zoom</button>
+        </div>
+
+        <label>🏠 Cambia Immobile in Diretta Live Ora</label>
+        <div style="display:flex; gap:8px;">
+          <select id="selLiveImmobile" style="flex:1;">
+            <option value="">-- Seleziona Immobile Sheet --</option>
+          </select>
+          <button id="btnLiveSetImmobile" type="button" class="btn btn-gold btn-sm" style="width:auto;">🔴 Vai in Onda</button>
+        </div>
+
+        <label>💬 Simula Domanda / Richiedi Stanza in Diretta</label>
+        <div style="display:flex; gap:8px;">
+          <input id="inpLiveChatSim" type="text" placeholder="Es. Quanto costa o fammi vedere il terrazzo?" style="flex:1;">
+          <button id="btnLiveSendChat" type="button" class="btn btn-outline btn-sm">🚀 Invia Live</button>
+        </div>
+      </div>
+
+      <!-- C. FRASI PRESTIGIO COLONNA F PER STORIE 9:16 -->
+      <div class="card">
+        <h2>✨ 5C. Frasi Prestigio Storie 9:16 (Colonna F)</h2>
+        <select id="selFrasePrestigio"></select>
+        <textarea id="txtFrasePrestigioPreview" style="min-height:76px; margin-top:8px;"></textarea>
+        <div class="row-actions">
+          <button id="btnPrestigioTts" type="button" class="btn btn-outline btn-sm" style="flex:1;">🔊 Ascolta</button>
+          <button id="btnPrestigioUseInVideo" type="button" class="btn btn-gold" style="flex:2;">🎬 Applica ai Sottotitoli / Storia</button>
+        </div>
+      </div>
+
+      <!-- D. TUTTI I MODULI REGIA LIVE TV 24H, PALINSESTO & AVATAR DARIA -->
+      <div class="card">
+        <h2>🎛️ 5D. Moduli Completi Regia DarIA per Diretta (giancaniimmobiliare2)</h2>
+        <div id="sectorDocsDiretta" class="sector-docs-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BARRA INFERIORE COMPATTA CON HOME + AREE PRINCIPALI -->
+  <nav class="bottom-nav">
+    <button type="button" class="nav-btn active" data-step="0"><span>🏠</span>Home</button>
+    <button type="button" class="nav-btn" data-step="1"><span>🏷️</span>Venditori</button>
+    <button type="button" class="nav-btn" data-step="2"><span>🤝</span>Acquirenti</button>
+    <button type="button" class="nav-btn" data-step="3"><span>🖼️</span>Galleria</button>
+    <button type="button" class="nav-btn" data-step="4"><span>🎬</span>Video</button>
+    <button type="button" class="nav-btn" data-step="5"><span>📺</span>Live</button>
+  </nav>
+
+  <!-- MODALE IMPOSTAZIONI -->
+  <div id="modalSettings" class="modal">
+    <div class="modal-body">
+      <h3>⚙️ Impostazioni Immobiliare Giancani</h3>
+      <label>Gemini API Key (per Vision AI Foto, Canzoni &amp; Copy)</label>
+      <input id="inpGeminiKey" type="password" placeholder="AIza...">
+      <label>Telefono Agenzia (Outro &amp; WhatsApp)</label>
+      <input id="inpTelefono" type="text" placeholder="320 166 7156">
+      <div class="row-actions">
+        <button id="btnCloseSettings" type="button" class="btn btn-outline" style="flex:1;">Chiudi</button>
+        <button id="btnSaveSettings" type="button" class="btn btn-gold" style="flex:1;">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE STUDIO CANZONE 3+ MINUTI (GOOGLE AI / SUNO) -->
+  <div id="modalSuno" class="modal">
+    <div class="modal-body" style="max-width:600px;">
+      <h3>🎵 Compositore Canzone 3+ Minuti (Google AI &amp; Suno)</h3>
+      <div class="grid-2">
+        <div>
+          <label>⏱️ Durata Canzone</label>
+          <select id="sunoDurataSel">
+            <option value="3" selected>3 Minuti (180s Completo)</option>
+            <option value="3.5">3.5 Minuti (210s Extended)</option>
+            <option value="4">4 Minuti (240s Live Show)</option>
+          </select>
+        </div>
+        <div>
+          <label>🎼 Stile Musicale</label>
+          <select id="sunoStileSel">
+            <option value="Pop Emozionale & Chitarra Acustica">🎸 Pop Emozionale</option>
+            <option value="Mediterraneo Solare con Archi">☀️ Mediterraneo Solare</option>
+            <option value="Deep Lounge & Ambient Luxury">🍸 Deep Lounge Luxury</option>
+            <option value="Cinematic & Orchestrale Trionfale">🎻 Cinematic Orchestrale</option>
+          </select>
+        </div>
+      </div>
+      <label>🌈 Tema Positivo Subliminale</label>
+      <select id="sunoTemaSel">
+        <option value="La famiglia è l'obiettivo della felicità">👨‍👩‍👧‍👦 La famiglia è l'obiettivo della felicità</option>
+        <option value="Vivere qui ti darà la felicità e la serenità">✨ Vivere qui ti darà felicità e serenità</option>
+        <option value="Un rifugio sicuro di pace, armonia e futuro">🛡️ Rifugio sicuro di pace e futuro</option>
+        <option value="Luce, spazio, libertà e benessere quotidiano">☀️ Luce, spazio e libertà</option>
+      </select>
+      <div class="row-actions">
+        <button id="btnSunoGenera3Min" type="button" class="btn btn-gold" style="width:100%;">🚀 COMPONI CANZONE COMPLETA 3+ MINUTI</button>
+      </div>
+      <label>📜 Testo Composto ([INTRO], [STROFE], [RITORNELLI], [BRIDGE])</label>
+      <textarea id="txtSunoLyrics3Min" style="min-height:140px;" placeholder="Clicca Componi Canzone per generare il brano intero con 'Immobiliare Giancani vende', 'metri quadri' e chiusura '— Immobiliare Giancani'..."></textarea>
+      <div class="row-actions">
+        <button id="btnSunoTtsListen" type="button" class="btn btn-outline btn-sm" style="flex:1;">🔊 Ascolta</button>
+        <button id="btnSunoUseInTimeline" type="button" class="btn btn-emerald btn-sm" style="flex:1;">📥 Usa nei Sottotitoli</button>
+        <button id="btnSunoSendTelegram" type="button" class="btn btn-cyan btn-sm" style="flex:1;">📱 Invia Telegram</button>
+      </div>
+      <label>Prompt per Suno.com (Musica)</label>
+      <textarea id="txtPromptSuno" readonly style="min-height:56px;"></textarea>
+      <div class="row-actions">
+        <button id="btnCopySuno" type="button" class="btn btn-outline btn-sm" style="flex:1;">📋 Copia Prompt Suno</button>
+        <button id="btnCloseSuno" type="button" class="btn btn-outline btn-sm" style="flex:1;">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE ARCHIVIO COLONNA F -->
+  <div id="modalArchivio" class="modal">
+    <div class="modal-body">
+      <h3>📂 Archivio Immobili (Colonna F)</h3>
+      <input id="inpSearchArchivio" type="text" placeholder="Cerca per zona, tipologia o parola...">
+      <div id="archivioList" style="margin-top:10px;"></div>
+      <div class="row-actions">
+        <button id="btnCloseArchivio" type="button" class="btn btn-outline" style="width:100%;">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE CLIP CENTRALE: ANTEPRIMA CON MUSICA, 3 PULSANTI & LIVELLI -4 .. +7 -->
+  <div id="modalCentralClip" class="modal">
+    <div class="modal-body" style="max-width:600px;">
+      <h3>⭐ Regia Clip Centrale (Giro Immobile)</h3>
+      <video id="centralPreviewVid" playsinline muted controls style="width:100%; max-height:240px; border-radius:12px; background:#000;"></video>
+      <audio id="centralPreviewAudio" style="display:none;"></audio>
+      <div class="row-actions" style="margin-top:8px;">
+        <button id="btnCentralPlaySync" type="button" class="btn btn-cyan" style="flex:1;">▶️ Video + Musica</button>
+        <button id="btnCentralAutoMatch" type="button" class="btn btn-emerald" style="flex:1;">🎯 Adatta alla Canzone</button>
+      </div>
+      <label style="margin-top:10px;">Velocità Giro Immobile (-4 .. +7):</label>
+      <div class="speed-3-btns">
+        <button id="btnSpdSlow" type="button" class="btn btn-outline btn-sm">🐢 Più Lenta</button>
+        <button id="btnSpdNorm" type="button" class="btn btn-gold btn-sm">✅ Normale (0)</button>
+        <button id="btnSpdFast" type="button" class="btn btn-outline btn-sm">⚡ Più Veloce</button>
+      </div>
+      <div id="centralLevelsRow" class="speed-levels-grid"></div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div><label>✂️ Taglia Inizio (sec)</label><input id="inpCentralTrimStart" type="number" min="0" step="0.5" value="0"></div>
+        <div><label>✂️ Taglia Fine (sec)</label><input id="inpCentralTrimEnd" type="number" min="0" step="0.5" value="0"></div>
+      </div>
+      <div class="check-row"><input id="chkCentralCorridor" type="checkbox"><span>🚀 Accelera Corridoi / Scale (+5 / 2.0x)</span></div>
+      <div id="centralCorridorBox" class="grid-2" style="display:none;">
+        <div><label>Da secondo</label><input id="inpCorrStart" type="number" min="0" step="1" value="10"></div>
+        <div><label>A secondo</label><input id="inpCorrEnd" type="number" min="1" step="1" value="18"></div>
+      </div>
+      <div class="check-row"><input id="chkCentralEntriamo" type="checkbox" checked><span>🔑 Effetto "Entriamo nell'Immobile"</span></div>
+      <div class="check-row"><input id="chkCentralKeepVoice" type="checkbox"><span>🎙️ Mantieni la mia Voce (musica al 20%)</span></div>
+      <div id="centralCalcSummary" class="info-banner gold-banner" style="margin-top:8px;"></div>
+      <div class="row-actions" style="margin-top:10px;">
+        <button id="btnSaveCentralModal" type="button" class="btn btn-gold" style="width:100%;">✅ Conferma &amp; Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE FINESTRA INTELLIGENTE STANZE (6 CATEGORIE — GENERATOR.HTML) -->
+  <div id="modalSmartStanzeCatalog" class="modal">
+    <div class="modal-body" style="max-width:620px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0;">🏠 Finestra Intelligente Stanze (6 Categorie)</h3>
+        <button id="btnCloseSmartStanze" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <input id="inpSmartStanzeSearch" type="text" placeholder="🔍 Cerca stanza (es. Bagno, Cucina, Mansarda, Piscina)...">
+      <div id="smartStanzeCatalogBody" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- MODALE EDITOR FOTO CALIBRATO + OSCURATORE PRIVACY + NADIR 360° -->
+  <div id="modalPhotoEditor" class="modal">
+    <div class="modal-body" style="max-width:620px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0;">🎨 Editor Foto, Privacy &amp; 360° Nadir</h3>
+        <button id="btnClosePhotoEditor" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <canvas id="editorFotoCanvas" width="800" height="500"></canvas>
+      <div class="chips" id="editorPresetsRow"></div>
+      <div class="row-actions" style="margin-top:6px;">
+        <button id="btnEdAutoEnhance" type="button" class="btn btn-gold btn-sm">✨ MIGLIORAMENTO GRAFICO AUTOMATICO (Luce +4%, Contrasto +3%, Saturazione +2%)</button>
+      </div>
+      <div class="grid-2" style="margin-top:6px;">
+        <div><label>☀️ Luminosità (<span id="valEdBright">100%</span>)</label><input id="rngEdBright" type="range" min="80" max="130" value="100" style="width:100%; accent-color:var(--gold);"></div>
+        <div><label>🌓 Contrasto (<span id="valEdContrast">100%</span>)</label><input id="rngEdContrast" type="range" min="80" max="130" value="100" style="width:100%; accent-color:var(--gold);"></div>
+        <div><label>🎨 Saturazione (<span id="valEdSat">100%</span>)</label><input id="rngEdSat" type="range" min="80" max="130" value="100" style="width:100%; accent-color:var(--gold);"></div>
+        <div><label>🛡️ Posizione Watermark / Nadir</label><select id="selEdWatermarkPos"></select></div>
+      </div>
+      <div class="check-row" style="margin-top:8px;">
+        <input id="chkEdPrivacyMask" type="checkbox">
+        <span>⬛ Oscuratore Privacy Circolare (Targhe, Volti, Quadri)</span>
+      </div>
+      <div id="edPrivacyControls" class="grid-2" style="display:none;">
+        <div><label>↔️ Posizione X (<span id="valEdMaskX">50%</span>)</label><input id="rngEdMaskX" type="range" min="0" max="100" value="50" style="width:100%; accent-color:var(--cyan);"></div>
+        <div><label>↕️ Posizione Y (<span id="valEdMaskY">50%</span>)</label><input id="rngEdMaskY" type="range" min="0" max="100" value="50" style="width:100%; accent-color:var(--cyan);"></div>
+        <div><label>📐 Raggio (<span id="valEdMaskSize">80px</span>)</label><input id="rngEdMaskSize" type="range" min="15" max="260" value="80" style="width:100%; accent-color:var(--cyan);"></div>
+        <div><label>👁️ Opacità (<span id="valEdMaskOp">95%</span>)</label><input id="rngEdMaskOp" type="range" min="20" max="100" value="95" style="width:100%; accent-color:var(--cyan);"></div>
+      </div>
+      <div class="row-actions" style="margin-top:12px;">
+        <button id="btnEdReset" type="button" class="btn btn-outline btn-sm" style="flex:1;">↺ Reset</button>
+        <button id="btnEdDownload" type="button" class="btn btn-cyan btn-sm" style="flex:1;">⬇️ Scarica JPEG</button>
+        <button id="btnEdApply" type="button" class="btn btn-gold" style="flex:2;">✅ Salva &amp; Applica in Coda</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE BASI MUSICALI GOOGLE DRIVE -->
+  <div id="modalBasiDrive" class="modal">
+    <div class="modal-body" style="max-width:560px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">🎵 Basi Musicali Professionali Drive</h3>
+        <button id="btnCloseBasiDrive" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <p class="muted" style="margin-top:6px;">
+        Cartella ufficiale Google Drive <code>02_MUSICA_IA_STORIE</code> &amp; <code>Basi_Musicali_Professionali</code>.
+      </p>
+      <div id="basiDriveList" style="margin-top:8px;"></div>
+      <div class="row-actions">
+        <a href="https://drive.google.com/drive/folders/1ftayZvmtRjwIxZd_ctBSy0wuTH_3lijM" target="_blank" class="btn btn-cyan btn-sm" style="flex:1;">📂 Apri Cartella Drive ↗</a>
+        <button id="btnBasiDriveRefresh" type="button" class="btn btn-outline btn-sm" style="flex:1;">🔄 Ricarica Elenco</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE SCHEDA IMMOBILE & REGIA DARIA (IDENTICO A GENERATOR.HTML) -->
+  <div id="modalSchedaImmobileStudio" class="modal">
+    <div class="modal-body" style="max-width:600px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <h3 style="margin:0;">📋 Scheda Immobile &amp; Regia DarIA</h3>
+          <span class="muted">DarIA integrerà questi parametri nei commenti automatici Colonna F per ogni stanza!</span>
+        </div>
+        <button id="btnCloseSchedaStudio" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>🏠 Tipo di Immobile (18 categorie)</label>
+          <select id="modSchedaTipo"></select>
+        </div>
+        <div>
+          <label>📐 Metri Quadri (sempre "metri quadri")</label>
+          <input id="modSchedaMq" type="text" placeholder="Es. 120">
+        </div>
+        <div>
+          <label>💰 Prezzo (€)</label>
+          <input id="modSchedaPrezzo" type="text" placeholder="Es. 145.000 €">
+        </div>
+        <div>
+          <label>📍 Zona / Città / Posizione</label>
+          <input id="modSchedaZona" type="text" placeholder="Es. Favara centro, Agrigento Via Atenea...">
+        </div>
+        <div>
+          <label>✨ Stato / Finiture Principali</label>
+          <select id="modSchedaStato"></select>
+        </div>
+        <div>
+          <label>🔍 Dettagli Finiture (Opzionale)</label>
+          <input id="modSchedaStatoDettaglio" type="text" placeholder="Es. parquet rovere, infissi taglio termico...">
+        </div>
+      </div>
+      <label>🎙️ Spazio Libero — Istruzioni di Regia per DarIA</label>
+      <textarea id="modSchedaNoteDaria" style="min-height:76px;" placeholder="Indica qui dettagli da far commentare a DarIA nelle foto (es. luminosità favolosa, vista mozzafiato, ideale per famiglie)..."></textarea>
+      <div class="row-actions" style="margin-top:12px;">
+        <button id="btnCancelSchedaStudio" type="button" class="btn btn-outline" style="flex:1;">✖️ Annulla</button>
+        <button id="btnConfirmSchedaStudio" type="button" class="btn btn-gold" style="flex:2;">🚀 CONFERMA &amp; SALVA SCHEDA DARIA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE GENERATORE VIDEO REEL 9:16 DA GALLERIA (GENERATOR.HTML) -->
+  <div id="modalGeneraReelStudio" class="modal">
+    <div class="modal-body" style="max-width:580px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0;">🎬 Generatore Video Reel 9:16 (Studio Galleria)</h3>
+        <button id="btnCloseReelStudio" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <p class="muted" style="margin:0 0 10px;">
+        Genera un video Reel 9:16 per questo immobile con box semitrasparente al 60%, testo estratto rigorosamente dalla <strong>Colonna F</strong>, musica sincronizzata e invio automatico via email (oppure aprilo subito nello Studio Video).
+      </p>
+      <label>🏠 Immobile Selezionato</label>
+      <input id="modReelImmobileNome" type="text" readonly>
+      <label>📋 Testo Parlato (Colonna F) per l'elaborazione Reel</label>
+      <textarea id="modReelTestoF" style="min-height:92px;"></textarea>
+      <label>🎵 Traccia Musicale (dalla Cartella Basi Professionali Drive)</label>
+      <select id="modReelMusicaSelect">
+        <option value="">Traccia Predefinita (Sicilian Sunset)</option>
+      </select>
+      <label>📧 Email di Consegna Allegato Video</label>
+      <input id="modReelEmailDest" type="text" value="giancaniimmobiliare@gmail.com">
+      <div class="row-actions" style="margin-top:12px;">
+        <button id="btnAvviaReelCloudEmail" type="button" class="btn btn-emerald" style="flex:2;">🚀 GENERA REEL &amp; INVIA EMAIL</button>
+        <button id="btnOpenReelInStudioLoc" type="button" class="btn btn-gold" style="flex:1;">🎬 Apri in Studio Video</button>
+      </div>
+      <div id="modReelStatusMsg" class="info-banner" style="display:none; margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- MODALE VISTA SFERICA 360° INTERATTIVA (PANORAMA 360° — GENERATOR.HTML) -->
+  <div id="modalPanorama360" class="modal">
+    <div class="modal-body" style="max-width:660px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0;">🌐 Vista Sferica 360° Interattiva — <span id="lblPano360Title">Ambiente</span></h3>
+        <button id="btnClosePanorama360" type="button" class="btn btn-outline btn-sm">✕</button>
+      </div>
+      <p class="muted" style="margin:0 0 8px;">Trascina con il dito o con il mouse a sinistra/destra/alto/basso per esplorare l'ambiente a 360°.</p>
+      <div class="pano360-viewport">
+        <canvas id="pano360Canvas" width="600" height="360"></canvas>
+      </div>
+      <div class="row-actions" style="margin-top:10px;">
+        <button id="btnPano360AutoSpin" type="button" class="btn btn-cyan btn-sm" style="flex:1;">🔄 Rotazione Automatica 360°</button>
+        <button id="btnPano360Reset" type="button" class="btn btn-outline btn-sm" style="flex:1;">🎯 Centra Vista</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE TUTORIAL & GUIDA COMPLETA IN-APP -->
+  <div id="modalTutorialApp" class="doc-viewer-modal hidden">
+    <div class="doc-viewer-sheet">
+      <div class="doc-viewer-header">
+        <strong style="font-size:14px; color:#92400e;">📖 Tutorial &amp; Guida Completa — Immobiliare Giancani App</strong>
+        <button id="btnCloseTutorial" type="button" class="btn btn-gold btn-sm">✕ Chiudi</button>
+      </div>
+      <div style="flex:1; overflow-y:auto; padding:14px; background:#ffffff;">
+        <div class="tutorial-tabs">
+          <button type="button" class="tut-tab active" data-tut-tab="panoramica">🗺️ Struttura App</button>
+          <button type="button" class="tut-tab" data-tut-tab="venditori">🏷️ Venditori &amp; Fogli Visita</button>
+          <button type="button" class="tut-tab" data-tut-tab="acquirenti">🤝 Acquirenti &amp; Mutuo</button>
+          <button type="button" class="tut-tab" data-tut-tab="studio">🖼️ Galleria &amp; Video</button>
+          <button type="button" class="tut-tab" data-tut-tab="diretta">📺 Regia Live 24H</button>
+          <button type="button" class="tut-tab" data-tut-tab="regole">📜 Regole &amp; Colonna F</button>
+        </div>
+
+        <div class="tut-panel active" data-tut-panel="panoramica">
+          <div class="tut-step-card">
+            <h4>🧭 Come è composta l'App (6 Aree + Menu ☰)</h4>
+            <p>L'app unifica in un unico strumento offline/cloud i tre ecosistemi dell'agenzia:</p>
+            <ul>
+              <li><strong>🏠 Home &amp; Agenda del Giorno</strong>: panoramica visuale a card chiare + Agenda rapida e tutti i 7 moduli di <em>Agenda del Giorno (giancaniimmobiliare@gmail.com)</em>.</li>
+              <li><strong>🏷️ Area Venditori &amp; Cacciatori</strong>: coda rapida WhatsApp/Email, memoria automatica 15 giorni, sezione <em>📭 Senza Recapiti</em>, <strong>Fogli Visita Digitali con firma touch</strong> e 14 moduli incarichi/documenti.</li>
+              <li><strong>🤝 Area Acquirenti &amp; Smart Match</strong>: incrocio automatico con immobili, <strong>Simulatore Mutuo 80%</strong>, Area Riservata, VIP e Mappe.</li>
+              <li><strong>🖼️ Area Galleria &amp; Foto (Generator DarIA)</strong>: caricamento foto e viste 360°, AI Vision, Drive 1-Tap e testi dalla <strong>Colonna F</strong>.</li>
+              <li><strong>🎬 Studio Video &amp; Timeline Touch</strong>: montaggio 1–5 minuti, Linea del Suono, Rewind, effetti animati, Bot Storie 15 min e Video Editor DarIA.</li>
+              <li><strong>📺 Regia Live TV 24H</strong>: controllo YouTube 24H &amp; Facebook ore 19:00 + tutti i 14 moduli di <em>DarIA per Diretta (giancaniimmobiliare2@gmail.com)</em>.</li>
+            </ul>
+            <div class="tut-jump-row">
+              <button type="button" class="btn btn-gold btn-sm" data-tut-jump="0">🏠 Vai a Home &amp; Agenda</button>
+              <button type="button" class="btn btn-outline btn-sm" data-tut-jump="1">🏷️ Vai a Venditori</button>
+              <button type="button" class="btn btn-outline btn-sm" data-tut-jump="2">🤝 Vai ad Acquirenti</button>
+            </div>
+          </div>
+          <div class="tut-step-card">
+            <h4>☰ Navigazione Veloce</h4>
+            <p>Usa la <strong>barra in basso</strong> per cambiare area in 1 tocco, la <strong>striscia KPI in alto</strong> per vedere i contatori in tempo reale, oppure il <strong>Menu Hamburger (☰)</strong> in alto a sinistra per aprire subito qualsiasi strumento o il compositore musicale.</p>
+          </div>
+        </div>
+
+        <div class="tut-panel" data-tut-panel="venditori">
+          <div class="tut-step-card">
+            <h4>1️⃣ Coda Rapida &amp; Memoria 15 Giorni</h4>
+            <ul>
+              <li>Ogni card mostra in alto a destra il <strong>sito di provenienza</strong> e la <strong>data di inserzione</strong>.</li>
+              <li>Quando contatti un privato su WhatsApp o Email, il numero diventa <strong>verde scuro spento</strong> per evitare doppi contatti e l'annuncio sparisce dalla lista per <strong>15 giorni</strong>.</li>
+              <li>Alla scadenza dei 15 giorni, l'annuncio <strong>riaffiora automaticamente</strong> con un avviso evidenziato pronto per il richiamo.</li>
+              <li>Gli annunci senza numero né email vanno automaticamente nella scheda <strong>📭 Senza Recapiti</strong>.</li>
+            </ul>
+          </div>
+          <div class="tut-step-card">
+            <h4>2️⃣ Come compilare un Foglio Visita sul posto</h4>
+            <ul>
+              <li>Apri <strong>Venditori → 📝 Fogli Visita &amp; Incarichi</strong>.</li>
+              <li>Inserisci Nome, Telefono, Codice Fiscale, Immobile (es. <em>"Appartamento 115 metri quadri - Favara"</em>), Data e Ora.</li>
+              <li>Fai firmare il cliente direttamente col dito nel riquadro giallo <strong>✍️ Firma Digitale</strong> e premi <strong>💾 Salva Foglio Visita</strong>.</li>
+              <li>Con un tocco su <strong>💬 Invia Riepilogo WhatsApp</strong> invii la conferma al cliente con chiusura <strong>— Immobiliare Giancani</strong>.</li>
+              <li>Sotto trovi tutti i 14 documenti completi (Incarichi, Bozze, Firma Remota, Portale Tecnico, Report Venditore) apribili anche offline.</li>
+            </ul>
+            <div class="tut-jump-row">
+              <button type="button" class="btn btn-gold btn-sm" data-tut-jump="1">🏷️ Apri Area Venditori &amp; Fogli Visita</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tut-panel" data-tut-panel="acquirenti">
+          <div class="tut-step-card">
+            <h4>🤝 Smart Match Acquirenti &amp; Simulatore Mutuo</h4>
+            <ul>
+              <li>Premi <strong>+ Nuovo Acquirente</strong> per salvare budget, comune, tipologia e superficie minima in <strong>metri quadri</strong>.</li>
+              <li>L'app confronta automaticamente la richiesta con i tuoi immobili Sheet e con i privati di Cacciatori, proponendo gli incroci migliori.</li>
+              <li>Usa il <strong>🏦 Simulatore Mutuo 80%</strong> per calcolare in tempo reale rata mensile, capitale finanziato e rimborso totale davanti al cliente.</li>
+              <li>Apri i moduli dedicati: <em>Area Riservata Acquirenti</em>, <em>VIP Acquirenti</em>, <em>Mappa Immobili</em>, <em>Vetrina Reels</em>.</li>
+            </ul>
+            <div class="tut-jump-row">
+              <button type="button" class="btn btn-emerald btn-sm" data-tut-jump="2">🤝 Apri Area Acquirenti &amp; Mutuo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tut-panel" data-tut-panel="studio">
+          <div class="tut-step-card">
+            <h4>🖼️ Galleria &amp; Foto (Generator DarIA)</h4>
+            <ul>
+              <li>Carica foto normali o 360°, seleziona la stanza (Soggiorno, Cucina, Terrazzo...), aggiungi i dettagli e genera la descrizione dalla <strong>Colonna F</strong>.</li>
+              <li>Usa la <strong>Sincronizzazione 1-Tap Google Drive</strong> per importare intere cartelle fotografiche sullo Sheet o direttamente nello Studio Video.</li>
+              <li>Nella <strong>Galleria AI</strong> puoi attivare lo switch <em>In Onda Diretta</em>, aprire la vista sferica 360° o generare un Reel 9:16 con musica e invio email.</li>
+            </ul>
+          </div>
+          <div class="tut-step-card">
+            <h4>🎬 Studio Video 1–5 Minuti &amp; Timeline Touch</h4>
+            <ul>
+              <li>L'<strong>anteprima video</strong> è sempre visibile sopra la Timeline Touch per controllare in tempo reale transizioni ed effetti.</li>
+              <li>Regola la durata da 1 a 5 minuti, la <strong>Linea del Suono</strong>, la clip centrale e gli effetti animati.</li>
+              <li>In fondo all'area trovi i moduli <strong>🤖 Bot Storie 15 Minuti</strong>, <strong>Video Editor DarIA</strong> e <strong>Owner Report</strong>.</li>
+            </ul>
+            <div class="tut-jump-row">
+              <button type="button" class="btn btn-cyan btn-sm" data-tut-jump="3">🖼️ Apri Galleria</button>
+              <button type="button" class="btn btn-gold btn-sm" data-tut-jump="4">🎬 Apri Studio Video</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tut-panel" data-tut-panel="diretta">
+          <div class="tut-step-card">
+            <h4>📺 Regia Live TV 24H (YouTube &amp; Facebook 19:00)</h4>
+            <ul>
+              <li>Attiva o disattiva l'avatar in onda, scegli i conduttori (<em>DarIA + DarIO</em>, <em>DarIA + Antonio</em>, ecc.) e regola lo Zoom Live.</li>
+              <li>Cambia l'immobile attualmente mostrato in diretta scegliendolo dal menu a tendina o invia domande simulate in chat a DarIA.</li>
+              <li>Usa le <strong>Frasi Prestigio Colonna F</strong> per generare sottotitoli o ascoltare l'anteprima vocale TTS.</li>
+              <li>In sezione <strong>5D</strong> trovi tutti i 14 moduli di <em>DarIA per Diretta</em>: Regia 16:9, Diretta Verticale 9:16, Palinsesto 24H, Azure TTS, Report Telegram 4H e Backup Manager.</li>
+            </ul>
+            <div class="tut-jump-row">
+              <button type="button" class="btn btn-outline btn-sm" style="border-color:#ef4444; color:#b91c1c;" data-tut-jump="5">📺 Apri Regia Live 24H</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tut-panel" data-tut-panel="regole">
+          <div class="tut-step-card">
+            <h4>📜 Standard Obbligatori Immobiliare Giancani</h4>
+            <ul>
+              <li><strong>Colonna F</strong>: tutti i testi descrittivi e i copioni video/diretta sono estratti dalla Colonna F.</li>
+              <li><strong>Metri Quadri per esteso</strong>: ogni superficie viene normalizzata in <em>"metri quadri"</em> (mai mq, m², MQ).</li>
+              <li><strong>Personal Branding</strong>: ogni messaggio WhatsApp, copia social, riepilogo o copione termina sempre con <strong>— Immobiliare Giancani</strong>.</li>
+              <li><strong>Report Telegram</strong>: invio cumulativo pulito ogni 4 ore senza spam ai singoli cicli da 15 minuti.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE VISUALIZZATORE DOCUMENTI HTML DI SETTORE (OFFLINE IN APP) -->
+  <div id="modalDocViewer" class="doc-viewer-modal hidden">
+    <div class="doc-viewer-sheet">
+      <div class="doc-viewer-header">
+        <strong id="docViewerTitle" style="font-size:13.5px; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Documento</strong>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <a id="docViewerExtLink" href="#" target="_blank" class="btn btn-outline btn-sm">↗</a>
+          <button id="btnCloseDocViewer" type="button" class="btn btn-gold btn-sm">✕ Chiudi</button>
+        </div>
+      </div>
+      <iframe id="docViewerIframe" class="doc-viewer-iframe" title="Documento Settore"></iframe>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="./js/app.js?v=14"></script>
+</body>
+</html>

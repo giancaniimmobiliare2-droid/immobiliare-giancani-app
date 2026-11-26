@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💾 Backup Progetto DarIA — Immobiliare Giancani</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 40px 20px 30px;
+    }
+    .header .logo {
+      font-size: 64px;
+      margin-bottom: 12px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a78bfa, #818cf8, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .header .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    .header .branding {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #f59e0b;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .card h2 {
+      font-size: 16px;
+      color: #a78bfa;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-box .val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #a78bfa;
+      line-height: 1;
+    }
+    .stat-box .lbl {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* MAIN BUTTON */
+    .btn-backup {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5, #0ea5e9);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-backup::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+    .btn-backup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(124,58,237,0.6);
+    }
+    .btn-backup:active {
+      transform: translateY(0);
+    }
+    .btn-backup:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* PROGRESS */
+    .progress-area {
+      display: none;
+      margin-top: 20px;
+    }
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.5s ease;
+      animation: progress-glow 1.5s infinite;
+    }
+    @keyframes progress-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(124,58,237,0.8); }
+      50% { box-shadow: 0 0 16px rgba(14,165,233,0.8); }
+    }
+    .progress-text {
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .step-list {
+      list-style: none;
+      margin: 16px 0;
+    }
+    .step-list li {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    .step-list li.active {
+      color: #a78bfa;
+      background: rgba(167,139,250,0.1);
+    }
+    .step-list li.done {
+      color: #34d399;
+    }
+    .step-list li.done .step-icon { color: #34d399; }
+    .step-icon { font-size: 16px; min-width: 20px; }
+
+    /* RESULT */
+    .result-area {
+      display: none;
+      margin-top: 20px;
+    }
+    .result-success {
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.3);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    .result-success .big-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+    .result-success h3 {
+      font-size: 20px;
+      color: #34d399;
+      margin-bottom: 8px;
+    }
+    .result-success p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 4px 20px rgba(5,150,105,0.4);
+      animation: bounce 1s ease 0.5s 3;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(5,150,105,0.6);
+    }
+
+    .result-error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 14px;
+      padding: 20px;
+      color: #fca5a5;
+      font-size: 14px;
+    }
+
+    /* FILE LIST */
+    .file-list {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-top: 16px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.2);
+    }
+    .file-list::-webkit-scrollbar { width: 4px; }
+    .file-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    .file-list::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.4); border-radius: 2px; }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+    .file-item:hover { background: rgba(255,255,255,0.04); }
+    .file-item:last-child { border-bottom: none; }
+    .file-name { font-size: 13px; color: #e2e8f0; }
+    .file-name .ext-js { color: #fbbf24; }
+    .file-name .ext-html { color: #60a5fa; }
+    .file-meta { font-size: 11px; color: #64748b; }
+
+    /* STORICO BACKUP */
+    .backup-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+    .backup-item:hover { background: rgba(255,255,255,0.06); }
+    .backup-info .backup-name { font-size: 13px; color: #e2e8f0; }
+    .backup-info .backup-date { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .btn-dl-small {
+      padding: 6px 14px;
+      background: rgba(5,150,105,0.2);
+      border: 1px solid rgba(5,150,105,0.4);
+      border-radius: 8px;
+      color: #34d399;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-dl-small:hover { background: rgba(5,150,105,0.4); }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #475569;
+      font-size: 12px;
+    }
+    .footer strong {
+      color: #f59e0b;
+      letter-spacing: 0.5px;
+    }
+
+    /* SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">💾</div>
+    <h1>Backup Progetto DarIA</h1>
+    <div class="subtitle">Salva l'intero progetto sul tuo dispositivo</div>
+    <div class="branding">🏠 Immobiliare Giancani</div>
+  </div>
+
+  <!-- STATISTICHE PROGETTO -->
+  <div class="card" id="statsCard">
+    <h2>📊 Statistiche Progetto</h2>
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-box">
+        <div class="val" id="statFile">—</div>
+        <div class="lbl">File Totali</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="statRighe">—</div>
+        <div class="lbl">Righe Codice</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="statKB">—</div>
+        <div class="lbl">Dimensione (KB)</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="statModuli">—</div>
+        <div class="lbl">Moduli JS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULSANTE PRINCIPALE -->
+  <div class="card">
+    <h2>⬇️ Scarica Backup Completo</h2>
+    <p style="color:#94a3b8; font-size:13px; margin-bottom:16px;">
+      Clicca il pulsante per creare un file <strong>.zip</strong> contenente tutti i moduli JavaScript, 
+      le pagine HTML e la configurazione del progetto DarIA. 
+      Lo ZIP viene creato in memoria e <strong>scaricato direttamente sul tuo dispositivo</strong> — nessun passaggio intermedio su Drive.
+    </p>
+
+    <button class="btn-backup" id="btnBackup" onclick="avviaBackup()">
+      <span id="btnIcon">💾</span>
+      <span id="btnText">SCARICA BACKUP COMPLETO</span>
+    </button>
+
+    <!-- PROGRESS -->
+    <div class="progress-area" id="progressArea">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-text" id="progressText">Inizializzazione...</div>
+      <ul class="step-list" id="stepList">
+        <li id="step1"><span class="step-icon">⏳</span> Lettura file del progetto tramite Apps Script API</li>
+        <li id="step2"><span class="step-icon">⏳</span> Compressione ZIP di tutti i sorgenti</li>
+        <li id="step3"><span class="step-icon">⏳</span> Salvataggio su Google Drive</li>
+        <li id="step4"><span class="step-icon">⏳</span> Preparazione link di download</li>
+        <li id="step5"><span class="step-icon">⏳</span> Notifica Telegram ad Antonio Giancani</li>
+      </ul>
+    </div>
+
+    <!-- RISULTATO -->
+    <div class="result-area" id="resultArea"></div>
+  </div>
+
+  <!-- FILE LIST CARD -->
+  <div class="card" id="fileListCard" style="display:none;">
+    <h2>📂 File Inclusi nel Backup</h2>
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <!-- STORICO BACKUP -->
+  <div class="card" id="storicoCard">
+    <h2>🗂️ Backup Precedenti</h2>
+    <div id="storicoList">
+      <div style="color:#64748b; font-size:13px; text-align:center; padding:20px;">
+        <span class="spinner"></span>
+        <br><br>Caricamento storico backup...
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Sistema DarIA Live — Diretta Immobiliare AI 24/7<br>
+    <strong>🏠 IMMOBILIARE GIANCANI</strong> — Favara (AG), Sicilia<br>
+    Backup Manager v1.0 | giancaniimmobiliare2@gmail.com
+  </div>
+
+</div>
+
+<script>
+  var _downloadUrl = null;
+
+  // Carica statistiche e storico all'avvio
+  window.addEventListener('load', function() {
+    caricaStatisticheProgetto();
+    caricaStoricoBackup();
+  });
+
+  /**
+   * Carica le statistiche del progetto (elenco file e dimensioni)
+   */
+  function caricaStatisticheProgetto() {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.success) {
+          var totRighe = 0;
+          var totKB = 0;
+          var modJS = 0;
+          (res.files || []).forEach(function(f) {
+            totRighe += f.righe || 0;
+            totKB += (f.bytes || 0) / 1024;
+            if (f.estensione === '.js') modJS++;
+          });
+          document.getElementById('statFile').textContent = res.totaleFile || 0;
+          document.getElementById('statRighe').textContent = totRighe.toLocaleString('it-IT');
+          document.getElementById('statKB').textContent = totKB.toFixed(0);
+          document.getElementById('statModuli').textContent = modJS;
+        }
+      })
+      .withFailureHandler(function(err) {
+        console.log('Errore statistiche:', err);
+      })
+      .getContenutoFilesProgetto();
+  }
+
+  /**
+   * Carica lo storico dei backup esistenti su Drive
+   */
+  function caricaStoricoBackup() {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        var container = document.getElementById('storicoList');
+        if (!res || !res.success || !res.backups || res.backups.length === 0) {
+          container.innerHTML = '<div style="color:#64748b; font-size:13px; text-align:center; padding:20px;">Nessun backup precedente trovato</div>';
+          return;
+        }
+        var html = '';
+        res.backups.forEach(function(b) {
+          html += '<div class="backup-item">' +
+            '<div class="backup-info">' +
+              '<div class="backup-name">📦 ' + b.nome + '</div>' +
+              '<div class="backup-date">📅 ' + b.data + ' — 💿 ' + b.dimensioneKB + ' KB</div>' +
+            '</div>' +
+            '<a href="' + b.downloadUrl + '" target="_blank" class="btn-dl-small">⬇️ Scarica</a>' +
+          '</div>';
+        });
+        container.innerHTML = html;
+      })
+      .withFailureHandler(function(err) {
+        document.getElementById('storicoList').innerHTML = '<div style="color:#64748b; font-size:13px; padding:10px;">Impossibile caricare storico: ' + err + '</div>';
+      })
+      .getElencoBackupEsistenti();
+  }
+
+  /**
+   * Avvia il processo di backup
+   */
+  function avviaBackup() {
+    var btn = document.getElementById('btnBackup');
+    btn.disabled = true;
+    document.getElementById('btnIcon').innerHTML = '<span class="spinner"></span>';
+    document.getElementById('btnText').textContent = 'Creazione backup in corso...';
+
+    // Mostra area progress
+    document.getElementById('progressArea').style.display = 'block';
+    document.getElementById('resultArea').style.display = 'none';
+
+    setStep(1, 'active');
+    setProgress(10, 'Lettura file HTML del progetto...');
+
+    var progressSim = 10;
+    var stepSim = 1;
+    var simTimer = setInterval(function() {
+      if (progressSim < 85) {
+        progressSim += Math.random() * 8;
+        if (progressSim > 30 && stepSim < 2) { stepSim = 2; setStep(1, 'done'); setStep(2, 'active'); setProgress(progressSim, 'Lettura file JS...'); }
+        if (progressSim > 55 && stepSim < 3) { stepSim = 3; setStep(2, 'done'); setStep(3, 'active'); setProgress(progressSim, 'Compressione ZIP in memoria...'); }
+        if (progressSim > 70 && stepSim < 4) { stepSim = 4; setStep(3, 'done'); setStep(4, 'active'); setProgress(progressSim, 'Codifica Base64...'); }
+        if (progressSim > 80 && stepSim < 5) { stepSim = 5; setStep(4, 'done'); setStep(5, 'active'); setProgress(progressSim, 'Preparazione download...'); }
+        setProgress(Math.min(progressSim, 85), '');
+      }
+    }, 600);
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        clearInterval(simTimer);
+        setStep(5, 'done');
+        setProgress(100, 'Backup pronto!');
+
+        setTimeout(function() {
+          document.getElementById('progressArea').style.display = 'none';
+          var resultDiv = document.getElementById('resultArea');
+          resultDiv.style.display = 'block';
+
+          if (res && res.success && res.base64) {
+
+            // Decodifica Base64 e scarica direttamente nel browser
+            try {
+              var byteChars = atob(res.base64);
+              var byteNums = new Array(byteChars.length);
+              for (var i = 0; i < byteChars.length; i++) {
+                byteNums[i] = byteChars.charCodeAt(i);
+              }
+              var blob = new Blob([new Uint8Array(byteNums)], { type: 'application/zip' });
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = res.nomeFile || 'DarIA_Backup.zip';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              setTimeout(function() { URL.revokeObjectURL(url); }, 3000);
+            } catch(eDl) {
+              console.error('Errore download:', eDl);
+            }
+
+            // Mostra elenco file
+            if (res.files && res.files.length > 0) {
+              document.getElementById('fileListCard').style.display = 'block';
+              var fileHtml = '';
+              res.files.forEach(function(f) {
+                var ext = (f.nome || '').split('.').pop();
+                var extClass = ext === 'js' ? 'ext-js' : (ext === 'html' ? 'ext-html' : '');
+                fileHtml += '<div class="file-item">' +
+                  '<span class="file-name"><span class="' + extClass + '">' + f.nome + '</span></span>' +
+                  '<span class="file-meta">' + (f.righe || 0) + ' righe · ' + ((f.bytes || 0)/1024).toFixed(1) + ' KB</span>' +
+                '</div>';
+              });
+              document.getElementById('fileList').innerHTML = fileHtml;
+            }
+
+            resultDiv.innerHTML = '<div class="result-success">' +
+              '<div class="big-icon">✅</div>' +
+              '<h3>Download Avviato!</h3>' +
+              '<p>' +
+                '📦 <strong>' + (res.nomeFile || 'DarIA_Backup.zip') + '</strong><br>' +
+                '📊 ' + (res.totaleFile || 0) + ' file · ' +
+                '💿 ' + (res.dimensioneKB || '—') + ' KB' +
+              '</p>' +
+              '<p style="font-size:12px; color:#34d399; margin-top:8px;">⬇️ Il file ZIP si sta scaricando sul tuo dispositivo!</p>' +
+              '<br>' +
+              '<p style="font-size:12px; color:#475569;">🏠 <strong style="color:#f59e0b;">Immobiliare Giancani</strong> — Backup completo scaricato direttamente</p>' +
+            '</div>';
+
+          } else {
+            resultDiv.innerHTML = '<div class="result-error">' +
+              '❌ <strong>Errore durante il backup:</strong><br>' +
+              (res && res.error ? res.error : 'Errore sconosciuto') +
+              '<br><br><em style="font-size:11px;">Riprova o contatta il supporto — Immobiliare Giancani</em>' +
+            '</div>';
+          }
+
+          btn.disabled = false;
+          document.getElementById('btnIcon').textContent = '💾';
+          document.getElementById('btnText').textContent = 'SCARICA BACKUP COMPLETO';
+
+        }, 800);
+      })
+      .withFailureHandler(function(err) {
+        clearInterval(simTimer);
+        setProgress(0, '');
+        document.getElementById('progressArea').style.display = 'none';
+
+        var resultDiv = document.getElementById('resultArea');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<div class="result-error">' +
+          '❌ <strong>Errore di comunicazione:</strong><br>' + err +
+          '<br><br><em style="font-size:11px;">— Immobiliare Giancani</em>' +
+        '</div>';
+
+        btn.disabled = false;
+        document.getElementById('btnIcon').textContent = '💾';
+        document.getElementById('btnText').textContent = 'SCARICA BACKUP COMPLETO';
+      })
+      .creaBackupZipProgetto();
+  }
+
+  function setProgress(pct, text) {
+    document.getElementById('progressBar').style.width = Math.min(pct, 100) + '%';
+    if (text) document.getElementById('progressText').textContent = text;
+  }
+
+  function setStep(n, stato) {
+    var el = document.getElementById('step' + n);
+    if (!el) return;
+    el.className = stato;
+    var icon = el.querySelector('.step-icon');
+    if (icon) {
+      if (stato === 'active') icon.textContent = '🔄';
+      else if (stato === 'done') icon.textContent = '✅';
+      else icon.textContent = '⏳';
+    }
+  }
+</script>
+
+</body>
+</html>

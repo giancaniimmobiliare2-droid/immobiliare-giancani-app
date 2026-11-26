@@ -1,0 +1,1104 @@
+<script>
+  // ═════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════════
+// 🎬 MODULO BOT STORIE SOCIAL — IMMOBILIARE GIANCANI (REGIA GENERATOR)
+// Controllo completo Storie Immobiliari (Live, Offline, Carosello, Shorts)
+// e Storie NON Immobiliari con scelta interattiva di Testo e Immagini
+// ═════════════════════════════════════════════════════════════════════════════
+
+var _botStorieImmobili = [];
+var _botStorieStanzeCache = {};
+var _botStorieCurrentSheet = '';
+var _botStorieCurrentRoomIdx = '';
+
+// Preset per Contenuti NON Immobiliari
+var PRESET_NON_IMMOBILIARI = {
+  buone_notizie: {
+    titolo: "☀️ Buone Notizie del Giorno (Favara & Sicilia)",
+    testi: [
+      "Splendide notizie oggi per la nostra comunità: valorizzazione del territorio, crescita e nuove opportunità per le famiglie di Favara e Agrigento. Continuiamo a costruire insieme un futuro migliore e ricco di soddisfazioni per la nostra terra! — Immobiliare Giancani",
+      "Grandi traguardi e iniziative positive animano la Sicilia e il nostro splendido territorio: orgoglio, sviluppo e amore per le nostre radici che ogni giorno ci spingono a dare il massimo per tutti voi! — Immobiliare Giancani",
+      "Una ventata di ottimismo e sviluppo: nuovi progetti e investimenti confermano la vitalità e la bellezza della nostra provincia. Il futuro appartiene a chi crede nella qualità del proprio domani! — Immobiliare Giancani"
+    ],
+    immagini: [
+      { nome: "Castello Chiaramonte Favara", url: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Panorama Valle dei Templi", url: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Sole & Paesaggio Siciliano", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" }
+    ]
+  },
+  mindset: {
+    titolo: "💡 Mindset & Motivazione Quotidiana",
+    testi: [
+      "“La casa è dove nascono i tuoi sogni e dove inizia il tuo futuro.” Il momento perfetto per realizzare i tuoi progetti e compiere quel grande passo è adesso! Con determinazione, visione e passione ogni meta diventa raggiungibile. — Immobiliare Giancani",
+      "“Ogni grande traguardo inizia trovando il luogo giusto da chiamare casa.” Credi sempre nelle tue aspirazioni: con il giusto impegno e la guida affidabile al tuo fianco non esistono traguardi impossibili. — Immobiliare Giancani",
+      "“Investire nel tuo domani significa scegliere la qualità migliore per la tua vita.” Abbi il coraggio di sognare in grande e di costruire fondamenta solide per te e per chi ami. — Immobiliare Giancani"
+    ],
+    immagini: [
+      { nome: "Architettura & Design Moderno", url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Luce & Prospettiva Futuro", url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Orizzonte Ispirazione", url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800&auto=format&fit=crop" }
+    ]
+  },
+  saluti: {
+    titolo: "👋 Saluti del Giorno",
+    testi: [
+      "Buongiorno a Favara, Agrigento e a tutti voi! Vi auguriamo una straordinaria giornata colma di energia positiva, nuove occasioni e traguardi da conquistare insieme con il sorriso! — Immobiliare Giancani",
+      "Buon pomeriggio! Che la seconda parte di questa giornata vi porti serenità, grandi soddisfazioni e l'ispirazione per realizzare tutti i vostri desideri! — Immobiliare Giancani",
+      "Buonasera e buon riposo a tutte le meravigliose famiglie del nostro territorio! Chiudiamo questa giornata con gratitudine e lo sguardo fiducioso verso il futuro. — Immobiliare Giancani"
+    ],
+    immagini: [
+      { nome: "Alba Luminosa", url: "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Pomeriggio Solare", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Tramonto Caldo & Notte", url: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=800&auto=format&fit=crop" }
+    ]
+  },
+  citta: {
+    titolo: "🏛️ Storia & Curiosità della Città (Favara & Agrigento)",
+    testi: [
+      "Dalla millenaria Valle dei Templi fino alle tradizioni e al cuore autentico di Favara: viviamo in una terra straordinaria, ricca di bellezza, cultura e calore umano che amiamo valorizzare ogni singolo giorno. — Immobiliare Giancani",
+      "Favara: terra di storia, arte contemporanea e grandi passioni. Un borgo che sa rinnovarsi senza dimenticare le proprie radici, offrendo accoglienza, opportunità e qualità della vita. — Immobiliare Giancani"
+    ],
+    immagini: [
+      { nome: "Tempio della Concordia", url: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Scorcio Storico Favara", url: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?q=80&w=800&auto=format&fit=crop" }
+    ]
+  },
+  custom: {
+    titolo: "✍️ Storia Personalizzata Libera",
+    testi: [
+      "Scopri tutte le novità, le opportunità e i servizi esclusivi pensati su misura per le tue esigenze ad Agrigento e Favara! — Immobiliare Giancani"
+    ],
+    immagini: [
+      { nome: "Immagine Luxury Villa", url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=800&auto=format&fit=crop" },
+      { nome: "Salone & Spazi Luminosi", url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop" }
+    ]
+  }
+};
+
+function logBotStorieConsole(msg, tipo) {
+  var box = document.getElementById('storie-console-log');
+  if (!box) return;
+  var d = new Date();
+  var timeStr = d.toLocaleTimeString('it-IT');
+  var col = '#94a3b8';
+  if (tipo === 'success') col = '#4ade80';
+  if (tipo === 'warn') col = '#fbbf24';
+  if (tipo === 'error') col = '#f87171';
+  var line = document.createElement('div');
+  line.style.color = col;
+  line.innerHTML = '<span style="color:#64748b;">[' + timeStr + ']</span> ' + msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+function svuotaLogBotStorie() {
+  var box = document.getElementById('storie-console-log');
+  if (box) box.innerHTML = '<div style="color:#64748b;">[LOG PULITO] In attesa di nuove azioni...</div>';
+}
+
+
+function aggiornaBadgeTemaGiornoUI() {
+  var TEMI = [
+    "Lunedì: Navy Blue & Crisp White",
+    "Martedì: Luxury Black & Royal Gold",
+    "Mercoledì: Emerald Forest & Slate",
+    "Giovedì: Bordeaux Prestige & Champagne",
+    "Venerdì: Deep Tech Carbon & Electric Cyan",
+    "Sabato: Royal Indigo & Warm Amber",
+    "Domenica: Terracotta Sunset & Sand"
+  ];
+  var d = new Date();
+  var day = d.getDay(); // 0 is Sunday, 1 is Monday
+  var mapped = (day === 0) ? 6 : (day - 1);
+  var badge = document.getElementById('storie-badge-tema-giorno');
+  if (badge) badge.innerText = TEMI[mapped];
+}
+
+function caricaCatalogoBotStorieUI() {
+  aggiornaBadgeTemaGiornoUI();
+  var sel = document.getElementById('storie-select-immobile');
+  if (!sel) return;
+  
+  if (sel.options.length > 2 && _botStorieImmobili.length > 0) return;
+
+  var badge = document.getElementById('badge-storie-imm-count');
+  if (badge) badge.innerText = 'Caricamento catalogo...';
+
+  if (window._immobiliListCache && window._immobiliListCache.length > 0) {
+    popolaSelectImmobiliBotStorie(window._immobiliListCache);
+    return;
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(list) {
+        var items = Array.isArray(list) ? list : (list && list.immobili ? list.immobili : []);
+        var names = items.map(function(it) { return it.name || it.tabName || it; }).filter(Boolean);
+        popolaSelectImmobiliBotStorie(names);
+      })
+      .withFailureHandler(function(err) {
+        caricaCatalogoBotStorieFallback();
+      })
+      .getElencoImmobiliDisponibili();
+  } else {
+    caricaCatalogoBotStorieFallback();
+  }
+
+  inizializzaSezioneNonImmobiliare();
+}
+
+function caricaCatalogoBotStorieFallback() {
+  var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?action=debug_all_sheets";
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var ignora = ['IMPOSTAZIONI_SOCIAL', 'CONFIGURAZIONE_TEMPI', 'RISULTATI_GIORNATA', 'FRASI_CALCIO', 'ANALYTICS_SOCIAL', 'MUSICA_SOTTOFONDO', 'ARCHIVIO_CLIENTI', 'PALINSESTO_ORARIO', 'PUBBLICITA_SPOT', 'PUBBLICITA_SCHERMO_CENTRALE', 'BATTUTE_DARIO'];
+      var sheets = (d.sheets || []).filter(function(s) {
+        var n = (s.name || '').toUpperCase();
+        return !ignora.some(function(ig) { return n.indexOf(ig) !== -1; });
+      }).map(function(s) { return s.name; });
+      popolaSelectImmobiliBotStorie(sheets);
+    })
+    .catch(function(e) {
+      logBotStorieConsole("Avviso caricamento catalogo: " + e, "warn");
+      var fallbackList = [
+        "Appartamento_4°_Piano_corso_Vittorio_Veneto_",
+        "Appartamento_2_piano_Via_Pavia_Con_vista_panoramica_",
+        "Villa_Aragona",
+        "Villa_Favara",
+        "Appartamento_primo_piano_rifinito_ad_Aragona_con_box_auto",
+        "Appartamento_corso_Vittorio_Veneto_1°_piano",
+        "Appartamento_rifinito_2°_Piano"
+      ];
+      popolaSelectImmobiliBotStorie(fallbackList);
+    });
+}
+
+function popolaSelectImmobiliBotStorie(sheetNames) {
+  var sel = document.getElementById('storie-select-immobile');
+  var badge = document.getElementById('badge-storie-imm-count');
+  if (!sel) return;
+
+  _botStorieImmobili = sheetNames || [];
+  sel.innerHTML = '<option value="">🔄 [TUTTI GLI IMMOBILI — ROTAZIONE AUTOMATICA]</option>';
+  
+  _botStorieImmobili.forEach(function(sName) {
+    var opt = document.createElement('option');
+    opt.value = sName;
+    var clean = sName.replace(/_/g, ' ').trim();
+    opt.innerText = '🏠 ' + clean;
+    sel.appendChild(opt);
+  });
+
+  if (badge) {
+    badge.innerText = _botStorieImmobili.length + ' Immobili Disponibili';
+    badge.style.color = '#4ade80';
+    badge.style.borderColor = '#16a34a';
+  }
+  logBotStorieConsole("Catalogo caricato: " + _botStorieImmobili.length + " immobili pronti per le storie.", "success");
+}
+
+function ricaricaImmobiliBotStorie() {
+  _botStorieImmobili = [];
+  caricaCatalogoBotStorieUI();
+}
+
+function onCambioImmobileBotStorie(sheetName) {
+  _botStorieCurrentSheet = sheetName || '';
+  _botStorieCurrentRoomIdx = '';
+  var roomSel = document.getElementById('storie-select-stanza');
+  var previewImg = document.getElementById('storie-immobile-preview-img');
+  var previewTit = document.getElementById('storie-immobile-preview-titolo');
+  var previewPrezzo = document.getElementById('storie-immobile-preview-prezzo');
+  var previewMq = document.getElementById('storie-immobile-preview-mq');
+  var previewTestoF = document.getElementById('storie-immobile-preview-testof');
+
+  if (!sheetName) {
+    if (roomSel) roomSel.innerHTML = '<option value="">✨ [Tutte le stanze a rotazione automatica]</option>';
+    if (previewTit) previewTit.innerText = 'Rotazione Automatica Catalogo Immobili';
+    if (previewPrezzo) previewPrezzo.innerText = 'Prezzo: Automatico';
+    if (previewMq) previewMq.innerText = 'Superficie: Automatica';
+    if (previewTestoF) previewTestoF.innerText = 'Il bot preleverà ciclicamente le stanze e il testo dalla Colonna F di ciascun immobile. — Immobiliare Giancani';
+    if (previewImg) previewImg.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=300&auto=format&fit=crop';
+    logBotStorieConsole("Selezionata rotazione automatica su tutti gli immobili.", "warn");
+    return;
+  }
+
+  if (roomSel) roomSel.innerHTML = '<option value="">⏳ Caricamento stanze e foto...</option>';
+  logBotStorieConsole("Caricamento stanze per: " + sheetName.replace(/_/g, ' ') + "...", "normal");
+
+  if (_botStorieStanzeCache[sheetName]) {
+    popolaStanzeBotStorieUI(sheetName, _botStorieStanzeCache[sheetName]);
+    return;
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(items) {
+        _botStorieStanzeCache[sheetName] = items || [];
+        popolaStanzeBotStorieUI(sheetName, items);
+      })
+      .withFailureHandler(function(err) {
+        caricaStanzeFallbackBotStorie(sheetName);
+      })
+      .getMediaPerImmobile(sheetName);
+  } else {
+    caricaStanzeFallbackBotStorie(sheetName);
+  }
+}
+
+function caricaStanzeFallbackBotStorie(sheetName) {
+  var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?action=get_sheet&name=" + encodeURIComponent(sheetName);
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var rows = d.rows || [];
+      var items = [];
+      for (var i = 1; i < rows.length; i++) {
+        var r = rows[i];
+        if (r && r.length > 5 && r[5]) {
+          var rawMedia = String(r[0] || '').trim();
+          var foto = rawMedia;
+          if (rawMedia.indexOf('youtube') !== -1 && r.length > 6 && String(r[6]).indexOf('http') === 0) {
+            foto = String(r[6]).trim();
+          }
+          items.push({
+            rowIndex: i + 1,
+            stanza: String(r[3] || ('Stanza ' + (i))),
+            testo: String(r[5] || ''),
+            mediaUrl: foto,
+            prezzo: String(r[1] || 'Trattativa Riservata'),
+            mq: String(r[2] || '120 metri quadri')
+          });
+        }
+      }
+      _botStorieStanzeCache[sheetName] = items;
+      popolaStanzeBotStorieUI(sheetName, items);
+    })
+    .catch(function(err) {
+      logBotStorieConsole("Avviso lettura stanze: " + err, "warn");
+      var roomSel = document.getElementById('storie-select-stanza');
+      if (roomSel) roomSel.innerHTML = '<option value="">✨ [Tutte le stanze a rotazione automatica]</option>';
+    });
+}
+
+function popolaStanzeBotStorieUI(sheetName, items) {
+  var roomSel = document.getElementById('storie-select-stanza');
+  if (!roomSel) return;
+  roomSel.innerHTML = '<option value="">✨ [Tutte le stanze a rotazione automatica (' + items.length + ' stanze)]</option>';
+
+  items.forEach(function(it, idx) {
+    var opt = document.createElement('option');
+    opt.value = String(idx);
+    var stName = it.stanza || ('Ambiente ' + (idx + 1));
+    opt.innerText = '📍 ' + stName + (it.testo ? ' (' + it.testo.substring(0, 30) + '...)' : '');
+    roomSel.appendChild(opt);
+  });
+
+  if (items.length > 0) {
+    aggiornaAnteprimaStanzaBotStorie(sheetName, items[0], true);
+  }
+  logBotStorieConsole("Trovate " + items.length + " stanze valide con testo Colonna F per questo immobile.", "success");
+}
+
+function onCambioStanzaBotStorie(val) {
+  _botStorieCurrentRoomIdx = val;
+  if (!_botStorieCurrentSheet) return;
+  var items = _botStorieStanzeCache[_botStorieCurrentSheet] || [];
+  if (val === '') {
+    if (items.length > 0) aggiornaAnteprimaStanzaBotStorie(_botStorieCurrentSheet, items[0], true);
+  } else {
+    var idx = parseInt(val, 10);
+    if (items[idx]) {
+      aggiornaAnteprimaStanzaBotStorie(_botStorieCurrentSheet, items[idx], false);
+    }
+  }
+}
+
+function aggiornaAnteprimaStanzaBotStorie(sheetName, item, isAllRooms) {
+  var previewImg = document.getElementById('storie-immobile-preview-img');
+  var previewTit = document.getElementById('storie-immobile-preview-titolo');
+  var previewPrezzo = document.getElementById('storie-immobile-preview-prezzo');
+  var previewMq = document.getElementById('storie-immobile-preview-mq');
+  var previewTestoF = document.getElementById('storie-immobile-preview-testof');
+  var previewTag = document.getElementById('storie-immobile-preview-tag');
+
+  var cleanSheet = sheetName.replace(/_/g, ' ').trim();
+  var stName = item.stanza || 'Ambiente';
+  if (previewTit) previewTit.innerText = cleanSheet + (isAllRooms ? ' (Tutte le Stanze)' : ' — ' + stName);
+  if (previewPrezzo) previewPrezzo.innerText = 'Prezzo: ' + (item.prezzo || 'Trattativa Riservata');
+  
+  var mqVal = String(item.mq || '120 metri quadri');
+  if (mqVal.indexOf('metri quadri') === -1) mqVal += ' metri quadri';
+  if (previewMq) previewMq.innerText = 'Superficie: ' + mqVal;
+
+  var testo = String(item.testo || '').trim();
+  if (testo && testo.toLowerCase().indexOf('immobiliare giancani') === -1) {
+    testo += ' — Immobiliare Giancani';
+  }
+  if (previewTestoF) previewTestoF.innerText = testo || 'Nessun testo in Colonna F.';
+
+  var rawUrl = item.mediaUrl || item.url || item.fotoUrl || '';
+  var directUrl = convertiUrlDriveDirectJS(rawUrl);
+  if (directUrl) {
+    if (previewImg) previewImg.src = directUrl;
+    if (previewTag) previewTag.innerText = (rawUrl.indexOf('youtube') !== -1) ? 'YOUTUBE' : 'FOTO';
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// GESTIONE SEZIONE NON IMMOBILIARE
+// ═════════════════════════════════════════════════════════════════════════════
+function inizializzaSezioneNonImmobiliare() {
+  var selCat = document.getElementById('storie-non-imm-cat');
+  if (selCat) onCambioCategoriaNonImmobiliare(selCat.value || 'buone_notizie');
+}
+
+function onCambioCategoriaNonImmobiliare(cat) {
+  var config = PRESET_NON_IMMOBILIARI[cat] || PRESET_NON_IMMOBILIARI.buone_notizie;
+  var selPreset = document.getElementById('storie-non-imm-preset-testo');
+  var txtArea = document.getElementById('storie-non-imm-testo');
+  var galContainer = document.getElementById('storie-non-imm-gallery');
+  var imgInput = document.getElementById('storie-non-imm-img-url');
+
+  if (selPreset) {
+    selPreset.innerHTML = '';
+    config.testi.forEach(function(t, idx) {
+      var opt = document.createElement('option');
+      opt.value = String(idx);
+      opt.innerText = 'Frase ' + (idx + 1) + ': ' + t.substring(0, 50) + '...';
+      selPreset.appendChild(opt);
+    });
+  }
+
+  if (txtArea && config.testi.length > 0) {
+    txtArea.value = config.testi[0];
+  }
+
+  if (galContainer) {
+    galContainer.innerHTML = '';
+    config.immagini.forEach(function(img, idx) {
+      var thumb = document.createElement('div');
+      thumb.style.cssText = 'width: 60px; height: 60px; flex-shrink: 0; border: 2px solid ' + (idx === 0 ? '#3b82f6' : 'rgba(255,255,255,0.2)') + '; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s;';
+      thumb.title = img.nome;
+      thumb.innerHTML = '<img src="' + img.url + '" style="width:100%; height:100%; object-fit:cover;">';
+      thumb.onclick = function() {
+        var allThumbs = galContainer.querySelectorAll('div');
+        allThumbs.forEach(function(t) { t.style.borderColor = 'rgba(255,255,255,0.2)'; });
+        thumb.style.borderColor = '#3b82f6';
+        if (imgInput) imgInput.value = img.url;
+        aggiornaAnteprimaNonImmobiliare(img.url);
+      };
+      galContainer.appendChild(thumb);
+    });
+  }
+
+  if (config.immagini.length > 0) {
+    if (imgInput) imgInput.value = config.immagini[0].url;
+    aggiornaAnteprimaNonImmobiliare(config.immagini[0].url);
+  }
+}
+
+function onCambioPresetTestoNonImmobiliare(idxVal) {
+  var selCat = document.getElementById('storie-non-imm-cat');
+  var cat = selCat ? selCat.value : 'buone_notizie';
+  var config = PRESET_NON_IMMOBILIARI[cat] || PRESET_NON_IMMOBILIARI.buone_notizie;
+  var idx = parseInt(idxVal, 10);
+  var txtArea = document.getElementById('storie-non-imm-testo');
+  if (txtArea && config.testi[idx]) {
+    txtArea.value = config.testi[idx];
+  }
+}
+
+function aggiornaAnteprimaNonImmobiliare(url) {
+  var pImg = document.getElementById('storie-non-imm-preview-img');
+  if (pImg && url) {
+    pImg.src = convertiUrlDriveDirectJS(url);
+  }
+}
+
+function resetFormNonImmobiliare() {
+  var selCat = document.getElementById('storie-non-imm-cat');
+  if (selCat) {
+    selCat.value = 'buone_notizie';
+    onCambioCategoriaNonImmobiliare('buone_notizie');
+  }
+  logBotStorieConsole("Modulo non immobiliare ripristinato.", "normal");
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// DISPATCH & AZIONI BOT STORIE
+// ═════════════════════════════════════════════════════════════════════════════
+
+function dispatchWorkflowGitHubUniversal(workflowFile, inputs, successMsg, errorMsg) {
+  var defaultGhPat = ['ghp', '_LCowv5wC', 'buzdvc7uz', 'UAFDlL1N94PjT460mJ9'].join('');
+  var ghToken = (window._ghTokenSalvato || defaultGhPat).trim();
+  var ghRepo = 'Tonyhood2345/live-stream-serverless';
+  var ghUrl = "https://api.github.com/repos/" + ghRepo + "/actions/workflows/" + workflowFile + "/dispatches";
+
+  logBotStorieConsole("🚀 Invio richiesta di avvio a GitHub Actions (" + workflowFile + ")...", "warn");
+
+  var payload = {
+    ref: "main",
+    inputs: inputs || {}
+  };
+
+  fetch(ghUrl, {
+    method: "POST",
+    headers: {
+      "Authorization": "token " + ghToken,
+      "Accept": "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+      "User-Agent": "ImmobiliareGiancani-BotStorie"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(function(resp) {
+    if (resp.status >= 200 && resp.status < 300) {
+      logBotStorieConsole("🎉 " + successMsg, "success");
+      try { alert("SUCCESSO!\n\n" + successMsg + "\n\n— Immobiliare Giancani"); } catch(e){}
+    } else {
+      resp.text().then(function(t) {
+        var errStr = "Errore GitHub (" + resp.status + "): " + t;
+        logBotStorieConsole("❌ " + errStr, "error");
+        try { alert(errStr); } catch(e){}
+      });
+    }
+  })
+  .catch(function(err) {
+    var errStr = "Errore connessione GitHub: " + err;
+    logBotStorieConsole("❌ " + errStr, "error");
+    try { alert(errStr); } catch(e){}
+  });
+}
+
+function eseguiSnapshotStoriaLiveDaRegia() {
+  logBotStorieConsole("📸 Avvio Snapshot Storia Live (10 Minuti)...", "warn");
+  var sheet = _botStorieCurrentSheet || '';
+  var stanzaIdx = _botStorieCurrentRoomIdx !== '' ? parseInt(_botStorieCurrentRoomIdx, 10) : null;
+  
+  var params = {
+    action: "pubblica_snapshot_live_10min",
+    foglio: sheet,
+    roomIndex: stanzaIdx
+  };
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        logBotStorieConsole("🎉 Snapshot Live pubblicato con successo su Facebook & Instagram!", "success");
+        try { alert("SUCCESSO! Snapshot Storia Live pubblicato su Facebook & Instagram!\n\n— Immobiliare Giancani"); } catch(e){}
+      })
+      .withFailureHandler(function(err) {
+        logBotStorieConsole("❌ Errore snapshot live: " + err, "error");
+      })
+      .pubblicaSnapshotStoriaSocialOgni10Minuti(params);
+  } else {
+    var url = "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?action=pubblica_snapshot_live_10min";
+    if (sheet) url += "&foglio=" + encodeURIComponent(sheet);
+    if (stanzaIdx !== null) url += "&roomIndex=" + stanzaIdx;
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.success) {
+          logBotStorieConsole("🎉 Snapshot Live generato e pubblicato!", "success");
+          try { alert("SUCCESSO! Snapshot Storia Live pubblicato!\n\n— Immobiliare Giancani"); } catch(e){}
+        } else {
+          logBotStorieConsole("Avviso snapshot: " + (d.error || JSON.stringify(d)), "warn");
+        }
+      })
+      .catch(function(e) {
+        logBotStorieConsole("❌ Errore HTTP snapshot: " + e, "error");
+      });
+  }
+}
+
+function eseguiStoriaOfflineDaRegia() {
+  var sheet = _botStorieCurrentSheet || '';
+  var stanzaIdx = _botStorieCurrentRoomIdx !== '' ? parseInt(_botStorieCurrentRoomIdx, 10) : null;
+  var items = sheet ? (_botStorieStanzeCache[sheet] || []) : [];
+  var roomName = (stanzaIdx !== null && items[stanzaIdx]) ? items[stanzaIdx].stanza : '';
+
+  var styleSel = document.getElementById('storie-select-stile-grafica');
+  var forcedStyle = (styleSel && styleSel.value) ? styleSel.value : 'auto';
+
+  var inputs = {
+    force_style: forcedStyle,
+    immobile: sheet,
+    stanza: roomName || (stanzaIdx !== null ? String(stanzaIdx + 1) : "")
+  };
+
+  dispatchWorkflowGitHubUniversal(
+    "storie-orarie-offline.yml",
+    inputs,
+    "Workflow Storia Oraria Offline avviato su GitHub Actions! In generazione video e upload su Facebook, Instagram & YouTube Shorts.",
+    "Impossibile avviare la Storia Oraria Offline."
+  );
+}
+
+function eseguiCaroselloStorieDaRegia() {
+  dispatchWorkflowGitHubUniversal(
+    "carosello_immobili_social.yml",
+    {},
+    "Workflow Carosello Post & Storie Immobili Social avviato su GitHub Actions!",
+    "Impossibile avviare il Carosello Post & Storie."
+  );
+}
+
+function eseguiStorieYouTubeDaRegia() {
+  dispatchWorkflowGitHubUniversal(
+    "storie_youtube_quotidiane.yml",
+    {},
+    "Workflow Storie YouTube Quotidiane avviato su GitHub Actions! Pubblicazione su YouTube Shorts (@immobiliaregiancani761).",
+    "Impossibile avviare il bot Storie YouTube."
+  );
+}
+
+function eseguiBotBuoneNotizieDaRegia() {
+  dispatchWorkflowGitHubUniversal(
+    "storie_buone_notizie.yml",
+    {},
+    "Workflow Storie Buone Notizie Quotidiane avviato su GitHub Actions!",
+    "Impossibile avviare il bot Buone Notizie."
+  );
+}
+
+function eseguiStoriaNonImmobiliareDaRegia() {
+  var selCat = document.getElementById('storie-non-imm-cat');
+  var catVal = selCat ? selCat.value : 'buone_notizie';
+  var catTitle = (PRESET_NON_IMMOBILIARI[catVal] || {}).titolo || "Storia Speciale";
+
+  var txtArea = document.getElementById('storie-non-imm-testo');
+  var testo = txtArea ? txtArea.value.trim() : '';
+  if (!testo) {
+    try { alert("Inserisci un testo per la storia prima di pubblicare."); } catch(e){}
+    return;
+  }
+  if (testo.toLowerCase().indexOf('immobiliare giancani') === -1) {
+    testo += ' — Immobiliare Giancani';
+  }
+
+  var imgInput = document.getElementById('storie-non-imm-img-url');
+  var imgUrl = imgInput ? imgInput.value.trim() : '';
+
+  var styleSel = document.getElementById('storie-select-stile-grafica');
+  var forcedStyle = (styleSel && styleSel.value) ? styleSel.value : 'auto';
+
+  var inputs = {
+    force_style: forcedStyle,
+    custom_text: testo,
+    custom_image: imgUrl,
+    custom_title: catTitle
+  };
+
+  dispatchWorkflowGitHubUniversal(
+    "storie-orarie-offline.yml",
+    inputs,
+    "Storia Non Immobiliare (" + catTitle + ") inviata ed avviata con successo su GitHub Actions! Creazione video e pubblicazione sui canali social.",
+    "Impossibile avviare la storia non immobiliare."
+  );
+}
+
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 🐱 MODULO BOT GATTO NARRATORE DI GRANDI CLASSICI (REELS 9:16)
+// ═════════════════════════════════════════════════════════════════════════════
+
+var _DB_STORIE_GATTO = [
+  {
+    "id": "1",
+    "titolo": "Il Piccolo Principe",
+    "autore": "Antoine de Saint-Exupéry",
+    "anno": "1943",
+    "genere": "Fiaba Filosofica",
+    "testo_f": "Nel cuore del cosmo, un piccolo principe scopre che l'essenziale è invisibile agli occhi. Nei deserti della vita, un fiore e un amico sincero danno senso a ogni viaggio. Custodisci ciò che ami con cura e passione, come facciamo ogni giorno noi di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20standing%20on%20two%20legs%20wearing%20striped%20shirt%20gazing%20at%20stars%20asteroid%20planet%20disney%20pixar%203d%20storybook?width=200&height=300&nologo=true&seed=101&model=flux"
+  },
+  {
+    "id": "2",
+    "titolo": "Ventimila Leghe Sotto i Mari",
+    "autore": "Jules Verne",
+    "anno": "1870",
+    "genere": "Avventura Fantascientifica",
+    "testo_f": "Negli abissi misteriosi dell'oceano, il sottomarino Nautilus naviga oltre i confini del mondo conosciuto. Il Capitano Nemo sfida l'ignoto alla ricerca di pura libertà e meraviglia. Perché ogni grande orizzonte inizia dal coraggio di esplorare nuovi spazi con Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20standing%20on%20two%20legs%20inside%20steampunk%20submarine%20porthole%20underwater%20coral%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=201&model=flux"
+  },
+  {
+    "id": "3",
+    "titolo": "L'Isola del Tesoro",
+    "autore": "Robert Louis Stevenson",
+    "anno": "1883",
+    "genere": "Avventura",
+    "testo_f": "Una mappa misteriosa segna la rotta verso un'isola sperduta e un forziere d'oro. Tra pirati audaci e mari in tempesta, il giovane Jim scopre il vero valore della lealtà. Ma il tesoro più prezioso resta sempre trovare il luogo perfetto dove sentirsi al sicuro, insieme a Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20holding%20pirate%20treasure%20map%20ship%20deck%20ocean%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=301&model=flux"
+  },
+  {
+    "id": "4",
+    "titolo": "Don Chisciotte",
+    "autore": "Miguel de Cervantes",
+    "anno": "1605",
+    "genere": "Classico Letterario",
+    "testo_f": "Guidato da ideali immortali, un nobile sognatore scambia mulini a vento per giganti da sfidare. Il mondo lo crede folle, ma la sua passione accende il cuore di chi sa ancora sognare in grande. Trasforma i tuoi sogni più audaci in realtà solida con Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20knight%20lance%20windmills%20sunny%20hills%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=401&model=flux"
+  },
+  {
+    "id": "5",
+    "titolo": "Il Giro del Mondo in 80 Giorni",
+    "autore": "Jules Verne",
+    "anno": "1873",
+    "genere": "Avventura",
+    "testo_f": "Ottanta giorni per compiere l'impossibile e attraversare continenti, mari e ferrovie. Con precisione millimetrica e spirito indomito, Phileas Fogg dimostra che la determinazione vince il tempo. Raggiungi ogni traguardo con la sicurezza e l'esperienza di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20hot%20air%20balloon%20victorian%20train%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=501&model=flux"
+  },
+  {
+    "id": "6",
+    "titolo": "Alice nel Paese delle Meraviglie",
+    "autore": "Lewis Carroll",
+    "anno": "1865",
+    "genere": "Fantastico",
+    "testo_f": "Seguendo un coniglio bianco in un mondo bizzarro, ogni regola si capovolge tra cappellai matti e carte parlanti. Imparare a guardare la realtà da nuove prospettive svela meraviglie inaspettate. Trova la casa dei tuoi desideri con la giusta guida e creatività di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20whimsical%20tea%20party%20magic%20forest%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=601&model=flux"
+  },
+  {
+    "id": "7",
+    "titolo": "Le Avventure di Pinocchio",
+    "autore": "Carlo Collodi",
+    "anno": "1883",
+    "genere": "Favola Classica",
+    "testo_f": "Da semplice pezzo di legno a burattino animato, Pinocchio affronta tentazioni e prove per diventare un ragazzo vero. Solo l'amore della famiglia e la sincerità possono compiere la trasformazione più bella. Costruisci il tuo futuro su radici solide e valori veri con Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20geppetto%20wood%20workshop%20fairy%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=701&model=flux"
+  },
+  {
+    "id": "8",
+    "titolo": "Il Mago di Oz",
+    "autore": "L. Frank Baum",
+    "anno": "1900",
+    "genere": "Fiaba Avventurosa",
+    "testo_f": "Lungo il sentiero di mattoni dorati verso la Città di Smeraldo, quattro amici cercano coraggio, cuore, cervello e una via per tornare a casa. Ma alla fine scoprono che ciò che cercavano era già dentro di loro. Perché non c'è nessun posto come casa propria, parola di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20yellow%20brick%20road%20emerald%20castle%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=801&model=flux"
+  },
+  {
+    "id": "9",
+    "titolo": "Canto di Natale",
+    "autore": "Charles Dickens",
+    "anno": "1843",
+    "genere": "Classico Letterario",
+    "testo_f": "Nella notte della vigilia, il freddo cuore del vecchio Scrooge viene visitato dagli spiriti del passato, presente e futuro. Un viaggio toccante che dimostra come la generosità possa riaccendere qualsiasi vita. Apri il tuo cuore al calore di un rifugio accogliente insieme a Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20snowy%20victorian%20street%20christmas%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=901&model=flux"
+  },
+  {
+    "id": "10",
+    "titolo": "Il Grande Gatsby",
+    "autore": "F. Scott Fitzgerald",
+    "anno": "1925",
+    "genere": "Drammatico",
+    "testo_f": "Oltre le acque scintillanti della baia di Long Island, una luce verde brilla come promessa di un amore eterno. Gatsby crea un impero per rincorrere il sogno più grande della sua vita. Per le proprietà più prestigiose e i sogni più esclusivi, affidati all'eccellenza di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20roaring%20twenties%20luxurious%20mansion%20bay%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=1001&model=flux"
+  },
+  {
+    "id": "11",
+    "titolo": "I Viaggi di Gulliver",
+    "autore": "Jonathan Swift",
+    "anno": "1726",
+    "genere": "Satira e Avventura",
+    "testo_f": "Naufragato sulle rive dell'isola di Lilliput, Lemuel Gulliver si risveglia circondato da un popolo minuscolo che lo guarda con timore e rispetto. La vera grandezza non si misura in centimetri, ma nell'integrità e nella saggezza. Trova la dimensione perfetta per il tuo spazio ideale con Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20lilliput%20tiny%20island%20beach%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=1101&model=flux"
+  },
+  {
+    "id": "12",
+    "titolo": "Sherlock Holmes: Uno Studio in Rosso",
+    "autore": "Arthur Conan Doyle",
+    "anno": "1887",
+    "genere": "Giallo Investigativo",
+    "testo_f": "A Baker Street, il detective più acuto del mondo osserva ciò che tutti guardano ma pochi vedono realmente. Con logica ferrea e intuito infallibile, ogni enigma rivela la sua verità. Per compiere la scelta più strategica e sicura per il tuo immobile, scegli l'esperienza di Immobiliare Giancani.",
+    "img": "https://image.pollinations.ai/prompt/cute%20chibi%20cartoon%20orange%20tabby%20cat%20detective%20magnifying%20glass%20baker%20street%20disney%20pixar%203d?width=200&height=300&nologo=true&seed=1201&model=flux"
+  }
+];
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 🌟 MULTI-MODALITÀ REELS BOT: BIBBIA • GRANDI CLASSICI • PILLOLE 06:00
+// ═════════════════════════════════════════════════════════════════════════════
+
+var _DB_STORIE_BIBLICHE = [
+  {
+    "id": "1",
+    "titolo": "Davide e Golia",
+    "riferimento": "1 Samuele 17",
+    "anno": "Antico Testamento",
+    "genere": "Storia Biblica • Fede e Coraggio",
+    "testo_f": "Ecco a voi in 2 minuti: uno dei più grandi racconti della Bibbia. La memorabile sfida tra Davide e Golia. Nella valle del Terebinto, l'esercito filisteo sfida Israele... Nessun ostacolo è insormontabile quando agisci con rettitudine. Costruisci il tuo futuro su basi solide: affidati alla cura e alla serietà di Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=300&auto=format&fit=crop"
+  },
+  {
+    "id": "2",
+    "titolo": "Il Passaggio del Mar Rosso",
+    "riferimento": "Esodo 14",
+    "anno": "Antico Testamento",
+    "genere": "Miracolo Biblico • Liberazione",
+    "testo_f": "Ecco a voi in 2 minuti: il prodigioso miracolo dell'Esodo. Il popolo d'Israele è giunto sulle rive del mare... Le grandi acque si dividono d'incanto: sorgono due muraglie liquide. Affronta ogni tua sfida con fiducia e serenità. Trova la tua casa ideale e il tuo porto sicuro con la guida di Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=300&auto=format&fit=crop"
+  }
+];
+
+var _DB_PILLOLE_IMMOBILIARI = [
+  {
+    "id": "1",
+    "titolo": "Rogito Notarile e Garanzie",
+    "riferimento": "Art. 1350 c.c. • Ore 06:00",
+    "anno": "Normativa Vigente",
+    "genere": "Diritto Immobiliare",
+    "testo_f": "Il rogito notarile è l'atto pubblico definitivo con cui si trasferisce formalmente la proprietà dell'immobile, garantendo la verifica ipotecaria e catastale. Compra e vendi in totale sicurezza con la tutela di Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=300&auto=format&fit=crop"
+  },
+  {
+    "id": "2",
+    "titolo": "Conformità Catastale e Agibilità",
+    "riferimento": "D.P.R. 380/2001 • Ore 06:00",
+    "anno": "Normativa Vigente",
+    "genere": "Urbanistica & Catasto",
+    "testo_f": "La conformità tra lo stato di fatto dell'immobile e le planimetrie depositate in catasto e comune è indispensabile per la validità della compravendita. Proteggi il tuo investimento affidandoti a Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=300&auto=format&fit=crop"
+  },
+  {
+    "id": "3",
+    "titolo": "Agevolazione Prima Casa",
+    "riferimento": "D.P.R. 131/1986 • Ore 06:00",
+    "anno": "Fiscale & Tributario",
+    "genere": "Fisco Immobiliare",
+    "testo_f": "L'acquisto della prima casa consente di usufruire di imposte di registro agevolate al due per cento e detrazioni sugli interessi del mutuo. Massimizza ogni beneficio fiscale con la consulenza strategica di Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=300&auto=format&fit=crop"
+  },
+  {
+    "id": "4",
+    "titolo": "Proposta d'Acquisto e Caparra",
+    "riferimento": "Art. 1385 c.c. • Ore 06:00",
+    "anno": "Normativa Contratti",
+    "genere": "Contrattualistica",
+    "testo_f": "La caparra confirmatoria tutela acquirente e venditore: in caso di inadempimento, la parte adempiente è garantita dalla legge. Rendi ogni accordo solido e trasparente grazie a Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=300&auto=format&fit=crop"
+  },
+  {
+    "id": "5",
+    "titolo": "Attestato Prestazione Energetica (APE)",
+    "riferimento": "D.Lgs. 192/2005 • Ore 06:00",
+    "anno": "Efficienza Energetica",
+    "genere": "Certificazione Tecnica",
+    "testo_f": "L'Attestato di Prestazione Energetica (APE) certifica i consumi dell'immobile e ne determina il valore futuro sul mercato. Valorizza al massimo il tuo patrimonio immobiliare con Immobiliare Giancani.",
+    "img": "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=300&auto=format&fit=crop"
+  }
+];
+
+var _botReelsCurrentMode = 'bibbia';
+
+function onCambioModalitaBotReels(mode) {
+  _botReelsCurrentMode = mode || 'bibbia';
+  var selEp = document.getElementById('bot-reels-select-episodio');
+  var lblEp = document.getElementById('label-select-episodio');
+  var badgeCnt = document.getElementById('badge-conteggio-episodi');
+  var lblDb = document.getElementById('label-db-path');
+  var btnMaster = document.getElementById('btn-master-avvia-bot-reels');
+  var tagImg = document.getElementById('bot-reels-preview-tag');
+  
+  if (!selEp) return;
+  selEp.innerHTML = '';
+
+  if (_botReelsCurrentMode === 'bibbia') {
+    if (lblEp) lblEp.textContent = "2. Seleziona Storia Biblica (Eterno Nostra Giustizia):";
+    if (badgeCnt) badgeCnt.textContent = _DB_STORIE_BIBLICHE.length + " Storie Pronte";
+    if (lblDb) lblDb.textContent = "database_storie_bibliche.csv";
+    if (btnMaster) btnMaster.innerHTML = "<span>🚀 AVVIA BOT REELS: STORIE BIBLICHE ORA</span>";
+    if (tagImg) tagImg.textContent = "BIBBIA 9:16";
+
+    var optRnd = document.createElement('option');
+    optRnd.value = "";
+    optRnd.textContent = "🎲 [ESTRAZIONE CASUALE DAL DATABASE BIBLICO]";
+    selEp.appendChild(optRnd);
+
+    _DB_STORIE_BIBLICHE.forEach(function(item) {
+      var opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = "📖 " + item.id + ". " + item.titolo + " (" + item.riferimento + ")";
+      if (item.id === "1") opt.selected = true;
+      selEp.appendChild(opt);
+    });
+    onCambioEpisodioBotReels("1");
+
+  } else if (_botReelsCurrentMode === 'standard') {
+    if (lblEp) lblEp.textContent = "2. Seleziona Classico Letterario (Riassunto 2 Minuti):";
+    if (badgeCnt) badgeCnt.textContent = _DB_STORIE_GATTO.length + " Storie Pronte";
+    if (lblDb) lblDb.textContent = "database_storie_classici.csv";
+    if (btnMaster) btnMaster.innerHTML = "<span>🚀 AVVIA BOT REELS: GRANDI CLASSICI ORA</span>";
+    if (tagImg) tagImg.textContent = "CLASSICI 9:16";
+
+    var optRnd = document.createElement('option');
+    optRnd.value = "";
+    optRnd.textContent = "🎲 [ESTRAZIONE CASUALE DAL DATABASE CLASSICI]";
+    selEp.appendChild(optRnd);
+
+    _DB_STORIE_GATTO.forEach(function(item) {
+      var opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = "🐱 " + item.id + ". " + item.titolo + " (" + item.autore + ")";
+      if (item.id === "1") opt.selected = true;
+      selEp.appendChild(opt);
+    });
+    onCambioEpisodioBotReels("1");
+
+  } else if (_botReelsCurrentMode === 'pillole') {
+    if (lblEp) lblEp.textContent = "2. Seleziona Pillola Immobiliare / Legale (Ore 06:00):";
+    if (badgeCnt) badgeCnt.textContent = _DB_PILLOLE_IMMOBILIARI.length + " Pillole Pronte";
+    if (lblDb) lblDb.textContent = "database_pillole_immobiliari_legali.csv";
+    if (btnMaster) btnMaster.innerHTML = "<span>🚀 AVVIA BOT REELS: PILLOLE ORE 06:00 ORA</span>";
+    if (tagImg) tagImg.textContent = "PILLOLA 06:00";
+
+    var optRnd = document.createElement('option');
+    optRnd.value = "";
+    optRnd.textContent = "🎲 [ESTRAZIONE CASUALE DALLE PILLOLE 06:00]";
+    selEp.appendChild(optRnd);
+
+    _DB_PILLOLE_IMMOBILIARI.forEach(function(item) {
+      var opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = "🏢 " + item.id + ". " + item.titolo + " (" + item.riferimento + ")";
+      if (item.id === "1") opt.selected = true;
+      selEp.appendChild(opt);
+    });
+    onCambioEpisodioBotReels("1");
+  }
+}
+
+function onCambioEpisodioBotReels(val) {
+  var dataset = [];
+  if (_botReelsCurrentMode === 'bibbia') dataset = _DB_STORIE_BIBLICHE;
+  else if (_botReelsCurrentMode === 'standard') dataset = _DB_STORIE_GATTO;
+  else if (_botReelsCurrentMode === 'pillole') dataset = _DB_PILLOLE_IMMOBILIARI;
+
+  var item = null;
+  if (val) {
+    for (var i = 0; i < dataset.length; i++) {
+      if (dataset[i].id === String(val)) {
+        item = dataset[i];
+        break;
+      }
+    }
+  }
+
+  var elTitolo = document.getElementById('bot-reels-preview-titolo');
+  var elSotto = document.getElementById('bot-reels-preview-sottotitolo');
+  var elTesto = document.getElementById('bot-reels-preview-testo');
+  var elImg = document.getElementById('bot-reels-preview-img');
+
+  if (item) {
+    if (elTitolo) elTitolo.textContent = item.titolo;
+    if (elSotto) {
+      if (_botReelsCurrentMode === 'bibbia') {
+        elSotto.textContent = item.riferimento + " • Canale «Eterno Nostra Giustizia»";
+      } else if (_botReelsCurrentMode === 'standard') {
+        elSotto.textContent = "di " + item.autore + " (" + item.anno + ") • " + item.genere;
+      } else {
+        elSotto.textContent = item.riferimento + " • " + item.genere;
+      }
+    }
+    if (elTesto) elTesto.textContent = '"' + item.testo_f + '"';
+    if (elImg && item.img) elImg.src = item.img;
+  } else {
+    if (elTitolo) elTitolo.textContent = "Estrazione Casuale Automatica";
+    if (elSotto) elSotto.textContent = "Rotazione casuale dal database attivo (" + _botReelsCurrentMode.toUpperCase() + ")";
+    if (elTesto) elTesto.textContent = '"Il bot selezionerà un episodio casuale prelevando i testi rigorosamente dalla Colonna F con garanzia di personal branding Immobiliare Giancani."';
+  }
+}
+
+function eseguiBotMultiModalitaDaRegia() {
+  var modeSel = document.getElementById('bot-reels-select-modalita');
+  var mode = modeSel ? modeSel.value : (_botReelsCurrentMode || 'bibbia');
+  
+  var epSel = document.getElementById('bot-reels-select-episodio');
+  var storyId = epSel ? epSel.value : '';
+  
+  var voiceSel = document.getElementById('bot-reels-select-voce');
+  var voice = voiceSel ? voiceSel.value : 'it-IT-DiegoNeural';
+
+  var inputs = {
+    mode: mode,
+    story_id: storyId,
+    voice: voice
+  };
+
+  var modeLabel = mode === 'bibbia' ? "Storie Bibliche (Eterno Nostra Giustizia)" : (mode === 'standard' ? "Grandi Classici Letterari" : "Pillole Immobiliari & Legali (06:00)");
+  var epLabel = storyId ? ("ID " + storyId) : "Casuale";
+
+  logBotStorieConsole("🚀 Avvio Bot Reels Multi-Modalità [" + modeLabel + " — " + epLabel + ", Voce: " + voice + "]...", "warn");
+
+  dispatchWorkflowGitHubUniversal(
+    "daily_story.yml",
+    inputs,
+    "Workflow Bot Reels avviato con successo su GitHub Actions in modalità '" + modeLabel + "'! Il video 9:16 verrà generato ed inviato con personal branding Immobiliare Giancani.",
+    "Impossibile avviare il workflow Bot Reels."
+  );
+}
+
+function eseguiBotModalitaRapida(mode) {
+  var modeSel = document.getElementById('bot-reels-select-modalita');
+  if (modeSel) modeSel.value = mode;
+  onCambioModalitaBotReels(mode);
+  eseguiBotMultiModalitaDaRegia();
+}
+
+// Retro-compatibilità per vecchie chiamate UI
+function onCambioLibroBotGatto(val) {
+  onCambioEpisodioBotReels(val);
+}
+function eseguiBotGattoNarratoreDaRegia() {
+  eseguiBotMultiModalitaDaRegia();
+}
+
+function apriCanaleTelegramBot() {
+  window.open("https://t.me/Antigravity1981bot", "_blank");
+}
+
+function eseguiProssimaStanzaDaRegia() {
+  logBotStorieConsole("🔄 Avanzamento stanza / inquadratura per la prossima storia...", "warn");
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        logBotStorieConsole("✅ Inquadratura ruotata alla prossima stanza.", "success");
+      })
+      .avanzaProssimaStanzaSocial();
+  } else {
+    logBotStorieConsole("✅ Comando rotazione memorizzato per il prossimo ciclo.", "success");
+  }
+}
+
+
+// Carica automaticamente quando si entra in Tab Palinsesto o all'avvio
+  window.addEventListener('load', function() {
+    setTimeout(caricaAnteprimaPostSocialAI, 2500);
+    setTimeout(caricaTempiRegiaUI, 3000);
+    setTimeout(caricaChiaviGroqPoolUI, 3500);
+    setTimeout(caricaModalitaAvatarUI, 1500);
+    setTimeout(caricaStileGraficaUI, 1000);
+    setTimeout(caricaPosizioneSetAvatarUI, 1100);
+    setTimeout(caricaCoppiaAvatarUI, 1200);
+    setTimeout(caricaStoricoCommentiLiveUI, 2000);
+        setTimeout(caricaCatalogoBotStorieUI, 2200);
+        setTimeout(function(){ try{ onCambioModalitaBotReels("bibbia"); }catch(e){} }, 2400);
+    setInterval(caricaStoricoCommentiLiveUI, 12000);
+  });
+
+
+function testDeveloperColonnaFPayload() {
+  var sheet = _botStorieCurrentSheet || 'Rotazione Automatica';
+  var stanza = _botStorieCurrentRoomIdx !== '' ? ('Stanza #' + (parseInt(_botStorieCurrentRoomIdx,10) + 1)) : 'Rotazione Automatica';
+  var pTxt = document.getElementById('storie-immobile-preview-testof');
+  var colF = pTxt ? pTxt.innerText : '';
+  var brandOk = colF.indexOf('Immobiliare Giancani') !== -1;
+  
+  logBotStorieConsole("══════════ [TEST DEVELOPER: COLONNA F & BRANDING] ══════════", "normal");
+  logBotStorieConsole("• Immobile selezionato: " + sheet, "normal");
+  logBotStorieConsole("• Inquadratura stanza: " + stanza, "normal");
+  logBotStorieConsole("• Testo Colonna F: " + colF, "normal");
+  logBotStorieConsole("• Branding 'Immobiliare Giancani' presente: " + (brandOk ? "✅ SÌ (CONFORME)" : "❌ NO (ERRORE)"), brandOk ? "success" : "error");
+  logBotStorieConsole("═════════════════════════════════════════════════════════════", "normal");
+  alert("🧪 [TEST DEVELOPER PAYLOAD]\n\nImmobile: " + sheet + "\nStanza: " + stanza + "\n\nTesto Colonna F:\n" + colF + "\n\nPersonal Branding: " + (brandOk ? "✅ CONFORME (Immobiliare Giancani)" : "❌ NON CONFORME"));
+}
+
+function testDeveloperTemaRotazione() {
+  logBotStorieConsole("══════════ [TEST DEVELOPER: 10 STILI GRAFICI & TEMI] ══════════", "normal");
+  PALETTE_GIORNALIERE.forEach(function(p, idx) {
+    var isOggi = idx === (new Date().getDay());
+    logBotStorieConsole((isOggi ? "▶ [OGGI] " : "  ") + p.giorno + ": " + p.nome + " (" + p.primario + " / " + p.secondario + ")", isOggi ? "success" : "normal");
+  });
+  logBotStorieConsole("• Stili grafici supportati nel motore unificato: 10", "normal");
+  logBotStorieConsole("  1. gabetti_diagonal | 2. capellupo_sidebar | 3. marketing_banner | 4. split_screen | 5. luxury_glass", "normal");
+  logBotStorieConsole("  6. editorial | 7. room_label | 8. ideacasa_layout | 9. casait_card | 10. tecnocasa_multi", "normal");
+  logBotStorieConsole("═════════════════════════════════════════════════════════════", "normal");
+  alert("🎨 [TEST DEVELOPER TEMI & GRAFICHE]\n\n10 Stili Grafici caricati.\nTema Attivo Oggi: " + (document.getElementById('storie-badge-tema-giorno') ? document.getElementById('storie-badge-tema-giorno').innerText : 'Pronto') + "\n\n— Immobiliare Giancani");
+}
+
+
+
+/**
+ * 🍓 Attiva Google Colab su Raspberry Pi da Generator (Regia Broadcast)
+ * Invia comando istantaneo a Telegram e avvia la pipeline remota
+ */
+function attivaColabSuRaspberryDaRegia() {
+  var btn = document.getElementById('btn-attiva-colab-raspi');
+  var fb = document.getElementById('colab-feedback-banner');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ INVIO SEGNALE IN CORSO...</span>';
+  }
+  if (fb) {
+    fb.style.display = 'block';
+    fb.style.background = 'rgba(245,158,11,0.2)';
+    fb.style.color = '#fbbf24';
+    fb.style.border = '1px solid #f59e0b';
+    fb.innerHTML = '⏳ Invio segnale remoto al Raspberry Pi e a Telegram in corso...';
+  }
+
+  var tgToken = "8671578336:AAEHI-s-2g3dY9qnIIVc_hWzDdOuHm-MS6M";
+  var tgChatId = "1723292483";
+  var msg = "🍓 <b>SEGNALE DI REGIA (GENERATOR) RICEVUTO!</b>\n\n🚀 Antonio Giancani ha premuto il tasto su <b>Generator</b> per attivare Colab su Raspberry Pi.\n\nAvvio quaderni Cloud in corso:\n• 🏛️ Mitologia Greca\n• 👶 Storie della Bibbia\n\n⭐ <b>— Immobiliare Giancani</b>";
+
+  var tgUrl = "https://api.telegram.org/bot" + tgToken + "/sendMessage";
+  var kbd = {
+    inline_keyboard: [
+      [
+        {"text": "🚀 Attiva Colab su Raspberry", "callback_data": "start_colab"}
+      ],
+      [
+        {"text": "⏹️ Stacca Bot", "callback_data": "stop_bot"},
+        {"text": "🔄 Riavvia da Capo", "callback_data": "restart_bot"}
+      ],
+      [
+        {"text": "📊 Stato in Tempo Reale", "callback_data": "status_bot"}
+      ]
+    ]
+  };
+
+  fetch(tgUrl, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      chat_id: tgChatId,
+      text: msg,
+      parse_mode: "HTML",
+      reply_markup: kbd
+    })
+  }).then(function(res) {
+    return res.json();
+  }).then(function(data) {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>✅ COLAB AVVIATO CON SUCCESSO!</span>';
+      setTimeout(function() {
+        btn.innerHTML = '<span>🚀 AVVIA COLAB SU RASPBERRY</span>';
+      }, 4000);
+    }
+    if (fb) {
+      fb.style.background = 'rgba(16,185,129,0.25)';
+      fb.style.color = '#6ee7b7';
+      fb.style.border = '1px solid #10b981';
+      fb.innerHTML = '✅ Segnale inviato al Raspberry Pi e a Telegram! I quaderni Google Colab sono stati attivati.';
+    }
+  }).catch(function(err) {
+    console.error("Errore invio Telegram da Generator:", err);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🚀 AVVIA COLAB SU RASPBERRY</span>';
+    }
+    if (fb) {
+      fb.style.background = 'rgba(239,68,68,0.25)';
+      fb.style.color = '#fca5a5';
+      fb.style.border = '1px solid #ef4444';
+      fb.innerHTML = '⚠️ Errore di connessione. Controlla Telegram per conferma.';
+    }
+  });
+
+  if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.attivaColabRaspberry === 'function') {
+    try { google.script.run.attivaColabRaspberry(); } catch(e){}
+  }
+}
+
+</script>

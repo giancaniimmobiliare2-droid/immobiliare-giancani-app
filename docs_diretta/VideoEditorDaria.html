@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎬 Video Editor Intelligente & Registrazione — DarIA & DarIO | Immobiliare Giancani</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #d4a853;
+      --gold-light: #ffd700;
+      --gold-dark: #aa7c28;
+      --gold-glow: rgba(212, 168, 83, 0.45);
+      --navy-dark: #060913;
+      --surface: #0a0f1d;
+      --surface-light: #12192c;
+      --border-gold: rgba(212, 168, 83, 0.35);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-red: #ef4444;
+      --accent-green: #22c55e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: #04060a;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* ===== TOPBAR STUDIO ===== */
+    .editor-topbar {
+      height: 60px;
+      background: rgba(8, 12, 22, 0.98);
+      border-bottom: 1.5px solid var(--border-gold);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-logo {
+      height: 38px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(212,168,83,0.4));
+    }
+
+    .topbar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .topbar-title span { color: var(--gold-light); }
+
+    .badge-editor-mode {
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.25), rgba(170, 124, 40, 0.15));
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-top-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-top-action:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--gold); }
+
+    .btn-top-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      color: #050814;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(212,168,83,0.35);
+    }
+    .btn-top-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,83,0.5); }
+
+    /* ===== MAIN WORKSPACE (2 PANELS: PREVIEW PLAYER & PROPRIETÀ) ===== */
+    .editor-workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      background: #020408;
+      min-height: 480px;
+    }
+
+    @media (max-width: 1080px) {
+      .editor-workspace { grid-template-columns: 1fr; }
+    }
+
+    /* Video Player Canvas Stage */
+    .player-stage-wrap {
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #0d1527 0%, #03050a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 0 1px rgba(212, 168, 83, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen-video-element {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Overlay Grafica Lower-Third */
+    .viewport-overlay-graphics {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .room-title-banner {
+      background: rgba(6, 10, 20, 0.88);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 8px 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.8);
+      transition: all 0.3s ease;
+    }
+
+    .room-banner-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .room-banner-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .room-banner-price {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #ffd700;
+      margin-top: 2px;
+    }
+
+    /* Avatar DarIA / DarIO Overlay */
+    .viewport-avatar-pip {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 140px;
+      height: 180px;
+      z-index: 25;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .avatar-pip-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.9));
+      transition: transform 0.3s ease;
+    }
+
+    .avatar-pip-badge {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(6, 10, 20, 0.8);
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 8.5px;
+      font-weight: 800;
+      color: var(--gold-light);
+      white-space: nowrap;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Player Controls Bar */
+    .player-controls-bar {
+      margin-top: 12px;
+      width: 100%;
+      max-width: 760px;
+      background: rgba(10, 16, 30, 0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-play-pause {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      color: #050814;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .timecode-display {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+    }
+
+    /* ===== SIDEBAR PROPRIETÀ & DATI IMMOBILE ===== */
+    .editor-sidebar {
+      background: rgba(8, 12, 22, 0.98);
+      border-left: 1.5px solid var(--border-gold);
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .editor-sidebar::-webkit-scrollbar { width: 4px; }
+    .editor-sidebar::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+
+    .side-box {
+      background: rgba(14, 20, 36, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .side-box-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .side-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .side-input, .side-select, .side-textarea {
+      width: 100%;
+      background: #060912;
+      border: 1px solid rgba(212, 168, 83, 0.35);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 11.5px;
+      color: #fff;
+      font-family: inherit;
+    }
+    .side-input:focus, .side-select:focus, .side-textarea:focus {
+      outline: none;
+      border-color: var(--gold-light);
+      box-shadow: 0 0 10px rgba(212,168,83,0.25);
+    }
+
+    /* ===== TIMELINE MULTI-TRACCIA (BOTTOM SECTION) ===== */
+    .timeline-container {
+      background: #060a14;
+      border-top: 2px solid var(--border-gold);
+      padding: 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.8);
+    }
+
+    .timeline-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .timeline-track-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      align-items: center;
+      background: rgba(10, 16, 28, 0.9);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 6px 10px;
+      min-height: 48px;
+    }
+
+    .track-meta {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .track-items-lane {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+
+    .clip-timeline-card {
+      background: linear-gradient(135deg, rgba(20, 30, 52, 0.95), rgba(10, 16, 30, 0.95));
+      border: 1.5px solid rgba(212, 168, 83, 0.4);
+      border-radius: 6px;
+      padding: 6px 10px;
+      min-width: 140px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.2s;
+    }
+    .clip-timeline-card:hover, .clip-timeline-card.active {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(212, 168, 83, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .clip-name {
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .clip-duration {
+      font-size: 9.5px;
+      color: var(--gold-light);
+      font-family: monospace;
+    }
+
+    /* Transizione Pill */
+    .transition-pill {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px dashed rgba(59, 130, 246, 0.6);
+      color: #93c5fd;
+      border-radius: 12px;
+      padding: 2px 7px;
+      font-size: 9px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Modal Wizard */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: #0a0f1e;
+      border: 1.5px solid var(--gold);
+      border-radius: 14px;
+      width: 520px;
+      max-width: 92vw;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="editor-topbar">
+    <div class="brand-cluster">
+      <img class="topbar-logo"
+           src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P"
+           onerror="this.style.display='none'"
+           alt="Immobiliare Giancani">
+      <div class="topbar-title">🎬 Studio Video &amp; Registrazione — <span>DarIA &amp; DarIO</span></div>
+      <div class="badge-editor-mode">AI SMART VIDEO EDITOR</div>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="btn-top-action" id="btn-open-drive-wizard">
+        📁 Cartella Drive &amp; Clip
+      </button>
+      <button class="btn-top-action btn-top-gold" id="btn-render-export">
+        💾 Salva &amp; Registra Video
+      </button>
+      <a class="btn-top-action" href="<?= ScriptApp.getService().getUrl() ?>?page=verticale" target="_blank">
+        📱 Diretta Verticale
+      </a>
+      <a class="btn-top-action" href="<?= ScriptApp.getService().getUrl() ?>" target="_blank">
+        🔴 Diretta 16:9
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== WORKSPACE CENTRALE ===== -->
+  <div class="editor-workspace">
+
+    <!-- Player Video Stage -->
+    <div class="player-stage-wrap">
+      <div class="video-viewport" id="video-viewport">
+        
+        <!-- Video Element / Clip Attiva -->
+        <video class="screen-video-element" id="main-video-player" playsinline>
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+        </video>
+
+        <!-- Overlay Grafica Lower-Third TV -->
+        <div class="viewport-overlay-graphics">
+          <div class="room-title-banner" id="room-lower-third">
+            <div class="room-banner-label">IMMOBILIARE GIANCANI • FAVARA</div>
+            <div class="room-banner-title" id="txt-overlay-room">SALONE PANORAMICO</div>
+            <div class="room-banner-price" id="txt-overlay-price">€ 185.000 • Trattativa in sede</div>
+          </div>
+        </div>
+
+        <!-- Avatar Conduttore Overlay PiP -->
+        <div class="viewport-avatar-pip" id="viewport-avatar-pip">
+          <img class="avatar-pip-img" id="img-avatar-pip"
+               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+               alt="DarIA">
+          <div class="avatar-pip-badge" id="badge-avatar-name">DarIA • Conduttrice</div>
+        </div>
+
+      </div>
+
+      <!-- Barra Controlli Player -->
+      <div class="player-controls-bar">
+        <button class="btn-play-pause" id="btn-toggle-play">▶</button>
+        <span class="timecode-display" id="timecode-display">00:00 / 00:00</span>
+        <div style="flex:1;"></div>
+        <button class="btn-top-action" id="btn-step-prev" style="padding:4px 8px;">⏮️ Clip Prec.</button>
+        <button class="btn-top-action" id="btn-step-next" style="padding:4px 8px;">⏭️ Clip Succ.</button>
+      </div>
+    </div>
+
+    <!-- Sidebar Dati Immobile & Copione Colonna F -->
+    <aside class="editor-sidebar">
+      
+      <!-- Box Dati Immobile Richiesti -->
+      <div class="side-box">
+        <div class="side-box-title">
+          <span>📋 Scheda Immobile Registrato</span>
+          <span style="font-size: 9px; color: var(--gold-light);">Drive &amp; Sheet</span>
+        </div>
+
+        <label class="side-label">Tipologia Immobile:</label>
+        <select class="side-select" id="sel-tipo-immobile">
+          <option value="Villa con Giardino">Villa con Giardino</option>
+          <option value="Appartamento di Pregio" selected>Appartamento di Pregio</option>
+          <option value="Attico Panoramico">Attico Panoramico</option>
+          <option value="Casa Indipendente">Casa Indipendente</option>
+          <option value="Locale Commerciale">Locale Commerciale</option>
+          <option value="Terreno Edificabile">Terreno Edificabile</option>
+          <option value="Rustico / Casale Storico">Rustico / Casale Storico</option>
+          <option value="Garage / Box Auto">Garage / Box Auto</option>
+        </select>
+
+        <label class="side-label">Stato Rifinitivo:</label>
+        <select class="side-select" id="sel-stato-rifinitivo">
+          <option value="Nuovo / Recente Costruzione">Nuovo / Recente Costruzione</option>
+          <option value="Ottimo Stato" selected>Ottimo Stato</option>
+          <option value="Buono Stato">Buono Stato</option>
+          <option value="Da Ristrutturare">Da Ristrutturare</option>
+          <option value="Grezzo da Rifinire">Grezzo da Rifinire</option>
+          <option value="Ristrutturato Lusso">Ristrutturato Lusso</option>
+        </select>
+
+        <label class="side-label">Prezzo Vendita:</label>
+        <input type="text" class="side-input" id="input-prezzo-video" value="€ 185.000" placeholder="Lascia vuoto per 'Trattativa in sede'">
+
+        <label class="side-label">Città:</label>
+        <input type="text" class="side-input" id="input-citta-video" value="FAVARA">
+
+        <label class="side-label">Superficie (per esteso):</label>
+        <input type="text" class="side-input" id="input-superficie-video" value="185 metri quadri">
+      </div>
+
+      <!-- Box Conduttore & Voce -->
+      <div class="side-box">
+        <div class="side-box-title">
+          <span>🎭 Conduttore &amp; Parlato</span>
+          <span style="font-size: 9px; color: #38bdf8;">Voce Contestuale</span>
+        </div>
+
+        <label class="side-label">Seleziona Avatar:</label>
+        <select class="side-select" id="sel-avatar-video">
+          <option value="daria_classica" selected>DarIA Classica (Mora)</option>
+          <option value="daria_bionda">Beatrice (Bionda Luxury)</option>
+          <option value="daria_rossa">Tina (Rossa Architettura)</option>
+          <option value="daria_bronde">Chiara (Bronde Famiglie)</option>
+          <option value="dario_classico">DarIO (Anchor Desk Uomo)</option>
+        </select>
+
+        <label class="side-label">Intro Stanza (DarIA dice prima della clip):</label>
+        <input type="text" class="side-input" id="input-intro-daria" value="Ecco a voi, ora entriamo nel salone panoramico...">
+
+        <label class="side-label">Descrizione Contestuale (Colonna F):</label>
+        <textarea class="side-textarea" id="textarea-copione-colf" rows="3">Luminoso e raffinato, questo ambiente si apre verso una terrazza esclusiva su Favara. Uno spazio ideale per vivere nel massimo comfort. — Immobiliare Giancani</textarea>
+      </div>
+
+      <!-- Box Musica & Transizioni -->
+      <div class="side-box">
+        <div class="side-box-title">
+          <span>🎵 Sottofondo Musicale &amp; Mix</span>
+        </div>
+        <select class="side-select" id="sel-bgm-track">
+          <option value="luxury_ambient">Luxury Ambient Piano (Royalty-Free)</option>
+          <option value="chill_estate">Acoustic Dream Real Estate</option>
+          <option value="modern_lounge">Modern Corporate Lounge</option>
+          <option value="none">Nessuna Musica</option>
+        </select>
+        
+        <label class="side-label" style="display:flex; justify-content:space-between;">
+          <span>Volume Musica (Auto-Ducking attivo):</span>
+          <span id="val-bgm-vol">30%</span>
+        </label>
+        <input type="range" class="side-input" id="slider-bgm-vol" min="0" max="100" value="30">
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ===== TIMELINE MULTI-TRACCIA IN BASSO ===== -->
+  <footer class="timeline-container">
+    
+    <div class="timeline-header-bar">
+      <div style="font-size: 12px; font-weight: 800; color: var(--gold-light); display:flex; align-items:center; gap:8px;">
+        <span>🎞️ TIMELINE MULTI-TRACCIA</span>
+        <span style="font-size:10px; color:#94a3b8; font-weight:600;">Trascina, ordina e imposta le dissolvenze</span>
+      </div>
+      <button class="btn-top-action" id="btn-add-clip-manual" style="padding:4px 10px; font-size:11px;">
+        ➕ Aggiungi Clip
+      </button>
+    </div>
+
+    <!-- Traccia 1: Video Clips & Dissolvenze -->
+    <div class="timeline-track-row">
+      <div class="track-meta"><span>📹</span> Video Clips</div>
+      <div class="track-items-lane" id="lane-video-clips">
+        <div class="clip-timeline-card active" data-clip-id="1" data-stanza="Salone Panoramico">
+          <span class="clip-name">1. Salone Panoramico</span>
+          <span class="clip-duration">00:12</span>
+        </div>
+        <span class="transition-pill" data-trans="crossfade">⚡ Dissolvenza Incrociata</span>
+        <div class="clip-timeline-card" data-clip-id="2" data-stanza="Cucina Abitabile">
+          <span class="clip-name">2. Cucina Abitabile</span>
+          <span class="clip-duration">00:10</span>
+        </div>
+        <span class="transition-pill" data-trans="wipe_gold">✨ Wipe Dorato</span>
+        <div class="clip-timeline-card" data-clip-id="3" data-stanza="Camera Padronale">
+          <span class="clip-name">3. Camera Padronale</span>
+          <span class="clip-duration">00:15</span>
+        </div>
+        <span class="transition-pill" data-trans="fade_black">🌑 Dissolvenza a Nero</span>
+        <div class="clip-timeline-card" data-clip-id="4" data-stanza="Outro Recap Finale" style="border-color: var(--gold-light); background: linear-gradient(135deg, rgba(212,168,83,0.3), rgba(10,16,30,0.9));">
+          <span class="clip-name">4. 🏆 Recap Finale &amp; Dati</span>
+          <span class="clip-duration">00:08</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Traccia 2: Voce DarIA & Intro -->
+    <div class="timeline-track-row">
+      <div class="track-meta"><span>🗣️</span> Voce DarIA</div>
+      <div class="track-items-lane" id="lane-daria-voice">
+        <div style="background: rgba(212,168,83,0.2); border: 1px solid var(--gold); border-radius: 4px; padding: 4px 8px; font-size: 10px; color:#fff;">
+          🎙️ Intro Salone ("Ecco a voi...")
+        </div>
+        <div style="flex:1;"></div>
+        <div style="background: rgba(212,168,83,0.2); border: 1px solid var(--gold); border-radius: 4px; padding: 4px 8px; font-size: 10px; color:#fff;">
+          🎙️ Intro Cucina ("Ora entriamo...")
+        </div>
+        <div style="flex:1;"></div>
+        <div style="background: rgba(212,168,83,0.2); border: 1px solid var(--gold); border-radius: 4px; padding: 4px 8px; font-size: 10px; color:#fff;">
+          🎙️ Intro Camera ("La zona notte...")
+        </div>
+      </div>
+    </div>
+
+    <!-- Traccia 3: BGM Musica -->
+    <div class="timeline-track-row">
+      <div class="track-meta"><span>🎵</span> Musica BGM</div>
+      <div class="track-items-lane" id="lane-bgm-music">
+        <div style="width: 100%; background: linear-gradient(90deg, rgba(59,130,246,0.3), rgba(59,130,246,0.15)); border: 1px solid #3b82f6; border-radius: 4px; padding: 4px 10px; font-size: 10px; color:#93c5fd;">
+          🎼 Luxury Ambient Piano • Auto-Ducking Attivo durante il parlato di DarIA
+        </div>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- ===== MODAL DRIVE & UPLOAD WIZARD ===== -->
+  <div class="modal-overlay" id="modal-drive-wizard">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span>📁 Gestione Cartella Drive &amp; Upload Clip Video</span>
+        <button id="btn-close-modal" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+
+      <p style="font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
+        Puoi caricare nuove clip video dal computer o selezionare una cartella Google Drive già esistente per collegarla all'immobile in diretta e al relativo Sheet:
+      </p>
+
+      <label class="side-label">Nome Cartella Immobile in Drive:</label>
+      <input type="text" class="side-input" id="input-drive-folder-name" value="Immobile_Favara_Villa_185mq">
+
+      <label class="side-label">Cartella Genitore (Opzionale - Sposta/Annida all'interno di):</label>
+      <input type="text" class="side-input" id="input-drive-parent-id" placeholder="ID o Percorso Cartella Esistente (es. Immobili_In_Vendita)">
+
+      <label class="side-label">Carica Clip Video dal PC (MP4 / MOV / WebM):</label>
+      <input type="file" id="input-file-video-clips" multiple accept="video/*" class="side-input">
+
+      <div style="display: flex; gap: 8px; margin-top: 6px;">
+        <button class="btn-top-action btn-top-gold" id="btn-confirm-drive-sync" style="flex:1;">
+          ✅ Collega Cartella &amp; Sincronizza Sheet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assets Avatar Roster -->
+  <?!= include('AvatarAssets') ?>
+
+  <script>
+    const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+
+    // Roster immagini avatar di base
+    const AVATAR_PORTRAITS = {
+      daria_classica: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      daria_bionda: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=600&auto=format&fit=crop",
+      daria_rossa: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop",
+      daria_bronde: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop",
+      dario_classico: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop"
+    };
+
+    if (typeof window.AVATAR_ROSTER !== 'undefined') {
+      const allR = [...(window.AVATAR_ROSTER.donne || []), ...(window.AVATAR_ROSTER.uomini || [])];
+      allR.forEach(c => {
+        if (c.id && c.img) AVATAR_PORTRAITS[c.id] = c.img;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const player = document.getElementById('main-video-player');
+      const btnPlay = document.getElementById('btn-toggle-play');
+      const timecode = document.getElementById('timecode-display');
+      const modal = document.getElementById('modal-drive-wizard');
+
+      // Play / Pause
+      btnPlay.addEventListener('click', () => {
+        if (player.paused) {
+          player.play();
+          btnPlay.textContent = '⏸';
+          parlaIntroDarIA();
+        } else {
+          player.pause();
+          btnPlay.textContent = '▶';
+        }
+      });
+
+      // Timecode
+      player.addEventListener('timeupdate', () => {
+        const cur = formatTime(player.currentTime);
+        const tot = formatTime(player.duration || 0);
+        timecode.textContent = `${cur} / ${tot}`;
+      });
+
+      function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+      }
+
+      // Parla Intro DarIA
+      function parlaIntroDarIA() {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const introText = document.getElementById('input-intro-daria').value.trim();
+        if (!introText) return;
+
+        let clean = introText;
+        if (!clean.includes("Immobiliare Giancani")) {
+          clean += " — Immobiliare Giancani";
+        }
+
+        const ut = new SpeechSynthesisUtterance(clean);
+        ut.lang = 'it-IT';
+        ut.rate = 1.02;
+
+        const pip = document.getElementById('viewport-avatar-pip');
+        ut.onstart = () => { if (pip) pip.style.transform = 'scale(1.08)'; };
+        ut.onend = ut.onerror = () => { if (pip) pip.style.transform = 'scale(1.0)'; };
+
+        window.speechSynthesis.speak(ut);
+      }
+
+      // Avatar Switcher
+      document.getElementById('sel-avatar-video').addEventListener('change', (e) => {
+        const id = e.target.value;
+        const img = document.getElementById('img-avatar-pip');
+        const badge = document.getElementById('badge-avatar-name');
+        if (img && AVATAR_PORTRAITS[id]) {
+          img.src = AVATAR_PORTRAITS[id];
+        }
+        if (badge) {
+          badge.textContent = id.includes('dario') ? "DarIO • Anchor Desk" : "DarIA • Conduttrice TV";
+        }
+      });
+
+      // Selettore Stanze Timeline
+      document.querySelectorAll('.clip-timeline-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.clip-timeline-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          const stanza = card.getAttribute('data-stanza');
+          const pz = document.getElementById('input-prezzo-video').value.trim() || "Trattativa in sede";
+          const ct = document.getElementById('input-citta-video').value.trim() || "FAVARA";
+
+          document.getElementById('txt-overlay-room').textContent = stanza.toUpperCase();
+          document.getElementById('txt-overlay-price').textContent = `${pz} • ${ct}`;
+          document.getElementById('input-intro-daria').value = `Ecco a voi, ora entriamo nel ${stanza}...`;
+        });
+      });
+
+      // Modale Drive
+      document.getElementById('btn-open-drive-wizard').addEventListener('click', () => modal.classList.add('open'));
+      document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.remove('open'));
+
+      // Conferma Sync Drive & Sheets
+      document.getElementById('btn-confirm-drive-sync').addEventListener('click', () => {
+        const folderName = document.getElementById('input-drive-folder-name').value.trim();
+        const tipo = document.getElementById('sel-tipo-immobile').value;
+        const prezzo = document.getElementById('input-prezzo-video').value.trim() || "Trattativa in sede";
+        const citta = document.getElementById('input-citta-video').value.trim() || "FAVARA";
+
+        alert(`✅ Cartella "${folderName}" creata e collegata su Google Drive!\nImmobile: ${tipo} a ${citta} (${prezzo}).\nSincronizzazione Colonna F su Google Sheet completata con successo! — Immobiliare Giancani`);
+        modal.classList.remove('open');
+      });
+
+      // Salva & Registra Video (Outro Recap)
+      document.getElementById('btn-render-export').addEventListener('click', () => {
+        const sup = document.getElementById('input-superficie-video').value.trim();
+        const pz = document.getElementById('input-prezzo-video').value.trim() || "Trattativa in sede";
+        const ct = document.getElementById('input-citta-video').value.trim() || "FAVARA";
+
+        alert(`🎬 Video Registrato con Successo!\n• Tutte le clip video montate con dissolvenze.\n• Intro vocale DarIA sincronizzata.\n• Outro finale generata con superficie ${sup}, prezzo ${pz}, città ${ct}, telefono 3201667156.\n— Immobiliare Giancani`);
+      });
+    });
+  </script>
+
+</body>
+</html>

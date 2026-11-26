@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+    .chat-container { background: #fff; width: 100%; max-width: 400px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 90vh; overflow: hidden; }
+    .header { background: #007bff; color: white; padding: 15px; text-align: center; font-weight: bold; }
+    .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; }
+    .msg.user { background: #dcf8c6; align-self: flex-end; }
+    .msg.daria { background: #f1f0f0; align-self: flex-start; }
+    .controls { padding: 15px; background: #fafafa; border-top: 1px solid #ddd; }
+    input[type="text"] { width: calc(100% - 20px); padding: 10px; border-radius: 20px; border: 1px solid #ccc; margin-bottom: 10px; }
+    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="header">Simulatore DarIA 🤖</div>
+    <div class="messages" id="messages">
+      <div class="msg daria">Ciao! Sono pronta a gestire la regia. Usa i comandi qui sotto per simulare un evento.</div>
+    </div>
+    
+    <div class="controls">
+      <input type="text" id="userInput" placeholder="Es: Fammi vedere il salotto..." />
+      <button onclick="simulaComando()">Invia a PRISM</button>
+    </div>
+  </div>
+
+  <script>
+    const urlCorrente = 'https://script.google.com/macros/s/AKfycbwdmWWHI8ARQbhT-mF_o5usD1BjDiBI5YyCZym0b4uE6-boSG1G-81bdkmcsCr6lMPZmw/exec'; // URL della tua web app
+    
+    function addMsg(testo, chi) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + chi;
+      div.innerText = testo;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function simulaComando() {
+      const txt = document.getElementById('userInput').value;
+      if(!txt) return;
+      addMsg(txt, 'user');
+      document.getElementById('userInput').value = '';
+      
+      addMsg('Invio segnale alla regia...', 'daria');
+      
+      // Simula i dati per la schermata
+      const payload = {
+        mediaUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        prezzo: "150.000 €",
+        mq: "120",
+        tipoMedia: "video",
+        testo: txt,
+        lingua: "it-IT"
+      };
+
+      fetch(urlCorrente, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(payload)
+      }).then(res => res.json()).then(data => {
+        addMsg('✅ Schermo aggiornato con successo!', 'daria');
+      }).catch(err => {
+        addMsg('❌ Errore di rete', 'daria');
+      });
+    }
+  </script>
+</body>
+</html>

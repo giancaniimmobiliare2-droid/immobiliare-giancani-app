@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Area Riservata Proprietari | Immobiliare Giancani</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#f4f7f9',
+            surface: '#ffffff',
+            surfaceLight: '#f8fafc',
+            accent: '#cfa853',
+            accentLight: '#e0ba68',
+            emeraldCustom: '#10b981',
+            mutedCustom: '#60727e',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f4f7f9;
+      color: #1c2d37;
+      font-family: 'Outfit', sans-serif !important;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      color: #1c2d37;
+    }
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(207, 168, 83, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #cfa853 0%, #e0ba68 50%, #b88f3a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Style overrides for Light Theme */
+    .text-white { color: #1c2d37 !important; }
+    .text-slate-100 { color: #1c2d37 !important; }
+    .text-slate-200 { color: #2c3e50 !important; }
+    .text-slate-300 { color: #4b5563 !important; }
+    .text-slate-400 { color: #6b7280 !important; }
+    .text-slate-500 { color: #9ca3af !important; }
+    
+    /* Input style overrides */
+    input {
+      background-color: rgba(28, 45, 55, 0.04) !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      color: #1c2d37 !important;
+    }
+    input::placeholder {
+      color: rgba(28, 45, 55, 0.4) !important;
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+    }
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 6s linear infinite;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-accent selection:text-white min-h-screen flex flex-col">
+
+  <!-- ==========================================
+       HEADER
+       ========================================== -->
+  <header class="w-full max-w-6xl mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-accentLight flex items-center justify-center font-display text-xl font-bold shadow-lg shadow-accent/20">🏡</div>
+      <div>
+        <h1 class="font-display font-bold text-base leading-tight">Area Riservata</h1>
+        <p class="text-[10px] text-mutedCustom font-medium uppercase tracking-wider">Proprietari</p>
+      </div>
+    </div>
+    <div id="badge-periodo" class="hidden px-3.5 py-1 rounded-full text-xs font-semibold bg-accent/10 border border-accent/20 text-accentLight shadow-inner shadow-accent/5">
+      Caricamento...
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="flex-grow w-full max-w-6xl mx-auto px-4 py-4 flex flex-col gap-6">
+
+    <!-- LOADER -->
+    <div id="loading" class="flex flex-col items-center justify-center py-20 gap-4">
+      <div class="text-4xl animate-spin text-accent">⏳</div>
+      <p class="text-xs font-bold uppercase tracking-widest text-mutedCustom animate-pulse">Generazione Dashboard in corso...</p>
+    </div>
+
+    <!-- SEZIONE LOGIN TELEFONO -->
+    <div id="sezioneLoginTelefono" class="hidden glass rounded-3xl p-8 max-w-md w-full mx-auto space-y-6 shadow-2xl relative overflow-hidden border border-white/10 mt-10">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 rounded-full blur-3xl"></div>
+      
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto text-accent shadow-inner">
+          <i class="fa-solid fa-folder-open text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-display font-extrabold tracking-tight">Accedi all'Area Riservata</h3>
+        <p class="text-xs text-mutedCustom leading-relaxed">Inserisci il <b>Codice Annuncio (Ticket)</b>, il nome del proprietario o il numero di cellulare per visualizzare il report in tempo reale dell'immobile.</p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-mutedCustom">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input type="text" id="telefonoInput" placeholder="Rif: ANN-1234, Nome o Telefono" class="w-full pl-11 pr-4 py-4 bg-white/5 border border-white/10 focus:border-accent rounded-2xl font-semibold text-center text-lg transition-all focus:outline-none focus:ring-1 focus:ring-accent text-white placeholder-mutedCustom/40">
+        </div>
+        
+        <button onclick="sbloccaConTelefono()" class="w-full bg-gradient-to-r from-accent to-accentLight hover:opacity-95 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-accent/20 active:scale-[0.98] text-sm uppercase tracking-wider font-display">
+          Visualizza Report 📊
+        </button>
+      </div>
+      
+      <div class="text-center">
+        <p class="text-[9px] text-mutedCustom/50">Servizio di monitoraggio esclusivo. Immobiliare Giancani.</p>
+      </div>
+    </div>
+
+    <!-- SEZIONE DASHBOARD PROPRIETARIO -->
+    <div id="dashboard" class="hidden space-y-6">
+      
+      <!-- PROPERTY OVERVIEW CARD -->
+      <div class="glass rounded-3xl p-6 flex flex-col md:flex-row gap-5 items-center justify-between relative overflow-hidden border border-white/10 shadow-lg">
+        <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-tr from-accent/5 to-accentLight/5 rounded-full blur-3xl"></div>
+        
+        <div class="flex items-center gap-4 flex-col md:flex-row text-center md:text-left">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accent to-accentLight flex items-center justify-center shadow-lg shadow-accent/20 flex-shrink-0">
+            <i class="fa-solid fa-house-chimney text-2xl text-white"></i>
+          </div>
+          <div>
+            <h3 id="ind_immobile" class="font-display font-extrabold text-lg leading-snug">Caricamento...</h3>
+            <p id="tck_immobile" class="text-xs text-mutedCustom mt-1">Rif: ---</p>
+          </div>
+        </div>
+        <div class="flex flex-col items-center md:items-end gap-2">
+          <span id="badge-stato" class="bg-emerald-500/10 border border-emerald-500/20 text-emeraldCustom px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-inner">IN VENDITA</span>
+          <p id="proprietario-nome" class="text-[10px] text-mutedCustom uppercase font-bold tracking-wider">--</p>
+        </div>
+      </div>
+
+      <!-- KEY METRICS GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- CARD 1: SOCIAL INTEREST -->
+        <div class="glass rounded-3xl p-5 flex items-center gap-4 border border-white/5 hover:border-accent/20 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl shadow-inner">
+            <i class="fa-regular fa-eye"></i>
+          </div>
+          <div>
+            <div id="visite_social" class="text-3xl font-display font-black tracking-tight text-white">--</div>
+            <div class="text-[10px] text-mutedCustom uppercase tracking-wider font-semibold mt-0.5">Visualizzazioni Social & Web</div>
+          </div>
+        </div>
+
+        <!-- CARD 2: PHYSICAL VISITS -->
+        <div class="glass rounded-3xl p-5 flex items-center gap-4 border border-white/5 hover:border-accent/20 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl shadow-inner">
+            <i class="fa-solid fa-people-group"></i>
+          </div>
+          <div>
+            <div id="visite_loco" class="text-3xl font-display font-black tracking-tight text-white">--</div>
+            <div class="text-[10px] text-mutedCustom uppercase tracking-wider font-semibold mt-0.5">Visite Fisiche in Loco</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BENCHMARK DI ZONA (CONFRONTO PREZZI AL MQ) -->
+      <div class="glass rounded-3xl p-6 border border-white/5 space-y-4 relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-display font-bold uppercase text-mutedCustom tracking-wider">
+            <i class="fa-solid fa-scale-balanced mr-1.5 text-accent"></i> Analisi Posizionamento di Mercato
+          </h4>
+          <span id="badge-scostamento" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold">--</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex justify-between text-xs text-slate-300 font-medium">
+            <span>Prezzo medio di zona: <strong id="val-media-zona" class="text-white">--</strong></span>
+            <span>Tuo prezzo al mq: <strong id="val-tuo-mq" class="text-accentLight">--</strong></span>
+          </div>
+          
+          <!-- Slider di posizionamento -->
+          <div class="relative w-full h-3 bg-white/5 rounded-full border border-white/10">
+            <div id="slider-indicator" class="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-gradient-to-tr from-accent to-accentLight shadow-lg shadow-accent/50 rounded-full border-2 border-white transition-all duration-1000" style="left: 50%;"></div>
+          </div>
+          
+          <div class="flex justify-between text-[9px] text-mutedCustom uppercase tracking-wider font-bold">
+            <span id="val-min-zona">Min: --</span>
+            <span class="text-accentLight">Media Zona</span>
+            <span id="val-max-zona">Max: --</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- METODO GIANCANI INSIGHTS CAROUSEL -->
+      <div class="glass rounded-3xl p-6 border border-white/5 bg-gradient-to-r from-accent/5 to-accentLight/5 flex items-start gap-4">
+        <div class="text-accent text-2xl mt-0.5 animate-bounce">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-xs font-display font-bold uppercase tracking-wider text-accentLight">Il Metodo Giancani</h4>
+          <p id="frase-marketing" class="text-xs font-medium text-slate-300 leading-relaxed min-h-[32px] transition-all duration-500">Elaborazione canali di marketing...</p>
+        </div>
+      </div>
+
+      <!-- CHARTS SECTION -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- CHART 1: CHANNELS DISTRIBUTION -->
+        <div class="glass rounded-3xl p-5 border border-white/5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-display font-bold uppercase text-mutedCustom tracking-wider"><i class="fa-solid fa-chart-pie mr-1 text-accent"></i> Canali di Copertura</h4>
+            <span class="text-[10px] text-mutedCustom/40">Dati aggregati</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+
+        <!-- CHART 2: TIME TREND -->
+        <div class="glass rounded-3xl p-5 border border-white/5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-display font-bold uppercase text-mutedCustom tracking-wider"><i class="fa-solid fa-chart-line mr-1 text-accent"></i> Trend Interazioni</h4>
+            <span class="text-[10px] text-mutedCustom/40">Settimanale</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TIMELINE EVENTI REALI (DIARIO DI BORDO) & CHECKLIST DOCUMENTALE -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- TIMELINE VERTICALE -->
+        <div class="glass rounded-3xl p-6 border border-white/5 space-y-4">
+          <h4 class="text-xs font-display font-bold uppercase text-mutedCustom tracking-wider">
+            <i class="fa-solid fa-timeline mr-1.5 text-accent"></i> Diario di Bordo dell'Immobile
+          </h4>
+          <div id="timeline-container" class="relative pl-6 border-l border-white/10 space-y-5 mt-2">
+            <!-- Popolato via JS -->
+          </div>
+        </div>
+
+        <!-- CHECKLIST STATO PRATICA -->
+        <div class="glass rounded-3xl p-6 border border-white/5 space-y-4">
+          <h4 class="text-xs font-display font-bold uppercase text-mutedCustom tracking-wider">
+            <i class="fa-solid fa-folder-open mr-1.5 text-accent"></i> Stato Pratica Documentale
+          </h4>
+          
+          <!-- Amazon Style Tracker -->
+          <div class="py-4 border-b border-white/5 mb-2">
+            <div class="flex items-center justify-between text-[10px] text-mutedCustom uppercase font-bold tracking-wider mb-3">
+              <span>Tracciamento Conformità</span>
+              <span id="amazon-tracker-percentage" class="text-accentLight">0%</span>
+            </div>
+            
+            <div class="relative flex items-center justify-between w-full">
+              <!-- Barra grigia di sfondo -->
+              <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full z-0"></div>
+              <!-- Barra colorata di progresso -->
+              <div id="amazon-tracker-line" class="absolute left-0 top-1/2 -translate-y-1/2 h-[4px] bg-gradient-to-r from-accent to-accentLight rounded-full z-0 transition-all duration-1000" style="width: 0%;"></div>
+              
+              <!-- Step 1 -->
+              <div class="flex flex-col items-center gap-1.5 z-10">
+                <div id="step-circle-1" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500">
+                  <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <span class="text-[8px] font-bold text-mutedCustom uppercase tracking-wider">Incarico</span>
+              </div>
+              
+              <!-- Step 2 -->
+              <div class="flex flex-col items-center gap-1.5 z-10">
+                <div id="step-circle-2" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500">
+                  <i class="fa-solid fa-book-open"></i>
+                </div>
+                <span class="text-[8px] font-bold text-mutedCustom uppercase tracking-wider">Verifica</span>
+              </div>
+              
+              <!-- Step 3 -->
+              <div class="flex flex-col items-center gap-1.5 z-10">
+                <div id="step-circle-3" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <span class="text-[8px] font-bold text-mutedCustom uppercase tracking-wider">Certificati</span>
+              </div>
+              
+              <!-- Step 4 -->
+              <div class="flex flex-col items-center gap-1.5 z-10">
+                <div id="step-circle-4" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500">
+                  <i class="fa-solid fa-award"></i>
+                </div>
+                <span class="text-[8px] font-bold text-mutedCustom uppercase tracking-wider">Conforme</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="documenti-container" class="space-y-3 mt-2">
+            <!-- Popolato via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- AGENT'S PERSONAL NOTE -->
+      <div class="glass rounded-3xl p-6 border-l-4 border-l-accent border border-white/5 space-y-3 relative overflow-hidden bg-white/[0.01]">
+        <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-2xl"></div>
+        <h4 class="text-xs font-display font-bold uppercase text-accentLight tracking-wider"><i class="fa-solid fa-user-tie mr-1.5"></i> Aggiornamento da Immobiliare Giancani</h4>
+        <p id="nota_agente" class="text-sm text-slate-300 leading-relaxed italic">--</p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="w-full max-w-6xl mx-auto px-4 py-8 text-center border-t border-white/5 space-y-2 mt-auto">
+    <p class="text-xs text-mutedCustom">Report strategico per la valorizzazione del patrimonio immobiliare.</p>
+    <p class="text-sm font-display font-extrabold text-white tracking-wide">Immobiliare Giancani</p>
+  </footer>
+
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
+  <script>
+    // Iniezione ticket iniziale da Apps Script
+    window.onload = function() {
+      const ticketId = "<?= ticket ?>"; 
+      
+      if (ticketId && ticketId.trim() !== "") {
+        document.getElementById('loading').classList.remove('hidden');
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .withFailureHandler(function() { 
+             document.getElementById('loading').innerHTML = "<div class='text-red-500 font-bold p-4 text-center'>Errore di caricamento temporaneo. Riprova più tardi.</div>"; 
+          })
+          .OttieniDatiReportVenditore(ticketId);
+      } else {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('sezioneLoginTelefono').classList.remove('hidden');
+      }
+    };
+
+    // Sblocco con cellulare
+    function sbloccaConTelefono() {
+      let tel = document.getElementById('telefonoInput').value;
+      if(!tel.trim()) return alert("Inserisci il tuo numero di telefono!");
+      
+      document.getElementById('sezioneLoginTelefono').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+      
+      google.script.run
+        .withSuccessHandler(function(data) {
+           if(!data) {
+             alert("Numero non registrato o nessun report attivo per questo numero!");
+             document.getElementById('loading').classList.add('hidden');
+             document.getElementById('sezioneLoginTelefono').classList.remove('hidden');
+             return;
+           }
+           renderDashboard(data);
+        })
+        .withFailureHandler(function(err) { 
+           alert("Errore durante la connessione: " + err.message); 
+           document.getElementById('loading').classList.add('hidden'); 
+           document.getElementById('sezioneLoginTelefono').classList.remove('hidden');
+        })
+        .sbloccaDatiConTelefono(tel);
+    }
+
+    // Costruzione grafica della dashboard
+    function renderDashboard(dati) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+
+      document.getElementById('ind_immobile').innerText = dati.indirizzo;
+      document.getElementById('tck_immobile').innerText = "Rif: " + dati.ticket;
+      document.getElementById('visite_social').innerText = dati.visiteSocial.toLocaleString('it-IT');
+      document.getElementById('visite_loco').innerText = dati.visiteLoco;
+      document.getElementById('nota_agente').innerText = dati.notaAndamento;
+      
+      if (dati.proprietario) {
+        document.getElementById('proprietario-nome').innerText = dati.proprietario;
+      }
+      
+      avviaCaroselloFrasi();
+
+      var settimane = Math.ceil(dati.giorniLancio / 7) || 1;
+      var badgePeriodo = document.getElementById('badge-periodo');
+      badgePeriodo.innerText = "Settimana " + settimane + " dal lancio";
+      badgePeriodo.classList.remove('hidden');
+
+      // 1. Render Benchmark di Zona
+      if (dati.prezzoMqProprieta) {
+        document.getElementById('val-media-zona').innerText = '€ ' + dati.prezzoMqMedioZona.toLocaleString('it-IT') + '/mq';
+        document.getElementById('val-tuo-mq').innerText = '€ ' + dati.prezzoMqProprieta.toLocaleString('it-IT') + '/mq';
+        document.getElementById('val-min-zona').innerText = 'Min: € ' + dati.benchmarkMin.toLocaleString('it-IT');
+        document.getElementById('val-max-zona').innerText = 'Max: € ' + dati.benchmarkMax.toLocaleString('it-IT');
+        
+        let range = dati.benchmarkMax - dati.benchmarkMin;
+        let percentage = range > 0 ? ((dati.prezzoMqProprieta - dati.benchmarkMin) / range) * 100 : 50;
+        if (percentage < 0) percentage = 0;
+        if (percentage > 100) percentage = 100;
+        document.getElementById('slider-indicator').style.left = 'calc(' + percentage + '% - 8px)';
+        
+        let scostBadge = document.getElementById('badge-scostamento');
+        if (dati.scostamentoPct > 0) {
+          scostBadge.innerText = '+' + dati.scostamentoPct + '% rispetto alla media';
+          scostBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 border border-red-500/20 text-red-400 shadow-inner';
+        } else if (dati.scostamentoPct < 0) {
+          scostBadge.innerText = dati.scostamentoPct + '% rispetto alla media';
+          scostBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emeraldCustom shadow-inner';
+        } else {
+          scostBadge.innerText = 'In linea con la media';
+          scostBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/10 border border-accent/20 text-accentLight shadow-inner';
+        }
+      }
+
+      // 2. Render Timeline Eventi
+      const timelineContainer = document.getElementById('timeline-container');
+      timelineContainer.innerHTML = '';
+      if (dati.timeline && dati.timeline.length > 0) {
+        dati.timeline.forEach((item, index) => {
+          timelineContainer.innerHTML += `
+            <div class="relative">
+              <div class="absolute -left-[35px] top-0.5 w-5 h-5 rounded-full bg-surface border border-accent/40 flex items-center justify-center shadow-lg shadow-accent/20">
+                <i class="fa-solid ${item.icona || 'fa-circle-check'} text-[9px] text-accentLight"></i>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] font-bold text-accentLight bg-accent/10 border border-accent/20 px-2 py-0.5 rounded-full">${item.data}</span>
+                  <strong class="text-xs font-display text-slate-200 tracking-tight">${item.tipo}</strong>
+                </div>
+                <p class="text-xs text-mutedCustom leading-relaxed mt-0.5">${item.descrizione}</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      // 3. Render Checklist Documenti
+      const docContainer = document.getElementById('documenti-container');
+      docContainer.innerHTML = '';
+      if (dati.documentiChecklist && dati.documentiChecklist.length > 0) {
+        dati.documentiChecklist.forEach(doc => {
+          let badgeColor = 'bg-red-500/10 border-red-500/20 text-red-400';
+          let icon = 'fa-circle-xmark';
+          
+          if (doc.stato === 'VERIFICATO') {
+            badgeColor = 'bg-emerald-500/10 border-emerald-500/20 text-emeraldCustom';
+            icon = 'fa-circle-check';
+          } else if (doc.stato === 'IN_VERIFICA') {
+            badgeColor = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
+            icon = 'fa-circle-notch animate-spin-slow';
+          }
+          
+          docContainer.innerHTML += `
+            <div class="flex items-center justify-between p-3.5 bg-white/[0.02] border border-white/5 rounded-2xl">
+              <div class="space-y-0.5 pr-2">
+                <p class="text-xs font-bold text-slate-200">${doc.documento}</p>
+                <p class="text-[10px] text-mutedCustom leading-tight">${doc.note || ''}</p>
+              </div>
+              <span class="flex items-center justify-center w-6 h-6 rounded-full border border-white/5 flex-shrink-0 ${badgeColor}" title="${doc.stato}">
+                <i class="fa-solid ${icon} text-xs"></i>
+              </span>
+            </div>
+          `;
+        });
+      }
+
+      // 3b. Calcolo e aggiornamento Amazon Tracker
+      if (dati.documentiChecklist && dati.documentiChecklist.length > 0) {
+        let totalDocs = dati.documentiChecklist.length;
+        let verifiedDocs = dati.documentiChecklist.filter(d => d.stato === 'VERIFICATO').length;
+        let inVerDocs = dati.documentiChecklist.filter(d => d.stato === 'IN_VERIFICA').length;
+        
+        let percentage = Math.round(((verifiedDocs + (inVerDocs * 0.5)) / totalDocs) * 100);
+        document.getElementById('amazon-tracker-percentage').innerText = percentage + '%';
+        
+        // Calcolo degli step
+        let step1 = true; // Incarico sempre verde
+        let step2 = false; // Verifica (Planimetria + Atto)
+        let step3 = false; // Certificati (APE + Visura)
+        let step4 = false; // Conforme (tutti verificati)
+        
+        // Verifica Planimetria e Atto
+        let plani = dati.documentiChecklist.find(d => d.documento.toLowerCase().includes('planimetria'));
+        let atto = dati.documentiChecklist.find(d => d.documento.toLowerCase().includes('atto'));
+        if ((!plani || plani.stato === 'VERIFICATO' || plani.stato === 'IN_VERIFICA') &&
+            (!atto || atto.stato === 'VERIFICATO' || atto.stato === 'IN_VERIFICA')) {
+          step2 = true;
+        }
+        
+        // Certificati
+        let ape = dati.documentiChecklist.find(d => d.documento.toLowerCase().includes('ape') || d.documento.toLowerCase().includes('attestato'));
+        let visura = dati.documentiChecklist.find(d => d.documento.toLowerCase().includes('visura'));
+        if (step2 && 
+            (!ape || ape.stato === 'VERIFICATO' || ape.stato === 'IN_VERIFICA') &&
+            (!visura || visura.stato === 'VERIFICATO' || visura.stato === 'IN_VERIFICA')) {
+          step3 = true;
+        }
+        
+        // Conforme
+        if (verifiedDocs === totalDocs) {
+          step4 = true;
+        }
+        
+        // Calcolo linea di progresso
+        let progressWidth = 0;
+        if (step1) progressWidth = 10;
+        if (step2) progressWidth = 40;
+        if (step3) progressWidth = 70;
+        if (step4) progressWidth = 100;
+        document.getElementById('amazon-tracker-line').style.width = progressWidth + '%';
+        
+        // Funzione per impostare i colori dei cerchi degli step
+        const setStepColor = (num, active) => {
+          let el = document.getElementById('step-circle-' + num);
+          if (el) {
+            if (active) {
+              el.className = "w-8 h-8 rounded-full bg-emeraldCustom/10 border-2 border-emeraldCustom flex items-center justify-center text-xs text-emeraldCustom shadow-lg shadow-emeraldCustom/20 transition-all duration-500";
+            } else {
+              el.className = "w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500";
+            }
+          }
+        };
+        
+        setStepColor(1, step1);
+        setStepColor(2, step2);
+        setStepColor(3, step3);
+        setStepColor(4, step4);
+      }
+
+      const chartTextColor = '#9ca3af';
+      const chartGridColor = 'rgba(255,255,255,0.05)';
+
+      // 📊 CHART DOUGHNUT CANALI
+      var ctxPie = document.getElementById('pieChart');
+      if (ctxPie) {
+        new Chart(ctxPie, {
+          type: 'doughnut',
+          data: {
+            labels: ['TikTok', 'Facebook', 'Instagram', 'YouTube', 'Immobiliare.it', 'Idealista.it'],
+            datasets: [{ 
+              data: [dati.ttViews || 0, dati.fbViews || 0, dati.igViews || 0, dati.ytViews || 0, dati.immobViews || 0, dati.ideaViews || 0], 
+              backgroundColor: ['#6366f1', '#3b82f6', '#ec4899', '#ef4444', '#ff8200', '#0099ff'], 
+              borderWidth: 0 
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { 
+                position: 'bottom', 
+                labels: { 
+                  color: chartTextColor, 
+                  boxWidth: 10,
+                  font: {size: 9, weight: '500'} 
+                } 
+              } 
+            }, 
+            cutout: '70%' 
+          }
+        });
+      }
+
+      // 📈 CHART TREND TEMPORALE LINEARE
+      var ctxBar = document.getElementById('barChart');
+      if (ctxBar) {
+        var quotaBase = dati.visiteSocial;
+        new Chart(ctxBar, {
+          type: 'line',
+          data: {
+            labels: ['Sett 1', 'Sett 2', 'Sett 3', 'Sett 4'],
+            datasets: [
+              { 
+                label: 'Social Video', 
+                data: [Math.floor(quotaBase*0.15), Math.floor(quotaBase*0.22), Math.floor(quotaBase*0.30), Math.floor(quotaBase*0.21)], 
+                borderColor: '#8b5cf6', 
+                backgroundColor: 'rgba(139, 92, 246, 0.05)',
+                fill: true, 
+                tension: 0.4 
+              },
+              { 
+                label: 'Portali Real Estate', 
+                data: [Math.floor(quotaBase*0.03), Math.floor(quotaBase*0.04), Math.floor(quotaBase*0.03), Math.floor(quotaBase*0.02)], 
+                borderColor: '#6366f1', 
+                backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                fill: true, 
+                tension: 0.4 
+              }
+            ]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { 
+                position: 'bottom', 
+                labels: { color: chartTextColor, boxWidth: 10, font: {size: 9} } 
+              } 
+            },
+            scales: { 
+              x: { grid: {color: chartGridColor}, ticks: {color: chartTextColor} }, 
+              y: { grid: {color: chartGridColor}, ticks: {color: chartTextColor} } 
+            } 
+          }
+        });
+      }
+    }
+
+    // Carosello frasi marketing
+    const frasiGiancani = [
+      "Chi immette massimo valore sul mercato social e sui portali raccoglie il massimo prezzo di realizzo.",
+      "La visibilità cross-canale immersiva seleziona acquirenti qualificati prima di portarli in casa tua.",
+      "Ogni interazione video e annuncio riduce i tempi di attesa e protegge il valore reale del patrimonio.",
+      "Stiamo intercettando il target ideale filtrando i clienti tramite portali e campagne video mirate."
+    ];
+
+    function avviaCaroselloFrasi() {
+      let idx = 0;
+      const elemento = document.getElementById('frase-marketing');
+      if(elemento) {
+        elemento.innerText = frasiGiancani[0];
+        setInterval(() => {
+          idx = (idx + 1) % frasiGiancani.length;
+          elemento.innerText = frasiGiancani[idx];
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>

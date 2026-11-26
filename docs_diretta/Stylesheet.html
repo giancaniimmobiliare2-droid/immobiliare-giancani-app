@@ -1,0 +1,659 @@
+<style>
+  :root {
+    --primary-color: #ffeb3b;
+    --text-color: #ffffff;
+    --glass-bg: rgba(0, 0, 0, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.15);
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a130a;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  #agency-logo {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    z-index: 9999;
+    filter: drop-shadow(0px 6px 12px rgba(0,0,0,0.8)) drop-shadow(0px 0px 20px rgba(255,255,255,0.15));
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  #agency-logo:hover { transform: translateX(-50%) scale(1.05); }
+
+  .overlay-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* Video e Foto a tutto schermo puliti con micro-animazioni di dissolvenza */
+  .media-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    object-fit: cover;
+    border: none;
+    /* 🛡️ OPZIONE C: opacity transition invece di display:none — zero flash colorati */
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.55s ease-in-out, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: opacity;
+  }
+  .media-container.nascosto {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Animazioni TV Broadcast Ingrandimento (Zoom-In) e Rimpicciolimento (Zoom-Out) */
+  .anim-zoom-in {
+    animation: zoomInMedia 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .anim-zoom-out {
+    animation: zoomOutMedia 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  @keyframes zoomInMedia {
+    0% { opacity: 1; transform: scale(1.12); }
+    100% { opacity: 1; transform: scale(1.0); }
+  }
+
+  @keyframes zoomOutMedia {
+    0% { opacity: 1; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1.0); }
+  }
+
+  #youtube-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    border: none;
+    /* 🛡️ NO sfondo nero — usa sempre thumbnail come base visiva */
+    background: transparent;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  #youtube-container.anim-zoom-in {
+    animation: zoomInYT 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  #youtube-container.anim-zoom-out {
+    animation: zoomOutYT 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  @keyframes zoomInYT {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+  }
+
+  @keyframes zoomOutYT {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.92); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+  }
+
+  .image-container {
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.8s ease-in-out, opacity 0.6s ease-in-out;
+    /* 🛡️ RETE DI SICUREZZA ANTI-NERO: gradient caldo Giancani visibile se nessuna immagine carica */
+    background-color: #1b1610;
+    background-image: linear-gradient(135deg, #1b1610 0%, #2d2418 40%, #1a1108 100%);
+  }
+
+  /* Gradient animato elegante se nessun media è disponibile */
+  @keyframes elegantGradientAnim {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .media-fallback-gradient {
+    background: linear-gradient(135deg, #1b1610, #2d2418, #3d2c0c, #1b1610) !important;
+    background-size: 400% 400% !important;
+    animation: elegantGradientAnim 8s ease infinite !important;
+  }
+
+
+  /* Pannello Dati Ultra-Compatto e Non Invadente (Bottom-Left) */
+  .data-panel {
+    position: absolute;
+    bottom: max(15px, env(safe-area-inset-bottom));
+    left: 15px;
+    padding: 6px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 10;
+  }
+
+  .chips-row { display: flex; gap: 6px; align-items: center; }
+
+  /* Chips dati — prezzo grande e visibile */
+  .chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 900;
+    font-size: 13px;
+    color: #111;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    letter-spacing: 0.5px;
+  }
+
+  .chip.prezzo {
+    background: linear-gradient(135deg, #ffeb3b, #ffd600);
+    font-size: 16px;
+    padding: 8px 18px;
+    box-shadow: 0 4px 20px rgba(255,214,0,0.6), 0 0 0 2px rgba(255,214,0,0.25);
+    animation: prezzoPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes prezzoPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255,214,0,0.5), 0 0 0 2px rgba(255,214,0,0.2); }
+    50%       { box-shadow: 0 4px 30px rgba(255,214,0,0.9), 0 0 0 4px rgba(255,214,0,0.4); }
+  }
+  .chip.mq { background: #ffffff; font-size: 12px; }
+
+  /* Badge VENDE fisso — angolo alto destra */
+  #badge-vende {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    z-index: 99999;
+    background: linear-gradient(135deg, #ff4757, #c0392b);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.35);
+    box-shadow: 0 8px 30px rgba(255,71,87,0.7), 0 0 0 0 rgba(255,71,87,0.4);
+    animation: vendeGlow 1.8s ease-in-out infinite;
+    pointer-events: none;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  @keyframes vendeGlow {
+    0%, 100% { box-shadow: 0 8px 30px rgba(255,71,87,0.7), 0 0 0 0 rgba(255,71,87,0.3); transform: scale(1); }
+    50%       { box-shadow: 0 8px 40px rgba(255,71,87,1), 0 0 0 8px rgba(255,71,87,0.1); transform: scale(1.04); }
+  }
+
+  /* Il riquadro descrizione di testo grande scompare del tutto per non coprire il video */
+  .testo-container {
+    display: none !important;
+  }
+
+  /* FASCIA SCORREVOLE IN SOPRAIMPRESSION (TV TICKER BANNER - 4 MODELLI) */
+  .ticker-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: calc(100vw - 160px);
+    max-width: 700px;
+    height: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    z-index: 999;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .ticker-badge {
+    padding: 0 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    z-index: 2;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+  }
+
+  .ticker-scroll-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    font-weight: 600;
+    font-size: 11px;
+    animation: scrollTicker 22s linear infinite;
+  }
+
+  @keyframes scrollTicker {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+
+  /* MODELLO 1: TV Newsroom Red Accent */
+  .ticker-container.modello-1 {
+    background: rgba(15, 15, 20, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 71, 87, 0.4);
+  }
+  .modello-1 .ticker-badge {
+    background: #ff4757;
+    color: #ffffff;
+  }
+  .modello-1 .ticker-scroll-text {
+    color: #ffffff;
+  }
+
+  /* MODELLO 2: Luxury Gold VIP */
+  .ticker-container.modello-2 {
+    background: linear-gradient(135deg, rgba(30, 25, 10, 0.85), rgba(60, 50, 15, 0.85));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 235, 59, 0.6);
+  }
+  .modello-2 .ticker-badge {
+    background: #ffeb3b;
+    color: #111111;
+  }
+  .modello-2 .ticker-scroll-text {
+    color: #ffeb3b;
+    text-shadow: 0 0 8px rgba(255, 235, 59, 0.4);
+  }
+
+  /* MODELLO 3: Luxury Gold Premium (era Cyber Neon — blu/viola rimosso per no flash colori) */
+  .ticker-container.modello-3 {
+    background: linear-gradient(135deg, rgba(20, 15, 5, 0.88), rgba(45, 35, 10, 0.88));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 215, 0, 0.45);
+  }
+  .modello-3 .ticker-badge {
+    background: #ffd700;
+    color: #111;
+  }
+  .modello-3 .ticker-scroll-text {
+    color: #ffffff;
+  }
+
+  /* MODELLO 4: Minimal Glass Elegant */
+  .ticker-container.modello-4 {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .modello-4 .ticker-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffeb3b;
+  }
+  .modello-4 .ticker-scroll-text {
+    color: #ffffff;
+  }
+
+  /* POPUP TEMPORANEO "METTI LIKE" (3 SECONDI) */
+  .popup-like-container {
+    position: absolute;
+    top: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 18px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.92), rgba(255, 107, 129, 0.92));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 24px rgba(255, 71, 87, 0.5);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    animation: popInBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .popup-like-emoji {
+    font-size: 16px;
+    animation: pulseHeart 0.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes popInBounce {
+    0% { opacity: 0; transform: translate(-50%, -20px) scale(0.7); }
+    100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+
+  @keyframes pulseHeart {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.25); }
+  }
+
+  /* ═══════════════════════════════════════════
+     🎬 MENU INTERATTIVO BOTTOM (ogni 5 min)
+     ═══════════════════════════════════════════ */
+  #menu-interattivo-bottom {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    z-index: 5000;
+    transform: translateY(110%);
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  #menu-interattivo-bottom.visible {
+    transform: translateY(0);
+    pointer-events: all;
+  }
+  .menu-bottom-inner {
+    background: linear-gradient(180deg, rgba(5,8,20,0) 0%, rgba(5,8,20,0.78) 22%, rgba(5,8,20,0.97) 100%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 14px 16px 20px;
+    box-shadow: 0 -20px 60px rgba(0,0,0,0.7);
+  }
+  .menu-bottom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .menu-bottom-titolo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .dot-live {
+    width: 8px; height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: blinkRed 1s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blinkRed {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px #ef4444; }
+    50% { opacity: 0.3; box-shadow: none; }
+  }
+  .menu-bottom-close {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #aaa; font-size: 14px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .menu-bottom-close:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .menu-bottom-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .menu-bottom-strip::-webkit-scrollbar { display: none; }
+  .menu-card {
+    flex: 0 0 110px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    position: relative;
+    animation: cardFadeIn 0.5s ease both;
+    opacity: 0;
+  }
+  .menu-card:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.6), 0 0 20px rgba(168,85,247,0.35);
+    border-color: rgba(168,85,247,0.6);
+  }
+  .menu-card:nth-child(1)  { animation-delay: 0.05s; }
+  .menu-card:nth-child(2)  { animation-delay: 0.12s; }
+  .menu-card:nth-child(3)  { animation-delay: 0.19s; }
+  .menu-card:nth-child(4)  { animation-delay: 0.26s; }
+  .menu-card:nth-child(5)  { animation-delay: 0.33s; }
+  .menu-card:nth-child(6)  { animation-delay: 0.40s; }
+  .menu-card:nth-child(7)  { animation-delay: 0.47s; }
+  .menu-card:nth-child(8)  { animation-delay: 0.54s; }
+  .menu-card:nth-child(9)  { animation-delay: 0.61s; }
+  .menu-card:nth-child(10) { animation-delay: 0.68s; }
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.92); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .menu-card-thumb {
+    width: 100%; height: 68px;
+    object-fit: cover; display: block;
+    background: rgba(255,255,255,0.05);
+  }
+  .menu-card-thumb-shimmer {
+    width: 100%; height: 68px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .menu-card-label {
+    padding: 5px 6px 7px;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px; font-weight: 700;
+    color: #e2e8f0; text-align: center;
+    white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .menu-card-badge-video {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(239,68,68,0.85);
+    color: #fff; font-size: 8px;
+    padding: 2px 5px; border-radius: 6px; font-weight: 800;
+  }
+  .menu-cta-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: #fff; font-family: 'Inter', sans-serif;
+    font-size: 10px; font-weight: 800;
+    padding: 5px 14px; border-radius: 20px;
+    animation: pulseGlow 2s ease-in-out infinite;
+    cursor: pointer; border: none;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(168,85,247,0.4); }
+    50%       { box-shadow: 0 0 22px rgba(168,85,247,0.8), 0 0 40px rgba(168,85,247,0.25); }
+  }
+
+  /* 🌐 Anti-Errore WebGL & Animazione Panoramica 360° Fluida */
+  .pnlm-error-msg, .pnlm-load-box, .pnlm-error {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* 🛡️ ANTI-SCHERMATA NERA: nessun media container può essere nero durante la diretta */
+  .media-container,
+  #youtube-container,
+  #video-container,
+  #panorama-360-container {
+    background-color: transparent !important;
+  }
+  /* Forza visibilità immagine base in ogni circostanza */
+  #image-container {
+    background-color: #14110d;
+  }
+
+  :root {
+    --custom-360-zoom: 200%;
+    --custom-360-speed: 75s;
+  }
+
+  /* 🚀 ULTRA-FLUID HARDWARE-ACCELERATED 360° & BROADCAST ANIMATIONS (GPU Compositor / 60 FPS) */
+  .media-container {
+    will-change: transform, opacity;
+    transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .anim-pan-360 {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    transform-origin: center center;
+    animation: pan360HardwareSmoothed var(--custom-360-speed, 65s) ease-in-out infinite alternate !important;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  @keyframes pan360HardwareSmoothed {
+    0% {
+      transform: scale(1.15) translate3d(-3.5%, 0, 0);
+    }
+    50% {
+      transform: scale(1.22) translate3d(3.5%, 0, 0);
+    }
+    100% {
+      transform: scale(1.15) translate3d(-3.5%, 0, 0);
+    }
+  }
+
+  /* 🪐 MODALITA 1: LITTLE PLANET (Pianetino / Fisheye Entrance) */
+  .anim-360-planet {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    transform-origin: center center;
+    animation: planetEntranceHardware 10s cubic-bezier(0.16, 1, 0.3, 1) forwards, pan360HardwareSmoothed var(--custom-360-speed, 65s) ease-in-out 10s infinite alternate !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  @keyframes planetEntranceHardware {
+    0% {
+      transform: scale(0.65) rotate(-8deg);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1.15) rotate(0deg);
+      opacity: 1;
+    }
+  }
+
+  /* 🏠 MODALITA 2: TOTALE IMMOBILE (Grandangolo Ampio) */
+  .anim-360-total {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    transform-origin: center center;
+    animation: totalSubtleBreatheHardware 25s ease-in-out infinite alternate !important;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  @keyframes totalSubtleBreatheHardware {
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(1.06); }
+  }
+
+  /* 🚁 MODALITA 3: EFFETTO DRONE CINEMATIC FLYTHROUGH */
+  .anim-360-drone {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    transform-origin: center center;
+    animation: droneFlythroughHardware 45s ease-in-out infinite alternate !important;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  @keyframes droneFlythroughHardware {
+    0%   { transform: scale(1.06) translate3d(-3.5%, -1.5%, 0); }
+    33%  { transform: scale(1.18) translate3d(0%, 2.5%, 0); }
+    66%  { transform: scale(1.24) translate3d(3.5%, -1%, 0); }
+    100% { transform: scale(1.10) translate3d(-2%, 1.5%, 0); }
+  }
+
+  /* 🎬 MODALITA 4: MINI-TOUR GUIDATO A TAPPE */
+  .anim-360-tour {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    transform-origin: center center;
+    animation: tourWaypointsHardware 60s ease-in-out infinite !important;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  @keyframes tourWaypointsHardware {
+    0%, 15%   { transform: scale(1.08) translate3d(-4.5%, 0, 0); }
+    25%, 40%  { transform: scale(1.18) translate3d(0%, -2.5%, 0); }
+    50%, 65%  { transform: scale(1.22) translate3d(4.5%, 1.5%, 0); }
+    75%, 90%  { transform: scale(1.12) translate3d(1.5%, 0, 0); }
+    100%      { transform: scale(1.08) translate3d(-4.5%, 0, 0); }
+  }
+
+  /* ⚡ OTTIMIZZAZIONE HEADLESS / VIRTUAL BROWSER PER STREAMING FLUIDO SENZA SCATTI */
+  body.virtual-stream-mode * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6) !important;
+  }
+  body.virtual-stream-mode .glass {
+    background: rgba(18, 15, 11, 0.94) !important;
+  }
+
+</style>

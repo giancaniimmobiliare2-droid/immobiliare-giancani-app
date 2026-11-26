@@ -1,0 +1,3992 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>📱 DIRETTA IN VERTICALE — DarIA & DarIO | Immobiliare Giancani</title>
+  
+  <!-- Font Google Broadcast Typography Engine: Luxury, Modern, Impact & Editorial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════
+       🏛️ TEMA LUXURY BROADCAST IMMOBILIARE GIANCANI — DIRETTA IN VERTICALE 9:16
+       ═══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --gold: #d4a853;
+      --gold-light: #ffd700;
+      --gold-bright: #ffd700;
+      --gold-dark: #aa7c28;
+      --gold-glow: rgba(212, 168, 83, 0.5);
+      --navy: #0a1128;
+      --navy-dark: #050814;
+      --dark-card: rgba(6, 10, 18, 0.90);
+      --border-gold: rgba(212, 168, 83, 0.45);
+      --border-gold-subtle: rgba(212, 168, 83, 0.25);
+      --text-white: #ffffff;
+      --text-dim: #cbd5e1;
+      
+      /* Tipografia Dinamica Regolabile da Regia */
+      --font-prezzo: 'Montserrat', sans-serif;
+      --size-prezzo: 80px;
+      --color-prezzo: #ffffff;
+      --stroke-prezzo: 3.5px;
+      --shadow-prezzo: rgba(0, 0, 0, 0.95);
+      
+      --font-citta: 'Anton', sans-serif;
+      --size-citta: 46px;
+      --color-citta: #ffd700;
+      
+      --font-titolo: 'Montserrat', sans-serif;
+      --size-titolo: 20px;
+      
+      --font-corpo: 'Plus Jakarta Sans', sans-serif;
+      --size-corpo: 14.5px;
+      
+      /* Parametri Cinematica & Taglio Avatar */
+      --avatar-scale: 1.0;
+      --avatar-pan-x: 0%;
+      --avatar-pan-y: 0%;
+      --avatar-rotate: 0deg;
+      --avatar-breath-amp: 2.8px;
+      --avatar-breath-speed: 3.8s;
+      --avatar-tilt-deg: 0.5deg;
+      --mouth-pos-x: 51.0%;
+      --mouth-pos-y: 65.0%;
+      --mouth-scale: 1.0;
+      --lip-thickness: 3.5px;
+      --lip-open-intensity: 1.0;
+      --lip-speed: 0.30s;
+      --eyes-pos-x: 50.0%;
+      --eyes-pos-y: 35.8%;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      background: #020408 !important;
+      color: #fff !important;
+      font-family: var(--font-corpo) !important;
+      user-select: none !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       📱 STAGE BROADCAST VERTICALE (RATIO 9:16 PER MOBILE REELS/TIKTOK)
+       ═══════════════════════════════════════════════════════════════════════ */
+    .vertical-broadcast-container {
+      position: fixed !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 100% !important;
+      max-width: 480px !important;
+      height: 100% !important;
+      background: #0a0f1d radial-gradient(circle at center, #111827 0%, #030712 100%) !important;
+      overflow: hidden !important;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(212, 168, 83, 0.35) !important;
+      z-index: 10 !important;
+    }
+
+    @media (max-width: 520px) {
+      .vertical-broadcast-container {
+        max-width: 100% !important;
+        left: 0 !important;
+        transform: none !important;
+      }
+    }
+
+    /* 🖼️ Sfondo Dinamico Stanza con Ken Burns Morbido */
+    .stage-background-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
+    .room-photo-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1 !important;
+      display: block !important;
+      transition: opacity 0.5s ease;
+    }
+
+    .room-photo-slide.active {
+      opacity: 1 !important;
+    }
+
+    /* Gradienti Televisivi Luxury per Massima Leggibilità */
+    .vignette-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 28%;
+      background: linear-gradient(180deg, rgba(2, 4, 10, 0.75) 0%, rgba(2, 4, 10, 0.30) 60%, rgba(0,0,0,0) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .vignette-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(0deg, rgba(2, 4, 10, 0.88) 0%, rgba(2, 4, 10, 0.45) 60%, rgba(0,0,0,0) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       🎭 DARIA ENHANCED ENGINE: OCCHI, VOLTO, BOCCA 60FPS E MANI
+       ═══════════════════════════════════════════════════════════════════════ */
+    .daria-anchor-topright {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 160px;
+      height: 224px;
+      z-index: 25;
+      border-radius: 18px;
+      background: transparent;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: visible;
+      pointer-events: auto;
+      cursor: grab;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.85));
+      transition: transform 0.15s ease-out;
+    }
+
+    .daria-anchor-topright.is-dragging {
+      cursor: grabbing;
+      opacity: 0.92;
+      transform: scale(1.04);
+      z-index: 999;
+    }
+
+    .daria-anchor-topright.avatar-highlight-edit {
+      outline: 3px solid var(--gold-bright) !important;
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.95), 0 0 10px rgba(212, 168, 83, 0.8) !important;
+      transform: scale(1.05) !important;
+      animation: avatarPulseHighlight 1.2s infinite alternate ease-in-out !important;
+    }
+
+    @keyframes avatarPulseHighlight {
+      0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+      100% { box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 15px rgba(255, 255, 255, 0.9); }
+    }
+
+    .pip-header-bar {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .pip-wave-cluster {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .pip-audio-bar {
+      width: 3.5px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: height 0.12s ease;
+    }
+
+    /* Involucro Busto Avatar con Respiro e Inclinazione */
+    .daria-actor-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      perspective: 700px;
+      transform-style: preserve-3d;
+      animation: dariaBreatheIdle var(--avatar-breath-speed) infinite ease-in-out;
+      transform-origin: bottom center;
+    }
+
+    /* Per DarIA Elena Reale: 0 scuotimenti artificiali, zero tilt e nascondi elementi sintetici duplicati */
+    .daria-actor-wrap.is-real-avatar {
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .daria-actor-wrap.is-real-avatar .daria-eyes-container,
+    .daria-actor-wrap.is-real-avatar .daria-eyebrows-cluster,
+    .daria-actor-wrap.is-real-avatar .daria-cheeks-glow {
+      display: none !important;
+    }
+    .daria-actor-wrap.is-real-avatar .dynamic-lip-rig-box {
+      display: flex !important;
+    }
+
+    @keyframes dariaBreatheIdle {
+      0%, 100% {
+        transform: translateY(0) scale(var(--avatar-scale, 1)) rotate(var(--avatar-rotate, 0deg));
+      }
+      50% {
+        transform: translateY(calc(-1 * var(--avatar-breath-amp))) scale(calc(var(--avatar-scale, 1) * 1.008)) rotate(calc(var(--avatar-rotate, 0deg) + var(--avatar-tilt-deg)));
+      }
+    }
+
+    .daria-actor-wrap.tilt-left {
+      transform: translateY(-2px) scale(calc(var(--avatar-scale, 1) * 1.01)) rotate(calc(var(--avatar-rotate, 0deg) - 2deg));
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .daria-actor-wrap.tilt-right {
+      transform: translateY(-2px) scale(calc(var(--avatar-scale, 1) * 1.01)) rotate(calc(var(--avatar-rotate, 0deg) + 2deg));
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Immagine Portrait Trasparente */
+    .daria-portrait-element {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.7));
+      transition: none !important;
+      position: relative;
+      z-index: 3;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      will-change: auto;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       👁️ 1. OCCHI AVANZATI: PALPEBRE, SGUARDO E RIFLESSI
+       ═══════════════════════════════════════════════════════════════════════ */
+    .daria-eyes-container {
+      position: absolute;
+      top: 36%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 16px;
+      z-index: 5;
+      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+
+    .daria-eye-unit {
+      position: relative;
+      width: 14px;
+      height: 10px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    /* Riflessi di luce naturale nelle pupille (Catchlight) */
+    .eye-catchlight {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 4px #ffffff, 4px 3px 0 -1px rgba(255,255,255,0.7);
+      z-index: 4;
+      opacity: 0.9;
+    }
+
+    /* Palpebre per battito ciliare ultra-morbido a doppia fase */
+    .daria-eyelid-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, rgba(235, 185, 150, 0.95), rgba(200, 145, 110, 0.95));
+      border-radius: 0 0 50% 50%;
+      z-index: 6;
+      transition: height 0.08s ease-in-out;
+    }
+
+    .daria-eyelid-layer.blinking {
+      height: 100% !important;
+    }
+
+    /* Sopracciglia animate sincronizzate con le espressioni */
+    .daria-eyebrow-layer {
+      position: absolute;
+      top: 31%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px;
+      height: 8px;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      transition: transform 0.3s ease;
+    }
+
+    .daria-eyebrow-unit {
+      width: 18px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(80, 45, 25, 0.4);
+      filter: blur(0.5px);
+    }
+
+    .is-enthusiastic .daria-eyebrow-layer,
+    .is-speaking .daria-eyebrow-layer {
+      transform: translate(-50%, -62%);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       😊 2. VOLTO & GUANCE: BLUSH NATURALE E GLOW CUTANEO
+       ═══════════════════════════════════════════════════════════════════════ */
+    .daria-cheeks-glow {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 58px;
+      height: 18px;
+      z-index: 4;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      opacity: 0.35;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .cheek-glow-spot {
+      width: 18px;
+      height: 12px;
+      background: radial-gradient(circle, rgba(244, 114, 182, 0.55) 0%, rgba(244, 114, 182, 0) 70%);
+      border-radius: 50%;
+    }
+
+    .is-enthusiastic .daria-cheeks-glow,
+    .is-speaking .daria-cheeks-glow {
+      opacity: 0.75;
+      transform: translate(-50%, -55%) scale(1.1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       👄 3. BOCCA DINAMICA: LIP-SYNC CON LABBRA CALIBRABILI (X, Y, SCALA, STILE)
+       ═══════════════════════════════════════════════════════════════════════ */
+    .dynamic-lip-rig-box {
+      position: absolute;
+      top: var(--mouth-pos-y, 65%);
+      left: var(--mouth-pos-x, 51%);
+      transform: translate(-50%, -50%) scale(var(--mouth-scale, 1));
+      width: 44px;
+      height: 26px;
+      pointer-events: none;
+      z-index: 10;
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: top 0.05s ease, left 0.05s ease, transform 0.08s ease;
+    }
+
+    /* Evidenziazione in fase di calibrazione sliders */
+    .dynamic-lip-rig-box.is-calibrating {
+      outline: 1.5px dashed #38bdf8;
+      outline-offset: 4px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    /* 🙈 SCOMPARSA TOTALE LABBRA SE SI GIRA A DESTRA O A SINISTRA */
+    .dynamic-lip-rig-box.lip-hidden-turned,
+    .daria-actor-wrap.is-turned-pose .dynamic-lip-rig-box,
+    .daria-actor-wrap.tilt-left .dynamic-lip-rig-box,
+    .daria-actor-wrap.tilt-right .dynamic-lip-rig-box {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translate(-50%, -50%) scale(0.5) !important;
+      transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease !important;
+    }
+
+    /* Stili Colore Labbra */
+    .dynamic-lip-rig-box.lip-style-naturale, .dynamic-lip-rig-box {
+      --lip-c-top: #bf5269;
+      --lip-c-bottom: #d4637b;
+      --lip-c-border: #8b253b;
+      --lip-gloss-op: 0.45;
+    }
+    .dynamic-lip-rig-box.lip-style-glamour {
+      --lip-c-top: #b91c3c;
+      --lip-c-bottom: #d92d52;
+      --lip-c-border: #68051a;
+      --lip-gloss-op: 0.85;
+    }
+    .dynamic-lip-rig-box.lip-style-nude {
+      --lip-c-top: #b4726b;
+      --lip-c-bottom: #c8847c;
+      --lip-c-border: #7d443e;
+      --lip-gloss-op: 0.35;
+    }
+    .dynamic-lip-rig-box.lip-style-gloss {
+      --lip-c-top: #e06283;
+      --lip-c-bottom: #f27999;
+      --lip-c-border: #9b2e49;
+      --lip-gloss-op: 0.95;
+    }
+
+    /* Labbro Superiore */
+    .lip-upper-part {
+      width: 32px;
+      height: var(--lip-thickness, 3.5px);
+      background: linear-gradient(180deg, var(--lip-c-border, #8b253b) 0%, var(--lip-c-top, #bf5269) 80%);
+      border-radius: 50% 50% 35% 35% / 70% 70% 30% 30%;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: all 0.08s ease;
+      z-index: 2;
+    }
+    .lip-cupid-bow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 1.5px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+    }
+
+    /* Cavità Orale (Apertura per il parlato) */
+    .lip-cavity-shape {
+      width: 24px;
+      height: 2px;
+      background: #250308;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.95);
+      transition: height 0.06s ease, width 0.06s ease;
+      z-index: 1;
+    }
+
+    /* Labbro Inferiore */
+    .lip-lower-part {
+      width: 30px;
+      height: calc(var(--lip-thickness, 3.5px) * 1.15);
+      background: linear-gradient(0deg, var(--lip-c-border, #8b253b) 0%, var(--lip-c-bottom, #d4637b) 80%);
+      border-radius: 35% 35% 55% 55% / 30% 30% 70% 70%;
+      position: relative;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.35);
+      transition: all 0.08s ease;
+      z-index: 2;
+    }
+    .lip-gloss-reflection {
+      position: absolute;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 1.8px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+      border-radius: 2px;
+      opacity: var(--lip-gloss-op, 0.55);
+      pointer-events: none;
+    }
+
+    /* Denti e Lingua */
+    .lip-teeth-top-strip {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      width: 80%;
+      height: 2.2px;
+      background: linear-gradient(180deg, #ffffff 0%, #edf2f7 100%);
+      border-radius: 0 0 2.5px 2.5px;
+      opacity: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      transition: opacity 0.06s;
+    }
+    .lip-teeth-bottom-strip {
+      position: absolute;
+      bottom: 0;
+      left: 15%;
+      width: 70%;
+      height: 1.8px;
+      background: #f7fafc;
+      border-radius: 2.5px 2.5px 0 0;
+      opacity: 0;
+      transition: opacity 0.06s;
+    }
+    .lip-tongue-pad {
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(0deg, #d94668 0%, #be185d 100%);
+      border-radius: 4px 4px 0 0;
+      opacity: 0;
+      transition: opacity 0.06s;
+    }
+
+    /* Animazione Parlato Lip-Sync */
+    .is-speaking .lip-cavity-shape,
+    .dynamic-lip-rig-box.is-speaking .lip-cavity-shape {
+      animation: dariaLipSyncSpeaking var(--lip-speed, 0.38s) infinite ease-in-out;
+      box-shadow: 0 0 8px rgba(212, 168, 83, 0.4), inset 0 0 5px rgba(0,0,0,0.95);
+    }
+    .is-speaking .lip-teeth-top-strip,
+    .dynamic-lip-rig-box.is-speaking .lip-teeth-top-strip { opacity: 0.98; height: 3.5px; }
+    .is-speaking .lip-teeth-bottom-strip,
+    .dynamic-lip-rig-box.is-speaking .lip-teeth-bottom-strip { opacity: 0.85; height: 2px; }
+    .is-speaking .lip-tongue-pad,
+    .dynamic-lip-rig-box.is-speaking .lip-tongue-pad { opacity: 0.92; height: 4px; }
+    .is-speaking .lip-upper-part,
+    .dynamic-lip-rig-box.is-speaking .lip-upper-part {
+      transform: translateY(-2px);
+    }
+    .is-speaking .lip-lower-part,
+    .dynamic-lip-rig-box.is-speaking .lip-lower-part {
+      transform: translateY(2px);
+    }
+
+    .lip-pulse-word .lip-cavity-shape {
+      transform: scaleY(calc(1.45 * var(--lip-open-intensity, 1))) !important;
+    }
+    .lip-pulse-word .lip-upper-part {
+      transform: translateY(-3.5px) !important;
+    }
+    .lip-pulse-word .lip-lower-part {
+      transform: translateY(3.5px) !important;
+    }
+
+    /* Cadenza sillabica naturale del parlato (apertura progressiva e chiusura morbida) */
+    @keyframes dariaLipSyncSpeaking {
+      0% {
+        height: 2px;
+        width: 20px;
+        border-radius: 50%;
+        transform: scaleY(calc(0.55 * var(--lip-open-intensity, 1)));
+      }
+      18% {
+        height: 6px;
+        width: 22px;
+        border-radius: 45% 45% 50% 50%;
+        transform: scaleY(calc(0.85 * var(--lip-open-intensity, 1)));
+      }
+      42% {
+        height: 14px;
+        width: 25px;
+        border-radius: 35% 35% 55% 55%;
+        transform: scaleY(calc(1.28 * var(--lip-open-intensity, 1)));
+      }
+      68% {
+        height: 7px;
+        width: 23px;
+        border-radius: 42% 42% 48% 48%;
+        transform: scaleY(calc(0.9 * var(--lip-open-intensity, 1)));
+      }
+      85% {
+        height: 3.5px;
+        width: 21px;
+        border-radius: 48%;
+        transform: scaleY(calc(0.65 * var(--lip-open-intensity, 1)));
+      }
+      100% {
+        height: 2px;
+        width: 20px;
+        border-radius: 50%;
+        transform: scaleY(calc(0.55 * var(--lip-open-intensity, 1)));
+      }
+    }
+
+    /* Micro-movimenti vitali del busto durante il parlato */
+    @keyframes speakingBodySway {
+      0% { transform: translateY(0) scale(var(--avatar-scale, 1)) rotate(var(--avatar-rotate, 0deg)); }
+      25% { transform: translateY(-3.5px) scale(calc(var(--avatar-scale, 1) * 1.014)) rotate(calc(var(--avatar-rotate, 0deg) + 0.8deg)); }
+      50% { transform: translateY(-1.5px) scale(calc(var(--avatar-scale, 1) * 1.008)) rotate(calc(var(--avatar-rotate, 0deg) - 0.5deg)); }
+      75% { transform: translateY(-4.5px) scale(calc(var(--avatar-scale, 1) * 1.018)) rotate(calc(var(--avatar-rotate, 0deg) + 0.5deg)); }
+      100% { transform: translateY(0) scale(var(--avatar-scale, 1)) rotate(var(--avatar-rotate, 0deg)); }
+    }
+
+    /* Respirazione organica e professionale: attiva per DarIA Standard in ascolto e nel parlato */
+    @keyframes dariaBreatheSpeech {
+      0%, 100% {
+        transform: translateY(0) scale(var(--avatar-scale, 1)) rotate(var(--avatar-rotate, 0deg));
+      }
+      50% {
+        transform: translateY(calc(-0.5 * var(--avatar-breath-amp, 2.5px))) scale(calc(var(--avatar-scale, 1) * 1.005)) rotate(var(--avatar-rotate, 0deg));
+      }
+    }
+
+    .daria-actor-wrap {
+      animation: dariaBreatheIdle var(--avatar-breath-speed, 3.8s) infinite ease-in-out !important;
+    }
+    .is-speaking .daria-actor-wrap {
+      animation: dariaBreatheSpeech 4.0s infinite ease-in-out !important;
+    }
+    .daria-actor-wrap.is-real-avatar {
+      animation: none !important;
+    }
+
+    /* Barre Equalizzatore Audio che danzano mentre parla */
+    @keyframes audioBarDance {
+      0% { height: 3px; opacity: 0.4; }
+      100% { height: 16px; opacity: 1; background: #ffd700; }
+    }
+
+    .is-speaking .pip-audio-bar:nth-child(1) { animation: audioBarDance 0.28s infinite alternate; }
+    .is-speaking .pip-audio-bar:nth-child(2) { animation: audioBarDance 0.21s infinite alternate 0.08s; }
+    .is-speaking .pip-audio-bar:nth-child(3) { animation: audioBarDance 0.33s infinite alternate 0.04s; }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       ✋ 4. MANI & GESTI: LIVELLI GRAFICI DINAMICI
+       ═══════════════════════════════════════════════════════════════════════ */
+    .daria-hands-rig {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    .hand-gesture-item {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+      transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.85));
+      pointer-events: none;
+    }
+
+    /* Gesto Saluto con la mano destra */
+    .hand-wave-right {
+      bottom: 12px;
+      right: -8px;
+      font-size: 32px;
+    }
+
+    .hand-wave-right.active {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(10deg);
+      animation: handWaveCycle 1.2s infinite ease-in-out alternate;
+    }
+
+    @keyframes handWaveCycle {
+      0% { transform: translateY(0) scale(1) rotate(-5deg); }
+      100% { transform: translateY(-4px) scale(1.05) rotate(18deg); }
+    }
+
+    /* Gesto Presentazione Prezzo (palmo aperto verso l'alto) */
+    .hand-price-present {
+      bottom: 8px;
+      left: -14px;
+      font-size: 34px;
+    }
+
+    .hand-price-present.active {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(-8deg);
+      animation: handPriceFloat 2s infinite ease-in-out alternate;
+    }
+
+    @keyframes handPriceFloat {
+      0% { transform: translateY(0) scale(1) rotate(-12deg); }
+      100% { transform: translateY(-6px) scale(1.08) rotate(-4deg); }
+    }
+
+    /* Gesto Indicazione Ambiente / Metri Quadri */
+    .hand-point-room {
+      bottom: 22px;
+      left: -20px;
+      font-size: 32px;
+    }
+
+    .hand-point-room.active {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(-20deg);
+      animation: handPointPulse 1.6s infinite ease-in-out alternate;
+    }
+
+    @keyframes handPointPulse {
+      0% { transform: translateY(0) scale(1) rotate(-24deg); }
+      100% { transform: translateY(-5px) scale(1.1) rotate(-16deg); }
+    }
+
+    /* Badge Nome DarIA */
+    .pip-caption-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(7, 11, 20, 0.75);
+      border: 1px solid rgba(212, 168, 83, 0.55);
+      border-radius: 10px;
+      padding: 3px 10px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-light);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       📋 COLONNA SINISTRA IN ALTO: SCRITTE ORDINATE ACCANTO A DARIA
+       ═══════════════════════════════════════════════════════════════════════ */
+    .left-content-column {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 58%;
+      height: auto;
+      max-height: 75%;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 8px 10px 14px;
+      gap: 5px;
+      pointer-events: auto;
+    }
+
+    /* Logo Giancani */
+    .brand-logo-full-wrap {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .brand-logo-full-img {
+      height: 48px;
+      width: auto;
+      max-width: 95%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.95)) drop-shadow(0 0 10px rgba(212,168,83,0.35));
+    }
+
+    .brand-live-badge-strip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(220, 38, 38, 0.92);
+      border: 1px solid rgba(255,80,80,0.6);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(220,38,38,0.5);
+    }
+
+    .pulse-dot-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseLiveAnim 1.4s infinite alternate;
+    }
+
+    @keyframes pulseLiveAnim {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .sync-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(10, 16, 30, 0.75);
+      border: 1px solid rgba(212, 168, 83, 0.35);
+      padding: 2px 8px;
+      border-radius: 10px;
+      width: fit-content;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Città Gigante & Mega Prezzo */
+    .city-overline-title {
+      font-family: var(--font-citta);
+      font-size: clamp(26px, 7.5vw, 42px);
+      color: var(--color-citta);
+      letter-spacing: 1.5px;
+      line-height: 1.0;
+      text-transform: uppercase;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9);
+      margin-top: 2px;
+      margin-bottom: -4px;
+    }
+
+    .mega-price-display-text {
+      font-family: var(--font-prezzo);
+      font-size: clamp(32px, 9vw, 68px);
+      font-weight: 900;
+      color: var(--color-prezzo);
+      line-height: 0.92;
+      letter-spacing: -2px;
+      text-shadow: 0 4px 20px var(--shadow-prezzo), 0 8px 35px rgba(0,0,0,0.95);
+      -webkit-text-stroke: var(--stroke-prezzo) #000;
+      white-space: nowrap;
+    }
+
+    .price-tag-condition-pill {
+      margin-top: 4px;
+      background: linear-gradient(135deg, rgba(212,168,83,0.95), rgba(170,124,40,0.9));
+      color: #050814;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2.5px 9px;
+      border-radius: 4px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      width: fit-content;
+    }
+
+    .property-title-main {
+      font-family: var(--font-titolo);
+      font-size: clamp(12px, 3.2vw, 16px);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.95);
+      margin-top: 2px;
+    }
+
+    .property-specs-pills {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .spec-pill-item {
+      background: rgba(8, 14, 28, 0.88);
+      border: 1px solid var(--border-gold-subtle);
+      color: #e2e8f0;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .spec-pill-item.gold-highlight {
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.35), rgba(170, 124, 40, 0.25));
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+      font-weight: 800;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       💬 ZONA INFERIORE: CHAT TRASPARENTE & PROGRESS BAR
+       ═══════════════════════════════════════════════════════════════════════ */
+    .bottom-broadcast-zone {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 30;
+      padding: 0 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .daria-chat-zone {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      max-height: 140px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 2px;
+    }
+
+    .chat-bubble-daria {
+      align-self: flex-start;
+      background: rgba(212, 168, 83, 0.16);
+      border: 1.5px solid rgba(212, 168, 83, 0.45);
+      border-radius: 0 14px 14px 14px;
+      padding: 9px 14px;
+      max-width: 94%;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.42;
+      backdrop-filter: blur(12px);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      transition: opacity 1.5s ease;
+      opacity: 1;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+
+    .chat-bubble-daria.fading { opacity: 0; }
+
+    .chat-bubble-user {
+      align-self: flex-end;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 14px 0 14px 14px;
+      padding: 8px 14px;
+      max-width: 86%;
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.35;
+      backdrop-filter: blur(10px);
+      transition: opacity 1.5s ease;
+      opacity: 1;
+    }
+
+    .chat-bubble-user.fading { opacity: 0; }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      width: 100%;
+    }
+
+    .chat-textarea-live {
+      flex: 1;
+      background: rgba(10, 16, 30, 0.65);
+      border: 1.5px solid rgba(212,168,83,0.5);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 13.5px;
+      font-family: var(--font-corpo);
+      padding: 10px 14px;
+      resize: none;
+      min-height: 44px;
+      max-height: 80px;
+      backdrop-filter: blur(14px);
+      outline: none;
+      line-height: 1.4;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .chat-textarea-live::placeholder { color: rgba(255,255,255,0.45); }
+    .chat-textarea-live:focus { border-color: var(--gold-light); }
+
+    .chat-send-btn {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #d4a853, #aa7c28);
+      color: #050814;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(212, 168, 83, 0.4);
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover { transform: scale(1.05); }
+
+    /* Barra Progresso Stanze */
+    .room-progress-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+
+    .room-progress-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .room-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+      transition: width 0.5s ease;
+    }
+
+    /* 🔊 PULSANTE AUDIO RAPIDO ON/OFF */
+    .btn-audio-quick-toggle {
+      position: absolute;
+      top: 14px;
+      right: 172px;
+      z-index: 40;
+      background: rgba(8, 14, 28, 0.88);
+      border: 1.5px solid var(--gold);
+      color: var(--gold-light);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+      transition: all 0.2s;
+    }
+
+    .btn-audio-quick-toggle:hover {
+      transform: scale(1.05);
+      background: rgba(212,168,83,0.25);
+    }
+
+    .btn-audio-quick-toggle.muted {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* 🔴 OVERLAY NON BLOCCANTE: DISATTIVATO PER MASSIMA LUMINOSITÀ SUBITO */
+    .audio-live-prompt-overlay {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .audio-live-pill {
+      background: linear-gradient(135deg, rgba(20, 24, 40, 0.95), rgba(10, 14, 25, 0.98));
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      padding: 26px 28px;
+      max-width: 380px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.9), 0 0 30px rgba(212,168,83,0.3);
+      animation: floatPromptPulse 2.4s infinite ease-in-out;
+    }
+
+    @keyframes floatPromptPulse {
+      0%, 100% { transform: translateY(0); box-shadow: 0 14px 40px rgba(0,0,0,0.9), 0 0 25px rgba(212,168,83,0.25); }
+      50% { transform: translateY(-5px); box-shadow: 0 18px 48px rgba(0,0,0,0.95), 0 0 40px rgba(212,168,83,0.45); }
+    }
+
+    .btn-audio-enter {
+      background: linear-gradient(135deg, #d4a853, #aa7c28);
+      color: #050814;
+      font-size: 13.5px;
+      font-weight: 900;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(212,168,83,0.5);
+      letter-spacing: 0.5px;
+    }
+
+    /* 🔘 PULSANTI FLOTTANTI REGIA & EDIT LAYOUT */
+    .btn-quick-edit-layout {
+      position: absolute;
+      bottom: 84px;
+      right: 14px;
+      z-index: 40;
+      background: rgba(8, 14, 28, 0.85);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      transition: all 0.2s;
+    }
+
+    .studio-fab-btn {
+      position: absolute;
+      bottom: 84px;
+      left: 14px;
+      z-index: 40;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(8, 14, 28, 0.85);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+
+    /* TOPBAR MODALITÀ SPOSTA COMPATTA */
+    .layout-editor-topbar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      width: auto;
+      z-index: 1000;
+      background: rgba(6, 10, 20, 0.90);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 6px 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.85);
+    }
+
+    .layout-edit-mode .layout-editor-topbar { display: flex; }
+    .layout-edit-mode [data-layout-item] {
+      outline: 2px dashed var(--gold) !important;
+      cursor: move !important;
+    }
+
+    .btn-editor-pill {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-editor-pill:hover { background: rgba(255,255,255,0.2); }
+
+    .btn-editor-pill.gold {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold-light);
+    }
+
+    /* DRAWER REGIA STUDIO — BOTTOM SHEET COMPATTO & NON INVASIVO */
+    .regia-studio-drawer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      width: 100%;
+      height: 42%; /* Non copre più l'immobile: occupa solo il 42% in basso */
+      max-height: 380px;
+      min-height: 220px;
+      z-index: 2000;
+      background: rgba(6, 10, 20, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s ease, opacity 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid var(--gold);
+      border-left: none;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.92), 0 -1px 0 rgba(212, 168, 83, 0.4);
+      border-radius: 18px 18px 0 0;
+      overflow: hidden;
+    }
+
+    .regia-studio-drawer.open { transform: translateY(0); }
+
+    .regia-studio-drawer.minimized {
+      height: 48px !important;
+      min-height: 48px !important;
+      overflow: hidden !important;
+    }
+
+    .regia-studio-drawer.glass-mode {
+      background: rgba(6, 10, 20, 0.55) !important;
+      backdrop-filter: blur(6px) !important;
+      -webkit-backdrop-filter: blur(6px) !important;
+    }
+
+    .drawer-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-gold-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .drawer-tabs-nav {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      overflow-x: auto;
+    }
+
+    .drawer-tab-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .drawer-tab-btn.active {
+      background: var(--gold);
+      color: #050814;
+      border-color: var(--gold-light);
+    }
+
+    .drawer-content {
+      padding: 14px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-content-pane { display: none; flex-direction: column; gap: 12px; }
+    .tab-content-pane.active { display: flex; }
+
+    .ctrl-box {
+      background: rgba(12, 18, 32, 0.7);
+      border: 1px solid var(--border-gold-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ctrl-box-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--gold-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ctrl-select, .ctrl-input, .ctrl-textarea {
+      width: 100%;
+      background: #020408;
+      border: 1px solid rgba(212,168,83,0.4);
+      border-radius: 6px;
+      padding: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .ctrl-range {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .ctrl-label-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+
+    .btn-action-gold {
+      background: linear-gradient(135deg, #d4a853, #aa7c28);
+      color: #050814;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(212,168,83,0.35);
+    }
+
+    .btn-action-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .toast-msg-box {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      z-index: 9999;
+      background: rgba(10, 16, 30, 0.95);
+      border: 1.5px solid var(--gold);
+      color: #fff;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.85);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .toast-msg-box.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- STAGE BROADCAST VERTICALE 9:16 -->
+  <div class="vertical-broadcast-container" id="broadcast-stage">
+    
+    <!-- 🖼️ Sfondo Dinamico Stanza con Ken Burns Morbido -->
+    <div class="stage-background-layer">
+      <img class="room-photo-slide active" id="current-room-photo" 
+           src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop" 
+           alt="Stanza In Diretta">
+    </div>
+
+    <!-- Gradienti Televisivi per Leggibilità -->
+    <div class="vignette-top"></div>
+    <div class="vignette-bottom"></div>
+
+    <!-- 🎭 DARIA POTENZIATA IN ALTO A DESTRA — OCCHI, VOLTO, BOCCA 60FPS E MANI (DOPPIO CLIC PER MODIFICHE ESCLUSIVE) -->
+    <div class="daria-anchor-topright" id="daria-pip-card" data-layout-item="avatar" ondblclick="apriModificaAvatarEsclusivo()" title="Doppio Clic per Modifiche Specifiche Avatar (Espressioni, Volto, Gesti)">
+      
+      <div class="pip-header-bar">
+        <div class="pip-wave-cluster">
+          <span class="pip-audio-bar"></span>
+          <span class="pip-audio-bar"></span>
+          <span class="pip-audio-bar"></span>
+        </div>
+      </div>
+
+      <div class="daria-actor-wrap" id="daria-actor-wrap">
+        
+        <!-- Portrait Principale -->
+        <img class="daria-portrait-element" id="daria-portrait-img"
+             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop';"
+             alt="DarIA Conduttrice TV">
+
+        <!-- 👁️ Occhi Avanzati & Palpebre -->
+        <div class="daria-eyebrow-layer" id="daria-eyebrows">
+          <div class="daria-eyebrow-unit"></div>
+          <div class="daria-eyebrow-unit"></div>
+        </div>
+
+        <div class="daria-eyes-container" id="daria-eyes-box">
+          <div class="daria-eye-unit">
+            <span class="eye-catchlight"></span>
+            <div class="daria-eyelid-layer" id="daria-eyelid-left"></div>
+          </div>
+          <div class="daria-eye-unit">
+            <span class="eye-catchlight"></span>
+            <div class="daria-eyelid-layer" id="daria-eyelid-right"></div>
+          </div>
+        </div>
+
+        <!-- 😊 Volto: Guance & Glow Cutaneo -->
+        <div class="daria-cheeks-glow" id="daria-cheeks">
+          <div class="cheek-glow-spot"></div>
+          <div class="cheek-glow-spot"></div>
+        </div>
+
+        <!-- 👄 Bocca Rig Dinamica & Labbra Calibrate Lip-Sync -->
+        <div class="dynamic-lip-rig-box lip-style-naturale" id="daria-lip-rig">
+          <div class="lip-upper-part">
+            <span class="lip-cupid-bow"></span>
+          </div>
+          <div class="lip-cavity-shape">
+            <div class="lip-teeth-top-strip"></div>
+            <div class="lip-tongue-pad"></div>
+            <div class="lip-teeth-bottom-strip"></div>
+          </div>
+          <div class="lip-lower-part">
+            <span class="lip-gloss-reflection"></span>
+          </div>
+        </div>
+
+        <!-- ✋ Mani & Gesti Televisivi -->
+        <div class="daria-hands-rig" id="daria-hands-rig">
+          <span class="hand-gesture-item hand-wave-right" id="hand-wave">👋</span>
+          <span class="hand-gesture-item hand-price-present" id="hand-price">✨</span>
+          <span class="hand-gesture-item hand-point-room" id="hand-point">👉</span>
+        </div>
+
+      </div>
+
+      <div class="pip-caption-badge" id="daria-name-badge">DarIA • Conduttrice</div>
+    </div>
+
+    <!-- 📋 COLONNA SINISTRA IN ALTO: TUTTE LE SCRITTE ORDINATE ACCANTO A DARIA -->
+    <div class="left-content-column">
+
+      <!-- 1. LOGO INTERO IN CIMA -->
+      <div class="brand-logo-full-wrap" data-layout-item="logo">
+        <img class="brand-logo-full-img" id="img-brand-logo"
+             src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P"
+             onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=400&auto=format&fit=crop';"
+             alt="Immobiliare Giancani">
+        <div class="brand-live-badge-strip">
+          <span class="pulse-dot-live"></span> LIVE STREAMING
+        </div>
+      </div>
+
+      <!-- 2. SYNC STATUS -->
+      <div class="sync-status-indicator" id="sync-status-pill" data-layout-item="sync">
+        <span>📡</span> <span id="sync-status-label">Regia Cloud</span>
+      </div>
+
+      <!-- 3. CITTÀ + PREZZO (ACCANTO AD AVATAR DARIA) -->
+      <div class="city-overline-title" id="live-city-display" data-layout-item="city">FAVARA</div>
+      <div class="mega-price-display-text" id="live-price-display" data-layout-item="price">€ 185.000</div>
+      <div class="price-tag-condition-pill" id="live-condition-badge" data-layout-item="condition">Trattativa Riservata</div>
+
+      <!-- 4. TITOLO IMMOBILE -->
+      <h1 class="property-title-main" id="live-title-display" data-layout-item="title">VILLA PANORAMICA CON GIARDINO PRIVATO</h1>
+
+      <!-- 5. PILLOLE SPECIFICHE -->
+      <div class="property-specs-pills" data-layout-item="specs">
+        <span class="spec-pill-item" id="live-room-badge">📍 Salone Panoramico</span>
+        <span class="spec-pill-item gold-highlight" id="live-surface-badge">📐 185 metri quadri</span>
+        <span class="spec-pill-item" id="live-ref-badge">🏷️ Rif. GIANCANI-LIVE</span>
+      </div>
+
+    </div>
+
+    <!-- 💬 ZONA INFERIORE A TUTTA LARGHEZZA: CHAT TRASPARENTE CON DARIA & PAGER -->
+    <div class="bottom-broadcast-zone" data-layout-item="bottom_bar">
+      <!-- Chat Trasparente con DarIA (svanisce dopo 8 secondi) -->
+      <div class="daria-chat-zone" id="daria-chat-zone" data-layout-item="chat"></div>
+      <div class="chat-input-row" data-layout-item="chat_input">
+        <textarea class="chat-textarea-live" id="chat-input-daria"
+          placeholder="Scrivi a DarIA… (Tocca qui per chattare)" rows="1"></textarea>
+        <button class="chat-send-btn" id="chat-send-btn" title="Invia a DarIA">➤</button>
+      </div>
+
+      <!-- Barra di Progresso e Stanza Pager -->
+      <div class="room-progress-cluster" data-layout-item="pager">
+        <span class="room-pager-label" id="room-pager-text">Stanza 1 di 1</span>
+        <div class="room-progress-track">
+          <div class="room-progress-fill" id="room-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔊 PULSANTE AUDIO RAPIDO ON/OFF -->
+    <button class="btn-audio-quick-toggle" id="btn-quick-audio-toggle" title="Attiva/Disattiva Audio Parlato DarIA">
+      <span id="quick-audio-icon">🔊</span>
+      <span id="quick-audio-label">AUDIO LIVE ON</span>
+    </button>
+
+    <!-- 🔴 OVERLAY DI SBLOCCO AUDIO & INGRESSO IN DIRETTA MOBILE -->
+    <div id="live-audio-overlay" class="audio-live-prompt-overlay" onclick="sbloccaAudioDiretta()">
+      <div class="audio-live-pill">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px; animation: pulseLiveAnim 1s infinite alternate;">🔴</span>
+          <span style="font-size:12px; font-weight:900; color:#ef4444; letter-spacing:1px;">DIRETTA IN VERTICALE</span>
+        </div>
+        <div style="font-size:16px; font-weight:900; color:var(--gold-bright); text-shadow:0 2px 8px rgba(0,0,0,0.8);">
+          IMMOBILIARE GIANCANI
+        </div>
+        <div style="font-size:12.5px; color:#cbd5e1; line-height:1.45;">
+          Tocca qualsiasi punto dello schermo per attivare l'audio e guardare <b>DarIA</b> mentre parla, si muove e presenta l'immobile in diretta!
+        </div>
+        <button class="btn-audio-enter" type="button">
+          <span>🔊</span>
+          <span>ENTRA IN ONDA CON DARIA</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 🔘 PULSANTI FLOTTANTI REGIA & EDIT LAYOUT -->
+    <button class="btn-quick-edit-layout" id="btn-toggle-edit-mode" title="Attiva modalità per spostare o scalare gli oggetti">
+      ✏️ Sposta Oggetti
+    </button>
+    <button class="studio-fab-btn" id="btn-open-drawer" title="Apri Pannello Regia Studio (F2)">
+      ⚙️
+    </button>
+
+  </div>
+
+  <!-- 🎯 FLOATING TOPBAR MODALITÀ MODIFICA LAYOUT -->
+  <div class="layout-editor-topbar" id="layout-editor-bar">
+    <span style="font-size: 11px; font-weight: 800; color: var(--gold-light);">📐 MODIFICA LAYOUT ATTIVA</span>
+    <button class="btn-editor-pill gold" id="btn-save-layout-live">💾 Salva Impostazioni</button>
+    <button class="btn-editor-pill" id="btn-reset-layout-live">🔄 Reset</button>
+    <button class="btn-editor-pill" id="btn-close-layout-live">❌ Chiudi</button>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-msg-box" id="toast-box">
+    <span>✅</span> <span id="toast-text">Impostazioni salvate con successo!</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       🎛️ DRAWER LATERALE DI REGIA STUDIO & CONTROLLO AVATAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <aside class="regia-studio-drawer" id="regia-drawer">
+    
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">📱</span>
+        <div>
+          <div style="font-size: 12.5px; font-weight: 900; color: var(--gold-bright);">Regia Diretta in Verticale</div>
+          <div style="font-size: 9.5px; color: #94a3b8;">Immobiliare Giancani • Pannello Compatto</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button id="btn-glass-drawer" title="Attiva/Disattiva Trasparenza per vedere la casa sotto" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 12px; border-radius: 6px; padding: 4px 8px; cursor: pointer;">👁️ Trasparente</button>
+        <button id="btn-minimize-drawer" title="Minimizza o espandi il pannello" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 12px; border-radius: 6px; padding: 4px 8px; cursor: pointer;">🔽 Riduci</button>
+        <button id="btn-close-drawer" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 0 4px;" title="Chiudi">✕</button>
+      </div>
+    </div>
+
+    <!-- Barra Tab Drawer -->
+    <div class="drawer-tabs-nav">
+      <button class="drawer-tab-btn active" data-tab="avatar">🎭 Avatar & Gesti</button>
+      <button class="drawer-tab-btn" data-tab="layout">📐 Layout Oggetti</button>
+      <button class="drawer-tab-btn" data-tab="grafica">🎨 Font & Misure</button>
+      <button class="drawer-tab-btn" data-tab="diretta">📡 Flusso Cloud</button>
+      <button class="drawer-tab-btn" data-tab="dati">📋 Dati Immobile</button>
+    </div>
+
+    <!-- Contenuto Tab -->
+    <div class="drawer-content">
+
+      <!-- 🎭 TAB 1: AVATAR & GESTI — MODIFICHE SPECIFICHE DELL'AVATAR -->
+      <div class="tab-content-pane active" id="pane-avatar">
+        
+        <!-- BADGE MODIFICA SPECIFICA AVATAR -->
+        <div style="background: linear-gradient(135deg, rgba(212,168,83,0.2), rgba(10,17,40,0.8)); border: 1px solid var(--gold); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:16px;">✨</span>
+            <span style="font-size:11px; font-weight:900; color:var(--gold-bright); letter-spacing:0.5px;">MODIFICHE SPECIFICHE AVATAR</span>
+          </div>
+          <span style="font-size:9.5px; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:2px 6px; border-radius:4px;">Doppio Clic Attivo</span>
+        </div>
+
+        <!-- 1. ESPRESSIONI DEL VOLTO & STATI EMOTIVI -->
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>😊 Espressioni del Volto & Glow</span>
+            <span style="font-size: 10px; color: var(--gold-light);">Espressività Live</span>
+          </div>
+          <p style="font-size: 10.5px; color: #94a3b8; margin-bottom: 4px;">
+            Cambia all'istante l'umore e l'espressione facciale di DarIA in diretta:
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <button class="btn-action-secondary" onclick="DariaEngine.setExpression('sorriso')" style="font-size:11px; padding:7px 8px;">
+              😊 Sorriso Luminoso
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.setExpression('entusiasta')" style="font-size:11px; padding:7px 8px; border-color: rgba(255,215,0,0.4);">
+              🤩 Entusiasta & Solare
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.setExpression('ascolto')" style="font-size:11px; padding:7px 8px;">
+              🤔 Ascolto & Focus
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.setExpression('neutra')" style="font-size:11px; padding:7px 8px;">
+              😌 Neutra & Elegante
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. OCCHI, AMMICCO & INCLINAZIONE CAPO 3D -->
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>👀 Occhi, Sguardo & Inclinazione Capo 3D</span>
+            <span style="font-size: 10px; color: #38bdf8;">Cinematica 3D</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerTilt('left')" style="font-size:10.5px; padding:6px 8px;">
+              ↩️ Capo Sinistra
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerTilt('right')" style="font-size:10.5px; padding:6px 8px;">
+              ↪️ Capo Destra
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerTilt('center')" style="font-size:10.5px; padding:6px 8px;">
+              ⏸️ Capo Dritto
+            </button>
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerBlink()" style="font-size:10.5px; padding:6px 8px; border-color: rgba(56,189,248,0.4);">
+              👁️ Ammicco Occhi
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. ROSTER CONDUTTORI GIANCANI -->
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>🎭 Roster Avatar Presenti</span>
+            <span style="font-size: 10px; color: var(--gold);">Cast Televisivo</span>
+          </div>
+          <select class="ctrl-select" id="sel-avatar-character">
+            <option value="daria_classica" selected>DarIA Standard (Conduttrice Ufficiale)</option>
+            <option value="daria_elena_real">DarIA Elena (Movimenti Reali & Ammicco HD)</option>
+            <option value="daria_bionda">DarIA (Beatrice / Elena - Luxury)</option>
+            <option value="daria_rossa">DarIA (Tina / Giulia - Design)</option>
+            <option value="daria_bronde">DarIA (Chiara / Sofia - Reels)</option>
+            <option value="dario_classico">DarIO (Classico Maschile)</option>
+          </select>
+        </div>
+
+        <!-- 4. GESTI & MANI TELEVISIVE -->
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>✋ Gesti & Mani Televisive</span>
+            <span style="font-size: 10px; color: #38bdf8;">Animazioni</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerHandGesture('wave')">👋 Saluto con Mano</button>
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerHandGesture('price')">✨ Presenta Prezzo</button>
+            <button class="btn-action-secondary" onclick="DariaEngine.triggerHandGesture('point')">👉 Indica Stanza</button>
+            <button class="btn-action-secondary" onclick="DariaEngine.clearHands()">🛑 Riposo Mani</button>
+          </div>
+        </div>
+
+        <!-- 🎬 ANIMAZIONI REALI DARIA ELENA MULTI-FRAME -->
+        <div class="ctrl-box" style="border: 1px solid rgba(212,175,55,0.4); background: rgba(212,175,55,0.06);">
+          <div class="ctrl-box-title">
+            <span style="color: var(--gold-light);">🎬 Sequenze Reali DarIA Elena HD</span>
+            <span style="font-size: 10px; color: #22c55e;">● LIVE</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
+            <button class="btn-action-gold" onclick="DariaEngine.setPose('volta_sinistra')" style="font-size:11px; padding:7px 10px;">
+              🔄 Si Volta a Sinistra con Corpo e Volto & Sorride (Foto 1)
+            </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button class="btn-action-secondary" onclick="DariaEngine.setPose('presenta_prezzo')" style="font-size:10.5px; padding:6px 8px;">
+                👉 Indica Prezzo Sinistra
+              </button>
+              <button class="btn-action-secondary" onclick="DariaEngine.setPose('seducente')" style="font-size:10.5px; padding:6px 8px;">
+                ✨ Sguardo Seducente
+              </button>
+              <button class="btn-action-secondary" onclick="DariaEngine.setPose('foto_uno')" style="font-size:10.5px; padding:6px 8px;">
+                😊 Foto Uno (Sorriso)
+              </button>
+              <button class="btn-action-secondary" onclick="DariaEngine.setPose('neutra')" style="font-size:10.5px; padding:6px 8px;">
+                👁️ Riposo & Ammicco
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. 👄 CALIBRAZIONE BOCCA & LABBRA LIP-SYNC IN TEMPO REALE -->
+        <div class="ctrl-box" style="border: 1px solid rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.04);">
+          <div class="ctrl-box-title" style="color: #fb7185;">
+            <span>👄 Regolazione Bocca & Labbra (Lip-Sync)</span>
+            <span style="font-size: 10px; background: rgba(244, 63, 94, 0.2); padding: 2px 6px; border-radius: 4px; color: #fda4af;">Live Audio</span>
+          </div>
+
+          <!-- Stile & Rossetto Labbra -->
+          <div class="ctrl-label-sub">
+            <span>Stile & Colore Labbra</span>
+            <span id="val-lip-style" style="color: #fda4af; font-weight: 600;">Naturale</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+            <button type="button" class="btn-action-secondary btn-lip-style active" data-style="naturale" style="padding: 6px 2px; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #bf5269; display: inline-block; border: 1.5px solid #fff;"></span>
+              <span>Naturale</span>
+            </button>
+            <button type="button" class="btn-action-secondary btn-lip-style" data-style="glamour" style="padding: 6px 2px; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #b91c3c; display: inline-block; border: 1.5px solid #fff;"></span>
+              <span>Rosso TV</span>
+            </button>
+            <button type="button" class="btn-action-secondary btn-lip-style" data-style="nude" style="padding: 6px 2px; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #b4726b; display: inline-block; border: 1.5px solid #fff;"></span>
+              <span>Nude</span>
+            </button>
+            <button type="button" class="btn-action-secondary btn-lip-style" data-style="gloss" style="padding: 6px 2px; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <span style="width: 14px; height: 14px; border-radius: 50%; background: #e06283; display: inline-block; border: 1.5px solid #fff;"></span>
+              <span>Gloss HD</span>
+            </button>
+          </div>
+
+          <!-- Posizione X -->
+          <div class="ctrl-label-sub">
+            <span>Posizione Orizzontale (X)</span>
+            <span id="val-mouth-x" style="color: #38bdf8; font-weight: 600;">51.0%</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-mouth-x" min="15" max="85" step="0.5" value="51">
+
+          <!-- Posizione Y -->
+          <div class="ctrl-label-sub">
+            <span>Posizione Verticale (Y)</span>
+            <span id="val-mouth-y" style="color: #38bdf8; font-weight: 600;">65.0%</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-mouth-y" min="20" max="90" step="0.5" value="65">
+
+          <!-- Grandezza / Scala Bocca -->
+          <div class="ctrl-label-sub">
+            <span>Grandezza Bocca (Scala)</span>
+            <span id="val-mouth-scale" style="color: #38bdf8; font-weight: 600;">1.00x</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-mouth-scale" min="0.4" max="2.4" step="0.05" value="1.0">
+
+          <!-- Spessore Labbra -->
+          <div class="ctrl-label-sub">
+            <span>Spessore Labbra (Volume)</span>
+            <span id="val-lip-thickness" style="color: #fda4af; font-weight: 600;">3.5px</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-lip-thickness" min="1.5" max="7.0" step="0.2" value="3.5">
+
+          <!-- Ampiezza Apertura Parlato -->
+          <div class="ctrl-label-sub">
+            <span>Apertura Bocca nel Parlato</span>
+            <span id="val-lip-open" style="color: #fb7185; font-weight: 600;">1.0x</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-lip-open" min="0.5" max="2.0" step="0.1" value="1.0">
+
+          <!-- Cadenza Parlato / Velocità Bocca -->
+          <div class="ctrl-label-sub">
+            <span>Cadenza Parlato / Velocità Bocca</span>
+            <span id="val-lip-speed" style="color: #34d399; font-weight: 600;">0.38s (Naturale)</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-lip-speed" min="0.22" max="0.65" step="0.02" value="0.38">
+
+          <!-- Pulsanti rapidi test e reset -->
+          <div style="display: flex; gap: 6px; margin-top: 10px;">
+            <button type="button" class="btn-action-gold" id="btn-test-mouth-speech" style="flex: 2; font-size: 11px; padding: 7px 10px; background: linear-gradient(135deg, #e11d48, #be123c); border-color: #f43f5e; color: #fff;">
+              👄 PROVA PARLATO & BOCCA (5s)
+            </button>
+            <button type="button" class="btn-action-secondary" id="btn-reset-mouth-defaults" style="flex: 1; font-size: 11px; padding: 7px 6px;">
+              🔄 Reset Default
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. RESPIRO AVATAR -->
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>🫁 Respiro & Vitalità Avatar</span>
+            <span style="font-size: 10px; color: #a78bfa;">Fisica</span>
+          </div>
+
+          <div class="ctrl-label-sub">
+            <span>Ampiezza Respiro Naturale</span>
+            <span id="val-breath-amp">3px</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-breath-amp" min="1" max="8" step="0.5" value="3">
+
+          <div class="ctrl-label-sub">
+            <span>Velocità Respiro</span>
+            <span id="val-breath-speed">3.4s</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-breath-speed" min="2" max="6" step="0.2" value="3.4">
+        </div>
+
+        <!-- 🔒 Stabilità Capo nel Parlato -->
+        <div class="ctrl-box" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); margin-bottom: 12px;">
+          <div class="ctrl-box-title" style="color: #34d399;">
+            <span>🔒 Stabilità Capo nel Parlato</span>
+            <span style="font-size: 10px; color: #10b981;">Anti-Oscillazione</span>
+          </div>
+          <label style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #fff; cursor: pointer; padding: 4px 0;">
+            <span>Blocca testa dritta mentre l'avatar parla a 60 FPS</span>
+            <input type="checkbox" id="chk-stable-head-speech-vert" checked style="width: 18px; height: 18px; accent-color: #10b981;">
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-action-gold" id="btn-save-avatar-settings" style="flex: 1; min-width: 140px;">
+            💾 SALVA IMPOSTAZIONI AVATAR
+          </button>
+          <a class="btn-action-secondary" href="<?= ScriptApp.getService().getUrl() ?>?page=studio_pose" target="_blank" style="border-color: var(--gold); color: var(--gold-light);">
+            🎬 Studio Pose (Drive & Sheet)
+          </a>
+          <a class="btn-action-secondary" href="<?= ScriptApp.getService().getUrl() ?>?page=studiodaria" target="_blank" style="border-color: #38bdf8; color: #38bdf8;">
+            🎭 Studio Foto &amp; Sequenze
+          </a>
+        </div>
+
+      </div>
+
+      <!-- 📐 TAB 2: LAYOUT -->
+      <div class="tab-content-pane" id="pane-layout">
+        
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Modalità Trascina Elementi</span>
+            <span style="font-size: 10px; color: var(--gold);">Drag & Drop</span>
+          </div>
+          <p style="font-size: 11px; color: #94a3b8; line-height: 1.4;">
+            Tocca e sposta qualsiasi scritta, prezzo o logo direttamente sullo schermo. Ogni posizione viene salvata in modo permanente!
+          </p>
+          <button class="btn-action-gold" id="btn-activate-drag-mode">
+            ✏️ ATTIVA MODALITÀ SPOSTA SULLO SCHERMO
+          </button>
+        </div>
+
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Visibilità & Scala Oggetti</span>
+            <span style="font-size: 10px; color: #38bdf8;">Elementi</span>
+          </div>
+          <div id="layout-items-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-action-gold" id="btn-save-layout-drawer" style="flex: 1;">
+            💾 SALVA POSIZIONI
+          </button>
+          <button class="btn-action-secondary" id="btn-reset-layout-drawer">
+            🔄 RESET
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 🎨 TAB 3: GRAFICA & FONT -->
+      <div class="tab-content-pane" id="pane-grafica">
+        
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Font del Prezzo</span>
+            <span style="font-size: 10px; color: var(--gold);">Tipografia</span>
+          </div>
+          <select class="ctrl-select" id="sel-font-prezzo">
+            <option value="'Montserrat', sans-serif" selected>Montserrat (Modern Luxury)</option>
+            <option value="'Anton', sans-serif">Anton (Impact Ultra Bold)</option>
+            <option value="'Cinzel', serif">Cinzel (Exclusive Royal)</option>
+            <option value="'Bebas Neue', sans-serif">Bebas Neue (Tall Broadcast)</option>
+          </select>
+
+          <div class="ctrl-label-sub">
+            <span>Dimensione Prezzo</span>
+            <span id="val-size-prezzo">80px</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-size-prezzo" min="30" max="115" step="2" value="80">
+        </div>
+
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Font e Grandezza Città</span>
+            <span style="font-size: 10px; color: #ffd700;">Top-Line</span>
+          </div>
+          <select class="ctrl-select" id="sel-font-citta">
+            <option value="'Anton', sans-serif" selected>Anton (Gigante Impatto)</option>
+            <option value="'Cinzel', serif">Cinzel (Classico Lusso)</option>
+            <option value="'Montserrat', sans-serif">Montserrat (Geometrico)</option>
+          </select>
+
+          <div class="ctrl-label-sub">
+            <span>Dimensione Città</span>
+            <span id="val-size-citta">46px</span>
+          </div>
+          <input type="range" class="ctrl-range" id="slider-size-citta" min="20" max="75" step="1" value="46">
+        </div>
+
+      </div>
+
+      <!-- 📡 TAB 4: FLUSSO CLOUD -->
+      <div class="tab-content-pane" id="pane-diretta">
+        
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Stato Collegamento Diretta</span>
+            <span id="drawer-sync-pill" style="font-size: 10px; color: #22c55e;">● ATTIVO</span>
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
+            Sincronizzato ogni 6 secondi con la <b>Regia Live Master</b> di Immobiliare Giancani. Se cambi immobile in regia, la grafica e DarIA si aggiornano all'istante!
+          </div>
+          <button class="btn-action-gold" id="btn-force-sync-now">
+            🔄 FORZA SINCRONIZZAZIONE ORA
+          </button>
+        </div>
+
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Navigazione Stanze Diretta</span>
+            <span style="font-size: 10px; color: var(--gold);">Tour</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-action-secondary" id="btn-room-prev">⏮️ Precedente</button>
+            <button class="btn-action-secondary" id="btn-room-next">⏭️ Successiva</button>
+          </div>
+          <button class="btn-action-secondary" id="btn-toggle-autotour">
+            ⏸️ Pausa Conduzione Automatica
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 📋 TAB 5: DATI IMMOBILE -->
+      <div class="tab-content-pane" id="pane-dati">
+        
+        <div class="ctrl-box">
+          <div class="ctrl-box-title">
+            <span>Modifica Dati in Visual</span>
+            <span style="font-size: 10px; color: var(--gold);">Diretta</span>
+          </div>
+
+          <label class="ctrl-label-sub">Prezzo Visualizzato</label>
+          <input type="text" class="ctrl-input" id="input-prezzo" value="€ 185.000">
+
+          <label class="ctrl-label-sub">Città</label>
+          <input type="text" class="ctrl-input" id="input-citta" value="FAVARA">
+
+          <label class="ctrl-label-sub">Titolo Annuncio</label>
+          <input type="text" class="ctrl-input" id="input-titolo" value="VILLA PANORAMICA CON GIARDINO PRIVATO">
+
+          <label class="ctrl-label-sub">Superficie (Rigorosamente per esteso)</label>
+          <input type="text" class="ctrl-input" id="input-superficie" value="185 metri quadri">
+
+          <label class="ctrl-label-sub">Nome Ambiente / Stanza</label>
+          <input type="text" class="ctrl-input" id="input-stanza" value="Salone Panoramico">
+
+          <button class="btn-action-gold" id="btn-apply-manual-data">
+            ✅ APPLICA SUBITO IN VISUALE
+          </button>
+          <button class="btn-action-secondary" id="btn-reset-manual-data" style="margin-top: 8px; width: 100%; font-size: 11px; padding: 8px;">
+            🔄 RIPRISTINA DATI AUTOMATICI DA FOGLIO
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- Roster Conduttori Ufficiali Immobiliare Giancani da Apps Script -->
+  <?!= include('AvatarAssets') ?>
+  <?!= include('Assets_Daria_Elena') ?>
+
+  <!-- 📦 DATI INIZIALI IMMOBILE PASSATI DAL SERVER (IMMUNE AL 100% DA SYNTAXERROR) -->
+  <script id="immobile-data-json" type="application/json">
+  <?!= (typeof immobileIniziale !== 'undefined' && immobileIniziale) ? JSON.stringify(immobileIniziale) : '{}' ?>
+  </script>
+
+  <!-- 📐 DATI LAYOUT SALVATO PASSATI DAL SERVER APPS SCRIPT -->
+  <script id="layout-data-json" type="application/json">
+  <?!= (typeof layoutSalvato !== 'undefined' && layoutSalvato) ? layoutSalvato : '{}' ?>
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       💻 JAVASCRIPT BROADCAST ENGINE: OCCHI, VOLTO, BOCCA 60FPS E MANI
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+    console.log("🚀 Diretta in Verticale avviata. AppsScript:", isAppsScript);
+
+    // Database Roster Avatar Ufficiale
+    const AVATAR_PORTRAITS = {
+      daria_elena_real: (window.DARIA_ELENA_ANIMATIONS && window.DARIA_ELENA_ANIMATIONS.blink_fronte) ? window.DARIA_ELENA_ANIMATIONS.blink_fronte : "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=600&auto=format&fit=crop",
+      daria_classica: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      daria_bionda: "",
+      daria_rossa: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop",
+      daria_bronde: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop",
+      dario_classico: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop"
+    };
+
+    // Database Multi-Pose AI
+    const AVATAR_POSES = {
+      neutra: null,
+      alza_mano_dx: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=600&auto=format&fit=crop",
+      presenta_prezzo: "https://images.unsplash.com/photo-1580894732470-3882a859ea49?q=80&w=600&auto=format&fit=crop",
+      braccia_conserte: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      indica_sinistra: "https://images.unsplash.com/photo-1573497019418-b400bb3ab074?q=80&w=600&auto=format&fit=crop",
+      saluto: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=600&auto=format&fit=crop",
+      entusiasta: "https://images.unsplash.com/photo-1580894732470-3882a859ea49?q=80&w=600&auto=format&fit=crop",
+      ascolto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      seducente: null,
+      capelli_sensuale: null,
+      volta_sinistra: null,
+      guarda_sinistra: null,
+      volta_e_sorride: null,
+      foto_uno: null
+    };
+
+    // Trasparenze da window.AVATAR_ROSTER (Carica Beatrice Elena Bionda, Tina Rossa, ecc.)
+    if (typeof window.AVATAR_ROSTER !== 'undefined') {
+      const allRoster = [...(window.AVATAR_ROSTER.donne || []), ...(window.AVATAR_ROSTER.uomini || [])];
+      allRoster.forEach(c => {
+        if (c.id && c.img) AVATAR_PORTRAITS[c.id] = c.img;
+      });
+      const bionda = allRoster.find(c => c.id === 'daria_bionda');
+      if (bionda && bionda.img) {
+        AVATAR_PORTRAITS.daria_bionda = bionda.img;
+      }
+      const defaultDaria = allRoster.find(c => c.id === 'daria_classica');
+      if (defaultDaria && defaultDaria.img) {
+        AVATAR_PORTRAITS.daria_classica = defaultDaria.img;
+      }
+    }
+
+    let currentImmobileRooms = [];
+    let currentRoomIndex = 0;
+    let liveSyncInterval = null;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🎭 DARIA ENGINE: OCCHI, VOLTO, BOCCA 60FPS E MANI
+    // ═══════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🌿 DARIA FX: TRANSIZIONI ATOMICHE PULITE (ZERO GHOSTING / ZERO TRATTEGGIO) & PRECARICAMENTO — Immobiliare Giancani
+    // ═══════════════════════════════════════════════════════════════════════
+    const DariaFx = {
+      cache: {},
+      init: function() {
+        this.preloadAll();
+        this.stopIdle();
+      },
+      preloadAll: function() {
+        if (window.DARIA_ELENA_ANIMATIONS) {
+          try {
+            Object.keys(window.DARIA_ELENA_ANIMATIONS).forEach(function(k) {
+              var u = window.DARIA_ELENA_ANIMATIONS[k];
+              if (u && !DariaFx.cache[k]) {
+                var im = new Image();
+                im.src = u;
+                DariaFx.cache[k] = im;
+              }
+            });
+          } catch(e) {}
+        }
+      },
+      crossfadeTo: function(img, url, ms) {
+        this.applyPose(img, url);
+      },
+      seqTimer: null,
+      playSequence: function(img, frames, fps) {
+        this.stopSequence();
+        if (!img || !frames || !frames.length) return;
+        if (frames.length === 1) {
+          this.applyPose(img, frames[0]);
+          return;
+        }
+        let idx = 0;
+        this.applyPose(img, frames[idx], true);
+        const speed = Math.max(40, Math.floor(1000 / (fps || 6)));
+        this.seqTimer = setInterval(() => {
+          idx = (idx + 1) % frames.length;
+          this.applyPose(img, frames[idx], true);
+        }, speed);
+      },
+      stopSequence: function() {
+        if (this.seqTimer) {
+          clearInterval(this.seqTimer);
+          this.seqTimer = null;
+        }
+      },
+      applyPose: function(img, url, isSeqLoop) {
+        if (!img || !url) return;
+        if (!isSeqLoop) {
+          this.stopSequence();
+        }
+        // Rimuove eventuali nodi fantasma residui di versioni precedenti
+        if (img.parentNode) {
+          var ghosts = img.parentNode.querySelectorAll('img[aria-hidden="true"], .ghost');
+          ghosts.forEach(function(g) { if (g !== img && g.parentNode) g.parentNode.removeChild(g); });
+        }
+        if (img._currentUrl === url) return;
+        if (!img._currentUrl && img.src === url) {
+          img._currentUrl = url;
+          return;
+        }
+        img._currentUrl = url;
+        img.src = url;
+      },
+      stopIdle: function() {
+        if (this.raf) {
+          cancelAnimationFrame(this.raf);
+          this.raf = null;
+        }
+        var wrap = document.getElementById('daria-actor-wrap');
+        if (wrap) {
+          wrap.style.translate = '';
+          wrap.style.scale = '';
+          wrap.style.rotate = '';
+        }
+      },
+      startIdle: function() {
+        this.stopIdle();
+      }
+    };
+
+    const DariaEngine = {
+      isSpeaking: false,
+      speechSynth: window.speechSynthesis,
+      activeVoice: null,
+      blinkTimeout: null,
+      tiltTimeout: null,
+      handTimeout: null,
+      currentPoseId: 'neutra',
+
+      init: function() {
+        this.initVoiceEngine();
+        this.startBlinkLoop();
+        this.startHeadTiltLoop();
+        DariaFx.init();
+      },
+
+      initVoiceEngine: function() {
+        if (!this.speechSynth) return;
+        const loadVoices = () => {
+          const voices = this.speechSynth.getVoices();
+          const itVoices = voices.filter(v => (v.lang && v.lang.toLowerCase().startsWith('it')));
+          const elsa = itVoices.find(v => v.name.includes('Elsa') || v.name.includes('Isabella') || v.name.includes('Alice') || v.name.includes('Natural') || v.name.includes('Cosimo'));
+          this.activeVoice = elsa || itVoices[0] || null;
+        };
+        loadVoices();
+        if (this.speechSynth.onvoiceschanged !== undefined) {
+          this.speechSynth.onvoiceschanged = loadVoices;
+        }
+      },
+
+      setPose: function(poseId) {
+        const img = document.getElementById('daria-portrait-img');
+        if (!img) return;
+
+        this.currentPoseId = poseId;
+        const selAvatar = (document.getElementById('sel-avatar-character') && document.getElementById('sel-avatar-character').value) || (LayoutManager.state && LayoutManager.state.avatar && LayoutManager.state.avatar.character) || 'daria_classica';
+        const isReal = (selAvatar === 'daria_elena_real') && !!window.DARIA_ELENA_ANIMATIONS;
+
+        // Rileva se la posa è di movimento / rotazione (in cui la bocca overlay deve scomparire)
+        const isTurned = (
+          poseId === 'volta_sinistra' ||
+          poseId === 'guarda_sinistra' ||
+          poseId === 'volta_e_sorride' ||
+          poseId === 'profilo_sinistra' ||
+          poseId === 'presenta_prezzo' ||
+          poseId === 'indica_sinistra' ||
+          poseId === 'alza_mano_dx' ||
+          poseId === 'volta_e_indica' ||
+          poseId === 'indica_profilo' ||
+          poseId === 'seducente' ||
+          poseId === 'capelli_sensuale' ||
+          poseId === 'entusiasta' ||
+          poseId === 'saluto' ||
+          (typeof poseId === 'string' && (
+            poseId.includes('sinistra') ||
+            poseId.includes('destra') ||
+            poseId.includes('profilo') ||
+            poseId.includes('volta') ||
+            poseId.includes('indica') ||
+            poseId.includes('sensuale') ||
+            poseId.includes('seducente')
+          ))
+        );
+
+        const wrap = document.getElementById('daria-actor-wrap');
+        if (wrap) {
+          wrap.classList.toggle('is-turned-pose', isTurned);
+          if (isReal) {
+            wrap.classList.add('is-real-avatar');
+            wrap.classList.remove('tilt-left', 'tilt-right');
+          } else {
+            wrap.classList.remove('is-real-avatar');
+          }
+        }
+
+        const lipBox = document.getElementById('daria-lip-rig');
+        if (lipBox) {
+          if (isTurned) {
+            lipBox.classList.add('lip-hidden-turned');
+            lipBox.style.setProperty('display', 'none', 'important');
+            lipBox.style.setProperty('opacity', '0', 'important');
+            lipBox.style.setProperty('visibility', 'hidden', 'important');
+          } else {
+            lipBox.classList.remove('lip-hidden-turned');
+            lipBox.style.removeProperty('display');
+            lipBox.style.removeProperty('opacity');
+            lipBox.style.removeProperty('visibility');
+          }
+        }
+
+        // 1. Controllo Sequenze Personalizzate da GIANCANI_AVATAR_SEQUENCES (Filmstrip Editor)
+        let customSeq = null;
+        try {
+          const rawSeqs = localStorage.getItem('GIANCANI_AVATAR_SEQUENCES');
+          if (rawSeqs) {
+            const allSeqs = JSON.parse(rawSeqs);
+            if (allSeqs[selAvatar] && allSeqs[selAvatar][poseId]) {
+              customSeq = allSeqs[selAvatar][poseId];
+            }
+          }
+        } catch(e) {}
+
+        if (customSeq && customSeq.frames && customSeq.frames.length > 0) {
+          DariaFx.playSequence(img, customSeq.frames, customSeq.fps || 6);
+          return;
+        }
+
+        let targetUrl = AVATAR_PORTRAITS[selAvatar] || AVATAR_PORTRAITS.daria_classica;
+
+        // Se è attivo il profilo DarIA Elena Reale, usa le sequenze di movimento reali
+        if (isReal) {
+          if (poseId === 'presenta_prezzo' || poseId === 'indica_sinistra' || poseId === 'alza_mano_dx') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.indica_profilo;
+          } else if (poseId === 'volta_sinistra' || poseId === 'guarda_sinistra' || poseId === 'volta_e_sorride' || poseId === 'profilo_sinistra') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.volta_sinistra_sorriso;
+          } else if (poseId === 'entusiasta' || poseId === 'saluto') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.sorrisi_parlato;
+          } else if (poseId === 'seducente' || poseId === 'capelli_sensuale') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.seducente_fronte;
+          } else if (poseId === 'foto_uno') {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.foto_uno;
+          } else if (poseId === 'parla_fronte') {
+            targetUrl = (window.DARIA_ELENA_FRAME_STRIPS && window.DARIA_ELENA_FRAME_STRIPS.parla_fronte && window.DARIA_ELENA_FRAME_STRIPS.parla_fronte[0]) ? window.DARIA_ELENA_FRAME_STRIPS.parla_fronte[0] : window.DARIA_ELENA_ANIMATIONS.blink_fronte;
+          } else {
+            targetUrl = window.DARIA_ELENA_ANIMATIONS.blink_fronte;
+          }
+        } else if (poseId !== 'neutra' && AVATAR_POSES[poseId]) {
+          targetUrl = AVATAR_POSES[poseId];
+        }
+
+        // Dissolvenza morbida tra pose (niente scatto / tic)
+        DariaFx.crossfadeTo(img, targetUrl);
+      },
+
+      /* 👁️ OCCHI: BATTITO PALPEBRE NATURALE A DOPPIA FASE */
+      startBlinkLoop: function() {
+        const schedule = () => {
+          const delay = Math.random() * 2600 + 2600;
+          this.blinkTimeout = setTimeout(() => {
+            const selAvatar = (document.getElementById('sel-avatar-character') && document.getElementById('sel-avatar-character').value) || (LayoutManager.state && LayoutManager.state.avatar && LayoutManager.state.avatar.character) || 'daria_classica';
+            if (selAvatar !== 'daria_elena_real') {
+              this.triggerBlink(110);
+              if (Math.random() > 0.72) {
+                setTimeout(() => this.triggerBlink(85), 210);
+              }
+            }
+            schedule();
+          }, delay);
+        };
+        schedule();
+      },
+
+      triggerBlink: function(durationMs) {
+        const bLeft = document.getElementById('daria-eyelid-left');
+        const bRight = document.getElementById('daria-eyelid-right');
+        if (bLeft) bLeft.classList.add('blinking');
+        if (bRight) bRight.classList.add('blinking');
+
+        setTimeout(() => {
+          if (bLeft) bLeft.classList.remove('blinking');
+          if (bRight) bRight.classList.remove('blinking');
+        }, durationMs || 110);
+      },
+
+      /* 😊 VOLTO: MICRO-TILT 3D DELLA TESTA */
+      startHeadTiltLoop: function() {
+        const wrap = document.getElementById('daria-actor-wrap');
+        const scheduleTilt = () => {
+          const delay = Math.random() * 4500 + 3500;
+          this.tiltTimeout = setTimeout(() => {
+            if (wrap && !this.isSpeaking) {
+              const selAvatar = (document.getElementById('sel-avatar-character') && document.getElementById('sel-avatar-character').value) || (LayoutManager.state && LayoutManager.state.avatar && LayoutManager.state.avatar.character) || 'daria_classica';
+              if (selAvatar === 'daria_elena_real' || wrap.classList.contains('is-real-avatar')) {
+                wrap.classList.remove('tilt-left', 'tilt-right');
+                return;
+              }
+              wrap.classList.remove('tilt-left', 'tilt-right');
+              const rand = Math.random();
+              if (rand > 0.65) wrap.classList.add('tilt-left');
+              else if (rand > 0.30) wrap.classList.add('tilt-right');
+            }
+            scheduleTilt();
+          }, delay);
+        };
+        scheduleTilt();
+      },
+
+      /* ✋ MANI: GESTI DINAMICI */
+      triggerHandGesture: function(gestureType) {
+        this.clearHands();
+        let targetId = '';
+        if (gestureType === 'wave' || gestureType === 'saluto') targetId = 'hand-wave';
+        else if (gestureType === 'price' || gestureType === 'prezzo') targetId = 'hand-price';
+        else if (gestureType === 'point' || gestureType === 'stanza') targetId = 'hand-point';
+
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.classList.add('active');
+          if (this.handTimeout) clearTimeout(this.handTimeout);
+          this.handTimeout = setTimeout(() => {
+            el.classList.remove('active');
+          }, 4500);
+        }
+      },
+
+      clearHands: function() {
+        document.querySelectorAll('.hand-gesture-item').forEach(h => h.classList.remove('active'));
+      },
+
+      /* 🎭 ESPRESSIONI DEL VOLTO & STATI EMOTIVI */
+      setExpression: function(expr) {
+        const wrap = document.getElementById('daria-actor-wrap');
+        if (!wrap) return;
+
+        wrap.classList.remove('is-enthusiastic', 'is-speaking', 'tilt-left', 'tilt-right');
+        if (expr === 'sorriso') {
+          wrap.classList.add('is-speaking');
+          this.setPose('neutra');
+        } else if (expr === 'entusiasta') {
+          wrap.classList.add('is-enthusiastic');
+          this.setPose('entusiasta');
+        } else if (expr === 'ascolto') {
+          wrap.classList.add('tilt-left');
+          this.setPose('ascolto');
+        } else {
+          this.setPose('neutra');
+        }
+        showToast("🎭 Espressione Avatar: " + expr.toUpperCase());
+      },
+
+      /* 🔄 INCLINAZIONE CAPO DINAMICA & SGUARDO */
+      triggerTilt: function(dir) {
+        const wrap = document.getElementById('daria-actor-wrap');
+        const lipBox = document.getElementById('daria-lip-rig');
+        if (!wrap) return;
+        wrap.classList.remove('tilt-left', 'tilt-right');
+        if (dir === 'left') {
+          wrap.classList.add('tilt-left');
+          if (lipBox) {
+            lipBox.classList.add('lip-hidden-turned');
+            lipBox.style.setProperty('display', 'none', 'important');
+          }
+        } else if (dir === 'right') {
+          wrap.classList.add('tilt-right');
+          if (lipBox) {
+            lipBox.classList.add('lip-hidden-turned');
+            lipBox.style.setProperty('display', 'none', 'important');
+          }
+        } else {
+          if (lipBox && !wrap.classList.contains('is-turned-pose')) {
+            lipBox.classList.remove('lip-hidden-turned');
+            lipBox.style.removeProperty('display');
+          }
+        }
+      },
+
+      /* 👀 AMMICCO OCCHI ISTANTANEO */
+      triggerBlink: function() {
+        const left = document.getElementById('daria-eyelid-left');
+        const right = document.getElementById('daria-eyelid-right');
+        if (left) left.classList.add('is-blinking');
+        if (right) right.classList.add('is-blinking');
+        setTimeout(() => {
+          if (left) left.classList.remove('is-blinking');
+          if (right) right.classList.remove('is-blinking');
+        }, 180);
+      },
+
+      realLipTimer: null,
+      startRealLipSync: function() {
+        // Nessun cambio di immagine intera durante il parlato! Il viso/capo rimane stabilissimo senza "tik".
+        // È la bocca dinamica (#daria-lip-rig) che si anima in sintonia con le parole.
+        if (this.realLipTimer) {
+          clearInterval(this.realLipTimer);
+          this.realLipTimer = null;
+        }
+      },
+
+      stopRealLipSync: function() {
+        if (this.realLipTimer) {
+          clearInterval(this.realLipTimer);
+          this.realLipTimer = null;
+        }
+        const portImg = document.getElementById('daria-portrait-img');
+        if (portImg && window.DARIA_ELENA_ANIMATIONS) {
+          if (this.currentPoseId === 'neutra' || this.currentPoseId === 'foto_uno' || !this.currentPoseId) {
+            DariaFx.applyPose(portImg, window.DARIA_ELENA_ANIMATIONS.blink_fronte);
+          }
+        }
+      },
+
+      /* 👄 BOCCA: PARLATO & LIP-SYNC 60FPS */
+      speak: function(text, onComplete) {
+        if (!this.speechSynth) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+
+        try { this.speechSynth.cancel(); } catch(e) {}
+
+        // 1. Normalizzazione Testo Colonna F & Chiusura Personal Branding
+        let cleanText = String(text || '').trim();
+        cleanText = cleanText.replace(/(\d+)\s*(?:mq|m²|m2)\b/gi, "$1 metri quadri");
+        cleanText = cleanText.replace(/\b(?:mq|m²)\b/gi, "metri quadri");
+        if (!cleanText.includes("Immobiliare Giancani")) {
+          cleanText += " — Immobiliare Giancani";
+        }
+
+        // 2. Riconoscimento Tag Pose & Gesti Mani
+        const tagMatches = cleanText.match(/\[([a-zA-Z0-9_-]+)\]/g);
+        if (tagMatches) {
+          tagMatches.forEach(tag => {
+            const poseName = tag.replace('[', '').replace(']', '');
+            if (AVATAR_POSES[poseName] !== undefined || poseName === 'neutra') {
+              this.setPose(poseName);
+            }
+            if (poseName === 'saluto') this.triggerHandGesture('wave');
+            else if (poseName === 'presenta_prezzo') this.triggerHandGesture('price');
+            else if (poseName === 'alza_mano_dx') this.triggerHandGesture('point');
+            cleanText = cleanText.replace(tag, '');
+          });
+        } else {
+          const low = cleanText.toLowerCase();
+          if (low.includes('guarda a sinistra') || low.includes('si volta a sinistra') || low.includes('volta a sinistra')) {
+            this.setPose('volta_sinistra');
+          } else if (low.includes('ecco il prezzo') || low.includes('il prezzo è a sinistra') || low.includes('indica il prezzo')) {
+            this.setPose('presenta_prezzo');
+            this.triggerHandGesture('price');
+          } else if (low.includes('capelli in modo sensuale') || low.includes('sistemare i capelli') || low.includes('sguardo seducente')) {
+            this.setPose('seducente');
+          } else if (low.includes('indica la stanza') || low.includes('indica l\'ambiente')) {
+            this.setPose('alza_mano_dx');
+            this.triggerHandGesture('point');
+          } else {
+            // Parlato frontale stabile e naturale
+            this.setPose('neutra');
+          }
+        }
+
+        cleanText = cleanText.replace(/<[^>]*>?/gm, '').trim();
+
+        // 3. Sottotitolo live nella chat trasparente
+        if (typeof addChatBubble === 'function') {
+          addChatBubble(cleanText, 'daria');
+        }
+
+        // 4. Sintesi Vocale Web Speech con Lip-Sync 60 FPS
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'it-IT';
+        utterance.rate = 1.02;
+        utterance.pitch = 1.14;
+        if (this.activeVoice) utterance.voice = this.activeVoice;
+
+        const pipCard = document.getElementById('daria-pip-card');
+        const lipBox = document.getElementById('daria-lip-rig');
+
+        utterance.onstart = () => {
+          this.isSpeaking = true;
+          if (pipCard) pipCard.classList.add('is-speaking');
+          if (lipBox && !lipBox.classList.contains('lip-hidden-turned')) {
+            lipBox.classList.add('is-speaking');
+          }
+          document.body.classList.add('is-enthusiastic');
+
+          let isStableHead = true;
+          try {
+            const rawH = localStorage.getItem('GIANCANI_STABLE_HEAD_SPEECH');
+            if (rawH !== null) isStableHead = (rawH === 'true');
+          } catch(e) {}
+
+          if (isStableHead) {
+            DariaFx.stopSequence();
+            const portImg = document.getElementById('daria-portrait-img');
+            const selAvatar = (document.getElementById('sel-avatar-character') && document.getElementById('sel-avatar-character').value) || 'daria_classica';
+            if (portImg) {
+              const anims = window.DARIA_ELENA_ANIMATIONS || {};
+              let still = (selAvatar === 'daria_elena_real') ? (anims.still_fronte || anims.foto_uno || anims.blink_fronte) : (AVATAR_PORTRAITS[selAvatar] || AVATAR_PORTRAITS.daria_classica);
+              if (still) DariaFx.applyPose(portImg, still);
+            }
+          }
+
+          this.startRealLipSync();
+        };
+
+        utterance.onboundary = (event) => {
+          if (event.name === 'word') {
+            if (lipBox && this.isSpeaking && !lipBox.classList.contains('lip-hidden-turned')) {
+              lipBox.classList.add('lip-pulse-word');
+              setTimeout(() => { if (lipBox) lipBox.classList.remove('lip-pulse-word'); }, 140);
+            }
+          }
+        };
+
+        const handleSpeechEnd = () => {
+          this.isSpeaking = false;
+          this.stopRealLipSync();
+          if (pipCard) pipCard.classList.remove('is-speaking');
+          if (lipBox) lipBox.classList.remove('is-speaking', 'lip-pulse-word');
+          document.body.classList.remove('is-enthusiastic');
+          setTimeout(() => {
+            this.setPose('neutra');
+            this.clearHands();
+          }, 300);
+          if (typeof onComplete === 'function') {
+            onComplete();
+          }
+        };
+
+        utterance.onend = handleSpeechEnd;
+        utterance.onerror = (err) => {
+          console.warn("SpeechSynthesis event:", err);
+          handleSpeechEnd();
+        };
+
+        try {
+          this.speechSynth.speak(utterance);
+        } catch(e) {
+          console.warn("Errore speech synth:", e);
+          handleSpeechEnd();
+        }
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📡 LIVE SYNC MANAGER: COLLEGAMENTO AL FLUSSO REALE & CONDUZIONE TV
+    // ═══════════════════════════════════════════════════════════════════════
+    const LiveSyncManager = {
+      isSyncing: false,
+      audioUnlocked: false,
+      audioMuted: false,
+      isAutoHosting: true,
+      currentImmobileTitle: null,
+      currentRoomIndex: 0,
+      tourDelayTimeout: null,
+      currentData: null,
+      manualOverride: null,
+      bc: null,
+
+      init: function() {
+        const unlockHandler = () => {
+          if (!this.audioUnlocked) {
+            sbloccaAudioDiretta();
+          }
+        };
+        window.addEventListener('click', unlockHandler, { once: false });
+        window.addEventListener('touchstart', unlockHandler, { once: false, passive: true });
+
+        // Carica eventuale Override Manuale Dati salvato in locale
+        try {
+          const savedOv = localStorage.getItem('giancani_manual_override');
+          if (savedOv) {
+            this.manualOverride = JSON.parse(savedOv);
+            if (this.manualOverride && this.manualOverride.active) {
+              this.applicaOverrideManuale(this.manualOverride);
+            }
+          }
+        } catch(eOv) {}
+
+        // Ascolto sincronizzazione via BroadcastChannel
+        if (window.BroadcastChannel) {
+          try {
+            if (!this.bc) this.bc = new BroadcastChannel('giancani_live_channel');
+            this.bc.onmessage = (ev) => {
+              if (ev && ev.data) {
+                if (ev.data.type === 'IMMOBILE_DATA_OVERRIDE' && ev.data.data) {
+                  this.manualOverride = ev.data.data;
+                  this.applicaOverrideManuale(ev.data.data);
+                } else if (ev.data.type === 'IMMOBILE_DATA_OVERRIDE_RESET') {
+                  this.manualOverride = null;
+                  try { localStorage.removeItem('giancani_manual_override'); } catch(e) {}
+                  this.fetchLiveState();
+                } else if (ev.data.type === 'LAYOUT_UPDATE' && ev.data.data) {
+                  LayoutManager.applyLayoutData(ev.data.data);
+                } else if (ev.data.type === 'AVATAR_CHANGED' && ev.data.character) {
+                  const selAv = document.getElementById('sel-avatar-character');
+                  if (selAv) selAv.value = ev.data.character;
+                  DariaEngine.setPose('neutra');
+                } else if (ev.data.type === 'SEQUENCES_UPDATE') {
+                  if (ev.data.data) {
+                    try { localStorage.setItem('GIANCANI_AVATAR_SEQUENCES', JSON.stringify(ev.data.data)); } catch(e){}
+                  }
+                  if (ev.data.stableHead !== undefined) {
+                    try { localStorage.setItem('GIANCANI_STABLE_HEAD_SPEECH', String(ev.data.stableHead)); } catch(e){}
+                    const chk = document.getElementById('chk-stable-head-speech-vert');
+                    if (chk) chk.checked = ev.data.stableHead;
+                  }
+                  DariaEngine.setPose(DariaEngine.currentPoseId || 'neutra');
+                }
+              }
+            };
+          } catch(eBc) {}
+        }
+
+        // Caricamento Dati Iniziali Sicuro (immune da SyntaxError)
+        try {
+          const jsonElem = document.getElementById('immobile-data-json');
+          if (jsonElem && jsonElem.textContent && jsonElem.textContent.trim()) {
+            const initialData = JSON.parse(jsonElem.textContent);
+            if (initialData && typeof initialData === 'object' && (initialData.stanza || initialData.titolo || initialData.mediaUrl || initialData.prezzo)) {
+              console.log("⚡ Dati Iniziali caricati da template server:", initialData);
+              this.applicaDatiRicevuti(initialData);
+            }
+          }
+        } catch(eInit) {
+          console.warn("Errore parsing dati iniziali:", eInit);
+        }
+
+        this.fetchLiveState();
+
+        liveSyncInterval = setInterval(() => {
+          this.fetchLiveState();
+        }, 6000);
+      },
+
+      applicaOverrideManuale: function(ov) {
+        if (!ov) return;
+        this.manualOverride = ov;
+        if (ov.prezzo) {
+          document.getElementById('live-price-display').innerText = ov.prezzo;
+          if (document.activeElement !== document.getElementById('input-prezzo')) {
+            document.getElementById('input-prezzo').value = ov.prezzo;
+          }
+        }
+        if (ov.citta) {
+          const ct = ov.citta.toUpperCase();
+          document.getElementById('live-city-display').innerText = ct;
+          if (document.activeElement !== document.getElementById('input-citta')) {
+            document.getElementById('input-citta').value = ct;
+          }
+        }
+        if (ov.titolo) {
+          const tt = ov.titolo.toUpperCase();
+          document.getElementById('live-title-display').innerText = tt;
+          if (document.activeElement !== document.getElementById('input-titolo')) {
+            document.getElementById('input-titolo').value = tt;
+          }
+        }
+        if (ov.superficie) {
+          const sup = String(ov.superficie).replace(/(\d+)\s*(?:mq|m²|m2)\b/gi, "$1 metri quadri");
+          document.getElementById('live-surface-badge').innerText = '📐 ' + sup;
+          if (document.activeElement !== document.getElementById('input-superficie')) {
+            document.getElementById('input-superficie').value = sup;
+          }
+        }
+        if (ov.stanza) {
+          document.getElementById('live-room-badge').innerText = '📍 ' + ov.stanza;
+          if (document.activeElement !== document.getElementById('input-stanza')) {
+            document.getElementById('input-stanza').value = ov.stanza;
+          }
+        }
+        if (this.currentData) {
+          if (ov.prezzo) this.currentData.prezzo = ov.prezzo;
+          if (ov.citta) { this.currentData.citta = ov.citta; this.currentData.zona = ov.citta; }
+          if (ov.titolo) this.currentData.titolo = ov.titolo;
+          if (ov.superficie) this.currentData.mq = ov.superficie;
+          if (ov.stanza) this.currentData.stanza = ov.stanza;
+        }
+      },
+
+      fetchLiveState: function() {
+        if (this.isSyncing) return;
+        this.isSyncing = true;
+
+        const onDone = (res) => {
+          this.isSyncing = false;
+          if (res && (res.stanza || res.titolo || res.mediaUrl)) {
+            this.applicaDatiRicevuti(res);
+            this.setSyncStatus(true, "In Onda: " + (res.titolo || "Immobile Attivo"));
+          } else {
+            this.setSyncStatus(false, "In Attesa di Segnale Regia");
+          }
+        };
+
+        const onErr = (err) => {
+          this.isSyncing = false;
+          console.warn("Sync cloud fallback:", err);
+          this.setSyncStatus(false, "Offline / Demo");
+        };
+
+        if (isAppsScript) {
+          google.script.run
+            .withSuccessHandler(onDone)
+            .withFailureHandler(onErr)
+            .getImmobileData('current');
+        } else {
+          const webAppUrl = window.location.href.split('?')[0];
+          fetch(`${webAppUrl}?action=get_immobile&dir=current`)
+            .then(r => r.json())
+            .then(data => {
+              if (data && data.success && data.immobile) onDone(data.immobile);
+              else onDone(null);
+            })
+            .catch(onErr);
+        }
+      },
+
+      applicaDatiRicevuti: function(data) {
+        if (!data) return;
+        this.currentData = data;
+
+        // Se il server ha fornito manualOverride, allinea lo stato
+        if (data.manualOverride && data.manualOverride.active) {
+          this.manualOverride = data.manualOverride;
+          try { localStorage.setItem('giancani_manual_override', JSON.stringify(data.manualOverride)); } catch(e) {}
+        }
+
+        // Se è attivo un override manuale (da server o locale), applica rigorosamente i valori manuali
+        if (this.manualOverride && this.manualOverride.active) {
+          if (this.manualOverride.prezzo) data.prezzo = this.manualOverride.prezzo;
+          if (this.manualOverride.citta) { data.citta = this.manualOverride.citta; data.zona = this.manualOverride.citta; }
+          if (this.manualOverride.titolo) data.titolo = this.manualOverride.titolo;
+          if (this.manualOverride.superficie) data.mq = this.manualOverride.superficie;
+          if (this.manualOverride.stanza) data.stanza = this.manualOverride.stanza;
+        }
+
+        if (data.prezzo) {
+          document.getElementById('live-price-display').innerText = data.prezzo;
+          if (document.activeElement !== document.getElementById('input-prezzo')) {
+            document.getElementById('input-prezzo').value = data.prezzo;
+          }
+        }
+
+        const cityText = (data.zona || data.citta || "FAVARA").toUpperCase();
+        document.getElementById('live-city-display').innerText = cityText;
+        if (document.activeElement !== document.getElementById('input-citta')) {
+          document.getElementById('input-citta').value = cityText;
+        }
+
+        const titleText = (data.titolo || "DIMORA ESCLUSIVA IN SICILIA").toUpperCase();
+        document.getElementById('live-title-display').innerText = titleText;
+        if (document.activeElement !== document.getElementById('input-titolo')) {
+          document.getElementById('input-titolo').value = titleText;
+        }
+
+        if (data.mq) {
+          const supText = String(data.mq).replace(/(\d+)\s*(?:mq|m²|m2)\b/gi, "$1 metri quadri");
+          document.getElementById('live-surface-badge').innerText = '📐 ' + supText;
+          if (document.activeElement !== document.getElementById('input-superficie')) {
+            document.getElementById('input-superficie').value = supText;
+          }
+        }
+
+        let rooms = [];
+        if (Array.isArray(data.tutteLeStanze) && data.tutteLeStanze.length > 0) {
+          rooms = data.tutteLeStanze;
+        } else if (Array.isArray(data.elencoStanze) && data.elencoStanze.length > 0) {
+          rooms = data.elencoStanze;
+        } else {
+          rooms = [{
+            stanza: data.stanza || "Salone Panoramico",
+            nome: data.stanza || "Salone Panoramico",
+            fotoUrl: data.mediaUrl || data.fotoUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200",
+            testo: data.testoDaLeggere || data.testo || ""
+          }];
+        }
+        currentImmobileRooms = rooms;
+
+        const isNewImmobile = (this.currentImmobileTitle !== titleText);
+        if (isNewImmobile) {
+          console.log(`🎬 Nuovo immobile in onda: ${titleText}`);
+          this.currentImmobileTitle = titleText;
+          this.currentRoomIndex = (typeof data.indiceCorrente === 'number') ? data.indiceCorrente : 0;
+          this.conduciStanzaCorrente(true);
+        } else if (typeof data.indiceCorrente === 'number' && data.indiceCorrente !== this.currentRoomIndex && !this.isAutoHosting) {
+          this.currentRoomIndex = data.indiceCorrente;
+          this.conduciStanzaCorrente(false);
+        }
+      },
+
+      conduciStanzaCorrente: function(isFirstIntroduction) {
+        if (!currentImmobileRooms || currentImmobileRooms.length === 0) return;
+        if (this.currentRoomIndex < 0) this.currentRoomIndex = currentImmobileRooms.length - 1;
+        if (this.currentRoomIndex >= currentImmobileRooms.length) this.currentRoomIndex = 0;
+
+        if (this.tourDelayTimeout) {
+          clearTimeout(this.tourDelayTimeout);
+          this.tourDelayTimeout = null;
+        }
+
+        const r = currentImmobileRooms[this.currentRoomIndex];
+        if (!r) return;
+
+        const nomeStanza = r.stanza || r.nome || "Ambiente Esclusivo";
+        const fotoUrl = r.fotoUrl || r.mediaUrl || r.url || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200";
+
+        // Aggiornamento Immediato Sfondo Stanza con Fallback Garantito
+        const bgImg = document.getElementById('current-room-photo');
+        if (bgImg && fotoUrl) {
+          bgImg.onerror = function() {
+            this.onerror = null;
+            this.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop";
+          };
+          if (bgImg.src !== fotoUrl) {
+            bgImg.src = fotoUrl;
+          }
+          bgImg.style.opacity = '1';
+        }
+
+        document.getElementById('live-room-badge').innerText = '📍 ' + nomeStanza;
+        if (document.getElementById('input-stanza')) {
+          document.getElementById('input-stanza').value = nomeStanza;
+        }
+        document.getElementById('room-pager-text').innerText = `Stanza ${this.currentRoomIndex + 1} di ${currentImmobileRooms.length}`;
+        const pct = ((this.currentRoomIndex + 1) / currentImmobileRooms.length) * 100;
+        document.getElementById('room-progress-bar').style.width = pct + '%';
+
+        // Estrazione Rigorosa Testo dalla Colonna F
+        const data = this.currentData || {};
+        const prezzo = document.getElementById('live-price-display').innerText || 'Trattativa in sede';
+        const citta = document.getElementById('live-city-display').innerText || 'FAVARA';
+        const sup = document.getElementById('live-surface-badge').innerText.replace('📐 ', '') || 'spazi generosi in metri quadri';
+
+        let testoColonnaF = String(r.testoF || r.testo || data.testoDaLeggere || data.testo || '').trim();
+
+        if (!testoColonnaF || testoColonnaF.length < 15) {
+          if (isFirstIntroduction) {
+            testoColonnaF = `[saluto] Benvenuti nella diretta in verticale con Immobiliare Giancani! Ci troviamo a ${citta} per presentarvi questa esclusiva proprietà proposta a ${prezzo}, con una superficie di ${sup}. Adesso entriamo in ${nomeStanza}: uno spazio straordinario, luminoso e accogliente pronto per voi. — Immobiliare Giancani`;
+          } else {
+            testoColonnaF = `[alza_mano_dx] Ci troviamo adesso in ${nomeStanza}. Ammirate la cura dei dettagli e la luminosità di questo ambiente curato nei minimi particolari. Per qualsiasi informazione potete scrivermi direttamente qui in chat oppure contattare Immobiliare Giancani al 3201667156. — Immobiliare Giancani`;
+          }
+        } else {
+          if (isFirstIntroduction) {
+            testoColonnaF = `[saluto] Benvenuti nella diretta in verticale da ${citta}! ` + testoColonnaF;
+          }
+        }
+
+        if (this.audioUnlocked && !this.audioMuted && this.isAutoHosting) {
+          DariaEngine.speak(testoColonnaF, () => {
+            this.onStanzaCompletata();
+          });
+        } else {
+          if (typeof addChatBubble === 'function') {
+            addChatBubble(testoColonnaF, 'daria');
+          }
+          if (this.isAutoHosting) {
+            this.tourDelayTimeout = setTimeout(() => {
+              this.passaAProssimaStanza();
+            }, 9000);
+          }
+        }
+      },
+
+      onStanzaCompletata: function() {
+        console.log("✅ Presentazione stanza completata da DarIA");
+        if (!this.isAutoHosting) return;
+
+        this.tourDelayTimeout = setTimeout(() => {
+          this.passaAProssimaStanza();
+        }, 5000);
+      },
+
+      passaAProssimaStanza: function() {
+        if (!currentImmobileRooms || currentImmobileRooms.length === 0) return;
+        this.currentRoomIndex = (this.currentRoomIndex + 1) % currentImmobileRooms.length;
+        currentRoomIndex = this.currentRoomIndex;
+        this.conduciStanzaCorrente(false);
+      },
+
+      passaAStanzaPrecedente: function() {
+        if (!currentImmobileRooms || currentImmobileRooms.length === 0) return;
+        this.currentRoomIndex = (this.currentRoomIndex - 1 + currentImmobileRooms.length) % currentImmobileRooms.length;
+        currentRoomIndex = this.currentRoomIndex;
+        this.conduciStanzaCorrente(false);
+      },
+
+      toggleAudioMute: function() {
+        this.audioMuted = !this.audioMuted;
+        const btn = document.getElementById('btn-quick-audio-toggle');
+        const icon = document.getElementById('quick-audio-icon');
+        const lbl = document.getElementById('quick-audio-label');
+
+        if (this.audioMuted) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
+          if (icon) icon.innerText = '🔇';
+          if (lbl) lbl.innerText = 'AUDIO MUTO';
+          if (btn) btn.classList.add('muted');
+          showToast('🔇 Audio DarIA silenziato');
+        } else {
+          if (icon) icon.innerText = '🔊';
+          if (lbl) lbl.innerText = 'AUDIO LIVE ON';
+          if (btn) btn.classList.remove('muted');
+          showToast('🔊 Audio DarIA attivato in diretta');
+          this.conduciStanzaCorrente(false);
+        }
+      },
+
+      setSyncStatus: function(isActive, label) {
+        const lab = document.getElementById('sync-status-label');
+        const drwPill = document.getElementById('drawer-sync-pill');
+        if (lab) lab.innerText = label || (isActive ? "Regia Cloud" : "Offline");
+        if (drwPill) {
+          drwPill.innerText = isActive ? "● ATTIVO" : "○ DISCONNESSO";
+          drwPill.style.color = isActive ? "#22c55e" : "#ef4444";
+        }
+      }
+    };
+
+    function sbloccaAudioDiretta() {
+      const overlay = document.getElementById('live-audio-overlay');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.style.display = 'none';
+        overlay.style.pointerEvents = 'none';
+      }
+
+      if (!LiveSyncManager.audioUnlocked) {
+        LiveSyncManager.audioUnlocked = true;
+        try {
+          if (window.speechSynthesis) window.speechSynthesis.resume();
+        } catch(e) {}
+        console.log("🔊 Audio Diretta Sbloccato con successo!");
+        showToast("🔊 DIRETTA AUDIO & VIDEO ATTIVA — IMMOBILIARE GIANCANI");
+        LiveSyncManager.conduciStanzaCorrente(false);
+      }
+    }
+    window.sbloccaAudioDiretta = sbloccaAudioDiretta;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📐 GESTORE VISUALE LAYOUT: SPOSTAMENTO, ZOOM & PERSISTENZA
+    // ═══════════════════════════════════════════════════════════════════════
+    const LayoutManager = {
+      isEditMode: false,
+      storageKey: 'GIANCANI_DIRETTA_VERT_V1',
+
+      state: {
+        logo: { x: 0, y: 0, scale: 1.0, visible: true, label: "🏛️ Logo Giancani" },
+        sync: { x: 0, y: 0, scale: 1.0, visible: true, label: "📡 Badge Sync" },
+        city: { x: 0, y: 0, scale: 1.0, visible: true, label: "📍 Città" },
+        price: { x: 0, y: 0, scale: 1.0, visible: true, label: "💎 Prezzo" },
+        condition: { x: 0, y: 0, scale: 1.0, visible: true, label: "🏷️ Trattativa" },
+        title: { x: 0, y: 0, scale: 1.0, visible: true, label: "🏠 Titolo Immobile" },
+        specs: { x: 0, y: 0, scale: 1.0, visible: true, label: "📐 Specifiche" },
+        avatar: { x: 0, y: 0, scale: 1.0, panX: 0, panY: 0, rotate: 0, visible: true, character: 'daria_classica', label: "🎭 Avatar DarIA" },
+        mouth: { x: 51.0, y: 65.0, scale: 1.0, thickness: 3.5, openIntensity: 1.0, speed: 0.38, style: 'naturale' },
+        bottom_bar: { x: 0, y: 0, scale: 1.0, visible: true, label: "💬 Chat & Barra" }
+      },
+
+      init: function() {
+        this.loadSavedLayout();
+        this.applyAll();
+        this.renderDrawerControls();
+        this.bindDragEvents();
+      },
+
+      loadSavedLayout: function() {
+        try {
+          const sElem = document.getElementById('layout-data-json');
+          if (sElem && sElem.textContent && sElem.textContent.trim()) {
+            const parsedServer = JSON.parse(sElem.textContent);
+            if (parsedServer && typeof parsedServer === 'object' && Object.keys(parsedServer).length > 0) {
+              Object.keys(parsedServer).forEach(k => {
+                if (this.state[k]) Object.assign(this.state[k], parsedServer[k]);
+                else this.state[k] = parsedServer[k];
+              });
+              console.log("📐 Layout iniziale caricato da Cloud Server:", this.state);
+            }
+          }
+        } catch(eServ) {
+          console.warn("Errore caricamento layout server:", eServ);
+        }
+
+        try {
+          const raw = localStorage.getItem(this.storageKey);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            Object.keys(parsed).forEach(k => {
+              if (this.state[k]) Object.assign(this.state[k], parsed[k]);
+              else this.state[k] = parsed[k];
+            });
+          }
+        } catch(e) {}
+      },
+
+      saveDebounceTimer: null,
+      bc: null,
+      saveLayout: function(skipToast) {
+        try {
+          const serialized = JSON.stringify(this.state);
+          localStorage.setItem(this.storageKey, serialized);
+
+          // 1. BroadcastChannel istantaneo (per sincronizzare tutte le schede e finestre attive)
+          if (window.BroadcastChannel) {
+            try {
+              if (!this.bc) this.bc = new BroadcastChannel('giancani_live_channel');
+              this.bc.postMessage({ type: 'LAYOUT_UPDATED', layout: this.state });
+            } catch(eBc) {}
+          }
+
+          // 2. Persistenza Cloud asincrona in ScriptProperties (visibile in OBS e ovunque)
+          clearTimeout(this.saveDebounceTimer);
+          this.saveDebounceTimer = setTimeout(() => {
+            if (isAppsScript && google.script && google.script.run && typeof google.script.run.salvaLayoutVerticale === 'function') {
+              google.script.run
+                .withSuccessHandler(r => console.log("☁️ Layout salvato in Cloud:", r))
+                .withFailureHandler(err => console.warn("Errore salvataggio Cloud:", err))
+                .salvaLayoutVerticale(serialized);
+            } else {
+              const url = window.location.href.split('?')[0];
+              fetch(`${url}?action=save_layout&layout=${encodeURIComponent(serialized)}`)
+                .catch(err => console.warn("Fallback save_layout:", err));
+            }
+          }, 300);
+
+          if (!skipToast) {
+            showToast("💾 Layout sincronizzato istantaneamente!");
+          }
+        } catch(e) {
+          console.warn("Errore salvataggio layout:", e);
+        }
+      },
+
+      resetLayout: function() {
+        localStorage.removeItem(this.storageKey);
+        Object.keys(this.state).forEach(k => {
+          this.state[k].x = 0;
+          this.state[k].y = 0;
+          this.state[k].scale = 1.0;
+          this.state[k].visible = true;
+          if (k === 'avatar') {
+            this.state[k].panX = 0;
+            this.state[k].panY = 0;
+            this.state[k].rotate = 0;
+          }
+          if (k === 'mouth') {
+            this.state.mouth = { x: 51.0, y: 65.0, scale: 1.0, thickness: 3.5, openIntensity: 1.0, speed: 0.38, style: 'naturale' };
+          }
+        });
+        this.applyAll();
+        this.renderDrawerControls();
+        this.saveLayout(false);
+        showToast("🔄 Layout ripristinato!");
+      },
+
+      applyAll: function() {
+        Object.keys(this.state).forEach(id => {
+          this.applyItem(id);
+        });
+        const av = this.state.avatar;
+        if (av) {
+          document.documentElement.style.setProperty('--avatar-scale', av.scale || 1.0);
+          document.documentElement.style.setProperty('--avatar-pan-x', (av.panX || 0) + '%');
+          document.documentElement.style.setProperty('--avatar-pan-y', (av.panY || 0) + '%');
+          document.documentElement.style.setProperty('--avatar-rotate', (av.rotate || 0) + 'deg');
+          if (av.character) {
+            const selAv = document.getElementById('sel-avatar-character');
+            if (selAv && selAv.value !== av.character) {
+              selAv.value = av.character;
+              const port = AVATAR_PORTRAITS[av.character] || AVATAR_PORTRAITS.daria_classica;
+              const portImg = document.getElementById('daria-portrait-img');
+              if (portImg) portImg.src = port;
+            }
+          }
+        }
+
+        const m = this.state.mouth || { x: 51.0, y: 65.0, scale: 1.0, thickness: 3.5, openIntensity: 1.0, speed: 0.38, style: 'naturale' };
+        document.documentElement.style.setProperty('--mouth-pos-x', `${m.x || 51.0}%`);
+        document.documentElement.style.setProperty('--mouth-pos-y', `${m.y || 65.0}%`);
+        document.documentElement.style.setProperty('--mouth-scale', m.scale || 1.0);
+        document.documentElement.style.setProperty('--lip-thickness', `${m.thickness || 3.5}px`);
+        document.documentElement.style.setProperty('--lip-open-intensity', m.openIntensity || 1.0);
+        document.documentElement.style.setProperty('--lip-speed', `${m.speed || 0.38}s`);
+
+        const lipBox = document.getElementById('daria-lip-rig');
+        if (lipBox) {
+          lipBox.classList.remove('lip-style-naturale', 'lip-style-glamour', 'lip-style-nude', 'lip-style-gloss');
+          lipBox.classList.add(`lip-style-${m.style || 'naturale'}`);
+        }
+
+        const slX = document.getElementById('slider-mouth-x');
+        if (slX) slX.value = m.x || 51.0;
+        const vlX = document.getElementById('val-mouth-x');
+        if (vlX) vlX.innerText = `${parseFloat(m.x || 51.0).toFixed(1)}%`;
+
+        const slY = document.getElementById('slider-mouth-y');
+        if (slY) slY.value = m.y || 65.0;
+        const vlY = document.getElementById('val-mouth-y');
+        if (vlY) vlY.innerText = `${parseFloat(m.y || 65.0).toFixed(1)}%`;
+
+        const slSc = document.getElementById('slider-mouth-scale');
+        if (slSc) slSc.value = m.scale || 1.0;
+        const vlSc = document.getElementById('val-mouth-scale');
+        if (vlSc) vlSc.innerText = `${parseFloat(m.scale || 1.0).toFixed(2)}x`;
+
+        const slTh = document.getElementById('slider-lip-thickness');
+        if (slTh) slTh.value = m.thickness || 3.5;
+        const vlTh = document.getElementById('val-lip-thickness');
+        if (vlTh) vlTh.innerText = `${parseFloat(m.thickness || 3.5).toFixed(1)}px`;
+
+        const slOp = document.getElementById('slider-lip-open');
+        if (slOp) slOp.value = m.openIntensity || 1.0;
+        const vlOp = document.getElementById('val-lip-open');
+        if (vlOp) vlOp.innerText = `${parseFloat(m.openIntensity || 1.0).toFixed(1)}x`;
+
+        const slSpd = document.getElementById('slider-lip-speed');
+        if (slSpd) slSpd.value = m.speed || 0.38;
+        const vlSpd = document.getElementById('val-lip-speed');
+        if (vlSpd) {
+          const spNum = parseFloat(m.speed || 0.38);
+          let spLabel = 'Naturale';
+          if (spNum <= 0.28) spLabel = 'Rapida';
+          else if (spNum >= 0.48) spLabel = 'Lenta';
+          vlSpd.innerText = `${spNum.toFixed(2)}s (${spLabel})`;
+        }
+
+        const stLabel = document.getElementById('val-lip-style');
+        if (stLabel) {
+          const styleLabels = { naturale: 'Naturale', glamour: 'Rosso TV', nude: 'Nude', gloss: 'Gloss HD' };
+          stLabel.innerText = styleLabels[m.style] || 'Naturale';
+        }
+        document.querySelectorAll('.btn-lip-style').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-style') === (m.style || 'naturale'));
+        });
+      },
+
+      applyItem: function(id) {
+        const item = this.state[id];
+        if (!item) return;
+        const el = document.querySelector(`[data-layout-item="${id}"]`);
+        if (!el) return;
+
+        if (id === 'avatar') {
+          el.style.transform = `translate(${item.x}px, ${item.y}px) scale(${item.scale || 1.0})`;
+          el.style.transformOrigin = 'top right';
+        } else {
+          el.style.transform = `translate(${item.x}px, ${item.y}px) scale(${item.scale})`;
+          el.style.transformOrigin = 'top left';
+        }
+        el.style.display = item.visible ? '' : 'none';
+      },
+
+      toggleEditMode: function(forceState) {
+        this.isEditMode = forceState !== undefined ? forceState : !this.isEditMode;
+        document.body.classList.toggle('layout-edit-mode', this.isEditMode);
+        if (this.isEditMode) {
+          showToast("✏️ Modalità SPOSTA attiva! Trascina gli oggetti a piacimento.");
+        }
+      },
+
+      renderDrawerControls: function() {
+        const container = document.getElementById('layout-items-list');
+        if (!container) return;
+        container.innerHTML = '';
+
+        Object.keys(this.state).forEach(id => {
+          const item = this.state[id];
+          const row = document.createElement('div');
+          row.style.cssText = 'background:rgba(8,12,24,0.85);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;';
+          row.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;color:#e2e8f0;">
+              <span>${item.label}</span>
+              <label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer;">
+                <input type="checkbox" id="chk-vis-${id}" ${item.visible ? 'checked' : ''}> Visibile
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:10px;">
+              <span style="color:#94a3b8;">Scala:</span>
+              <input type="range" class="ctrl-range" id="sl-scale-${id}" min="0.5" max="2.2" step="0.05" value="${item.scale}">
+              <span id="val-scale-${id}" style="width:32px;text-align:right;color:var(--gold-light);">${item.scale.toFixed(2)}x</span>
+            </div>
+          `;
+          container.appendChild(row);
+
+          const chk = row.querySelector(`#chk-vis-${id}`);
+          chk.addEventListener('change', (e) => {
+            this.state[id].visible = e.target.checked;
+            this.applyItem(id);
+            this.saveLayout(true);
+          });
+
+          const sl = row.querySelector(`#sl-scale-${id}`);
+          sl.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            this.state[id].scale = val;
+            row.querySelector(`#val-scale-${id}`).innerText = val.toFixed(2) + 'x';
+            this.applyItem(id);
+            this.saveLayout(true);
+          });
+        });
+      },
+
+      bindDragEvents: function() {
+        let draggedEl = null;
+        let startX = 0, startY = 0;
+        let initialItemX = 0, initialItemY = 0;
+
+        const onStart = (e, targetEl) => {
+          if (!this.isEditMode) return;
+          const id = targetEl.getAttribute('data-layout-item');
+          if (!id || !this.state[id]) return;
+
+          draggedEl = targetEl;
+          targetEl.classList.add('is-dragging');
+
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+          startX = clientX;
+          startY = clientY;
+          initialItemX = this.state[id].x || 0;
+          initialItemY = this.state[id].y || 0;
+
+          e.preventDefault();
+        };
+
+        const onMove = (e) => {
+          if (!draggedEl || !this.isEditMode) return;
+          const id = draggedEl.getAttribute('data-layout-item');
+          if (!id || !this.state[id]) return;
+
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+          const dx = clientX - startX;
+          const dy = clientY - startY;
+
+          this.state[id].x = Math.round(initialItemX + dx);
+          this.state[id].y = Math.round(initialItemY + dy);
+
+          this.applyItem(id);
+        };
+
+        const onEnd = () => {
+          if (draggedEl) {
+            draggedEl.classList.remove('is-dragging');
+            draggedEl = null;
+            // Salva e sincronizza automaticamente al rilascio dell'oggetto
+            this.saveLayout();
+          }
+        };
+
+        document.querySelectorAll('[data-layout-item]').forEach(el => {
+          el.addEventListener('mousedown', (e) => onStart(e, el));
+          el.addEventListener('touchstart', (e) => onStart(e, el), { passive: false });
+        });
+
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('mouseup', onEnd);
+        window.addEventListener('touchend', onEnd);
+      }
+    };
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      const txt = document.getElementById('toast-text');
+      if (!box || !txt) return;
+      txt.innerText = msg;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 3000);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🎨 UI CONTROLLER & EVENT BINDINGS (BOOTSTRAP MULTI-DEVICE)
+    // ═══════════════════════════════════════════════════════════════════════
+    function bootstrapDirettaVerticale() {
+      try { DariaEngine.init(); } catch(eEng) { console.warn("DariaEngine init error:", eEng); }
+      try { LayoutManager.init(); } catch(eLay) { console.warn("LayoutManager init error:", eLay); }
+      try { LiveSyncManager.init(); } catch(eSync) { console.warn("LiveSyncManager init error:", eSync); }
+
+      // Timer sicurezza anti-blackout: se non interagito dopo 3.5 secondi, dissolve l'overlay automaticamente
+      setTimeout(() => {
+        const overlay = document.getElementById('live-audio-overlay');
+        if (overlay && !LiveSyncManager.audioUnlocked) {
+          overlay.style.transition = 'opacity 0.8s ease';
+          overlay.style.opacity = '0';
+          setTimeout(() => {
+            if (overlay) {
+              overlay.classList.add('hidden');
+              overlay.style.display = 'none';
+            }
+          }, 800);
+        }
+      }, 3500);
+
+      const drawer = document.getElementById('regia-drawer');
+      const toggleDrawer = () => { 
+        if (drawer) {
+          drawer.classList.remove('minimized');
+          drawer.classList.toggle('open'); 
+        }
+      };
+      const btnOpen = document.getElementById('btn-open-drawer');
+      const btnClose = document.getElementById('btn-close-drawer');
+      const btnMin = document.getElementById('btn-minimize-drawer');
+      const btnGlass = document.getElementById('btn-glass-drawer');
+
+      if (btnOpen) btnOpen.addEventListener('click', toggleDrawer);
+      if (btnClose) btnClose.addEventListener('click', () => { if (drawer) drawer.classList.remove('open'); });
+
+      if (btnMin) {
+        btnMin.addEventListener('click', () => {
+          if (!drawer) return;
+          drawer.classList.toggle('minimized');
+          const isMin = drawer.classList.contains('minimized');
+          btnMin.innerText = isMin ? '🔼 Espandi' : '🔽 Riduci';
+        });
+      }
+
+      if (btnGlass) {
+        btnGlass.addEventListener('click', () => {
+          if (!drawer) return;
+          drawer.classList.toggle('glass-mode');
+          const isGlass = drawer.classList.contains('glass-mode');
+          btnGlass.style.borderColor = isGlass ? 'var(--gold-light)' : 'rgba(255,255,255,0.2)';
+          btnGlass.style.background = isGlass ? 'rgba(212,168,83,0.35)' : 'rgba(255,255,255,0.1)';
+        });
+      }
+
+      // Tasto F2 per drawer, F3 / E per Edit Mode
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'F2') {
+          e.preventDefault();
+          toggleDrawer();
+        } else if (e.key === 'F3' || (e.key === 'e' && !e.target.matches('input, textarea'))) {
+          e.preventDefault();
+          if (drawer) drawer.classList.remove('open');
+          LayoutManager.toggleEditMode();
+        }
+      });
+
+      // Tabs Drawer
+      document.querySelectorAll('.drawer-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          const target = btn.getAttribute('data-tab');
+          const pane = document.getElementById(`pane-${target}`);
+          if (pane) pane.classList.add('active');
+        });
+      });
+
+      // Edit Mode Toolbar Buttons
+      document.getElementById('btn-toggle-edit-mode').addEventListener('click', () => {
+        if (drawer) drawer.classList.remove('open');
+        LayoutManager.toggleEditMode();
+      });
+      document.getElementById('btn-activate-drag-mode').addEventListener('click', () => {
+        drawer.classList.remove('open');
+        LayoutManager.toggleEditMode(true);
+      });
+      document.getElementById('btn-save-layout-live').addEventListener('click', () => {
+        LayoutManager.saveLayout();
+      });
+      document.getElementById('btn-save-layout-drawer').addEventListener('click', () => {
+        LayoutManager.saveLayout();
+      });
+      document.getElementById('btn-reset-layout-live').addEventListener('click', () => {
+        LayoutManager.resetLayout();
+      });
+      document.getElementById('btn-reset-layout-drawer').addEventListener('click', () => {
+        LayoutManager.resetLayout();
+      });
+      document.getElementById('btn-close-layout-live').addEventListener('click', () => {
+        LayoutManager.toggleEditMode(false);
+      });
+
+      // Selettore Avatar
+      document.getElementById('sel-avatar-character').addEventListener('change', (e) => {
+        const id = e.target.value;
+        const portrait = AVATAR_PORTRAITS[id] || AVATAR_PORTRAITS.daria_classica;
+        document.getElementById('daria-portrait-img').src = portrait;
+        DariaEngine.setPose('neutra');
+
+        // Adatta coordinate bocca specifiche se avatar da Roster (es. DarIA Bionda mouthX: 46, mouthY: 32)
+        if (typeof window.AVATAR_ROSTER !== 'undefined') {
+          const allRoster = [...(window.AVATAR_ROSTER.donne || []), ...(window.AVATAR_ROSTER.uomini || [])];
+          const found = allRoster.find(c => c.id === id);
+          if (found && found.mouthX && found.mouthY) {
+            document.documentElement.style.setProperty('--mouth-pos-x', `${found.mouthX}%`);
+            document.documentElement.style.setProperty('--mouth-pos-y', `${found.mouthY}%`);
+            if (document.getElementById('slider-mouth-x')) document.getElementById('slider-mouth-x').value = found.mouthX;
+            if (document.getElementById('val-mouth-x')) document.getElementById('val-mouth-x').innerText = `${found.mouthX}%`;
+            if (document.getElementById('slider-mouth-y')) document.getElementById('slider-mouth-y').value = found.mouthY;
+            if (document.getElementById('val-mouth-y')) document.getElementById('val-mouth-y').innerText = `${found.mouthY}%`;
+            if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+            LayoutManager.state.mouth.x = found.mouthX;
+            LayoutManager.state.mouth.y = found.mouthY;
+          }
+        }
+
+        if (!LayoutManager.state.avatar) LayoutManager.state.avatar = {};
+        LayoutManager.state.avatar.character = id;
+        LayoutManager.saveLayout(true);
+
+        if (window.BroadcastChannel) {
+          try {
+            if (!LiveSyncManager.bc) LiveSyncManager.bc = new BroadcastChannel('giancani_live_channel');
+            LiveSyncManager.bc.postMessage({ type: 'AVATAR_CHANGED', character: id, portrait: portrait });
+          } catch(eBc) {}
+        }
+      });
+
+      // Sliders Bocca, Labbra & Respiro
+      function triggerMouthCalibrationPreview() {
+        const lipBox = document.getElementById('daria-lip-rig');
+        if (!lipBox) return;
+        lipBox.classList.add('is-calibrating');
+        if (window._mouthCalibTimeout) clearTimeout(window._mouthCalibTimeout);
+        window._mouthCalibTimeout = setTimeout(() => {
+          lipBox.classList.remove('is-calibrating');
+        }, 2500);
+      }
+
+      // Posizione Bocca X
+      document.getElementById('slider-mouth-x').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        const v = `${valNum.toFixed(1)}%`;
+        document.documentElement.style.setProperty('--mouth-pos-x', v);
+        document.getElementById('val-mouth-x').innerText = v;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.x = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Posizione Bocca Y
+      document.getElementById('slider-mouth-y').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        const v = `${valNum.toFixed(1)}%`;
+        document.documentElement.style.setProperty('--mouth-pos-y', v);
+        document.getElementById('val-mouth-y').innerText = v;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.y = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Grandezza Bocca (Scala)
+      document.getElementById('slider-mouth-scale').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        document.documentElement.style.setProperty('--mouth-scale', valNum);
+        document.getElementById('val-mouth-scale').innerText = `${valNum.toFixed(2)}x`;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.scale = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Spessore Labbra (Volume)
+      document.getElementById('slider-lip-thickness').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        const v = `${valNum.toFixed(1)}px`;
+        document.documentElement.style.setProperty('--lip-thickness', v);
+        document.getElementById('val-lip-thickness').innerText = v;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.thickness = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Ampiezza Apertura Parlato
+      document.getElementById('slider-lip-open').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        document.documentElement.style.setProperty('--lip-open-intensity', valNum);
+        document.getElementById('val-lip-open').innerText = `${valNum.toFixed(1)}x`;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.openIntensity = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Cadenza / Velocità Bocca
+      document.getElementById('slider-lip-speed').addEventListener('input', (e) => {
+        const valNum = parseFloat(e.target.value);
+        const v = `${valNum.toFixed(2)}s`;
+        let speedLabel = 'Naturale';
+        if (valNum <= 0.28) speedLabel = 'Rapida';
+        else if (valNum >= 0.48) speedLabel = 'Lenta';
+        document.documentElement.style.setProperty('--lip-speed', v);
+        document.getElementById('val-lip-speed').innerText = `${v} (${speedLabel})`;
+        if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+        LayoutManager.state.mouth.speed = valNum;
+        triggerMouthCalibrationPreview();
+        LayoutManager.saveLayout(true);
+      });
+
+      // Selettore Stile & Rossetto Labbra
+      document.querySelectorAll('.btn-lip-style').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const style = btn.getAttribute('data-style');
+          document.querySelectorAll('.btn-lip-style').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const lipBox = document.getElementById('daria-lip-rig');
+          if (lipBox) {
+            lipBox.classList.remove('lip-style-naturale', 'lip-style-glamour', 'lip-style-nude', 'lip-style-gloss');
+            lipBox.classList.add(`lip-style-${style}`);
+          }
+          const styleLabels = { naturale: 'Naturale', glamour: 'Rosso TV', nude: 'Nude', gloss: 'Gloss HD' };
+          document.getElementById('val-lip-style').innerText = styleLabels[style] || style;
+          if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+          LayoutManager.state.mouth.style = style;
+          triggerMouthCalibrationPreview();
+          LayoutManager.saveLayout(true);
+        });
+      });
+
+      // Prova Parlato & Bocca (5s)
+      const btnTestMouth = document.getElementById('btn-test-mouth-speech');
+      if (btnTestMouth) {
+        btnTestMouth.addEventListener('click', () => {
+          triggerMouthCalibrationPreview();
+          if (typeof DariaEngine !== 'undefined') {
+            DariaEngine.speak("Benvenuti all'Immobiliare Giancani! Ecco la prova di movimento e sincronizzazione delle labbra.");
+          }
+        });
+      }
+
+      // Reset Defaults Bocca
+      const btnResetMouth = document.getElementById('btn-reset-mouth-defaults');
+      if (btnResetMouth) {
+        btnResetMouth.addEventListener('click', () => {
+          const def = { x: 51.0, y: 65.0, scale: 1.0, thickness: 3.5, openIntensity: 1.0, speed: 0.38, style: 'naturale' };
+          document.getElementById('slider-mouth-x').value = def.x;
+          document.getElementById('val-mouth-x').innerText = `${def.x.toFixed(1)}%`;
+          document.documentElement.style.setProperty('--mouth-pos-x', `${def.x}%`);
+
+          document.getElementById('slider-mouth-y').value = def.y;
+          document.getElementById('val-mouth-y').innerText = `${def.y.toFixed(1)}%`;
+          document.documentElement.style.setProperty('--mouth-pos-y', `${def.y}%`);
+
+          document.getElementById('slider-mouth-scale').value = def.scale;
+          document.getElementById('val-mouth-scale').innerText = `${def.scale.toFixed(2)}x`;
+          document.documentElement.style.setProperty('--mouth-scale', def.scale);
+
+          document.getElementById('slider-lip-thickness').value = def.thickness;
+          document.getElementById('val-lip-thickness').innerText = `${def.thickness.toFixed(1)}px`;
+          document.documentElement.style.setProperty('--lip-thickness', `${def.thickness}px`);
+
+          document.getElementById('slider-lip-open').value = def.openIntensity;
+          document.getElementById('val-lip-open').innerText = `${def.openIntensity.toFixed(1)}x`;
+          document.documentElement.style.setProperty('--lip-open-intensity', def.openIntensity);
+
+          document.getElementById('slider-lip-speed').value = def.speed;
+          document.getElementById('val-lip-speed').innerText = `${def.speed.toFixed(2)}s (Naturale)`;
+          document.documentElement.style.setProperty('--lip-speed', `${def.speed}s`);
+
+          document.querySelectorAll('.btn-lip-style').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-style') === 'naturale');
+          });
+          document.getElementById('val-lip-style').innerText = 'Naturale';
+
+          const lipBox = document.getElementById('daria-lip-rig');
+          if (lipBox) {
+            lipBox.classList.remove('lip-style-naturale', 'lip-style-glamour', 'lip-style-nude', 'lip-style-gloss');
+            lipBox.classList.add('lip-style-naturale');
+          }
+
+          if (!LayoutManager.state.mouth) LayoutManager.state.mouth = {};
+          Object.assign(LayoutManager.state.mouth, def);
+          LayoutManager.saveLayout();
+          triggerMouthCalibrationPreview();
+          showToast("🔄 Bocca ripristinata ai valori ottimali");
+        });
+      }
+
+      document.getElementById('slider-breath-amp').addEventListener('input', (e) => {
+        const v = `${e.target.value}px`;
+        document.documentElement.style.setProperty('--avatar-breath-amp', v);
+        document.getElementById('val-breath-amp').innerText = v;
+      });
+
+      document.getElementById('slider-breath-speed').addEventListener('input', (e) => {
+        const v = `${e.target.value}s`;
+        document.documentElement.style.setProperty('--avatar-breath-speed', v);
+        document.getElementById('val-breath-speed').innerText = v;
+      });
+
+      // Inizializzazione Stabilità Capo nel Parlato
+      try {
+        const rawH = localStorage.getItem('GIANCANI_STABLE_HEAD_SPEECH');
+        if (rawH !== null && document.getElementById('chk-stable-head-speech-vert')) {
+          document.getElementById('chk-stable-head-speech-vert').checked = (rawH === 'true');
+        }
+      } catch(e) {}
+
+      document.getElementById('btn-save-avatar-settings').addEventListener('click', () => {
+        const chkH = document.getElementById('chk-stable-head-speech-vert');
+        if (chkH) {
+          localStorage.setItem('GIANCANI_STABLE_HEAD_SPEECH', String(chkH.checked));
+          if (window.BroadcastChannel) {
+            try {
+              const bc = new BroadcastChannel('giancani_live_channel');
+              bc.postMessage({ type: 'SEQUENCES_UPDATE', stableHead: chkH.checked });
+              setTimeout(() => { try { bc.close(); } catch(e){} }, 300);
+            } catch(eBc){}
+          }
+        }
+        LayoutManager.saveLayout();
+      });
+
+      // 🎭 DOPPIO CLIC & DOPPIO TOCCO SULL'AVATAR: APERTURA SCHERMATA MODIFICHE SPECIFICHE
+      function apriModificaAvatarEsclusivo() {
+        if (!drawer) return;
+        drawer.classList.remove('minimized');
+        drawer.classList.add('open');
+
+        // Seleziona la tab Avatar
+        document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
+        
+        const tabAvatarBtn = document.querySelector('.drawer-tab-btn[data-tab="avatar"]');
+        if (tabAvatarBtn) tabAvatarBtn.classList.add('active');
+        const paneAvatar = document.getElementById('pane-avatar');
+        if (paneAvatar) paneAvatar.classList.add('active');
+
+        // Evidenzia visivamente l'avatar con aureola dorata pulsante
+        const pip = document.getElementById('daria-pip-card');
+        if (pip) {
+          pip.classList.add('avatar-highlight-edit');
+          setTimeout(() => pip.classList.remove('avatar-highlight-edit'), 2800);
+        }
+
+        showToast("🎭 MODIFICHE SPECIFICHE AVATAR ATTIVE!");
+      }
+      window.apriModificaAvatarEsclusivo = apriModificaAvatarEsclusivo;
+
+      const dariaCard = document.getElementById('daria-pip-card');
+      if (dariaCard) {
+        // Desktop: doppio clic
+        dariaCard.addEventListener('dblclick', (e) => {
+          e.stopPropagation();
+          apriModificaAvatarEsclusivo();
+        });
+
+        // Mobile / Touchscreen: doppio tocco rapido (<380ms)
+        let lastAvatarTouchTime = 0;
+        dariaCard.addEventListener('touchend', (e) => {
+          const now = Date.now();
+          if (now - lastAvatarTouchTime < 380) {
+            e.preventDefault();
+            e.stopPropagation();
+            apriModificaAvatarEsclusivo();
+            lastAvatarTouchTime = 0;
+          } else {
+            lastAvatarTouchTime = now;
+          }
+        });
+      }
+
+      // Pulsante Audio Rapido On/Off
+      const quickAudioBtn = document.getElementById('btn-quick-audio-toggle');
+      if (quickAudioBtn) {
+        quickAudioBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!LiveSyncManager.audioUnlocked) {
+            sbloccaAudioDiretta();
+          } else {
+            LiveSyncManager.toggleAudioMute();
+          }
+        });
+      }
+
+      // Sincronizzazione Forzata Diretta
+      document.getElementById('btn-force-sync-now').addEventListener('click', () => {
+        LiveSyncManager.fetchLiveState();
+        showToast("🔄 Sincronizzazione inviata alla Regia Cloud!");
+      });
+
+      // Navigazione Stanze
+      document.getElementById('btn-room-next').addEventListener('click', () => {
+        LiveSyncManager.passaAProssimaStanza();
+      });
+      document.getElementById('btn-room-prev').addEventListener('click', () => {
+        LiveSyncManager.passaAStanzaPrecedente();
+      });
+
+      // Conduzione / Auto-Tour Continuo
+      document.getElementById('btn-toggle-autotour').addEventListener('click', (e) => {
+        LiveSyncManager.isAutoHosting = !LiveSyncManager.isAutoHosting;
+        if (LiveSyncManager.isAutoHosting) {
+          e.target.innerText = "⏸️ Pausa Conduzione Automatica";
+          showToast("▶️ Conduzione automatica DarIA attiva!");
+          LiveSyncManager.conduciStanzaCorrente(false);
+        } else {
+          e.target.innerText = "▶️ Riprendi Conduzione DarIA";
+          if (LiveSyncManager.tourDelayTimeout) {
+            clearTimeout(LiveSyncManager.tourDelayTimeout);
+            LiveSyncManager.tourDelayTimeout = null;
+          }
+          try { window.speechSynthesis.cancel(); } catch(err) {}
+          showToast("⏸️ Conduzione automatica messa in pausa");
+        }
+      });
+
+      // Applicazione Dati Manuale con Salvataggio Persistente & Broadcast Real-Time
+      document.getElementById('btn-apply-manual-data').addEventListener('click', () => {
+        const pz = document.getElementById('input-prezzo').value.trim();
+        const ct = document.getElementById('input-citta').value.trim();
+        const tt = document.getElementById('input-titolo').value.trim();
+        const st = document.getElementById('input-stanza').value.trim();
+        let sup = document.getElementById('input-superficie').value.trim();
+        sup = sup.replace(/(\d+)\s*(?:mq|m²|m2)\b/gi, "$1 metri quadri");
+        document.getElementById('input-superficie').value = sup;
+
+        const overrideObj = {
+          active: true,
+          prezzo: pz,
+          citta: ct.toUpperCase(),
+          titolo: tt.toUpperCase(),
+          stanza: st,
+          superficie: sup,
+          timestamp: Date.now()
+        };
+
+        LiveSyncManager.manualOverride = overrideObj;
+        try { localStorage.setItem('giancani_manual_override', JSON.stringify(overrideObj)); } catch(e) {}
+
+        // Aggiorna display visivi immediati
+        if (pz) document.getElementById('live-price-display').innerText = pz;
+        if (ct) document.getElementById('live-city-display').innerText = ct.toUpperCase();
+        if (tt) document.getElementById('live-title-display').innerText = tt.toUpperCase();
+        if (st) document.getElementById('live-room-badge').innerText = '📍 ' + st;
+        if (sup) document.getElementById('live-surface-badge').innerText = '📐 ' + sup;
+
+        // Aggiorna currentData per parlato DarIA immediato
+        if (LiveSyncManager.currentData) {
+          if (pz) LiveSyncManager.currentData.prezzo = pz;
+          if (ct) { LiveSyncManager.currentData.citta = ct; LiveSyncManager.currentData.zona = ct; }
+          if (tt) LiveSyncManager.currentData.titolo = tt;
+          if (st) LiveSyncManager.currentData.stanza = st;
+          if (sup) LiveSyncManager.currentData.mq = sup;
+        }
+
+        // 1. BroadcastChannel istantaneo per sincronizzare In Onda Verticale a 0ms
+        if (window.BroadcastChannel) {
+          try {
+            if (!LiveSyncManager.bc) LiveSyncManager.bc = new BroadcastChannel('giancani_live_channel');
+            LiveSyncManager.bc.postMessage({ type: 'IMMOBILE_DATA_OVERRIDE', data: overrideObj });
+          } catch(eBc) {}
+        }
+
+        // 2. Persistenza Cloud asincrona in ScriptProperties (visibile in OBS e ovunque)
+        if (isAppsScript && google.script && google.script.run && typeof google.script.run.salvaOverrideDatiImmobile === 'function') {
+          google.script.run
+            .withSuccessHandler(r => console.log("☁️ Override dati salvato in Cloud:", r))
+            .withFailureHandler(err => console.warn("Errore salvataggio override Cloud:", err))
+            .salvaOverrideDatiImmobile(overrideObj);
+        } else {
+          const url = window.location.href.split('?')[0];
+          fetch(`${url}?action=save_immobile_override&data=${encodeURIComponent(JSON.stringify(overrideObj))}`)
+            .catch(err => console.warn("Fallback save_immobile_override:", err));
+        }
+
+        drawer.classList.remove('open');
+        showToast("✅ Dati aggiornati e salvati stabilmente — Immobiliare Giancani");
+      });
+
+      // Ripristino Dati Automatici da Google Sheet
+      const btnResetManual = document.getElementById('btn-reset-manual-data');
+      if (btnResetManual) {
+        btnResetManual.addEventListener('click', () => {
+          LiveSyncManager.manualOverride = null;
+          try { localStorage.removeItem('giancani_manual_override'); } catch(e) {}
+
+          // 1. Broadcast reset istantaneo
+          if (window.BroadcastChannel) {
+            try {
+              if (!LiveSyncManager.bc) LiveSyncManager.bc = new BroadcastChannel('giancani_live_channel');
+              LiveSyncManager.bc.postMessage({ type: 'IMMOBILE_DATA_OVERRIDE_RESET' });
+            } catch(eBc) {}
+          }
+
+          // 2. Rimozione Cloud
+          if (isAppsScript && google.script && google.script.run && typeof google.script.run.cancellaOverrideDatiImmobile === 'function') {
+            google.script.run
+              .withSuccessHandler(r => console.log("☁️ Override rimosso da Cloud:", r))
+              .withFailureHandler(err => console.warn("Errore rimozione override Cloud:", err))
+              .cancellaOverrideDatiImmobile();
+          } else {
+            const url = window.location.href.split('?')[0];
+            fetch(`${url}?action=clear_immobile_override`)
+              .catch(err => console.warn("Fallback clear_immobile_override:", err));
+          }
+
+          showToast("🔄 Dati automatici del foglio ripristinati — Immobiliare Giancani");
+          LiveSyncManager.fetchLiveState();
+        });
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // 💬 CHAT DARIA TRASPARENTE
+      // ═══════════════════════════════════════════════════════════════════════
+      const chatInput = document.getElementById('chat-input-daria');
+      const chatSendBtn = document.getElementById('chat-send-btn');
+      const chatZone = document.getElementById('daria-chat-zone');
+
+      chatInput.addEventListener('input', () => {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 80) + 'px';
+      });
+
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          inviaChatADaria();
+        }
+      });
+      chatSendBtn.addEventListener('click', inviaChatADaria);
+
+      function addChatBubble(text, tipo) {
+        const bubble = document.createElement('div');
+        bubble.className = tipo === 'daria' ? 'chat-bubble-daria' : 'chat-bubble-user';
+        bubble.textContent = text;
+        chatZone.appendChild(bubble);
+        chatZone.scrollTop = chatZone.scrollHeight;
+        setTimeout(() => {
+          bubble.classList.add('fading');
+          setTimeout(() => bubble.remove(), 1600);
+        }, 8000);
+      }
+
+      function generaRispostaDaria(domanda) {
+        const titolo = document.getElementById('live-title-display').innerText || '';
+        const citta = document.getElementById('live-city-display').innerText || 'FAVARA';
+        const prezzo = document.getElementById('live-price-display').innerText || '';
+        const sup = document.getElementById('live-surface-badge').innerText.replace('📐 ', '') || '';
+        const stanza = document.getElementById('live-room-badge').innerText.replace('📍 ', '') || '';
+
+        const domandaLow = domanda.toLowerCase();
+        let risposta = '';
+
+        if (domandaLow.includes('prezzo') || domandaLow.includes('costa') || domandaLow.includes('quanto')) {
+          risposta = `[presenta_prezzo] La proprietà viene proposta a ${prezzo}. Per fissare un appuntamento privato o ricevere il dossier completo contattate subito Immobiliare Giancani al 3201667156. — Immobiliare Giancani`;
+        } else if (domandaLow.includes('dove') || domandaLow.includes('citta') || domandaLow.includes('zona') || domandaLow.includes('posizione')) {
+          risposta = `[alza_mano_dx] Ci troviamo esattamente a ${citta}, in una posizione panoramica e riservata curata da Immobiliare Giancani. — Immobiliare Giancani`;
+        } else if (domandaLow.includes('metri') || domandaLow.includes('mq') || domandaLow.includes('grandezza') || domandaLow.includes('superficie')) {
+          risposta = `[alza_mano_dx] L'immobile vanta una generosa superficie di ${sup}, perfetta per godere di ambienti confortevoli ed esclusivi. — Immobiliare Giancani`;
+        } else if (domandaLow.includes('ciao') || domandaLow.includes('buongiorno') || domandaLow.includes('buonasera') || domandaLow.includes('salve')) {
+          risposta = `[saluto] Ciao e benvenuto nella nostra diretta in verticale! Sono DarIA, la conduttrice virtuale di Immobiliare Giancani. Come posso aiutarti oggi? — Immobiliare Giancani`;
+        } else {
+          risposta = `[saluto] Ti ringrazio per la domanda! Questa proprietà esclusiva a ${citta} è disponibile per visite su appuntamento con Immobiliare Giancani al 3201667156. — Immobiliare Giancani`;
+        }
+
+        return risposta;
+      }
+
+      async function inviaChatADaria() {
+        const testo = chatInput.value.trim();
+        if (!testo) return;
+
+        addChatBubble(testo, 'utente');
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+
+        const thinking = document.createElement('div');
+        thinking.className = 'chat-bubble-daria';
+        thinking.style.opacity = '0.6';
+        thinking.style.fontStyle = 'italic';
+        thinking.textContent = 'DarIA sta rispondendo…';
+        chatZone.appendChild(thinking);
+        chatZone.scrollTop = chatZone.scrollHeight;
+
+        await new Promise(r => setTimeout(r, 900 + Math.random() * 500));
+
+        let rispostaFinale = '';
+        try {
+          if (isAppsScript) {
+            const webAppUrl = window.location.href.split('?')[0];
+            const url = `${webAppUrl}?action=test_risposta_link&msg=${encodeURIComponent(testo)}&autore=Viewer&piattaforma=diretta_verticale`;
+            const resp = await fetch(url);
+            const data = await resp.json();
+            if (data && (data.risposta || data.testo)) {
+              rispostaFinale = (data.risposta || data.testo) + ' — Immobiliare Giancani';
+            }
+          }
+        } catch (e) {
+          console.warn('Fallback risposta locale:', e);
+        }
+
+        if (!rispostaFinale) {
+          rispostaFinale = generaRispostaDaria(testo);
+        }
+
+        thinking.remove();
+        addChatBubble(rispostaFinale.replace(/\[[a-zA-Z0-9_-]+\]/g, '').trim(), 'daria');
+        DariaEngine.speak(rispostaFinale);
+      }
+
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootstrapDirettaVerticale);
+    } else {
+      bootstrapDirettaVerticale();
+    }
+  </script>
+
+</body>
+</html>

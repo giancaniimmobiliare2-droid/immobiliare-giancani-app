@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<!-- Azure TTS Massivo MP3 Generator & Drive Condiviso — Immobiliare Giancani -->
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Azure TTS Massivo MP3 Generator — Immobiliare Giancani</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-dark: #100d0a;
+        --card-bg: rgba(22, 17, 13, 0.95);
+        --gold: #c9a35e;
+        --gold-bright: #e5be75;
+        --gold-dark: #8c6e33;
+        --terracotta: #a6512d;
+        --sand: #d9c5ab;
+        --ivory: #f7f3eb;
+        --line: rgba(201, 163, 94, 0.25);
+        --line-soft: rgba(255, 255, 255, 0.08);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background-color: var(--bg-dark);
+        background-image: radial-gradient(circle at 50% 15%, rgba(166, 81, 45, 0.18), transparent 70%),
+                          radial-gradient(circle at 85% 85%, rgba(201, 163, 94, 0.12), transparent 60%);
+        color: var(--ivory);
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 16px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 760px;
+        background: var(--card-bg);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      .header {
+        text-align: center;
+        border-bottom: 1px solid var(--line-soft);
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+      }
+
+      .logo-img {
+        height: 65px;
+        margin-bottom: 12px;
+      }
+
+      .title {
+        font-family: 'Fraunces', serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--gold-bright);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: var(--sand);
+        margin-top: 6px;
+      }
+
+      .section-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--line-soft);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gold);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      @media (max-width: 600px) {
+        .form-grid { grid-template-columns: 1fr; }
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-group.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--sand);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      input[type="text"], input[type="password"], select {
+        width: 100%;
+        padding: 11px 14px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--line-soft);
+        color: var(--ivory);
+        font-size: 12px;
+        outline: none;
+        font-family: 'Inter', sans-serif;
+        transition: border-color 0.2s ease;
+      }
+
+      input:focus, select:focus {
+        border-color: var(--gold);
+      }
+
+      select option {
+        background: #1c1611;
+        color: var(--ivory);
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+        cursor: pointer;
+      }
+
+      .checkbox-group input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--gold);
+        cursor: pointer;
+      }
+
+      .btn-gold {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+        color: #1a1206;
+        border: none;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 20px rgba(201, 163, 94, 0.35);
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 26px rgba(201, 163, 94, 0.5);
+      }
+
+      .btn-gold:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Progress Bar e Log Box */
+      .progress-container {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .progress-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line-soft);
+        margin-bottom: 12px;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--terracotta), var(--gold-bright));
+        transition: width 0.3s ease;
+      }
+
+      .progress-status {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--gold-bright);
+        text-align: center;
+        margin-bottom: 14px;
+      }
+
+      .log-box {
+        background: rgba(10, 8, 6, 0.8);
+        border: 1px solid var(--line-soft);
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        color: #a8b2c1;
+        max-height: 180px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .log-item {
+        line-height: 1.4;
+      }
+
+      .log-item.success { color: #2ecc71; }
+      .log-item.error { color: #e74c3c; }
+      .log-item.info { color: var(--gold); }
+
+      .drive-notice {
+        background: rgba(166, 81, 45, 0.15);
+        border: 1px solid rgba(166, 81, 45, 0.4);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 11px;
+        color: var(--sand);
+        line-height: 1.4;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      
+      <!-- Header -->
+      <div class="header">
+        <img class="logo-img" src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P" alt="Immobiliare Giancani">
+        <div class="title">🎙️ Azure TTS Massivo MP3 Generator</div>
+        <div class="subtitle">Conversione Fogli Google in Voci Neurali MP3 — Immobiliare Giancani</div>
+      </div>
+
+      <form id="tts-form" onsubmit="event.preventDefault(); avviaConversioneMassiva();">
+        
+        <!-- SEZIONE 1: CONFIGURAZIONE AZURE -->
+        <div class="section-card">
+          <div class="section-title">🔑 1. Configurazione Microsoft Azure Speech API</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Azure Speech Key:</label>
+              <input type="password" id="azure-key" required placeholder="Incolla la tua Azure Subscription Key...">
+            </div>
+            <div class="form-group">
+              <label>Azure Region:</label>
+              <input type="text" id="azure-region" value="westeurope" required placeholder="es. westeurope">
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 2: SELEZIONE VOCE E AUDIO -->
+        <div class="section-card">
+          <div class="section-title">🗣️ 2. Selezione Voce Neurale & Timbro Audio</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Voce Neurale Italiana:</label>
+              <select id="voice-name">
+                <option value="it-IT-IsabellaNeural">👩‍💼 it-IT-IsabellaNeural (Femminile - Professionale & Empatica)</option>
+                <option value="it-IT-DiegoNeural">👨‍💼 it-IT-DiegoNeural (Maschile - Naturale & Caldo)</option>
+                <option value="it-IT-ElsaNeural">👩‍💼 it-IT-ElsaNeural (Femminile - Naturale)</option>
+                <option value="it-IT-GiuseppeNeural">👨‍💼 it-IT-GiuseppeNeural (Maschile - Professionale)</option>
+                <option value="it-IT-BenignoNeural">👨‍💼 it-IT-BenignoNeural (Maschile - Calmo)</option>
+                <option value="it-IT-FabiolaNeural">👩‍💼 it-IT-FabiolaNeural (Femminile)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Velocità Parlato (Rate):</label>
+              <select id="voice-rate">
+                <option value="0.85">0.85x (Lento & Riflessivo)</option>
+                <option value="0.95">0.95x (Naturale Rilassato)</option>
+                <option value="1.0" selected>1.0x (Velocità Standard)</option>
+                <option value="1.1">1.1x (Brillante & Incalzante)</option>
+                <option value="1.2">1.2x (Veloce)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Tonalità (Pitch):</label>
+              <select id="voice-pitch">
+                <option value="-10%">-10% (Voce Più Profonda)</option>
+                <option value="-5%">-5% (Leggermente Calda)</option>
+                <option value="0%" selected>0% (Tonalità Naturale)</option>
+                <option value="+5%">+5% (Leggermente Più Chiara)</option>
+                <option value="+10%">+10% (Tono Alto)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 3: GOOGLE SHEET -->
+        <div class="section-card">
+          <div class="section-title">📊 3. Sorgente Google Sheet & Colonne</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>URL o ID del Google Sheet:</label>
+              <input type="text" id="sheet-url" required placeholder="https://docs.google.com/spreadsheets/d/...">
+            </div>
+
+            <div class="form-group">
+              <label>Nome Foglio (Tab):</label>
+              <input type="text" id="sheet-name" value="Foglio1" placeholder="es. Foglio1 o Regia_Immobile">
+            </div>
+
+            <div class="form-group">
+              <label>Colonna dei Testi (es. A, F):</label>
+              <input type="text" id="col-testo" value="F" required placeholder="es. F oppure A">
+            </div>
+
+            <div class="form-group">
+              <label>Colonna Output Link MP3 (es. B, G):</label>
+              <input type="text" id="col-output" value="G" required placeholder="es. G oppure B">
+            </div>
+
+            <div class="form-group full">
+              <label class="checkbox-group">
+                <input type="checkbox" id="salta-header" checked>
+                <span>Salta la prima riga di intestazione (inizia a leggere dalla riga 2)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE 4: DRIVE CONDIVISO -->
+        <div class="section-card">
+          <div class="section-title">📂 4. Destinazione Google Drive Condiviso</div>
+          
+          <div class="drive-notice">
+            ⚠️ <strong>Spazio Account Pieno:</strong> I file MP3 verranno creati direttamente nella cartella Google Drive appartenente all'account <strong>giancaniimmobiliare@gmail.com</strong>. Assicurati che tale cartella sia <strong>condivisa con permessi di scrittura ("Editor")</strong> con l'account di esecuzione.
+          </div>
+
+          <div class="form-group full">
+            <label>ID Cartella Drive Condivisa (di giancaniimmobiliare@gmail.com):</label>
+            <input type="text" id="shared-folder-id" required placeholder="Incolla l'ID della cartella condivisa Drive...">
+          </div>
+        </div>
+
+        <!-- BOTTONE DI AVVIO -->
+        <button type="submit" id="btn-submit" class="btn-gold">
+          🚀 AVVIA CONVERSIONE MASSIVA MP3
+        </button>
+
+      </form>
+
+      <!-- BARRA DI AVANZAMENTO E TERMINALE LOG -->
+      <div class="progress-container" id="progress-container">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-status" id="progress-status">Inizializzazione in corso...</div>
+        
+        <div class="log-box" id="log-box">
+          <div class="log-item info">📌 Avvio sessione di sintesi massiva Azure TTS...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      let totalRowsToProcess = 0;
+      let processedCount = 0;
+      let successCount = 0;
+      let errorCount = 0;
+
+      function addLog(msg, type) {
+        const box = document.getElementById('log-box');
+        if (!box) return;
+        const item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        item.innerText = "[" + new Date().toLocaleTimeString() + "] " + msg;
+        box.appendChild(item);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function updateProgressUI(percent, statusText) {
+        const fill = document.getElementById('progress-fill');
+        const status = document.getElementById('progress-status');
+        if (fill) fill.style.width = percent + "%";
+        if (status) status.innerText = statusText;
+      }
+
+      function avviaConversioneMassiva() {
+        const azureKey = document.getElementById('azure-key').value.trim();
+        const azureRegion = document.getElementById('azure-region').value.trim();
+        const voiceName = document.getElementById('voice-name').value;
+        const voiceRate = document.getElementById('voice-rate').value;
+        const voicePitch = document.getElementById('voice-pitch').value;
+        const sheetUrl = document.getElementById('sheet-url').value.trim();
+        const sheetName = document.getElementById('sheet-name').value.trim();
+        const colTesto = document.getElementById('col-testo').value.trim();
+        const colOutput = document.getElementById('col-output').value.trim();
+        const saltaHeader = document.getElementById('salta-header').checked;
+        const sharedFolderId = document.getElementById('shared-folder-id').value.trim();
+
+        if (!azureKey || !sheetUrl || !sharedFolderId) {
+          alert("Compila tutti i campi obbligatori (Azure Key, Google Sheet URL, ID Cartella Condivisa).");
+          return;
+        }
+
+        const btn = document.getElementById('btn-submit');
+        const progressContainer = document.getElementById('progress-container');
+
+        btn.disabled = true;
+        progressContainer.style.display = 'block';
+        updateProgressUI(0, "⏳ Connessione al Google Sheet ed analisi delle righe in corso...");
+        addLog("Lettura del foglio: " + sheetName + "...", "info");
+
+        const config = {
+          azureKey: azureKey,
+          azureRegion: azureRegion,
+          voiceName: voiceName,
+          rate: voiceRate,
+          pitch: voicePitch,
+          sheetUrlOrId: sheetUrl,
+          sheetName: sheetName,
+          colonnaTesto: colTesto,
+          colonnaOutput: colOutput,
+          saltaIntestazione: saltaHeader,
+          sharedFolderId: sharedFolderId
+        };
+
+        // 1. Leggi le righe da elaborare dal Google Sheet
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (!res || !res.success) {
+              btn.disabled = false;
+              updateProgressUI(0, "⚠️ Errore di lettura dal Google Sheet.");
+              addLog("ERRORE: " + (res ? res.error : "Impossibile leggere il foglio"), "error");
+              alert("Errore lettura foglio: " + (res ? res.error : "Sconosciuto"));
+              return;
+            }
+
+            const items = res.items || [];
+            totalRowsToProcess = items.length;
+            processedCount = 0;
+            successCount = 0;
+            errorCount = 0;
+
+            if (totalRowsToProcess === 0) {
+              btn.disabled = false;
+              updateProgressUI(100, "⚠️ Nessun testo trovato da elaborare.");
+              addLog("Nessuna riga contenente testo trovata nel foglio.", "info");
+              return;
+            }
+
+            addLog("Trovate " + totalRowsToProcess + " righe di testo da sintetizzare in MP3.", "info");
+            updateProgressUI(1, "Elaborazione riga 1 di " + totalRowsToProcess + " in corso...");
+
+            // 2. Avvia la coda sequenziale riga per riga
+            elaboraCodaSequenziale(config, items, 0);
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false;
+            updateProgressUI(0, "⚠️ Errore di connessione Apps Script.");
+            addLog("ERRORE SERVER: " + (err && err.message ? err.message : JSON.stringify(err)), "error");
+          })
+          .leggiRigheTestoAzureTTS(config);
+      }
+
+      function elaboraCodaSequenziale(config, items, index) {
+        const btn = document.getElementById('btn-submit');
+        if (index >= items.length) {
+          btn.disabled = false;
+          updateProgressUI(100, "🎉 Conversione completata! (" + successCount + " MP3 generati su " + totalRowsToProcess + ")");
+          addLog("COMPLETATO! Totale successi: " + successCount + " — Errore: " + errorCount, "success");
+          alert("🎉 Conversione massiva completata con successo!\n\nTotale MP3 generati e salvati su Drive: " + successCount);
+          return;
+        }
+
+        const currentItem = items[index];
+        const currentNum = index + 1;
+        const percent = Math.round((currentNum / totalRowsToProcess) * 100);
+
+        updateProgressUI(percent, "Elaborazione riga " + currentNum + " di " + totalRowsToProcess + " (Riga " + currentItem.rowNumber + " Sheet)...");
+        addLog("Sintesi riga " + currentItem.rowNumber + ": \"" + currentItem.text.substring(0, 45) + "...\"", "info");
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              successCount++;
+              addLog("✅ Riga " + res.rowNumber + " ok! MP3 salvato: " + res.fileName, "success");
+            } else {
+              errorCount++;
+              addLog("❌ Riga " + (res ? res.rowNumber : currentItem.rowNumber) + " fallita: " + (res ? res.error : "Errore sconosciuto"), "error");
+            }
+
+            // Piccola pausa di 400ms tra una chiamata e l'altra per evitare rate-limit
+            setTimeout(function() {
+              elaboraCodaSequenziale(config, items, index + 1);
+            }, 400);
+          })
+          .withFailureHandler(function(err) {
+            errorCount++;
+            addLog("❌ Eccezione riga " + currentItem.rowNumber + ": " + (err && err.message ? err.message : JSON.stringify(err)), "error");
+            setTimeout(function() {
+              elaboraCodaSequenziale(config, items, index + 1);
+            }, 400);
+          })
+          .elaboraSingoloTestoAzureTTS(config, currentItem);
+      }
+    </script>
+  </body>
+</html>

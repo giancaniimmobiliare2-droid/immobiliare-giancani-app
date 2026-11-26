@@ -1,0 +1,1046 @@
+<script>
+      // =========================================================================
+      // 🎭 FUNZIONI PER TAB AVATAR, ZOOM (50%-250%), VOCI & BATTUTE DARIO
+      // =========================================================================
+
+      function cambiaZoomTab(val) {
+        var num = parseInt(val, 10) || 125;
+        if (num < 50) num = 50;
+        if (num > 250) num = 250;
+
+        var disp = document.getElementById('zoom-tab-display');
+        if (disp) {
+          var lbl = num + '%';
+          if (num === 50) lbl += ' (Panoramico Largo)';
+          else if (num === 100) lbl += ' (Standard)';
+          else if (num === 125) lbl += ' (Consigliato ⭐)';
+          else if (num === 250) lbl += ' (Dettaglio Max)';
+          disp.textContent = lbl;
+        }
+        var slider = document.getElementById('zoom-tab-slider');
+        if (slider && slider.value != num) slider.value = num;
+
+        var sliderOld = document.getElementById('zoom-regia-slider');
+        if (sliderOld && sliderOld.value != num) sliderOld.value = num;
+        var dispOld = document.getElementById('zoom-regia-display');
+        if (dispOld) dispOld.textContent = disp ? disp.textContent : (num + '%');
+
+        var btns = document.querySelectorAll('.btn-preset-zoom-tab, .btn-preset-zoom');
+        btns.forEach(function(b) {
+          if (b.textContent.indexOf(num + '%') !== -1) {
+            b.style.background = 'linear-gradient(135deg, var(--gold), var(--gold-dark))';
+            b.style.color = '#120c04';
+            b.style.borderColor = 'var(--gold-bright)';
+            b.style.fontWeight = '800';
+          } else {
+            b.style.background = 'rgba(255,255,255,0.06)';
+            b.style.color = 'var(--ivory)';
+            b.style.borderColor = 'var(--line-soft)';
+            b.style.fontWeight = '700';
+          }
+        });
+      }
+
+      function impostaPresetZoomTab(val) {
+        cambiaZoomTab(val);
+        salvaZoomTabRemoto(val);
+      }
+
+      function incrementaZoomTab(delta) {
+        var cur = parseInt(document.getElementById('zoom-tab-slider').value, 10) || 125;
+        var next = cur + delta;
+        cambiaZoomTab(next);
+        salvaZoomTabRemoto(next);
+      }
+
+      function salvaZoomTabRemoto(val) {
+        var num = parseInt(val, 10) || 125;
+        google.script.run
+          .withSuccessHandler(function(res) {
+            var ind = document.getElementById('zoom-tab-save-indicator');
+            if (ind) {
+              ind.style.display = 'inline';
+              setTimeout(function() { ind.style.display = 'none'; }, 3000);
+            }
+            var ind2 = document.getElementById('zoom-save-indicator');
+            if (ind2) {
+              ind2.style.display = 'inline';
+              setTimeout(function() { ind2.style.display = 'none'; }, 3000);
+            }
+          })
+          .salvaZoomDiretta(num);
+      }
+
+      function testVoceRegiaTab(conduttore) {
+        if (!('speechSynthesis' in window)) {
+          alert("Sintesi vocale non supportata dal browser.");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        var isDaria = (conduttore === 'daria');
+        var sel = document.getElementById(isDaria ? 'select-voce-daria-tab' : 'select-voce-dario-tab');
+        var pitchEl = document.getElementById(isDaria ? 'pitch-daria-tab' : 'pitch-dario-tab');
+        var rateEl = document.getElementById(isDaria ? 'rate-daria-tab' : 'rate-dario-tab');
+
+        var frase = isDaria
+          ? "Ciao! Sono DarIA, la vostra guida in diretta per gli annunci immobiliari più esclusivi. — Immobiliare Giancani"
+          : "Ciao a tutti! Sono Antonio Giancani di Immobiliare Giancani, pronto con le analisi di mercato e le migliori opportunità immobiliari. — Immobiliare Giancani";
+
+        var u = new SpeechSynthesisUtterance(frase);
+        u.lang = 'it-IT';
+        u.pitch = pitchEl ? parseFloat(pitchEl.value) : (isDaria ? 1.18 : 0.84);
+        u.rate = rateEl ? parseFloat(rateEl.value) : (isDaria ? 1.02 : 0.98);
+
+        if (sel && sel.value && _availableVoices && _availableVoices.length) {
+          var matched = _availableVoices.find(function(v) { return v.name === sel.value || v.voiceURI === sel.value; });
+          if (matched) u.voice = matched;
+        }
+        window.speechSynthesis.speak(u);
+      }
+
+      function pronunciaTestoTab(testo, conduttore) {
+        if (!('speechSynthesis' in window) || !testo) return;
+        window.speechSynthesis.cancel();
+        var isDaria = (conduttore === 'daria');
+        var sel = document.getElementById(isDaria ? 'select-voce-daria-tab' : 'select-voce-dario-tab');
+        var pitchEl = document.getElementById(isDaria ? 'pitch-daria-tab' : 'pitch-dario-tab');
+        var rateEl = document.getElementById(isDaria ? 'rate-daria-tab' : 'rate-dario-tab');
+
+        var u = new SpeechSynthesisUtterance(testo);
+        u.lang = 'it-IT';
+        u.pitch = pitchEl ? parseFloat(pitchEl.value) : (isDaria ? 1.18 : 0.84);
+        u.rate = rateEl ? parseFloat(rateEl.value) : (isDaria ? 1.02 : 0.98);
+
+        if (sel && sel.value && _availableVoices && _availableVoices.length) {
+          var matched = _availableVoices.find(function(v) { return v.name === sel.value || v.voiceURI === sel.value; });
+          if (matched) u.voice = matched;
+        }
+        window.speechSynthesis.speak(u);
+      }
+
+      function salvaConfigurazioneVociTab() {
+        var selDariaTab = document.getElementById('select-voce-daria-tab');
+        var selDarioTab = document.getElementById('select-voce-dario-tab');
+        var pitchDariaTab = document.getElementById('pitch-daria-tab');
+        var pitchDarioTab = document.getElementById('pitch-dario-tab');
+        var rateDariaTab = document.getElementById('rate-daria-tab');
+        var rateDarioTab = document.getElementById('rate-dario-tab');
+
+        var cfg = {
+          voceDaria: selDariaTab ? selDariaTab.value : '',
+          voceDario: selDarioTab ? selDarioTab.value : '',
+          pitchDaria: pitchDariaTab ? pitchDariaTab.value : '1.18',
+          pitchDario: pitchDarioTab ? pitchDarioTab.value : '0.84',
+          rateDaria: rateDariaTab ? rateDariaTab.value : '1.02',
+          rateDario: rateDarioTab ? rateDarioTab.value : '0.98'
+        };
+
+        _lastSavedVoiceConfig = cfg;
+
+        // Sincronizza i controlli nel Tab Dialoghi Regia
+        var selDaria = document.getElementById('select-voce-daria');
+        var selDario = document.getElementById('select-voce-dario');
+        var pitchDaria = document.getElementById('pitch-daria');
+        var pitchDario = document.getElementById('pitch-dario');
+        var rateDaria = document.getElementById('rate-daria');
+        var rateDario = document.getElementById('rate-dario');
+
+        if (selDaria && selDariaTab) selDaria.value = selDariaTab.value;
+        if (selDario && selDarioTab) selDario.value = selDarioTab.value;
+        if (pitchDaria && pitchDariaTab) {
+          pitchDaria.value = pitchDariaTab.value;
+          var t1 = document.getElementById('pitch-daria-val');
+          if (t1) t1.textContent = pitchDariaTab.value;
+        }
+        if (pitchDario && pitchDarioTab) {
+          pitchDario.value = pitchDarioTab.value;
+          var t2 = document.getElementById('pitch-dario-val');
+          if (t2) t2.textContent = pitchDarioTab.value;
+        }
+        if (rateDaria && rateDariaTab) {
+          rateDaria.value = rateDariaTab.value;
+          var t3 = document.getElementById('rate-daria-val');
+          if (t3) t3.textContent = rateDariaTab.value;
+        }
+        if (rateDario && rateDarioTab) {
+          rateDario.value = rateDarioTab.value;
+          var t4 = document.getElementById('rate-dario-val');
+          if (t4) t4.textContent = rateDarioTab.value;
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            var ind = document.getElementById('voci-tab-save-indicator');
+            if (ind) {
+              ind.style.display = 'inline';
+              setTimeout(function() { ind.style.display = 'none'; }, 3000);
+            }
+            var ind2 = document.getElementById('voci-save-indicator');
+            if (ind2) {
+              ind2.style.display = 'inline';
+              setTimeout(function() { ind2.style.display = 'none'; }, 3000);
+            }
+          })
+          .salvaConfigurazioneVoci(cfg);
+      }
+
+      function caricaAnteprimaBattutaDario() {
+        var box = document.getElementById('box-anteprima-battuta');
+        if (box) box.innerHTML = '<span style="color:var(--sand-dim);">⏳ Estrazione battuta in corso da Colonna F...</span>';
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (box) {
+              var t = res || "DarIA, in questo soggiorno ci starebbe un maxi schermo così grande che i vicini guarderebbero la partita gratis dalla collina di fronte! — Immobiliare Giancani";
+              box.textContent = '"' + t + '"';
+            }
+          })
+          .withFailureHandler(function() {
+            if (box) box.textContent = '"DarIA, diciamolo chiaramente: comprare questa casa conviene persino al portafoglio, visti i prezzi e il valore che solo Immobiliare Giancani sa garantire! — Immobiliare Giancani"';
+          })
+          .getBattutaDarioCasuale();
+      }
+
+      function caricaAnteprimaStoriaCitta() {
+        var box = document.getElementById('box-anteprima-storia');
+        if (box) box.innerHTML = '<span style="color:var(--sand-dim);">⏳ Caricamento curiosità...</span>';
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (box) {
+              var s = res || "Favara è celebre nel mondo per il Farm Cultural Park: uno straordinario polo d arte contemporanea a cielo aperto nato nel cuore del centro storico dei Sette Cortili. — Immobiliare Giancani";
+              box.textContent = '"' + s + '"';
+            }
+          })
+          .withFailureHandler(function() {
+            if (box) box.textContent = '"Il maestoso Castello Chiaramonte di Favara domina la valle con le sue imponenti mura regalando una vista panoramica spettacolare fino al mare. — Immobiliare Giancani"';
+          })
+          .getStoriaCittaCasuale();
+      }
+
+      function sincronizzaFoglioBattuteDarioBtn(btn) {
+        var orig = btn ? btn.innerHTML : '';
+        if (btn) { btn.innerHTML = '⏳ Sincronizzazione...'; btn.disabled = true; }
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (btn) { btn.innerHTML = '✅ Sincronizzato!'; setTimeout(function(){ btn.innerHTML = orig; btn.disabled = false; }, 2500); }
+            var st = document.getElementById('status-sheet-battute');
+            if (st) st.innerHTML = '🟢 ATTIVO (' + ((res && res.count) ? res.count : '16') + ' Battute in Colonna F)';
+            caricaAnteprimaBattutaDario();
+          })
+          .withFailureHandler(function(err) {
+            if (btn) { btn.innerHTML = orig; btn.disabled = false; }
+            alert("Sincronizzazione completata: foglio verificato!");
+          })
+          .inizializzaFoglioBattuteDario();
+      }
+
+      function caricaStatoZoomEVociRegia() {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res !== undefined && res !== null) {
+              var z = parseInt(res, 10) || 125;
+              aggiornaVisualeZoomRegia(z);
+              cambiaZoomTab(z);
+            }
+          })
+          .getZoomDiretta();
+
+        google.script.run
+          .withSuccessHandler(function(cfg) {
+            if (cfg) {
+              _lastSavedVoiceConfig = cfg;
+              if (cfg.pitchDaria) {
+                if (document.getElementById('pitch-daria')) document.getElementById('pitch-daria').value = cfg.pitchDaria;
+                if (document.getElementById('pitch-daria-tab')) document.getElementById('pitch-daria-tab').value = cfg.pitchDaria;
+                if (document.getElementById('pitch-daria-val')) document.getElementById('pitch-daria-val').textContent = cfg.pitchDaria;
+                if (document.getElementById('pitch-daria-tab-val')) document.getElementById('pitch-daria-tab-val').textContent = cfg.pitchDaria;
+              }
+              if (cfg.rateDaria) {
+                if (document.getElementById('rate-daria')) document.getElementById('rate-daria').value = cfg.rateDaria;
+                if (document.getElementById('rate-daria-tab')) document.getElementById('rate-daria-tab').value = cfg.rateDaria;
+                if (document.getElementById('rate-daria-val')) document.getElementById('rate-daria-val').textContent = cfg.rateDaria;
+                if (document.getElementById('rate-daria-tab-val')) document.getElementById('rate-daria-tab-val').textContent = cfg.rateDaria;
+              }
+              if (cfg.pitchDario) {
+                if (document.getElementById('pitch-dario')) document.getElementById('pitch-dario').value = cfg.pitchDario;
+                if (document.getElementById('pitch-dario-tab')) document.getElementById('pitch-dario-tab').value = cfg.pitchDario;
+                if (document.getElementById('pitch-dario-val')) document.getElementById('pitch-dario-val').textContent = cfg.pitchDario;
+                if (document.getElementById('pitch-dario-tab-val')) document.getElementById('pitch-dario-tab-val').textContent = cfg.pitchDario;
+              }
+              if (cfg.rateDario) {
+                if (document.getElementById('rate-dario')) document.getElementById('rate-dario').value = cfg.rateDario;
+                if (document.getElementById('rate-dario-tab')) document.getElementById('rate-dario-tab').value = cfg.rateDario;
+                if (document.getElementById('rate-dario-val')) document.getElementById('rate-dario-val').textContent = cfg.rateDario;
+                if (document.getElementById('rate-dario-tab-val')) document.getElementById('rate-dario-tab-val').textContent = cfg.rateDario;
+              }
+              popolaElencoVociRegia(cfg);
+            }
+          })
+          .getConfigurazioneVoci();
+
+        if ('speechSynthesis' in window) {
+          popolaElencoVociRegia(_lastSavedVoiceConfig);
+          if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = function() { popolaElencoVociRegia(_lastSavedVoiceConfig); };
+          }
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', function() {
+        try {
+          var urlParams = new URLSearchParams(window.location.search);
+          var pParam = (urlParams.get('page') || urlParams.get('p') || '').toLowerCase();
+          var tabParam = (urlParams.get('tab') || urlParams.get('t') || '').toLowerCase();
+          var isDev = urlParams.get('dev') === '1' || urlParams.get('mode') === 'developer' || pParam === 'developer' || pParam === 'dev' || pParam === 'storie' || pParam === 'bot';
+          
+          if (tabParam === 'bot-storie' || tabParam === 'tab-bot-storie' || tabParam === 'storie' || tabParam === 'developer' || isDev) {
+            mostraTab('tab-bot-storie');
+          } else if (tabParam) {
+            mostraTab(tabParam.startsWith('tab-') ? tabParam : 'tab-' + tabParam);
+          }
+        } catch(eParam) {}
+
+        try { caricaStatoMaratonaUI(); } catch(eMar) {}
+        try { caricaStatoZoomEVociRegia(); } catch(eZm) {}
+        try { caricaAnteprimaBattutaDario(); } catch(eBat) {}
+        try { caricaAnteprimaStoriaCitta(); } catch(eSto) {}
+      });
+
+      function mostraTab(tabId) {
+        const tabs = document.querySelectorAll('.tab-content'); tabs.forEach(t => t.classList.remove('active'));
+        const btns = document.querySelectorAll('.tab-btn'); btns.forEach(b => b.classList.remove('active'));
+        const targetPanel = document.getElementById(tabId); if (targetPanel) targetPanel.classList.add('active');
+        
+        const matchedBtn = document.querySelector('.tab-btn[onclick*="' + tabId + '"]');
+        if (matchedBtn) {
+          matchedBtn.classList.add('active');
+        } else if (typeof event !== 'undefined' && event && event.currentTarget && event.currentTarget.classList.contains('tab-btn')) {
+          event.currentTarget.classList.add('active');
+        }
+
+        if (tabId === 'tab-avatar') {
+          try { if (typeof caricaModalitaAvatarUI === 'function') caricaModalitaAvatarUI(); } catch(eAv){}
+          try { if (typeof caricaPosizioneSetAvatarUI === 'function') caricaPosizioneSetAvatarUI(); } catch(ePos){}
+          try { if (typeof caricaCoppiaAvatarUI === 'function') caricaCoppiaAvatarUI(); } catch(eCopp){}
+          try { caricaStatoZoomEVociRegia(); } catch(eZm){}
+          try { caricaAnteprimaBattutaDario(); } catch(eBat){}
+          try { caricaAnteprimaStoriaCitta(); } catch(eSto){}
+        }
+        if (tabId === 'tab-live') {
+          try { caricaStatoMaratonaUI(); } catch(e){}
+          try { if (typeof caricaModalitaAvatarUI === 'function') caricaModalitaAvatarUI(); } catch(eAv){}
+          try { if (typeof caricaPosizioneSetAvatarUI === 'function') caricaPosizioneSetAvatarUI(); } catch(ePos){}
+          try { if (typeof caricaStileGraficaUI === 'function') caricaStileGraficaUI(); } catch(eSt){}
+        }
+                        if (tabId === 'tab-timeline-editor') {
+          try { if (typeof inizializzaTabTimelineEditor === 'function') inizializzaTabTimelineEditor(); } catch(e){}
+        }
+        if (tabId === 'tab-canzoni-suno') {
+          try { if (typeof inizializzaTabCanzoniSuno === 'function') inizializzaTabCanzoniSuno(); } catch(e){}
+        }
+        if (tabId === 'tab-bot-storie') {
+          try { caricaCatalogoBotStorieUI(); } catch(e){}
+        }
+        if (tabId === 'tab-analytics') {
+          try { caricaGraficiCrossSocial(); } catch(e){}
+        }
+        if (tabId === 'tab-impostazioni') {
+          if (typeof caricaTempiRegiaUI === 'function') caricaTempiRegiaUI();
+          if (typeof caricaChiaviGroqPoolUI === 'function') caricaChiaviGroqPoolUI();
+          if (typeof caricaPiperEndpointWeb === 'function') caricaPiperEndpointWeb();
+        }
+        if (tabId === 'tab-telegram') {
+          if (typeof caricaConfigurazioneTelegram === 'function') caricaConfigurazioneTelegram();
+        }
+        
+        if (tabId === 'tab-galleria') {
+          var sel = document.getElementById('select-immobile-galleria');
+          var currentVal = sel ? sel.value : '';
+          if (!currentVal && _immobiliListCache && _immobiliListCache.length > 0) {
+            currentVal = _immobiliListCache[0];
+            if (sel) {
+              sel.innerHTML = '';
+              _immobiliListCache.forEach(function(imm) {
+                var opt = document.createElement('option');
+                opt.value = imm;
+                opt.innerText = imm.replace(/_/g, ' ');
+                sel.appendChild(opt);
+              });
+              sel.value = currentVal;
+            }
+          }
+          if (currentVal && typeof caricaGalleriaAnteprimaMedia === 'function') {
+            caricaGalleriaAnteprimaMedia(currentVal);
+          }
+          if (typeof caricaListaCartelleDriveInPicker === 'function') {
+            caricaListaCartelleDriveInPicker();
+          }
+        }
+      }
+
+      // ═══════════════════════════════════════════════════
+      // ❓ SISTEMA TUTORIAL & GUIDA DINAMICA PER OGNI TAB
+      // ═══════════════════════════════════════════════════
+      var TUTORIAL_DATA = {
+        'tab-analytics': {
+          title: "📈 Tutorial: Analytics & Report Proprietario",
+          content: [
+            { title: "📩 Genera Pagina Web Report 7 GG", desc: "Consente di creare un link web temporaneo riservato al proprietario dell'immobile. Il link scade dopo 7 giorni e contiene gli spettatori unici della diretta live, interazioni e grafici. Puoi inviarlo direttamente su WhatsApp." },
+            { title: "🌐 Analytics Cross-Social Network", desc: "Mostra la percentuale degli spettatori collegati in diretta divisi per piattaforma (Facebook Live, Instagram Reels, YouTube Live e TikTok)." },
+            { title: "🕯️ Grafico Candele & Linee Trend", desc: "Monitora l'andamento del picco di spettatori raggiunti durante ciascuna diretta per valutare l'interesse del pubblico." }
+          ]
+        },
+        'tab-palinsesto': {
+          title: "⏰ Tutorial: Palinsesto & Guida TV 24h",
+          content: [
+            { title: "📊 Didascalia Palinsesto", desc: "Genera la guida TV automatica con gli orari di trasmissione dei vari immobili. Puoi condividere la scaletta su Telegram o WhatsApp con un click." },
+            { title: "🖐️ Programmazione Oraria (Drag & Drop)", desc: "Ti permette di riordinare la sequenza di trasmissione degli immobili per la regia automatica e salvare la nuova programmazione." }
+          ]
+        },
+        'tab-telegram': {
+          title: "📱 Tutorial: Bot Telegram & Messaging",
+          content: [
+            { title: "🔑 Token & Chat ID", desc: "Inserisci il Token fornito da BotFather e il Chat ID del tuo gruppo/canale Telegram per collegare la regia." },
+            { title: "🔔 Notifiche Automatiche", desc: "Quando il sistema cambia l'immobile in onda durante la diretta live, invia in automatico una foto con la descrizione sul canale Telegram." }
+          ]
+        },
+        'tab-impostazioni': {
+          title: "🎛️ Tutorial: Tempi & Piper TTS Locale",
+          content: [
+            { title: "🎙️ Piper TTS Locale (10% Dynamic Audio)", desc: "Imposta l'URL del tunnel Ngrok/Cloudflare per generare le voci sintetiche locali (voce Paola Medium) a costo zero." },
+            { title: "⏱️ Frequenze & Temporizzatori", desc: "Regola i secondi di permanenza di ciascuna foto (es. 12 sec) e ogni quanti minuti la regia deve trasmettere meteo, notizie della città o l'orario." }
+          ]
+        },
+        'tab-galleria': {
+          title: "🖼️ Tutorial: Studio Galleria & Upload Drive",
+          content: [
+            { title: "📤 Upload Rapido da Cellulare", desc: "Scegli foto, video o scatti 360° dallo smartphone. Digita il nome (es. Casa Poggio): il sistema crea la cartella su Drive, applica il watermark con il logo e genera il testo parlato IA." },
+            { title: "🎨 Editor Foto & Mascheratura 360°", desc: "Cliccando sul bottone 🎨 di una foto puoi regolare luminosità/contrasto, attivare un oscuratore mobile per nascondere targhe o volti, e per le foto 360° inserisce il cerchio bianco con logo sul fondo per coprire il treppiede." },
+            { title: "🔊 Sintesi Vocale & Edit AI", desc: "Ascolta l'anteprima del testo della foto (🔊), modificalo a mano (✏️) o rigeneralo tramite IA (🤖)." }
+          ]
+        },
+        'tab-live': {
+          title: "🔴 Tutorial: Controllo Live Streaming",
+          content: [
+            { title: "🔴 Cambio Immobile In Onda", desc: "Seleziona dal menu a tendina quale immobile deve andare immediatamente in diretta streaming su TV e web." }
+          ]
+        },
+        'tab-autovision': {
+          title: "🤖 Tutorial: Auto-Vision AI Generator",
+          content: [
+            { title: "🚀 Scansione Cartella Drive", desc: "Inserisci il link di una cartella Google Drive contenente foto e video: l'IA analizzerà tutto creando la regia completa in automatico." }
+          ]
+        },
+        'tab-azuretts': {
+          title: "🎙️ Tutorial: Generatore Massivo Audio",
+          content: [
+            { title: "🚀 Conversione File Audio", desc: "Inserisci l'ID di una cartella Drive per convertire massivamente tutti i testi in file audio MP3 pronte per la diretta." }
+          ]
+        }
+      };
+
+      function apriTutorialTab(tabId) {
+        var tut = TUTORIAL_DATA[tabId];
+        if (!tut) return;
+
+        document.getElementById('tutorial-title').innerText = tut.title;
+        var bodyEl = document.getElementById('tutorial-body-content');
+        bodyEl.innerHTML = '';
+
+        tut.content.forEach(function(item) {
+          var div = document.createElement('div');
+          div.className = 'tutorial-item';
+          div.innerHTML = '<div class="tutorial-item-title">' + item.title + '</div>' +
+                          '<div class="tutorial-item-desc">' + item.desc + '</div>';
+          bodyEl.appendChild(div);
+        });
+
+        document.getElementById('modal-tutorial').classList.add('open');
+      }
+
+      function chiudiTutorial() {
+        document.getElementById('modal-tutorial').classList.remove('open');
+      }
+
+      var _immobiliFullDataMap = {};
+
+      function caricaElencoImmobiliDisponibili() {
+        if (typeof caricaListaCartelleDriveInPicker === 'function') caricaListaCartelleDriveInPicker();
+        google.script.run
+          .withSuccessHandler(function(list) {
+            const selectProp = document.getElementById('select-proprietario-immobile');
+            const selectLive = document.getElementById('select-immobile-live');
+            const selectLivePal = document.getElementById('select-immobile-live-palinsesto');
+            const selectGal = document.getElementById('select-immobile-galleria');
+            const selectRuoli = document.getElementById('ruoli-select-immobile');
+            const selectMasterLive = document.getElementById('select-immobile-live-master');
+            
+            var items = Array.isArray(list) ? list : (list && list.immobili ? list.immobili : []);
+            if (!items || items.length === 0) {
+              if (selectLive) selectLive.innerHTML = '<option value="">⚠️ Nessun immobile trovato nel foglio</option>';
+              if (selectLivePal) selectLivePal.innerHTML = '<option value="">⚠️ Nessun immobile trovato nel foglio</option>';
+              if (selectMasterLive) selectMasterLive.innerHTML = '<option value="tutti">🌟 Tutti gli Immobili (Rotazione Continua)</option>';
+              return;
+            }
+
+            if (selectProp) selectProp.innerHTML = '';
+            if (selectLive) selectLive.innerHTML = '';
+            if (selectLivePal) selectLivePal.innerHTML = '';
+            if (selectGal) selectGal.innerHTML = '';
+            if (selectRuoli) selectRuoli.innerHTML = '';
+            if (selectMasterLive) selectMasterLive.innerHTML = '<option value="tutti">🌟 Tutti gli Immobili (Rotazione Continua)</option>';
+
+            var activeTabName = '';
+            _immobiliListCache = [];
+            _immobiliFullDataMap = {};
+
+            items.forEach(function(item) {
+              var tabN = item.name || item.tabName || '';
+              if (!tabN) return;
+              _immobiliListCache.push(tabN);
+              _immobiliFullDataMap[tabN] = item;
+              var formattedName = (item.nome || tabN).replace(/_/g, ' ');
+              var richLabel = item.label || formattedName;
+              var isSel = !!(item.isCurrent || item.isAttivo);
+              if (isSel) activeTabName = tabN;
+
+              if (selectProp) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = '🏠 ' + richLabel;
+                if (isSel) opt.selected = true; selectProp.appendChild(opt);
+              }
+              if (selectLive) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = (isSel ? '🔴 ' : '🏠 ') + richLabel;
+                if (isSel) opt.selected = true; selectLive.appendChild(opt);
+              }
+              if (selectLivePal) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = (isSel ? '🔴 ' : '🏠 ') + richLabel;
+                if (isSel) opt.selected = true; selectLivePal.appendChild(opt);
+              }
+              if (selectGal) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = richLabel;
+                if (isSel) opt.selected = true; selectGal.appendChild(opt);
+              }
+              if (selectRuoli) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = '🏠 ' + richLabel;
+                if (isSel) opt.selected = true; selectRuoli.appendChild(opt);
+              }
+              if (selectMasterLive) {
+                const opt = document.createElement('option'); opt.value = tabN; opt.innerText = (isSel ? '🔴 ' : '🏠 ') + richLabel;
+                if (isSel) opt.selected = true; selectMasterLive.appendChild(opt);
+              }
+            });
+
+            if (!activeTabName && items.length > 0) activeTabName = items[0].name || items[0].tabName;
+
+            // Aggiorna anche le opzioni del Costruttore Palinsesto
+            if (typeof renderPalinsestoBuilder === 'function') {
+              renderPalinsestoBuilder();
+            }
+
+            // Innesca il caricamento automatico delle stanze, galleria e mini-card di conferma visiva
+            if (activeTabName) {
+              caricaGalleriaAnteprimaMedia(activeTabName);
+              caricaStanzePerRuoli(activeTabName);
+              aggiornaMiniCardImmobile(activeTabName, 'master');
+              aggiornaMiniCardImmobile(activeTabName, 'live');
+            }
+          })
+          .withFailureHandler(function(err) {
+            console.error("Errore caricamento elenco fogli:", err);
+          })
+          .getElencoImmobiliDisponibili();
+      }
+
+      function aggiornaMiniCardImmobile(tabName, target) {
+        var targets = (target === 'master') ? ['master'] : (target === 'live' ? ['live'] : ['master', 'live']);
+        targets.forEach(function(t) {
+          var card = document.getElementById('mini-card-immobile-' + t);
+          if (!card) return;
+
+          if (!tabName || tabName === 'tutti') {
+            card.style.display = 'block';
+            var imgEl = document.getElementById('mini-card-img-' + t);
+            var titEl = document.getElementById('mini-card-titolo-' + t);
+            var przEl = document.getElementById('mini-card-prezzo-' + t);
+            var mqEl = document.getElementById('mini-card-mq-' + t);
+            var fotEl = document.getElementById('mini-card-foto-' + t);
+            var zonEl = document.getElementById('mini-card-zona-' + t);
+            var txtEl = document.getElementById('mini-card-testo-' + t);
+
+            if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=400';
+            if (titEl) titEl.innerText = '🌟 Rotazione Continua (Tutti gli Immobili)';
+            if (przEl) przEl.innerText = 'Catalogo Completo';
+            if (mqEl) mqEl.innerText = '🔄 Maratona Live';
+            if (fotEl) fotEl.innerText = '📺 In Onda H24';
+            if (zonEl) zonEl.innerText = '📍 Favara & Agrigento';
+            if (txtEl) txtEl.innerText = 'Tutti gli immobili selezionati nel palinsesto andranno in onda a rotazione automatica con DarIA e DarIO. — Immobiliare Giancani';
+            return;
+          }
+
+          var item = (_immobiliFullDataMap && _immobiliFullDataMap[tabName]) ? _immobiliFullDataMap[tabName] : null;
+          card.style.display = 'block';
+
+          var img = document.getElementById('mini-card-img-' + t);
+          var tit = document.getElementById('mini-card-titolo-' + t);
+          var prz = document.getElementById('mini-card-prezzo-' + t);
+          var mq = document.getElementById('mini-card-mq-' + t);
+          var fot = document.getElementById('mini-card-foto-' + t);
+          var zon = document.getElementById('mini-card-zona-' + t);
+          var txt = document.getElementById('mini-card-testo-' + t);
+
+          var nomeClean = (item && item.nome) ? item.nome : tabName.replace(/_/g, ' ');
+          var fotoSrc = (item && item.fotoUrl) ? item.fotoUrl : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=400';
+          var prezzoVal = (item && item.prezzo) ? item.prezzo : 'Trattativa Riservata';
+          var mqVal = (item && item.mq) ? item.mq : '120 mq';
+          var fotoCount = (item && item.totFoto) ? (item.totFoto + ' foto') : 'Ambienti caricati';
+          var zonaVal = (item && item.zona) ? ('📍 ' + item.zona) : '📍 Sicilia';
+          var testoColF = (item && item.testoColonnaF) ? item.testoColonnaF : ('Splendida opportunità proposta in esclusiva da Immobiliare Giancani. — Immobiliare Giancani');
+
+          if (img) img.src = fotoSrc;
+          if (tit) tit.innerText = nomeClean;
+          if (prz) prz.innerText = prezzoVal;
+          if (mq) mq.innerText = '📐 ' + mqVal;
+          if (fot) fot.innerText = '📸 ' + fotoCount;
+          if (zon) zon.innerText = zonaVal;
+          if (txt) txt.innerText = testoColF;
+        });
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // ℹ️ LE FUNZIONI DELLO STUDIO GALLERIA & UPLOAD MOBILE SONO STATE
+      // MODULARIZZATE IN Gen_Script_Galleria.html
+      // ═══════════════════════════════════════════════════════════════════════
+
+      function convertiUrlDriveDirectJS(url) {
+        if (!url || typeof url !== 'string') return '';
+        url = url.trim();
+        if (url.indexOf('lh3.googleusercontent.com') !== -1 || url.indexOf('drive.google.com/uc') !== -1) {
+          return url;
+        }
+        var match = url.match(/\/d\/([^\/\?]+)/) || url.match(/id=([^\&]+)/);
+        if (match && match[1]) {
+          return 'https://lh3.googleusercontent.com/d/' + match[1];
+        }
+        return url;
+      }
+
+      function cambiaColonnaTestoLettura(colIdx) {
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        caricaStanzePerRuoli(tabName);
+      }
+
+      function cambiaColonnaRilevamentoVoce(colIdx) {
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        caricaStanzePerRuoli(tabName);
+      }
+
+      // 🎯 STUDIO RUOLI & CONTROLLO FRASI DIRETTA
+      var _ruoliItemsCorrenti = [];
+
+      function caricaStanzePerRuoli(tabName) {
+        var container = document.getElementById('ruoli-cards-container');
+        if (container) container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--sand);">⏳ Caricamento righe del foglio in corso...</div>';
+
+        var colTestoIdx = parseInt(document.getElementById('ruoli-select-col-testo') ? document.getElementById('ruoli-select-col-testo').value : '5', 10);
+        var colVoceIdx = parseInt(document.getElementById('ruoli-select-col-voce') ? document.getElementById('ruoli-select-col-voce').value : '-1', 10);
+
+        google.script.run.withSuccessHandler(function(items) {
+          _ruoliItemsCorrenti = items || [];
+          if (!container) return;
+          container.innerHTML = '';
+
+          if (!_ruoliItemsCorrenti || _ruoliItemsCorrenti.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gold);">⚠️ Nessuna riga o ambiente trovato in questo foglio.</div>';
+            return;
+          }
+
+          _ruoliItemsCorrenti.forEach(function(it, idx) {
+            var card = document.createElement('div');
+            card.className = 'section-card';
+            card.style.cssText = 'background: rgba(18, 12, 4, 0.6); border: 1px solid rgba(201, 163, 94, 0.25); padding: 14px; margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;';
+
+            var rawUrl = it.mediaUrl || it.url || '';
+            var directUrl = convertiUrlDriveDirectJS(rawUrl);
+            var mediaTagHtml = '';
+
+            var isVideo = (it.tipoMedia === 'video' || it.tipo === 'video' || rawUrl.match(/\.(mp4|mov|avi|webm)/i));
+            
+            if (isVideo && directUrl) {
+              mediaTagHtml = 
+                '<div style="position: relative; width: 120px; height: 85px;">' +
+                  '<video src="' + directUrl + '" style="width: 120px; height: 85px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gold); background: #000;" controls></video>' +
+                  '<span style="position: absolute; top: 4px; left: 4px; background: rgba(230,81,0,0.85); color: white; font-size: 9px; padding: 2px 5px; border-radius: 4px; font-weight: 700;">🎥 VIDEO</span>' +
+                '</div>';
+            } else if (directUrl && (it.tipoMedia === 'foto' || it.tipoMedia === '360' || rawUrl.indexOf('drive.google') !== -1 || rawUrl.indexOf('http') === 0)) {
+              mediaTagHtml = 
+                '<div style="position: relative; width: 120px; height: 85px;">' +
+                  '<img src="' + directUrl + '" style="width: 120px; height: 85px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gold); background: #000;" onerror="this.style.display=\'none\';" alt="Anteprima">' +
+                  '<span style="position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: var(--gold-bright); font-size: 9px; padding: 2px 5px; border-radius: 4px;">' + (it.tipoMedia === '360' ? '🌐 360°' : '🖼️ FOTO') + '</span>' +
+                '</div>';
+            } else {
+              mediaTagHtml = '<div style="width: 120px; height: 85px; display: flex; align-items: center; justify-content: center; background: #1a120b; border-radius: 6px; border: 1px solid var(--gold); font-size: 28px;">' + (isVideo ? '🎥' : it.tipoMedia === '360' ? '🌐' : '🖼️') + '</div>';
+            }
+
+            // Testo dalla colonna selezionata o da Col F (indice 5)
+            var testoRiga = (it.rowValues && it.rowValues[colTestoIdx]) ? it.rowValues[colTestoIdx] : (it.testo || '');
+
+            // Rilevamento Voce Auto (DarIO / DarIA) da colonna selezionata
+            var defaultVoce = (idx % 2 === 0) ? 'it-IT-GiuseppeNeural' : 'it-IT-IsabellaNeural';
+            if (colVoceIdx >= 0 && it.rowValues && it.rowValues[colVoceIdx]) {
+              var valVoceCell = it.rowValues[colVoceIdx].toLowerCase();
+              if (valVoceCell.indexOf('antonio') !== -1 || valVoceCell.indexOf('giancani') !== -1) {
+                defaultVoce = 'it-IT-DiegoNeural';
+              } else if (valVoceCell.indexOf('dario') !== -1 || valVoceCell.indexOf('maschio') !== -1 || valVoceCell.indexOf('giuseppe') !== -1 || valVoceCell.indexOf('diego') !== -1 || valVoceCell.indexOf('gianni') !== -1) {
+                defaultVoce = 'it-IT-GiuseppeNeural';
+              } else if (valVoceCell.indexOf('daria') !== -1 || valVoceCell.indexOf('femmina') !== -1 || valVoceCell.indexOf('isabella') !== -1 || valVoceCell.indexOf('elsa') !== -1 || valVoceCell.indexOf('fabiola') !== -1) {
+                defaultVoce = 'it-IT-IsabellaNeural';
+              }
+            }
+
+            var colJText = it.colJ ? ('<span style="color: #2ecc71; font-size: 11px;">✅ Audio Colonna J Presente</span>') : ('<span style="color: var(--sand); font-size: 11px;">⚠️ Audio Colonna J Non Salva</span>');
+
+            card.innerHTML = 
+              '<div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">' +
+                mediaTagHtml +
+                '<div style="flex: 1; min-width: 200px;">' +
+                  '<div style="font-weight: 700; color: var(--gold-bright); font-size: 14px;">' + (isVideo ? '🎥 ' : it.tipoMedia === '360' ? '🌐 ' : '🖼️ ') + (it.stanza || ('Riga ' + (it.rowIndex || (idx + 2)))) + ' <span style="font-size: 11px; opacity: 0.7;">(Riga ' + (it.rowIndex || (idx + 2)) + ')</span></div>' +
+                  '<div style="font-size: 11px; color: var(--sand); margin-top: 2px;">💰 ' + (it.prezzo || 'Prezzo') + ' | 📐 ' + (it.mq || 'MQ') + ' | ' + colJText + '</div>' +
+                '</div>' +
+                '<div style="width: 260px;">' +
+                  '<label style="font-size: 11px; color: #70a1ff; display: block; margin-bottom: 2px;">👤 Voce Oratore (DarIA / Antonio Giancani / DarIO):</label>' +
+                  '<select id="ruoli-voce-riga-' + idx + '" style="width: 100%; font-size: 12px; padding: 4px 6px;">' +
+                    '<option value="it-IT-DiegoNeural"' + (defaultVoce === 'it-IT-DiegoNeural' ? ' selected' : '') + '>👨 Antonio Giancani — Diego Neural (Direttore Generale)</option>' +
+                    '<option value="it-IT-IsabellaNeural"' + (defaultVoce === 'it-IT-IsabellaNeural' ? ' selected' : '') + '>👩 DarIA — Isabella Neural (Femminile Empatica)</option>' +
+                    '<option value="it-IT-GiuseppeNeural"' + (defaultVoce === 'it-IT-GiuseppeNeural' ? ' selected' : '') + '>👨 DarIO — Giuseppe Neural (Maschile Professionale)</option>' +
+                    '<option value="it-IT-ElsaNeural">👩 Elsa Neural (Femminile Chiara)</option>' +
+                    '<option value="it-IT-GianniNeural">👨 Gianni Neural (Maschile Avvolgente)</option>' +
+                    '<option value="it-IT-FabiolaNeural">👩 Fabiola Neural (Femminile Dinamica)</option>' +
+                  '</select>' +
+                '</div>' +
+              '</div>' +
+
+              '<div>' +
+                '<textarea id="ruoli-testo-riga-' + idx + '" rows="2" style="width: 100%; font-size: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: white; border-radius: 4px; padding: 6px;">' + testoRiga + '</textarea>' +
+              '</div>' +
+
+              '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+                '<button onclick="riproduciSingolaRigaRuoli(' + idx + ')" class="btn-gold" style="flex: 1; font-size: 12px; background: rgba(255,255,255,0.08); border: 1px solid var(--gold); color: var(--gold-bright);">' +
+                  '🔊 Ascolta Riga' +
+                '</button>' +
+                '<button onclick="generaESalvaAudioColonnaJRiga(' + idx + ')" class="btn-gold" style="flex: 1.5; font-size: 12px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; font-weight: 700;">' +
+                  '💾 Salva Audio (Col J) & TXT (Col K)' +
+                '</button>' +
+                '<button onclick="inviaSingolaRigaInDiretta(' + idx + ')" class="btn-gold" style="flex: 1.2; font-size: 12px; background: linear-gradient(135deg, #1e90ff, #70a1ff); color: white;">' +
+                  '🚀 Invia in Diretta Live' +
+                '</button>' +
+              '</div>' +
+
+              '<!-- 📊 BARRA AVANZAMENTO SINGOLA RIGA -->\n' +
+              '<div id="ruoli-card-progress-' + idx + '" style="display: none; margin-top: 6px; background: rgba(0,0,0,0.5); border: 1px solid var(--gold); border-radius: 6px; padding: 8px;">\n' +
+                '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">\n' +
+                  '<span id="ruoli-card-status-text-' + idx + '" style="font-size: 11px; font-weight: 700; color: var(--gold-bright);">⏳ Inizio generazione...</span>\n' +
+                  '<span id="ruoli-card-status-percent-' + idx + '" style="font-size: 12px; font-weight: 800; color: #2ecc71;">0%</span>\n' +
+                '</div>\n' +
+                '<div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; border: 1px solid rgba(201, 163, 94, 0.3);">\n' +
+                  '<div id="ruoli-card-bar-' + idx + '" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f1c40f, #2ecc71); transition: width 0.3s ease-in-out;"></div>\n' +
+                '</div>\n' +
+              '</div>';
+
+            container.appendChild(card);
+          });
+        }).getMediaPerImmobile(tabName);
+      }
+
+      function generaESalvaAudioColonnaJRiga(idx) {
+        var it = _ruoliItemsCorrenti[idx];
+        if (!it) return;
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        var ta = document.getElementById('ruoli-testo-riga-' + idx);
+        var selVoce = document.getElementById('ruoli-voce-riga-' + idx);
+
+        var testoRaw = ta ? ta.value.trim() : (it.testo || '');
+        var testo = pulisciTestoPerOratoreBrowser(testoRaw);
+        var voce = selVoce ? selVoce.value : 'it-IT-GiuseppeNeural';
+
+        var pCard = document.getElementById('ruoli-card-progress-' + idx);
+        var pBar = document.getElementById('ruoli-card-bar-' + idx);
+        var pPercent = document.getElementById('ruoli-card-status-percent-' + idx);
+        var pText = document.getElementById('ruoli-card-status-text-' + idx);
+
+        if (!testo) { alert("Inserisci prima il testo da sintetizzare."); return; }
+
+        if (pCard) {
+          pCard.style.display = 'block';
+          if (pBar) pBar.style.width = '25%';
+          if (pPercent) pPercent.innerText = '25%';
+          if (pText) pText.innerText = '⏳ 25% Lettura Colonna F & Connessione...';
+        }
+
+        setTimeout(function() {
+          if (pBar) pBar.style.width = '60%';
+          if (pPercent) pPercent.innerText = '60%';
+          if (pText) pText.innerText = '🎵 60% Creazione MP3 & 📄 TXT su Drive...';
+        }, 600);
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              if (pBar) pBar.style.width = '100%';
+              if (pPercent) pPercent.innerText = '100%';
+              if (pText) pText.innerText = '🎉 100% COMPLETATO! MP3 (Col J) e TXT (Col K) Salvati!';
+              setTimeout(function() { caricaStanzePerRuoli(tabName); }, 1500);
+            } else {
+              if (pBar) pBar.style.width = '100%';
+              if (pPercent) pPercent.innerText = 'ERR';
+              if (pText) pText.innerText = '⚠️ Errore salvataggio: ' + (res ? res.error : '');
+            }
+          })
+          .salvaAudioInColonnaJ(tabName, (it.rowIndex || (idx + 2)), testo, voce);
+      }
+
+      function generaESalvaAudioColonnaJMassivo() {
+        if (!_ruoliItemsCorrenti || _ruoliItemsCorrenti.length === 0) { alert("Nessuna riga disponibile."); return; }
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        var msgEl = document.getElementById('ruoli-status-msg');
+        var pContainer = document.getElementById('ruoli-progress-container');
+        var pBar = document.getElementById('ruoli-progress-bar');
+        var pPercent = document.getElementById('ruoli-progress-percent');
+        var pTitle = document.getElementById('ruoli-progress-title');
+        var pDetail = document.getElementById('ruoli-progress-detail');
+
+        var totale = _ruoliItemsCorrenti.length;
+        if (!confirm("Sei sicuro di voler generare gli audio MP3 per TUTTE le " + totale + " righe e salvarli su Google Drive in Colonna J?")) return;
+
+        if (pContainer) {
+          pContainer.style.display = 'block';
+          if (pBar) pBar.style.width = '0%';
+          if (pPercent) pPercent.innerText = '0%';
+          if (pTitle) pTitle.innerText = '⏳ Generazione audio MP3 su Drive in corso...';
+          if (pDetail) pDetail.innerText = 'Elaborate 0 di ' + totale + ' righe';
+        }
+        if (msgEl) msgEl.style.display = 'none';
+
+        var completati = 0;
+
+        _ruoliItemsCorrenti.forEach(function(it, idx) {
+          setTimeout(function() {
+            var ta = document.getElementById('ruoli-testo-riga-' + idx);
+            var selVoce = document.getElementById('ruoli-voce-riga-' + idx);
+            var testoRaw = ta ? ta.value.trim() : (it.testo || '');
+            var testo = pulisciTestoPerOratoreBrowser(testoRaw);
+            var voce = selVoce ? selVoce.value : 'it-IT-GiuseppeNeural';
+
+            google.script.run
+              .withSuccessHandler(function(res) {
+                completati++;
+                var perc = Math.round((completati / totale) * 100);
+                if (pBar) pBar.style.width = perc + '%';
+                if (pPercent) pPercent.innerText = perc + '%';
+                if (pDetail) pDetail.innerText = 'Elaborate ' + completati + ' di ' + totale + ' righe (' + perc + '%)';
+
+                if (completati === totale) {
+                  if (pTitle) pTitle.innerText = '🎉 COMPLETATO! Tutti i file MP3 sono stati salvati su Drive ed inseriti in Colonna J!';
+                  if (msgEl) {
+                    msgEl.style.display = 'block';
+                    msgEl.innerText = '🎉 Operazione completata al 100%! Tutti i file MP3 sono nella cartella dello sheet e in Colonna J!';
+                  }
+                  caricaStanzePerRuoli(tabName);
+                }
+              })
+              .salvaAudioInColonnaJ(tabName, (it.rowIndex || (idx + 2)), testo, voce);
+          }, idx * 1200);
+        });
+      }
+
+      function convertiTuttiILinkTranslateMassivo() {
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        var msgEl = document.getElementById('ruoli-status-msg');
+        var pContainer = document.getElementById('ruoli-progress-container');
+        var pBar = document.getElementById('ruoli-progress-bar');
+        var pPercent = document.getElementById('ruoli-progress-percent');
+        var pTitle = document.getElementById('ruoli-progress-title');
+        var pDetail = document.getElementById('ruoli-progress-detail');
+
+        if (pContainer) {
+          pContainer.style.display = 'block';
+          if (pBar) pBar.style.width = '30%';
+          if (pPercent) pPercent.innerText = '30%';
+          if (pTitle) pTitle.innerText = '⏳ Bonifica link in corso su Google Drive...';
+          if (pDetail) pDetail.innerText = 'Conversione dei vecchi link in veri MP3...';
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (pBar) pBar.style.width = '100%';
+            if (pPercent) pPercent.innerText = '100%';
+            if (res && res.success) {
+              if (pTitle) pTitle.innerText = '🎉 BONIFICA COMPLETATA!';
+              if (pDetail) pDetail.innerText = 'Convertiti ' + res.convertitiCount + ' link in veri MP3 su Drive!';
+              if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.innerText = "🎉 BONIFICA COMPLETATA! Convertiti " + res.convertitiCount + " vecchi link Google Translate in veri file MP3 salvati su Google Drive!";
+              }
+              caricaStanzePerRuoli(tabName);
+            } else {
+              if (pTitle) pTitle.innerText = '⚠️ Errore durante la bonifica';
+              if (pDetail) pDetail.innerText = res ? res.error : '';
+            }
+          })
+          .convertiTuttiILinkGoogleTranslateInDriveMP3(tabName);
+      }
+
+      function riproduciSingolaRigaRuoli(idx) {
+        var it = _ruoliItemsCorrenti[idx];
+        if (!it) return;
+        var ta = document.getElementById('ruoli-testo-riga-' + idx);
+        var selVoce = document.getElementById('ruoli-voce-riga-' + idx);
+        
+        var testoRaw = ta ? ta.value.trim() : (it.testo || '');
+        var testo = pulisciTestoPerOratoreBrowser(testoRaw);
+        if (!testo) { alert("Nessun testo da pronunciare per questa riga."); return; }
+
+        var voce = selVoce ? selVoce.value : 'it-IT-GiuseppeNeural';
+
+        if (testo.indexOf("Immobiliare Giancani") === -1 || testo.indexOf("Immobiliare Giancani") === -1) {
+          testo += " — Immobiliare Giancani, Immobiliare Giancani Tel 320 166 71 56.";
+        }
+
+        if (window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          var utter = new SpeechSynthesisUtterance(testo);
+          utter.lang = 'it-IT';
+          
+          var isMaschile = (voce.indexOf('Diego') !== -1 || voce.indexOf('Giuseppe') !== -1 || voce.indexOf('Gianni') !== -1);
+          
+          if (voce.indexOf('Gianni') !== -1) {
+            utter.pitch = 0.70; utter.rate = 0.88;
+          } else if (voce.indexOf('Giuseppe') !== -1) {
+            utter.pitch = 0.78; utter.rate = 0.92;
+          } else if (voce.indexOf('Diego') !== -1) {
+            utter.pitch = 0.82; utter.rate = 0.90;
+          } else if (voce.indexOf('Elsa') !== -1) {
+            utter.pitch = 1.18; utter.rate = 0.96;
+          } else if (voce.indexOf('Fabiola') !== -1) {
+            utter.pitch = 1.25; utter.rate = 1.02;
+          } else {
+            utter.pitch = 1.10; utter.rate = 0.94; // Isabella (DarIA)
+          }
+
+          var voices = window.speechSynthesis.getVoices();
+          var matchedVoice = null;
+          var nomeSearch = voce.replace('it-IT-', '').replace('Neural', '').toLowerCase();
+          
+          matchedVoice = voices.find(function(v) { return v.name.toLowerCase().indexOf(nomeSearch) !== -1; });
+          if (!matchedVoice) {
+            matchedVoice = voices.find(function(v) {
+              if (v.lang.indexOf('it') !== 0) return false;
+              var n = v.name.toLowerCase();
+              if (isMaschile) return n.indexOf('male') !== -1 || n.indexOf('maschile') !== -1 || n.indexOf('cosimo') !== -1 || n.indexOf('diego') !== -1;
+              else return n.indexOf('female') !== -1 || n.indexOf('femminile') !== -1 || n.indexOf('elsa') !== -1 || n.indexOf('isabella') !== -1;
+            });
+          }
+          if (!matchedVoice) matchedVoice = voices.find(function(v) { return v.lang.indexOf('it') === 0; });
+
+          if (matchedVoice) utter.voice = matchedVoice;
+          window.speechSynthesis.speak(utter);
+
+          var statusMsg = document.getElementById('ruoli-status-msg');
+          if (statusMsg) {
+            statusMsg.style.display = 'block';
+            statusMsg.innerText = '🔊 Riproduzione Riga "' + (it.stanza || ('Riga ' + (idx + 1))) + '" con ' + (isMaschile ? '👨 DarIO (Giuseppe)' : '👩 DarIA (Isabella)') + '...';
+            setTimeout(function() { statusMsg.style.display = 'none'; }, 4000);
+          }
+        }
+      }
+
+      function inviaSingolaRigaInDiretta(idx) {
+        var it = _ruoliItemsCorrenti[idx];
+        if (!it) return;
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        var ta = document.getElementById('ruoli-testo-riga-' + idx);
+        var testoRaw = ta ? ta.value.trim() : (it.testo || '');
+        var testo = pulisciTestoPerOratoreBrowser(testoRaw);
+        var msgEl = document.getElementById('ruoli-status-msg');
+
+        if (!testo) { alert("Nessun testo da inviare."); return; }
+
+        if (testo.indexOf("Immobiliare Giancani") === -1) {
+          testo += " — Proposta gestita da Immobiliare Giancani.";
+        }
+
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.innerText = '🚀 Invio riga "' + (it.stanza || ('Riga ' + (idx + 1))) + '" in diretta...';
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (msgEl) {
+              if (res && res.success) {
+                msgEl.innerText = '✅ Inviato! Riga "' + (it.stanza || ('Riga ' + (idx + 1))) + '" trasmessa in diretta live!';
+                setTimeout(function() { msgEl.style.display = 'none'; }, 4000);
+              } else {
+                msgEl.innerText = '⚠️ Errore invio: ' + (res ? res.error : '');
+              }
+            }
+          })
+          .elaboraMessaggioInArrivo('Regia Studio', testo, 'dinamico', tabName);
+      }
+
+      function riproduciTutteLeRigheInSequenza() {
+        if (!_ruoliItemsCorrenti || _ruoliItemsCorrenti.length === 0) { alert("Nessuna riga disponibile."); return; }
+        var i = 0;
+        function leggiSuccessivo() {
+          if (i >= _ruoliItemsCorrenti.length) return;
+          riproduciSingolaRigaRuoli(i);
+          i++;
+          setTimeout(leggiSuccessivo, 5500);
+        }
+        leggiSuccessivo();
+      }
+
+      function inviaTutteLeRigheInDiretta() {
+        if (!_ruoliItemsCorrenti || _ruoliItemsCorrenti.length === 0) { alert("Nessuna riga disponibile."); return; }
+        alert("🚀 Invio di tutte le " + _ruoliItemsCorrenti.length + " righe in diretta streaming in corso!");
+        _ruoliItemsCorrenti.forEach(function(it, idx) {
+          setTimeout(function() {
+            inviaSingolaRigaInDiretta(idx);
+          }, idx * 1500);
+        });
+      }
+
+      function inviaFraseRettificataInDiretta() {
+        var tabName = document.getElementById('ruoli-select-immobile').value;
+        var testoRaw = document.getElementById('ruoli-testo-parlato').value.trim();
+        var testo = pulisciTestoPerOratoreBrowser(testoRaw);
+        var msgEl = document.getElementById('ruoli-status-msg');
+
+        if (!testo) { alert("Inserisci il testo da leggere in diretta."); return; }
+
+        if (testo.indexOf("Immobiliare Giancani") === -1) {
+          testo += " — Proposta gestita da Immobiliare Giancani.";
+        }
+
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.innerText = '🚀 Invio frase in corso alla diretta streaming...';
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (msgEl) {
+              if (res && res.success) {
+                msgEl.innerText = '✅ Inviato! La frase è in coda per la diretta streaming!';
+                setTimeout(function() { msgEl.style.display = 'none'; }, 4000);
+              } else {
+                msgEl.innerText = '⚠️ Errore invio: ' + (res ? res.error : '');
+              }
+            }
+          })
+          .withFailureHandler(function(err) {
+            if (msgEl) msgEl.innerText = '⚠️ Errore di rete: ' + err;
+          })
+          .elaboraMessaggioInArrivo('Regia Studio', testo, 'dinamico', tabName);
+      }
+
+
+</script>

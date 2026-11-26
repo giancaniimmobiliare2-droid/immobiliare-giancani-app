@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!-- Owner Report Web Page — Immobiliare Giancani (v102.0 Executive HTML Suite with 1-Week Auto Expiration & Logo) -->
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Report Trasparenza Diretta — Immobiliare Giancani</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --bg-dark: #100d0a;
+        --card-bg: rgba(22, 17, 13, 0.95);
+        --gold: #c9a35e;
+        --gold-bright: #e5be75;
+        --gold-dark: #8c6e33;
+        --terracotta: #a6512d;
+        --sand: #d9c5ab;
+        --ivory: #f7f3eb;
+        --line: rgba(201, 163, 94, 0.25);
+        --line-soft: rgba(255, 255, 255, 0.08);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background-color: var(--bg-dark);
+        background-image: radial-gradient(circle at 50% 15%, rgba(166, 81, 45, 0.18), transparent 70%),
+                          radial-gradient(circle at 85% 85%, rgba(201, 163, 94, 0.12), transparent 60%);
+        color: var(--ivory);
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 14px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 820px;
+        background: var(--card-bg);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+      }
+
+      .header {
+        text-align: center;
+        border-bottom: 1px solid var(--line-soft);
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+      }
+
+      .logo-img { height: 60px; margin-bottom: 10px; }
+
+      .title {
+        font-family: 'Fraunces', serif;
+        font-size: 22px; font-weight: 700; color: var(--gold-bright);
+      }
+
+      .subtitle { font-size: 11px; color: var(--sand); margin-top: 4px; }
+
+      .expiry-banner {
+        background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.4);
+        color: #ff6b6b; padding: 10px 14px; border-radius: 12px; font-size: 11px; font-weight: 700;
+        text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      }
+
+      .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+      .stat-card {
+        background: rgba(15, 12, 9, 0.92); border: 1px solid var(--line-soft);
+        border-radius: 14px; padding: 16px; text-align: center;
+      }
+      .stat-val { font-size: 24px; font-weight: 800; color: var(--gold-bright); }
+      .stat-lbl { font-size: 10px; font-weight: 700; color: var(--sand); text-transform: uppercase; margin-top: 4px; }
+
+      .section-card {
+        background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line-soft);
+        border-radius: 16px; padding: 18px; margin-bottom: 18px;
+      }
+
+      .section-title {
+        font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 12px;
+        display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+      }
+
+      .bar-item { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+      .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--ivory); font-weight: 700; }
+      .bar-track { width: 100%; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+      .bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--terracotta)); border-radius: 5px; }
+
+      .footer-contact {
+        text-align: center; border-top: 1px solid var(--line-soft);
+        padding-top: 18px; margin-top: 20px; font-size: 12px; color: var(--sand);
+      }
+      .signature-name { font-size: 16px; font-weight: 800; color: var(--gold-bright); margin-top: 4px; }
+
+      /* SCHERMATA SCADENZA */
+      #expired-box {
+        text-align: center; padding: 40px 14px;
+      }
+      .expired-icon { font-size: 56px; margin-bottom: 16px; }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      
+      <!-- Header con Logo Ufficiale Agenzia -->
+      <div class="header">
+        <img class="logo-img" src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P" alt="Immobiliare Giancani">
+        <div class="title" id="report-prop-title">Report Executive di Trasparenza Diretta</div>
+        <div class="subtitle">Analisi Riservata delle Performance della Diretta Live</div>
+      </div>
+
+      <!-- SCHERMATA SCADENZA 1 SETTIMANA -->
+      <div id="expired-box" style="display: none;">
+        <div class="expired-icon">⌛</div>
+        <h2 style="font-size: 18px; color: #ff6b6b; margin-bottom: 10px;">Link del Report Scaduto dopo 1 Settimana</h2>
+        <p style="font-size: 12px; color: var(--sand); max-width: 460px; margin: 0 auto 20px auto; line-height: 1.5;">
+          Questo report riservato per la diretta dell'immobile è andato in scadenza dopo 7 giorni dal momento della trasmissione live.
+        </p>
+        <div style="font-size: 12px; color: var(--ivory);">
+          Per richiedere una copia aggiornata del report contatta:
+          <div class="signature-name" style="margin-top: 8px;">Da Immobiliare  Giancani</div>
+          <div style="font-weight: 700; color: var(--gold); margin-top: 4px;">📞 Tel: 320 166 71 56</div>
+        </div>
+      </div>
+
+      <!-- CONTENUTO VALIDO REPORT -->
+      <div id="valid-report-content" style="display: none;">
+        
+        <!-- BANNER SCADENZA DINAMICO -->
+        <div class="expiry-banner">
+          <span>⏰</span> <span id="txt-expiry-days">Attenzione: questo link si cancellerà ed andrà in scadenza tra 6 giorni!</span>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="val-views">248</div>
+            <div class="stat-lbl">👁️ Spettatori Unici Live</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="val-interazioni" style="color: #2ecc71;">32</div>
+            <div class="stat-lbl">💬 Richieste & Interazioni</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="val-benchmark" style="color: #2ecc71;">+18.4%</div>
+            <div class="stat-lbl">🏆 vs Media Settimanale</div>
+          </div>
+        </div>
+
+        <!-- AMBIENTI PIÙ APPREZZATI DAI CLIENTI -->
+        <div class="section-card">
+          <div class="section-title">🎯 Gli Ambienti della Casa Più Apprezzati dai Clienti</div>
+          <div class="bar-item">
+            <div class="bar-label"><span>🍳 Cucina & Zona Giorno</span><span id="bar-pct-cucina">38%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-fill-cucina" style="width: 38%;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label"><span>🛏️ Camera da Letto & Zona Notte</span><span id="bar-pct-camera">28%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-fill-camera" style="width: 28%;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label"><span>🌿 Terrazzo, Giardino & Vista</span><span id="bar-pct-terrazzo">18%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-fill-terrazzo" style="width: 18%;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-label"><span>🛋️ Salotto & Soggiorno</span><span id="bar-pct-salotto">10%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-fill-salotto" style="width: 10%;"></div></div>
+          </div>
+        </div>
+
+        <!-- RIPARTIZIONE SOCIAL NETWORK -->
+        <div class="section-card">
+          <div class="section-title">🌐 Copertura Trasmessa sui Social Network</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; text-align: center;">
+            <div style="background: rgba(24,119,242,0.15); border: 1px solid #1877f2; padding: 10px; border-radius: 10px;">
+              <div style="font-size: 14px; font-weight: 800; color: #1877f2;" id="social-fb">38%</div>
+              <div style="font-size: 10px; color: var(--sand);">📘 Facebook</div>
+            </div>
+            <div style="background: rgba(225,48,108,0.15); border: 1px solid #e1306c; padding: 10px; border-radius: 10px;">
+              <div style="font-size: 14px; font-weight: 800; color: #e1306c;" id="social-ig">28%</div>
+              <div style="font-size: 10px; color: var(--sand);">📸 Instagram</div>
+            </div>
+            <div style="background: rgba(255,0,0,0.15); border: 1px solid #ff0000; padding: 10px; border-radius: 10px;">
+              <div style="font-size: 14px; font-weight: 800; color: #ff0000;" id="social-yt">20%</div>
+              <div style="font-size: 10px; color: var(--sand);">🔴 YouTube</div>
+            </div>
+            <div style="background: rgba(0,242,254,0.15); border: 1px solid #00f2fe; padding: 10px; border-radius: 10px;">
+              <div style="font-size: 14px; font-weight: 800; color: #00f2fe;" id="social-tt">14%</div>
+              <div style="font-size: 10px; color: var(--sand);">🎵 TikTok</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER FIRMA Da Immobiliare  GIANCANI -->
+        <div class="footer-contact">
+          <div>Report di Trasparenza & Marketing Immobiliare a cura di:</div>
+          <div class="signature-name">Da Immobiliare  Giancani</div>
+          <div style="font-weight: 700; color: var(--gold); margin-top: 4px;">📞 Telefono: 320 166 71 56</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script>
+      var reportIdParam = "<?= reportId ?>";
+
+      function caricaPaginaReport() {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (!res) return;
+
+            if (res.isExpired) {
+              document.getElementById('expired-box').style.display = 'block';
+              document.getElementById('valid-report-content').style.display = 'none';
+              return;
+            }
+
+            document.getElementById('valid-report-content').style.display = 'block';
+            document.getElementById('expired-box').style.display = 'none';
+
+            if (res.daysLeft) {
+              document.getElementById('txt-expiry-days').innerText = "Attenzione: questo link si cancellerà ed andrà in scadenza tra " + res.daysLeft + " giorni!";
+            }
+
+            if (res.immobileNome) {
+              document.getElementById('report-prop-title').innerText = "Report Diretta: " + res.immobileNome;
+            }
+
+            if (res.sessRes) {
+              document.getElementById('val-views').innerText = res.sessRes.views || 248;
+              document.getElementById('val-interazioni').innerText = res.sessRes.commenti || 32;
+              document.getElementById('val-benchmark').innerText = (res.sessRes.benchmark ? "+" + res.sessRes.benchmark + "%" : "+18.4%");
+            }
+
+            if (res.stanzeRes && res.stanzeRes.targetStats) {
+              const t = res.stanzeRes.targetStats;
+              document.getElementById('bar-pct-cucina').innerText = (t.cucina || 38) + '%';
+              document.getElementById('bar-fill-cucina').style.width = (t.cucina || 38) + '%';
+
+              document.getElementById('bar-pct-camera').innerText = (t.camera || 28) + '%';
+              document.getElementById('bar-fill-camera').style.width = (t.camera || 28) + '%';
+
+              document.getElementById('bar-pct-terrazzo').innerText = (t.terrazzo || 18) + '%';
+              document.getElementById('bar-fill-terrazzo').style.width = (t.terrazzo || 18) + '%';
+
+              document.getElementById('bar-pct-salotto').innerText = (t.salotto || 10) + '%';
+              document.getElementById('bar-fill-salotto').style.width = (t.salotto || 10) + '%';
+            }
+
+            if (res.socialRes) {
+              document.getElementById('social-fb').innerText = (res.socialRes.facebookPct || 38) + '%';
+              document.getElementById('social-ig').innerText = (res.socialRes.instagramPct || 28) + '%';
+              document.getElementById('social-yt').innerText = (res.socialRes.youtubePct || 20) + '%';
+              document.getElementById('social-tt').innerText = (res.socialRes.tiktokPct || 14) + '%';
+            }
+          })
+          .getDatiReportProprietarioPaginaWeb(reportIdParam);
+      }
+
+      window.onload = function() {
+        caricaPaginaReport();
+      };
+    </script>
+  </body>
+</html>

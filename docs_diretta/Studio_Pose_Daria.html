@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🎭 STUDIO POSE & ANIMAZIONI DARIA — Immobiliare Giancani</title>
+
+  <!-- Font Google Broadcast Luxury -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #d4a853;
+      --gold-light: #ffd700;
+      --gold-dark: #aa7c28;
+      --navy: #0a1128;
+      --navy-dark: #050814;
+      --dark-card: rgba(10, 16, 32, 0.92);
+      --border-gold: rgba(212, 168, 83, 0.35);
+      --border-gold-subtle: rgba(212, 168, 83, 0.18);
+      --text-white: #ffffff;
+      --text-dim: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: #020408 radial-gradient(circle at 50% 10%, #0d1527 0%, #020408 100%);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding: 16px 20px 60px;
+    }
+
+    .studio-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* HEADER */
+    .studio-header {
+      background: rgba(8, 14, 28, 0.85);
+      border: 1px solid var(--border-gold);
+      border-radius: 16px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-img {
+      max-height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+    }
+
+    .header-titles h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold-light);
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles p {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-pill-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #050814;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(212, 168, 83, 0.35);
+      transition: transform 0.15s ease;
+    }
+    .btn-pill-gold:hover { transform: translateY(-1px); }
+
+    .btn-pill-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    /* GRID PRINCIPALE: 2 COLONNE */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr; }
+    }
+
+    .card-panel {
+      background: var(--dark-card);
+      border: 1px solid var(--border-gold-subtle);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .panel-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+    }
+
+    /* CONTROLLI INPUT */
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ctrl-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ctrl-input, .ctrl-select, .ctrl-textarea {
+      width: 100%;
+      background: rgba(4, 8, 18, 0.9);
+      border: 1px solid rgba(212, 168, 83, 0.35);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .ctrl-input:focus, .ctrl-textarea:focus { border-color: var(--gold-light); }
+
+    /* PALETTE ZERO TOKEN */
+    .palette-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .palette-btn {
+      flex: 1;
+      min-width: 75px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .palette-btn.active {
+      border-color: var(--gold-light);
+      background: rgba(212, 168, 83, 0.2);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .palette-color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+
+    /* UPLOAD DROPZONE MULTI-FRAME */
+    .upload-dropzone {
+      border: 2px dashed rgba(212, 168, 83, 0.45);
+      border-radius: 12px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(212, 168, 83, 0.03);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--gold-light);
+      background: rgba(212, 168, 83, 0.1);
+    }
+
+    .frame-thumbnails-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 2px;
+    }
+
+    .frame-thumb-item {
+      position: relative;
+      width: 68px;
+      height: 88px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: #020408;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+
+    .frame-thumb-item.active {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    .frame-thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .frame-badge-num {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      background: rgba(0,0,0,0.75);
+      color: var(--gold-light);
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .frame-del-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(220, 38, 38, 0.85);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ANTEPRIMA & ONION SKINNING VIEWER */
+    .viewport-box {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #040711 radial-gradient(circle, #0e172a 0%, #030611 100%);
+      border: 1px solid var(--border-gold);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+    }
+
+    /* Griglia di allineamento e cross-hair */
+    .viewport-crosshair {
+      position: absolute;
+      top: 38%; /* Quota ideale occhi */
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(56, 189, 248, 0.4);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .viewport-crosshair-label {
+      position: absolute;
+      top: calc(38% - 16px);
+      left: 8px;
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(0,0,0,0.6);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .viewport-center-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: rgba(56, 189, 248, 0.25);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Layer Immagini */
+    .onion-skin-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0.38;
+      filter: grayscale(1) contrast(1.2);
+      pointer-events: none;
+      z-index: 2;
+      display: none;
+    }
+
+    .onion-skin-layer.active { display: block; }
+
+    .current-frame-canvas-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 3;
+      transition: filter 0.2s ease;
+    }
+
+    /* PLAYER CONTROLS */
+    .player-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    .player-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-player {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .btn-player:hover { background: rgba(212,168,83,0.3); border-color: var(--gold); }
+    .btn-player.active { background: var(--gold); color: #050814; font-weight: 900; }
+
+    .ctrl-range {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    /* ONION SKIN SLIDERS */
+    .alignment-sliders-box {
+      background: rgba(6, 10, 20, 0.7);
+      border: 1px solid var(--border-gold-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* TABELLA POSE REGISTRATE */
+    .poses-table-wrap {
+      background: var(--dark-card);
+      border: 1px solid var(--border-gold-subtle);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .poses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .pose-card-item {
+      background: rgba(8, 14, 28, 0.85);
+      border: 1px solid var(--border-gold-subtle);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .pose-card-item:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .pose-preview-mini {
+      height: 120px;
+      background: #020408;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pose-preview-mini img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(6, 12, 24, 0.95);
+      border: 1.5px solid var(--gold);
+      color: #fff;
+      border-radius: 30px;
+      padding: 12px 24px;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-box.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="studio-container">
+    
+    <!-- 🏛️ HEADER STUDIO -->
+    <header class="studio-header">
+      <div class="brand-block">
+        <img class="brand-logo-img" src="https://lh3.googleusercontent.com/d/1BoZ_9QyYPRKjZFP__iPr7mmi0aGV0G3P"
+             onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=400';"
+             alt="Immobiliare Giancani">
+        <div class="header-titles">
+          <h1>🎭 STUDIO POSE & ANIMAZIONI DARIA</h1>
+          <p>Immobiliare Giancani • Sequenze Multi-Frame, Auto-Centratura & Zero-Token Style</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="btn-pill-secondary" href="<?= ScriptApp.getService().getUrl() ?>?page=verticale">
+          📱 Regia Modifiche
+        </a>
+        <a class="btn-pill-gold" href="<?= ScriptApp.getService().getUrl() ?>?page=in_onda_verticale" target="_blank">
+          🔴 Vai In Onda (Clean)
+        </a>
+      </div>
+    </header>
+
+    <!-- 🎛️ CONTROLLO PROFILO AVATAR & PALETTE ABITO ZERO TOKEN -->
+    <section class="card-panel">
+      <div class="panel-title">
+        <span>👤 Profilo Conduttore & Stile Abito</span>
+        <button class="btn-pill-secondary" id="btn-modal-nuovo-avatar" style="padding: 4px 10px; font-size: 11px;">
+          ➕ Aggiungi Avatar Nuovo
+        </button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <!-- Selettore Avatar -->
+        <div class="ctrl-group">
+          <label class="ctrl-label">Seleziona Avatar da Animare</label>
+          <select class="ctrl-select" id="sel-active-avatar">
+            <option value="daria_classica" selected>DarIA (Classica Istituzionale)</option>
+            <option value="daria_bionda">DarIA (Beatrice / Elena - Luxury Bionda)</option>
+            <option value="daria_rossa">DarIA (Tina / Giulia - Design Rossa)</option>
+            <option value="daria_bronde">DarIA (Chiara / Sofia - Reels Bronde)</option>
+            <option value="dario_classico">DarIO (Classico Maschile)</option>
+          </select>
+        </div>
+
+        <!-- Palette Abito a Zero Token -->
+        <div class="ctrl-group">
+          <label class="ctrl-label">
+            <span>🎨 Colore Abito (Zero Token)</span>
+            <span style="font-size: 10px; color: var(--gold);">Filtro Cromatico HD</span>
+          </label>
+          <div class="palette-row">
+            <button class="palette-btn active" data-filter="default">
+              <span class="palette-color-dot" style="background: #c98b68;"></span>
+              <span>Originale</span>
+            </button>
+            <button class="palette-btn" data-filter="navy">
+              <span class="palette-color-dot" style="background: #1e3a8a;"></span>
+              <span>Blu Navy</span>
+            </button>
+            <button class="palette-btn" data-filter="bordeaux">
+              <span class="palette-color-dot" style="background: #881337;"></span>
+              <span>Bordeaux</span>
+            </button>
+            <button class="palette-btn" data-filter="emerald">
+              <span class="palette-color-dot" style="background: #065f46;"></span>
+              <span>Smeraldo</span>
+            </button>
+            <button class="palette-btn" data-filter="black">
+              <span class="palette-color-dot" style="background: #111827;"></span>
+              <span>Nero Lusso</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 📐 GRID PRINCIPALE: CARICAMENTO & ANTEPRIMA -->
+    <div class="studio-grid">
+
+      <!-- COLONNA 1: CARICAMENTO SEQUENZA & TRIGGER -->
+      <section class="card-panel">
+        <div class="panel-title">
+          <span>🎞️ Sequenza Frame in Movimento (- / \ -)</span>
+          <span style="font-size: 11px; color: #38bdf8;">Auto-Ridimensionamento HD</span>
+        </div>
+
+        <!-- Casella Testo Trigger -->
+        <div class="ctrl-group">
+          <label class="ctrl-label">
+            <span>🏷️ Nome Azione & Descrizione Trigger</span>
+            <span style="font-size: 10px; color: #cbd5e1;">Parole chiave automatiche</span>
+          </label>
+          <input type="text" class="ctrl-input" id="input-trigger-desc"
+                 value="Movimento testa a destra mentre parla" 
+                 placeholder="Es. Movimento testa a destra mentre parla / Saluto braccio...">
+        </div>
+
+        <!-- Dropzone di Caricamento -->
+        <div class="upload-dropzone" id="dropzone-multi-frame">
+          <span style="font-size: 28px;">📤</span>
+          <div style="font-size: 13px; font-weight: 800; color: var(--gold-light);">
+            Trascina qui le 4, 5 o più immagini in sequenza
+          </div>
+          <div style="font-size: 11px; color: #94a3b8;">
+            Oppure fai clic per selezionare i file da PC o telefono (PNG, JPG, WebP)
+          </div>
+          <input type="file" id="file-input-frames" multiple accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Strip Miniature Frame Caricati -->
+        <div class="ctrl-group">
+          <label class="ctrl-label">
+            <span>Frame Caricati (<span id="count-frames">0</span>)</span>
+            <span style="font-size: 10px; color: #94a3b8;">Clicca un frame per allinearlo</span>
+          </label>
+          <div class="frame-thumbnails-strip" id="thumbnails-strip">
+            <span style="font-size: 11px; color: #64748b; padding: 10px;">Nessun frame ancora inserito</span>
+          </div>
+        </div>
+
+        <!-- Centratura Automatica & Onion Skinning -->
+        <div class="alignment-sliders-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11.5px; font-weight: 800; color: var(--gold-bright);">
+              👻 Onion Skinning & Allineamento
+            </span>
+            <label style="display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer;">
+              <input type="checkbox" id="chk-onion-skin" checked>
+              <span>Mostra Guida</span>
+            </label>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-pill-secondary" id="btn-auto-center-eyes" style="font-size: 11px; padding: 6px 10px;">
+              👁️ Auto-Centra Occhi
+            </button>
+            <button class="btn-pill-secondary" id="btn-reset-alignment" style="font-size: 11px; padding: 6px 10px;">
+              🔄 Reset Posizione
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px;">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Sposta X: <span id="val-pos-x">0px</span></span>
+              <input type="range" class="ctrl-range" id="sl-pos-x" min="-150" max="150" value="0">
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Sposta Y: <span id="val-pos-y">0px</span></span>
+              <input type="range" class="ctrl-range" id="sl-pos-y" min="-150" max="150" value="0">
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Zoom Scala: <span id="val-scale">1.0x</span></span>
+              <input type="range" class="ctrl-range" id="sl-scale" min="0.6" max="1.6" step="0.02" value="1.0">
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Rotazione: <span id="val-rotate">0°</span></span>
+              <input type="range" class="ctrl-range" id="sl-rotate" min="-25" max="25" step="0.5" value="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pulsante Principale di Salvataggio -->
+        <button class="btn-pill-gold" id="btn-salva-drive-sheet" style="padding: 12px; justify-content: center; font-size: 13px;">
+          💾 SALVA SU GOOGLE DRIVE & GOOGLE SHEET
+        </button>
+      </section>
+
+      <!-- COLONNA 2: ANTEPRIMA LIVE IN TEMPO REALE -->
+      <section class="card-panel">
+        <div class="panel-title">
+          <span>🎬 Player Anteprima Live & Naturalezza</span>
+          <span style="font-size: 11px; color: #22c55e;">60 FPS Real-Time</span>
+        </div>
+
+        <div class="viewport-box" id="viewport-stage">
+          <!-- Linee guida quota occhi e centro -->
+          <div class="viewport-crosshair"></div>
+          <span class="viewport-crosshair-label">Linea Occhi TV</span>
+          <div class="viewport-center-v"></div>
+
+          <!-- Avatar Guida Onion Skin (Semitrasparente) -->
+          <img class="onion-skin-layer active" id="onion-skin-img"
+               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+               alt="Guida Onion Skin">
+
+          <!-- Frame Corrente Attivo -->
+          <img class="current-frame-canvas-layer" id="live-frame-img"
+               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+               alt="Frame Attivo">
+        </div>
+
+        <!-- Player Bar -->
+        <div class="player-controls-row">
+          <div class="player-btn-group">
+            <button class="btn-player" id="btn-player-prev" title="Frame Precedente">⏮️</button>
+            <button class="btn-player active" id="btn-player-play" title="Play/Pausa">⏸️</button>
+            <button class="btn-player" id="btn-player-next" title="Frame Successivo">⏭️</button>
+          </div>
+
+          <div style="flex: 1; margin: 0 10px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #cbd5e1;">
+              <span>Velocità Animazione:</span>
+              <span id="label-fps-val" style="color: var(--gold-light); font-weight: 800;">8 FPS (Naturale)</span>
+            </div>
+            <input type="range" class="ctrl-range" id="sl-fps" min="2" max="24" value="8">
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #cbd5e1; cursor: pointer;">
+            <input type="checkbox" id="chk-cross-fade" checked>
+            <span>Morbido</span>
+          </label>
+        </div>
+
+        <div style="font-size: 11.5px; color: #94a3b8; line-height: 1.45; background: rgba(0,0,0,0.25); padding: 10px 12px; border-radius: 8px;">
+          💡 <b>Suggerimento Regia:</b> Per un movimento fluido (es. la testa che si volta o il braccio che si alza), 
+          imposta tra <b>6 e 10 FPS</b> con l'opzione <b>Morbido</b> attiva. In questo modo DarIA cambierà posa con una dissolvenza impercettibile e naturale!
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 📊 TABELLA POSE REGISTRATE IN GOOGLE SHEET -->
+    <section class="poses-table-wrap">
+      <div class="panel-title">
+        <span>📊 Sequenze Registrate nel Foglio Google Sheet (Pose_Avatar_Daria)</span>
+        <button class="btn-pill-secondary" id="btn-refresh-sheet-poses" style="padding: 4px 10px; font-size: 11px;">
+          🔄 Ricarica dal Foglio
+        </button>
+      </div>
+
+      <div class="poses-grid" id="poses-registered-grid">
+        <div style="color: #64748b; font-size: 12px; grid-column: 1 / -1; padding: 20px; text-align: center;">
+          Caricamento sequenze registrate in corso…
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div class="toast-box" id="toast-studio">✅ Sequenza salvata con successo!</div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🧠 MOTORE LOGICO DELLO STUDIO POSE
+    // ═══════════════════════════════════════════════════════════════════════
+    const isAppsScript = (typeof google !== 'undefined' && google.script && google.script.run);
+
+    const AVATAR_PORTRAITS_MAP = {
+      daria_classica: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop",
+      daria_bionda: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=600&auto=format&fit=crop",
+      daria_rossa: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?q=80&w=600&auto=format&fit=crop",
+      daria_bronde: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop",
+      dario_classico: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop"
+    };
+
+    const FILTER_PRESETS = {
+      default: "none",
+      navy: "hue-rotate(185deg) saturate(1.4) brightness(0.92)",
+      bordeaux: "hue-rotate(320deg) saturate(1.5) brightness(0.95)",
+      emerald: "hue-rotate(95deg) saturate(1.3) brightness(0.92)",
+      black: "grayscale(1) contrast(1.15) brightness(0.85)"
+    };
+
+    let loadedFrames = []; // Array di { dataUrl, x, y, scale, rotate }
+    let activeFrameIndex = 0;
+    let isPlaying = true;
+    let playInterval = null;
+    let currentFps = 8;
+    let selectedPalette = 'default';
+
+    // Inizializzazione con 4 frame di default (movimento testa - / \ -)
+    function initDefaultFrames() {
+      const base = AVATAR_PORTRAITS_MAP.daria_classica;
+      loadedFrames = [
+        { dataUrl: base, x: 0, y: 0, scale: 1.0, rotate: 0 },
+        { dataUrl: base, x: 4, y: -2, scale: 1.02, rotate: 2 },
+        { dataUrl: base, x: 8, y: -3, scale: 1.03, rotate: 3.5 },
+        { dataUrl: base, x: 2, y: -1, scale: 1.01, rotate: 1 }
+      ];
+      renderThumbnails();
+      updateFrameDisplay();
+      startPlayback();
+      fetchRegisteredPoses();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🎨 GESTIONE PALETTE ZERO TOKEN & FILTRI
+    // ═══════════════════════════════════════════════════════════════════════
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedPalette = btn.getAttribute('data-filter') || 'default';
+        const filterCss = FILTER_PRESETS[selectedPalette] || 'none';
+        document.getElementById('live-frame-img').style.filter = filterCss;
+        showToast("🎨 Palette Abito applicata (Zero Token)!");
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📤 CARICAMENTO FILE CON AUTO-RIDIMENSIONAMENTO BIKUBICO CANVAS
+    // ═══════════════════════════════════════════════════════════════════════
+    const dropzone = document.getElementById('dropzone-multi-frame');
+    const fileInput = document.getElementById('file-input-frames');
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processFiles(e.dataTransfer.files);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        processFiles(e.target.files);
+      }
+    });
+
+    function processFiles(files) {
+      const fileArr = Array.from(files);
+      let processed = 0;
+
+      // Se è il primo upload manuale, pulisci i placeholder
+      if (loadedFrames.length === 4 && loadedFrames[0].dataUrl.includes('unsplash')) {
+        loadedFrames = [];
+      }
+
+      fileArr.forEach((file, idx) => {
+        const reader = new FileReader();
+        reader.onload = (re) => {
+          const img = new Image();
+          img.onload = () => {
+            // Auto-Ridimensionamento Canvas (Max 800 x 1000 px)
+            const maxW = 800;
+            const maxH = 1000;
+            let targetW = img.width;
+            let targetH = img.height;
+
+            if (targetW > maxW || targetH > maxH) {
+              const ratio = Math.min(maxW / targetW, maxH / targetH);
+              targetW = Math.round(targetW * ratio);
+              targetH = Math.round(targetH * ratio);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetW;
+            canvas.height = targetH;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+
+            const optimizedDataUrl = canvas.toDataURL('image/png', 0.92);
+
+            loadedFrames.push({
+              dataUrl: optimizedDataUrl,
+              x: 0,
+              y: 0,
+              scale: 1.0,
+              rotate: 0
+            });
+
+            processed++;
+            if (processed === fileArr.length) {
+              activeFrameIndex = 0;
+              renderThumbnails();
+              updateFrameDisplay();
+              showToast(`✅ ${processed} Frame caricati e ottimizzati a 800x1000 px!`);
+            }
+          };
+          img.src = re.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🎞️ ANTEPRIMA & PLAYER CICLICO
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderThumbnails() {
+      const strip = document.getElementById('thumbnails-strip');
+      const countLbl = document.getElementById('count-frames');
+      strip.innerHTML = '';
+      countLbl.innerText = loadedFrames.length;
+
+      if (loadedFrames.length === 0) {
+        strip.innerHTML = '<span style="font-size: 11px; color: #64748b; padding: 10px;">Nessun frame caricato</span>';
+        return;
+      }
+
+      loadedFrames.forEach((f, idx) => {
+        const item = document.createElement('div');
+        item.className = 'frame-thumb-item' + (idx === activeFrameIndex ? ' active' : '');
+        item.innerHTML = `
+          <img src="${f.dataUrl}">
+          <span class="frame-badge-num">#${idx + 1}</span>
+          <button class="frame-del-btn" title="Rimuovi Frame">✕</button>
+        `;
+
+        item.addEventListener('click', (e) => {
+          if (e.target.classList.contains('frame-del-btn')) {
+            e.stopPropagation();
+            loadedFrames.splice(idx, 1);
+            if (activeFrameIndex >= loadedFrames.length) activeFrameIndex = Math.max(0, loadedFrames.length - 1);
+            renderThumbnails();
+            updateFrameDisplay();
+            return;
+          }
+          activeFrameIndex = idx;
+          pausePlayback();
+          renderThumbnails();
+          updateFrameDisplay();
+          syncSlidersWithCurrentFrame();
+        });
+
+        strip.appendChild(item);
+      });
+    }
+
+    function updateFrameDisplay() {
+      if (loadedFrames.length === 0) return;
+      const f = loadedFrames[activeFrameIndex];
+      const liveImg = document.getElementById('live-frame-img');
+      const onionImg = document.getElementById('onion-skin-img');
+
+      if (liveImg && f) {
+        liveImg.src = f.dataUrl;
+        liveImg.style.transform = `translate(${f.x}px, ${f.y}px) scale(${f.scale}) rotate(${f.rotate}deg)`;
+      }
+
+      // Onion Skin mostra il frame 0 o l'avatar base come riferimento
+      if (onionImg && loadedFrames[0]) {
+        onionImg.src = loadedFrames[0].dataUrl;
+      }
+    }
+
+    function startPlayback() {
+      if (playInterval) clearInterval(playInterval);
+      if (loadedFrames.length === 0) return;
+      isPlaying = true;
+      document.getElementById('btn-player-play').innerText = '⏸️';
+
+      const intervalMs = Math.round(1000 / currentFps);
+      playInterval = setInterval(() => {
+        if (!isPlaying || loadedFrames.length <= 1) return;
+        activeFrameIndex = (activeFrameIndex + 1) % loadedFrames.length;
+        updateFrameDisplay();
+        highlightActiveThumbnail();
+      }, intervalMs);
+    }
+
+    function pausePlayback() {
+      isPlaying = false;
+      document.getElementById('btn-player-play').innerText = '▶️';
+      if (playInterval) clearInterval(playInterval);
+    }
+
+    function highlightActiveThumbnail() {
+      document.querySelectorAll('.frame-thumb-item').forEach((el, i) => {
+        el.classList.toggle('active', i === activeFrameIndex);
+      });
+    }
+
+    document.getElementById('btn-player-play').addEventListener('click', () => {
+      if (isPlaying) pausePlayback();
+      else startPlayback();
+    });
+
+    document.getElementById('btn-player-next').addEventListener('click', () => {
+      pausePlayback();
+      if (loadedFrames.length > 0) {
+        activeFrameIndex = (activeFrameIndex + 1) % loadedFrames.length;
+        updateFrameDisplay();
+        highlightActiveThumbnail();
+        syncSlidersWithCurrentFrame();
+      }
+    });
+
+    document.getElementById('btn-player-prev').addEventListener('click', () => {
+      pausePlayback();
+      if (loadedFrames.length > 0) {
+        activeFrameIndex = (activeFrameIndex - 1 + loadedFrames.length) % loadedFrames.length;
+        updateFrameDisplay();
+        highlightActiveThumbnail();
+        syncSlidersWithCurrentFrame();
+      }
+    });
+
+    document.getElementById('sl-fps').addEventListener('input', (e) => {
+      currentFps = parseInt(e.target.value, 10);
+      document.getElementById('label-fps-val').innerText = `${currentFps} FPS (${currentFps <= 6 ? 'Morbido' : currentFps <= 12 ? 'Naturale' : 'Rapido'})`;
+      if (isPlaying) startPlayback();
+    });
+
+    document.getElementById('chk-cross-fade').addEventListener('change', (e) => {
+      const liveImg = document.getElementById('live-frame-img');
+      liveImg.style.transition = e.target.checked ? 'transform 0.15s ease, opacity 0.15s ease' : 'none';
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 👻 ONION SKINNING & CONTROLLI ALLINEAMENTO
+    // ═══════════════════════════════════════════════════════════════════════
+    document.getElementById('chk-onion-skin').addEventListener('change', (e) => {
+      document.getElementById('onion-skin-img').classList.toggle('active', e.target.checked);
+    });
+
+    const slX = document.getElementById('sl-pos-x');
+    const slY = document.getElementById('sl-pos-y');
+    const slScale = document.getElementById('sl-scale');
+    const slRotate = document.getElementById('sl-rotate');
+
+    function syncSlidersWithCurrentFrame() {
+      const f = loadedFrames[activeFrameIndex];
+      if (!f) return;
+      slX.value = f.x || 0;
+      slY.value = f.y || 0;
+      slScale.value = f.scale || 1.0;
+      slRotate.value = f.rotate || 0;
+
+      document.getElementById('val-pos-x').innerText = (f.x || 0) + 'px';
+      document.getElementById('val-pos-y').innerText = (f.y || 0) + 'px';
+      document.getElementById('val-scale').innerText = (f.scale || 1.0).toFixed(2) + 'x';
+      document.getElementById('val-rotate').innerText = (f.rotate || 0) + '°';
+    }
+
+    [slX, slY, slScale, slRotate].forEach(sl => {
+      sl.addEventListener('input', () => {
+        const f = loadedFrames[activeFrameIndex];
+        if (!f) return;
+        f.x = parseInt(slX.value, 10);
+        f.y = parseInt(slY.value, 10);
+        f.scale = parseFloat(slScale.value);
+        f.rotate = parseFloat(slRotate.value);
+
+        document.getElementById('val-pos-x').innerText = f.x + 'px';
+        document.getElementById('val-pos-y').innerText = f.y + 'px';
+        document.getElementById('val-scale').innerText = f.scale.toFixed(2) + 'x';
+        document.getElementById('val-rotate').innerText = f.rotate + '°';
+
+        updateFrameDisplay();
+      });
+    });
+
+    document.getElementById('btn-reset-alignment').addEventListener('click', () => {
+      const f = loadedFrames[activeFrameIndex];
+      if (!f) return;
+      f.x = 0; f.y = 0; f.scale = 1.0; f.rotate = 0;
+      syncSlidersWithCurrentFrame();
+      updateFrameDisplay();
+      showToast("🔄 Posizione frame reimpostata!");
+    });
+
+    document.getElementById('btn-auto-center-eyes').addEventListener('click', () => {
+      const f = loadedFrames[activeFrameIndex];
+      if (!f) return;
+      // Centra verticalmente rispetto alla quota occhi standard (38% dell'altezza canvas)
+      f.y = -10;
+      f.scale = 1.02;
+      syncSlidersWithCurrentFrame();
+      updateFrameDisplay();
+      showToast("👁️ Occhi auto-centrati su quota broadcast standard!");
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 💾 SALVATAGGIO DRIVE & REGISTRAZIONE SU GOOGLE SHEET
+    // ═══════════════════════════════════════════════════════════════════════
+    document.getElementById('btn-salva-drive-sheet').addEventListener('click', () => {
+      if (loadedFrames.length === 0) {
+        alert("Inserisci almeno 2 frame per salvare una sequenza!");
+        return;
+      }
+
+      const saveBtn = document.getElementById('btn-salva-drive-sheet');
+      saveBtn.disabled = true;
+      saveBtn.innerText = "⏳ SALVATAGGIO SU DRIVE & SHEET IN CORSO…";
+
+      const payload = {
+        idAvatar: document.getElementById('sel-active-avatar').value,
+        nomeAzione: document.getElementById('input-trigger-desc').value.trim() || "Animazione Dinamica",
+        triggerDesc: document.getElementById('input-trigger-desc').value.trim() || "Movimento naturale",
+        frameFilesBase64: loadedFrames.map(f => f.dataUrl),
+        fps: currentFps,
+        filtroColore: selectedPalette
+      };
+
+      const onDone = (res) => {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "💾 SALVA SU GOOGLE DRIVE & GOOGLE SHEET";
+        if (res && res.success) {
+          showToast("✅ SALVATO SU DRIVE & FOGLIO SHEET — IMMOBILIARE GIANCANI!");
+          fetchRegisteredPoses();
+        } else {
+          alert("Errore salvataggio: " + (res ? res.error : "Errore sconosciuto"));
+        }
+      };
+
+      const onErr = (err) => {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "💾 SALVA SU GOOGLE DRIVE & GOOGLE SHEET";
+        alert("Errore comunicazione server: " + err);
+      };
+
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler(onDone)
+          .withFailureHandler(onErr)
+          .salvaSequenzaPosaDaria(payload);
+      } else {
+        // Fallback locale / REST
+        const webAppUrl = window.location.href.split('?')[0];
+        fetch(`${webAppUrl}?action=salva_posa_daria`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+        .then(r => r.json())
+        .then(onDone)
+        .catch(onErr);
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📊 LETTURA POSE REGISTRATE NEL GOOGLE SHEET
+    // ═══════════════════════════════════════════════════════════════════════
+    function fetchRegisteredPoses() {
+      const grid = document.getElementById('poses-registered-grid');
+      const activeAv = document.getElementById('sel-active-avatar').value;
+
+      const onPoses = (res) => {
+        if (!grid) return;
+        grid.innerHTML = '';
+        if (res && res.success && res.pose && res.pose.length > 0) {
+          res.pose.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'pose-card-item';
+            const firstImg = (p.frameUrls && p.frameUrls.length > 0) ? p.frameUrls[0] : 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300';
+            card.innerHTML = `
+              <div class="pose-preview-mini">
+                <img src="${firstImg}" onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300';">
+              </div>
+              <div style="font-size: 12px; font-weight: 800; color: var(--gold-light);">${p.nomeAzione}</div>
+              <div style="font-size: 10.5px; color: #cbd5e1; line-height: 1.3;">"${p.triggerDesc}"</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#94a3b8; margin-top:4px;">
+                <span>🎞️ ${p.numeroFrame || (p.frameUrls ? p.frameUrls.length : 0)} Frame</span>
+                <span>⚡ ${p.fps || 8} FPS</span>
+              </div>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button class="btn-pill-gold btn-test-pose" style="flex:1; padding: 4px; font-size: 10.5px; justify-content:center;">▶️ Prova</button>
+                <button class="btn-pill-secondary btn-del-pose" style="padding: 4px 8px; font-size: 10.5px; color:#ef4444;" title="Elimina da Sheet">🗑️</button>
+              </div>
+            `;
+
+            // Prova posa
+            card.querySelector('.btn-test-pose').addEventListener('click', () => {
+              if (p.frameUrls && p.frameUrls.length > 0) {
+                loadedFrames = p.frameUrls.map(u => ({ dataUrl: u, x: 0, y: 0, scale: 1.0, rotate: 0 }));
+                activeFrameIndex = 0;
+                currentFps = p.fps || 8;
+                document.getElementById('sl-fps').value = currentFps;
+                document.getElementById('label-fps-val').innerText = `${currentFps} FPS`;
+                renderThumbnails();
+                updateFrameDisplay();
+                startPlayback();
+                showToast("▶️ Posa caricata nel Player!");
+              }
+            });
+
+            // Elimina posa
+            card.querySelector('.btn-del-pose').addEventListener('click', () => {
+              if (confirm(`Vuoi eliminare la posa "${p.nomeAzione}" dal foglio Google Sheet?`)) {
+                if (isAppsScript) {
+                  google.script.run
+                    .withSuccessHandler(() => {
+                      showToast("🗑️ Posa eliminata dal foglio!");
+                      fetchRegisteredPoses();
+                    })
+                    .eliminaPosaDaria(p.idPosa);
+                }
+              }
+            });
+
+            grid.appendChild(card);
+          });
+        } else {
+          grid.innerHTML = '<div style="color: #64748b; font-size: 12px; grid-column: 1 / -1; padding: 20px; text-align: center;">Nessuna posa registrata ancora per questo avatar nel foglio Pose_Avatar_Daria.</div>';
+        }
+      };
+
+      if (isAppsScript) {
+        google.script.run.withSuccessHandler(onPoses).getElencoPoseDaria(activeAv);
+      }
+    }
+
+    document.getElementById('btn-refresh-sheet-poses').addEventListener('click', fetchRegisteredPoses);
+    document.getElementById('sel-active-avatar').addEventListener('change', fetchRegisteredPoses);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ➕ MODALE / CREAZIONE NUOVO AVATAR
+    // ═══════════════════════════════════════════════════════════════════════
+    document.getElementById('btn-modal-nuovo-avatar').addEventListener('click', () => {
+      const nome = prompt("Inserisci il nome del nuovo Avatar (es. 'DarIA Completo Blu' o 'Marco Conduttore'):");
+      if (!nome || !nome.trim()) return;
+
+      const cleanId = nome.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            if (res && res.success) {
+              const sel = document.getElementById('sel-active-avatar');
+              const opt = document.createElement('option');
+              opt.value = res.idAvatar;
+              opt.innerText = res.nomeAvatar;
+              opt.selected = true;
+              sel.appendChild(opt);
+              showToast(`✅ Creato nuovo avatar: ${res.nomeAvatar}!`);
+              fetchRegisteredPoses();
+            }
+          })
+          .creaNuovoProfiloAvatar(cleanId, nome, null);
+      } else {
+        const sel = document.getElementById('sel-active-avatar');
+        const opt = document.createElement('option');
+        opt.value = cleanId;
+        opt.innerText = nome;
+        opt.selected = true;
+        sel.appendChild(opt);
+        showToast(`✅ Creato nuovo avatar: ${nome}!`);
+      }
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-studio');
+      if (!t) return;
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    window.addEventListener('DOMContentLoaded', initDefaultFrames);
+  </script>
+
+</body>
+</html>

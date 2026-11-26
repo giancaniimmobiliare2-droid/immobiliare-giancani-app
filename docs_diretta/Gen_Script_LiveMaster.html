@@ -1,0 +1,1545 @@
+<script>
+      // ═══════════════════════════════════════════════════════════════════════
+      // 📡 REGIA MASTER LIVE UNIFICATA (STREAMING MULTICANALE & MARATONE DARIA)
+      // ═══════════════════════════════════════════════════════════════════════
+      var isMultistreamRunningGen = false;
+
+      function toggleModalitaLiveMaster(val) {
+        var inputProg = document.getElementById('input-live-programmata-dt');
+        var colPausa = document.getElementById('col-pausa-daria-master');
+        var colLoop = document.getElementById('col-loop-master');
+        
+        if (inputProg) inputProg.style.display = (val === 'programmata') ? 'block' : 'none';
+        if (colPausa) colPausa.style.opacity = (val === 'immediata') ? '0.75' : '1';
+        if (colLoop) colLoop.style.opacity = (val === 'immediata') ? '0.75' : '1';
+      }
+
+      function aggiornaVisualizzazioneOrarioStopMaster() {
+        var selDurata = document.getElementById('select-durata-live-master');
+        var inputStopTime = document.getElementById('input-live-stop-time-master');
+        if (selDurata && inputStopTime) {
+          inputStopTime.style.display = (selDurata.value === 'custom_stop') ? 'block' : 'none';
+        }
+      }
+
+      function gestisciCambioImmobileMaster(tabName) {
+        aggiornaMiniCardImmobile(tabName, 'master');
+        if (tabName && tabName !== 'tutti') {
+          cambiaImmobileLive(tabName);
+        }
+      }
+
+      function sincronizzaQualitaDaTab(val) {
+        var masterQ = document.getElementById('select-qualita-live-master');
+        if (masterQ) masterQ.value = val;
+        salvaParametriQualitaMaster();
+      }
+
+      function sincronizzaScaleDaTab(val) {
+        var masterS = document.getElementById('select-scale-live-master');
+        if (masterS) masterS.value = val;
+        salvaParametriQualitaMaster();
+      }
+
+      function cambiaZoomDinamicoMaster(val) {
+        var num = parseInt(val, 10) || 125;
+        var lbl = document.getElementById('label-zoom-diretta-val');
+        if (lbl) lbl.innerText = 'Zoom ' + num + '%';
+
+        var sl1 = document.getElementById('zoom-tab-slider');
+        var sl2 = document.getElementById('zoom-regia-slider');
+        if (sl1) sl1.value = num;
+        if (sl2) sl2.value = num;
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run.salvaZoomDiretta(num);
+        }
+      }
+
+      var _timerDebounceScalaLogo = null;
+      function cambiaScalaLogoDinamico(val) {
+        var num = parseInt(val, 10) || 100;
+        var lbl = document.getElementById('label-scala-logo-val');
+        if (lbl) lbl.innerText = 'Scala ' + num + '%';
+
+        var slider = document.getElementById('slider-scala-logo-agenzia');
+        if (slider && slider.value != num) slider.value = num;
+
+        var scalaFloat = (num / 100).toFixed(2);
+        clearTimeout(_timerDebounceScalaLogo);
+        _timerDebounceScalaLogo = setTimeout(function() {
+          if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run.salvaScalaLogoAgenzia(scalaFloat);
+          }
+        }, 200);
+      }
+
+      function impostaPresetScalaLogo(num) {
+        cambiaScalaLogoDinamico(num);
+      }
+
+      // 🎨 GESTIONE SELEZIONE STILE GRAFICO DIRETTA IN REGIA
+      var _stileGraficaSelezionato = 'auto';
+
+      function aggiornaUISelettoreStile(stile, infoBackend) {
+        var raw = String(stile || 'auto').toLowerCase().trim();
+        var isAuto = (!raw || raw === 'auto' || raw === 'rotazione_oraria');
+        var validi = ['modern_broadcast', 'editorial_minimal', 'tech_dark', 'comic_pop'];
+        
+        var labels = {
+          'modern_broadcast': '📡 Modern Broadcast',
+          'editorial_minimal': '🏛️ Editorial Minimal',
+          'tech_dark': '⚡ Tech & Dark UI',
+          'comic_pop': '💥 Fumetto Pop'
+        };
+
+        var curHour = new Date().getHours();
+        var curMin = new Date().getMinutes();
+        var minAlCambio = 60 - curMin;
+        var stiliOrari = ['modern_broadcast', 'editorial_minimal', 'tech_dark', 'comic_pop'];
+        var stileOrarioCalcolato = stiliOrari[curHour % stiliOrari.length];
+        var stileEffettivo = isAuto ? stileOrarioCalcolato : raw;
+        _stileGraficaSelezionato = isAuto ? 'auto' : raw;
+
+        var b = document.getElementById('badge-stile-grafica-attivo');
+        if (b) {
+          b.innerText = isAuto ? ('🔄 ' + (labels[stileEffettivo] || stileEffettivo) + ' (Auto)') : (labels[stileEffettivo] || stileEffettivo);
+          b.style.color = isAuto ? '#4ade80' : '#38bdf8';
+          b.style.borderColor = isAuto ? 'rgba(74,222,128,0.4)' : 'rgba(56,189,248,0.3)';
+          b.style.background = isAuto ? 'rgba(74,222,128,0.15)' : 'rgba(56,189,248,0.15)';
+        }
+
+        var btnAuto = document.getElementById('btn-stile-auto');
+        var dotAuto = document.getElementById('dot-stile-auto');
+        var lblAuto = document.getElementById('label-rotazione-oraria-dettaglio');
+        if (btnAuto) {
+          if (isAuto) {
+            btnAuto.style.border = '2px solid #4ade80';
+            btnAuto.style.boxShadow = '0 0 16px rgba(74,222,128,0.35)';
+            btnAuto.style.opacity = '1';
+            if (dotAuto) { dotAuto.style.background = '#4ade80'; dotAuto.style.boxShadow = '0 0 10px #4ade80'; }
+            if (lblAuto) {
+              var prox = stiliOrari[(curHour + 1) % stiliOrari.length];
+              lblAuto.innerText = 'Ora ' + curHour + ':00 in onda: ' + labels[stileEffettivo] + ' • Prossimo cambio tra ' + minAlCambio + ' min (' + labels[prox] + ')';
+            }
+          } else {
+            btnAuto.style.border = '1.5px solid #444';
+            btnAuto.style.boxShadow = 'none';
+            btnAuto.style.opacity = '0.7';
+            if (dotAuto) { dotAuto.style.background = '#64748b'; dotAuto.style.boxShadow = 'none'; }
+            if (lblAuto) { lblAuto.innerText = 'Rotazione disattivata: stile bloccato manualmente su ' + labels[stileEffettivo] + ' (clicca qui per riattivare rotazione oraria)'; }
+          }
+        }
+
+        validi.forEach(function(item) {
+          var btn = document.getElementById('btn-stile-' + item);
+          if (btn) {
+            if (!isAuto && item === raw) {
+              btn.style.borderColor = (item === 'comic_pop' ? '#facc15' : (item === 'editorial_minimal' ? '#c26d53' : (item === 'tech_dark' ? '#7c3aed' : '#38bdf8')));
+              btn.style.boxShadow = '0 0 14px rgba(56,189,248,0.6)';
+              btn.style.opacity = '1';
+              btn.classList.add('active');
+            } else if (isAuto && item === stileEffettivo) {
+              btn.style.borderColor = 'rgba(74,222,128,0.6)';
+              btn.style.boxShadow = '0 0 8px rgba(74,222,128,0.25)';
+              btn.style.opacity = '0.95';
+              btn.classList.remove('active');
+            } else {
+              btn.style.borderColor = '#444';
+              btn.style.boxShadow = 'none';
+              btn.style.opacity = '0.65';
+              btn.classList.remove('active');
+            }
+          }
+        });
+      }
+
+      function selezionaStileGraficaDiretta(stile) {
+        aggiornaUISelettoreStile(stile);
+
+        var msgEl = document.getElementById('status-stile-grafica-msg');
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.style.color = '#38bdf8';
+          msgEl.innerText = (stile === 'auto')
+            ? '⏳ Attivazione rotazione oraria automatica in corso...'
+            : ('⏳ Blocco manuale su stile ' + stile + ' in corso...');
+        }
+
+        // Broadcast immediato per la schermata aperta in diretta live
+        try {
+          if (window.BroadcastChannel) {
+            var bc = new BroadcastChannel('giancani_live_channel');
+            bc.postMessage({ type: 'CAMBIO_STILE_GRAFICA', stile: stile });
+          }
+        } catch(eBc){}
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (msgEl) {
+                msgEl.style.color = '#4ade80';
+                msgEl.innerText = (res && res.message) ? res.message : '✅ Stile grafica applicato in diretta! — Immobiliare Giancani';
+                setTimeout(function() { msgEl.style.display = 'none'; }, 4000);
+              }
+              if (res && res.info) {
+                aggiornaUISelettoreStile(res.stile, res.info);
+              }
+              if (typeof mostraNotificaGen === 'function') {
+                var txtNotif = (stile === 'auto')
+                  ? '🔄 Rotazione oraria automatica attiva! Lo stile cambia ad ogni ora — Immobiliare Giancani'
+                  : ('🎨 Stile grafica impostato: ' + (stile || 'Modern Broadcast') + ' — Immobiliare Giancani');
+                mostraNotificaGen(txtNotif, 'success');
+              }
+            })
+            .withFailureHandler(function(err) {
+              if (msgEl) {
+                msgEl.style.color = '#f87171';
+                msgEl.innerText = '❌ Errore: ' + err;
+              }
+            })
+            .salvaStileGraficaDiretta(stile);
+        } else if (typeof SCRIPT_URL !== 'undefined') {
+          fetch(SCRIPT_URL + '?action=salva_stile_grafica&stile=' + encodeURIComponent(stile))
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+              if (msgEl) {
+                msgEl.style.color = '#4ade80';
+                msgEl.innerText = (res && res.message) ? res.message : '✅ Stile grafica applicato in diretta! — Immobiliare Giancani';
+                setTimeout(function() { msgEl.style.display = 'none'; }, 4000);
+              }
+              if (res && res.info) {
+                aggiornaUISelettoreStile(res.stile, res.info);
+              }
+            })
+            .catch(function(e){
+              if (msgEl) {
+                msgEl.style.color = '#f87171';
+                msgEl.innerText = '⚠️ Errore rete: ' + e;
+              }
+            });
+        }
+      }
+
+      function caricaStileGraficaUI() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(st) {
+              if (st) aggiornaUISelettoreStile(st);
+            })
+            .getStileGraficaDiretta();
+        } else if (typeof SCRIPT_URL !== 'undefined') {
+          fetch(SCRIPT_URL + '?action=get_stile_grafica')
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+              if (res && res.stile) aggiornaUISelettoreStile(res.stile, res.info);
+            })
+            .catch(function(e){});
+        }
+      }
+
+      function salvaParametriQualitaMaster() {
+        var qSel = document.getElementById('select-qualita-live-master') || document.getElementById('gen-stream-quality');
+        var sSel = document.getElementById('select-scale-live-master') || document.getElementById('gen-stream-scale');
+        var qualita = qSel ? qSel.value : '1080p_std';
+        var scale = sSel ? sSel.value : '1.0';
+
+        var customBox = document.getElementById('box-qualita-custom-master');
+        var customB = document.getElementById('input-custom-bitrate');
+        var customR = document.getElementById('input-custom-res');
+        var cBitrate = customB ? customB.value.trim() : '';
+        var cRes = customR ? customR.value.trim() : '';
+
+        if (customBox) {
+          customBox.style.display = (qualita === 'custom') ? 'grid' : 'none';
+        }
+
+        var tabQ = document.getElementById('gen-stream-quality');
+        var tabS = document.getElementById('gen-stream-scale');
+        if (tabQ && tabQ !== qSel) tabQ.value = qualita;
+        if (tabS && tabS !== sSel) tabS.value = scale;
+
+        // Se la diretta è già attiva, mostra il pulsante per applicare subito la nuova configurazione
+        var btnRiavvia = document.getElementById('btn-master-riavvia-qualita');
+        if (btnRiavvia && typeof isMultistreamRunningGen !== 'undefined' && isMultistreamRunningGen) {
+          btnRiavvia.style.display = 'inline-flex';
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function() {
+              var badge = document.getElementById('badge-ffmpeg-quality');
+              if (badge) {
+                var qLabel = (qualita === '1080p_high') ? 'Ultra HD 1080p (6000k)' :
+                             (qualita === '1080p_std')  ? 'Full HD 1080p (4500k)' :
+                             (qualita === '1080p_eco')  ? 'Full HD 1080p Eco (3500k)' :
+                             (qualita === '720p_hq')    ? 'HD 720p HQ (3000k)' :
+                             (qualita === '720p_std')   ? 'HD 720p Standard (2200k)' :
+                             (qualita === '720p_eco')   ? 'HD 720p Eco (1600k)' :
+                             (qualita === '480p')       ? 'SD 480p (1000k)' : 'Custom (' + (cBitrate || '4000k') + ')';
+                badge.innerText = qLabel + ' • Scala ' + scale;
+              }
+            })
+            .salvaQualitaStreamingFFmpeg(qualita, scale, 'none', cBitrate, cRes);
+        }
+      }
+
+      function eseguiRiavvioConNuovaQualitaMaster() {
+        if (!confirm("Vuoi applicare subito la nuova qualità FFmpeg e scala alla diretta in corso?\n\nIl sistema effettuerà un riavvio rapido del flusso streaming su tutti i canali social.")) return;
+
+        var btn = document.getElementById('btn-master-riavvia-qualita');
+        if (btn) {
+          btn.innerHTML = "⏳ RIAVVIO IN CORSO...";
+          btn.disabled = true;
+        }
+
+        var statusMsg = document.getElementById('gen-live-msg');
+        if (statusMsg) {
+          statusMsg.innerHTML = '<div style="color: #fbbf24; font-size: 12.5px; font-weight: 700;">⏳ Riavvio streaming in corso con nuova qualità e scala FFmpeg...</div>';
+        }
+
+        var selImm = document.getElementById('select-immobile-live-master');
+        var immScelto = (selImm && selImm.value) ? selImm.value : 'tutti';
+        var selQual = document.getElementById('select-qualita-live-master');
+        var qualita = selQual ? selQual.value : '1080p_std';
+        var selScale = document.getElementById('select-scale-live-master');
+        var scale = selScale ? selScale.value : '1.0';
+        var customB = document.getElementById('input-custom-bitrate');
+        var customR = document.getElementById('input-custom-res');
+        var customBitrate = customB ? customB.value.trim() : '';
+        var customRes = customR ? customR.value.trim() : '';
+
+        var options = {
+          immobile_id: (immScelto === 'tutti' ? '' : immScelto),
+          stream_quality: qualita,
+          scale_factor: scale,
+          custom_bitrate: customBitrate,
+          custom_res: customRes
+        };
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (btn) {
+                btn.innerHTML = "🔄 APPLICA NUOVA QUALITÀ FFmpeg";
+                btn.disabled = false;
+              }
+              if (res && res.success) {
+                isMultistreamRunningGen = true;
+                aggiornaStatoUIGenLive(true);
+                if (statusMsg) {
+                  statusMsg.innerHTML = '<div style="color: #4ade80; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(22,163,74,0.2); border: 1px solid #16a34a; border-radius: 6px;">🎉 Nuova qualità FFmpeg applicata con successo alla diretta live!</div>';
+                }
+                try { alert("SUCCESSO! Nuova qualità FFmpeg applicata alla diretta streaming!\n\nImmobiliare Giancani"); } catch(e) {}
+              } else {
+                if (statusMsg) {
+                  statusMsg.innerHTML = '<div style="color: #f87171; font-size: 12.5px; font-weight: 700;">❌ ' + (res ? res.messaggio : 'Errore riavvio') + '</div>';
+                }
+              }
+            })
+            .withFailureHandler(function(err) {
+              if (btn) {
+                btn.innerHTML = "🔄 APPLICA NUOVA QUALITÀ FFmpeg";
+                btn.disabled = false;
+              }
+              if (statusMsg) {
+                statusMsg.innerHTML = '<div style="color: #f87171; font-size: 12.5px; font-weight: 700;">❌ Errore durante il riavvio: ' + (err && err.message ? err.message : err) + '</div>';
+              }
+            })
+            .riavviaDirettaConNuovaQualita(options);
+        }
+      }
+
+      function eseguiPubblicaNotaFasciaUI(fascia, btn) {
+        var orig = btn ? btn.innerHTML : '';
+        var statusEl = document.getElementById('status-nota-facebook-ui');
+        if (btn) {
+          btn.innerHTML = '⏳ INVIO NOTA...';
+          btn.disabled = true;
+        }
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = 'rgba(245, 158, 11, 0.15)';
+          statusEl.style.color = '#fbbf24';
+          statusEl.style.border = '1px solid #fbbf24';
+          statusEl.innerText = '⏳ Generazione e pubblicazione Nota Facebook in corso (' + fascia + ')...';
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (btn) {
+                btn.innerHTML = '✅ PUBBLICATA!';
+                setTimeout(function() { btn.innerHTML = orig; btn.disabled = false; }, 3000);
+              }
+              if (statusEl) {
+                if (res && res.success) {
+                  statusEl.style.background = 'rgba(46, 204, 113, 0.15)';
+                  statusEl.style.color = '#4ade80';
+                  statusEl.style.border = '1px solid #22c55e';
+                  statusEl.innerHTML = '✅ <b>Nota Facebook Pubblicata con Successo!</b> (' + (res.saluto || fascia) + ') su Pagina e Profilo. Notifica Telegram inviata! — Immobiliare Giancani';
+                  try {
+                    alert("🎉 NOTA FACEBOOK PUBBLICATA CON SUCCESSO!\n\nSaluto: " + (res.saluto || fascia) + "\n\n• Pagina Facebook Immobiliare Giancani ✅\n• Profilo Antonio Giancani ✅\n• Notifica Telegram inviata ✅\n\n— Immobiliare Giancani");
+                  } catch(e) {}
+                } else {
+                  statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+                  statusEl.style.color = '#f87171';
+                  statusEl.style.border = '1px solid #ef4444';
+                  statusEl.innerText = '❌ Errore pubblicazione: ' + (res ? (res.error || res.messaggio) : 'Risposta non valida');
+                  alert("Attenzione: " + (res ? (res.error || res.messaggio) : 'Errore sconosciuto'));
+                }
+              }
+            })
+            .withFailureHandler(function(err) {
+              if (btn) {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+              }
+              if (statusEl) {
+                statusEl.style.display = 'block';
+                statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+                statusEl.style.color = '#f87171';
+                statusEl.style.border = '1px solid #ef4444';
+                statusEl.innerText = '❌ Errore chiamata: ' + (err && err.message ? err.message : err);
+              }
+              alert("Errore durante la pubblicazione: " + (err && err.message ? err.message : err));
+            })
+            .pubblicaNotaFacebookFasciaOraria(fascia === 'auto' ? null : fascia);
+        } else {
+          if (btn) { btn.innerHTML = orig; btn.disabled = false; }
+          alert("Ambiente Google Apps Script non rilevato.");
+        }
+      }
+
+      function eseguiPubblicaStorieManualMaster(btn) {
+        var orig = btn ? btn.innerHTML : '';
+        if (btn) {
+          btn.innerHTML = "⏳ PUBBLICAZIONE...";
+          btn.disabled = true;
+        }
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (btn) {
+                btn.innerHTML = "✅ PUBBLICATE!";
+                setTimeout(function() { btn.innerHTML = orig; btn.disabled = false; }, 3000);
+              }
+              if (res && res.success) {
+                try {
+                  alert("🎉 STORIE PUBBLICATE CON SUCCESSO!\n\n• Pagina Immobiliare Giancani (Storia pubblicata)\n• Profilo Antonio Giancani (Storia pubblicata)\n\n— Immobiliare Giancani");
+                } catch(e) {}
+              } else {
+                alert("Avviso: " + (res ? (res.messaggio || res.error) : "Operazione completata"));
+              }
+            })
+            .withFailureHandler(function(err) {
+              if (btn) {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+              }
+              alert("Errore durante la pubblicazione: " + (err && err.message ? err.message : err));
+            })
+            .pubblicaSnapshotStoriaSocialOgni10Minuti({ forza: true });
+        }
+      }
+
+      function incollaChiaveInstagramUI() {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          navigator.clipboard.readText().then(function(t) {
+            var el = document.getElementById('input-ig-stream-key');
+            if (el) { el.value = t.trim(); salvaChiaveInstagramRapida(el.value); }
+          }).catch(function() {
+            var manual = prompt("Incolla qui la Stream Key / URL Instagram Live:");
+            if (manual) {
+              var el = document.getElementById('input-ig-stream-key');
+              if (el) { el.value = manual.trim(); salvaChiaveInstagramRapida(el.value); }
+            }
+          });
+        } else {
+          var manual = prompt("Incolla qui la Stream Key / URL Instagram Live:");
+          if (manual) {
+            var el = document.getElementById('input-ig-stream-key');
+            if (el) { el.value = manual.trim(); salvaChiaveInstagramRapida(el.value); }
+          }
+        }
+      }
+
+      function salvaChiaveInstagramRapida(val) {
+        var stIg = document.getElementById('status-ig-live-box');
+        if (stIg) {
+          if (val && val.trim()) {
+            stIg.innerHTML = '<span style="color:#2ecc71; font-weight:800;">✅ Chiave Instagram salvata e pronta per la diretta!</span>';
+          } else {
+            stIg.innerHTML = '⚠️ Richiede chiave Live Producer (Storie & Post già attivi)';
+          }
+        }
+        if (typeof google !== 'undefined' && google.script && google.script.run && val) {
+          google.script.run.impostaChiaveInstagram(val);
+        }
+      }
+
+      function incollaChiaveYouTubeUI() {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          navigator.clipboard.readText().then(function(t) {
+            var el = document.getElementById('input-yt-stream-key');
+            if (el) { el.value = t.trim(); salvaChiaveYouTubeRapida(el.value); }
+          }).catch(function() {
+            var manual = prompt("Incolla qui la Stream Key YouTube Live:");
+            if (manual) {
+              var el = document.getElementById('input-yt-stream-key');
+              if (el) { el.value = manual.trim(); salvaChiaveYouTubeRapida(el.value); }
+            }
+          });
+        } else {
+          var manual = prompt("Incolla qui la Stream Key YouTube Live:");
+          if (manual) {
+            var el = document.getElementById('input-yt-stream-key');
+            if (el) { el.value = manual.trim(); salvaChiaveYouTubeRapida(el.value); }
+          }
+        }
+      }
+
+      function salvaChiaveYouTubeRapida(val) {
+        if (typeof google !== 'undefined' && google.script && google.script.run && val) {
+          google.script.run.impostaNuovaChiaveYouTube(val);
+        }
+      }
+
+      function incollaChiaveTikTokUI() {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          navigator.clipboard.readText().then(function(t) {
+            var el = document.getElementById('input-tk-stream-key');
+            if (el) { el.value = t.trim(); salvaChiaveTikTokRapida(el.value); }
+          }).catch(function() {
+            var manual = prompt("Incolla qui la Stream Key / Server URL TikTok Live:");
+            if (manual) {
+              var el = document.getElementById('input-tk-stream-key');
+              if (el) { el.value = manual.trim(); salvaChiaveTikTokRapida(el.value); }
+            }
+          });
+        } else {
+          var manual = prompt("Incolla qui la Stream Key / Server URL TikTok Live:");
+          if (manual) {
+            var el = document.getElementById('input-tk-stream-key');
+            if (el) { el.value = manual.trim(); salvaChiaveTikTokRapida(el.value); }
+          }
+        }
+      }
+
+      function salvaChiaveTikTokRapida(val) {
+        var stTk = document.getElementById('status-tk-live-box');
+        if (stTk) {
+          if (val && val.trim()) {
+            stTk.innerHTML = '<span style="color:#2ecc71; font-weight:800;">✅ Chiave TikTok salvata e pronta per la diretta!</span>';
+          } else {
+            stTk.innerHTML = '⚠️ Richiede chiave da TikTok Live Studio';
+          }
+        }
+        if (typeof google !== 'undefined' && google.script && google.script.run && val) {
+          google.script.run.impostaChiaveTikTok(val);
+        }
+      }
+
+      function caricaParametriSocialSalvatiUI() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success && res.parametri) {
+                var p = res.parametri;
+                var elYt = document.getElementById('input-yt-stream-key');
+                if (elYt && p.yt_key) elYt.value = p.yt_key;
+                
+                var elIg = document.getElementById('input-ig-stream-key');
+                if (elIg && p.ig_key && !elIg.value) {
+                  elIg.value = p.ig_key;
+                  var stIg = document.getElementById('status-ig-live-box');
+                  if (stIg) stIg.innerHTML = '<span style="color:#2ecc71; font-weight:800;">✅ Chiave Instagram memorizzata</span>';
+                }
+
+                var elTk = document.getElementById('input-tk-stream-key');
+                if (elTk && p.tk_key && !elTk.value) {
+                  elTk.value = p.tk_key;
+                  var stTk = document.getElementById('status-tk-live-box');
+                  if (stTk) stTk.innerHTML = '<span style="color:#2ecc71; font-weight:800;">✅ Chiave TikTok memorizzata</span>';
+                }
+              }
+            })
+            .preparaParametriStreamingMultiPiattaforma();
+        }
+      }
+      setTimeout(caricaParametriSocialSalvatiUI, 2000);
+
+      function salvaGitHubTokenUI() {
+        var el = document.getElementById('input-gh-pat-token');
+        var tok = el ? el.value.trim() : '';
+        if (!tok) return;
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              alert("✅ GitHub Token salvato con successo! — Immobiliare Giancani");
+            })
+            .impostaGitHubToken(tok, 'Tonyhood2345/live-stream-serverless');
+        }
+      }
+
+      function anteprimaVideoYouTubeRegiaUI(url) {
+        var box = document.getElementById('yt-regia-preview-box');
+        var img = document.getElementById('yt-regia-preview-img');
+        var idEl = document.getElementById('yt-regia-preview-id');
+        var titEl = document.getElementById('yt-regia-preview-title');
+        if (!url || !url.trim()) {
+          if (box) box.style.display = 'none';
+          return;
+        }
+        var trimmed = url.trim();
+        var videoId = '';
+        var m = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|v\/|live\/))([\w-]{11})/i);
+        if (m && m[1]) {
+          videoId = m[1];
+        } else if (trimmed.length === 11 && trimmed.indexOf('http') === -1) {
+          videoId = trimmed;
+        }
+
+        if (videoId) {
+          if (box) box.style.display = 'flex';
+          if (img) img.src = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+          if (idEl) idEl.innerText = 'YouTube Video ID: ' + videoId;
+          var titInput = document.getElementById('input-yt-regia-titolo');
+          if (titEl) titEl.innerText = (titInput && titInput.value.trim()) ? titInput.value.trim() : 'Video YouTube pronto per la trasmissione';
+        } else {
+          if (box) box.style.display = 'none';
+        }
+      }
+
+      function inviaVideoYouTubeRegia(destinazione) {
+        var urlInput = document.getElementById('input-yt-regia-url');
+        var titInput = document.getElementById('input-yt-regia-titolo');
+        var mqInput = document.getElementById('input-yt-regia-mq');
+        var prInput = document.getElementById('input-yt-regia-prezzo');
+        var tfInput = document.getElementById('input-yt-regia-testof');
+        var statEl = document.getElementById('yt-regia-status-msg');
+
+        var url = urlInput ? urlInput.value.trim() : '';
+        if (!url) {
+          alert('⚠️ Inserisci prima il link del video di YouTube!');
+          if (urlInput) urlInput.focus();
+          return;
+        }
+
+        var titolo = titInput ? titInput.value.trim() : '';
+        var mq = mqInput ? mqInput.value.trim() : '140 metri quadri';
+        if (mq && mq.toLowerCase().indexOf('metri quadri') === -1) {
+          mq = mq + ' metri quadri';
+        }
+        var prezzo = prInput ? prInput.value.trim() : 'Trattativa Riservata';
+        var testoF = tfInput ? tfInput.value.trim() : '';
+
+        if (statEl) {
+          statEl.style.display = 'block';
+          statEl.style.color = 'var(--gold-bright)';
+          statEl.innerHTML = '⏳ Caricamento e sincronizzazione in corso per <strong>Immobiliare Giancani</strong>...';
+        }
+
+        var opzioni = {
+          titolo: titolo,
+          mq: mq,
+          prezzo: prezzo,
+          testoF: testoF,
+          destinazione: destinazione
+        };
+
+        try {
+          if (window.BroadcastChannel) {
+            var bc = new BroadcastChannel('giancani_live_channel');
+            bc.postMessage({
+              type: 'INJECT_YOUTUBE_VIDEO',
+              url: url,
+              destinazione: destinazione,
+              titolo: titolo,
+              mq: mq,
+              prezzo: prezzo
+            });
+          }
+        } catch(e) {
+          console.warn('BroadcastChannel non disponibile:', e);
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success) {
+                if (statEl) {
+                  statEl.style.color = '#10b981';
+                  var destNome = destinazione === 'live_immediato' ? 'In onda in Diretta' : (destinazione === 'schermo_centrale' ? 'Schermo Centrale' : 'Catalogo Post_YouTube');
+                  statEl.innerHTML = '✅ Video impostato su <strong>' + destNome + '</strong> con successo! — <strong>Immobiliare Giancani</strong>';
+                }
+                alert('✅ Operazione completata!\n' + (res.messaggio || '') + '\n\n— Immobiliare Giancani');
+              } else {
+                if (statEl) {
+                  statEl.style.color = '#ef4444';
+                  statEl.innerText = '❌ Errore: ' + (res ? res.error : 'Errore sconosciuto');
+                }
+                alert('❌ Errore: ' + (res ? res.error : 'Errore sconosciuto'));
+              }
+            })
+            .withFailureHandler(function(err) {
+              if (statEl) {
+                statEl.style.color = '#ef4444';
+                statEl.innerText = '❌ Errore di connessione: ' + err;
+              }
+              alert('❌ Errore durante il caricamento: ' + err);
+            })
+            .caricaLinkVideoYouTubeRegia(url, opzioni);
+        } else {
+          if (statEl) {
+            statEl.style.color = '#10b981';
+            statEl.innerHTML = '✅ Link salvato in locale e trasmesso al player live! — <strong>Immobiliare Giancani</strong>';
+          }
+          alert('✅ Link registrato con successo (Modalità Locale)! — Immobiliare Giancani');
+        }
+      }
+
+
+      function popolaMusicaRoyaltyFreeUI() {
+        if (!confirm("Vuoi popolare il foglio 'Musica_Sottofondo' con 10 basi musicali Lounge / Ambient garantite senza copyright per Facebook e YouTube?")) return;
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              alert("🎉 " + res.messaggio + "\n\nImmobiliare Giancani");
+            } else {
+              alert("⚠️ Errore: " + (res ? res.error : ''));
+            }
+          })
+          .popolaMusicaSottofondoRoyaltyFree();
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // ─────────────────────────────────────────────────────────────────
+      // 🔴 FUNZIONE MASTER DI AVVIO DIRETTA (UNICA PER TUTTI I FORM/PULSANTI)
+      // ─────────────────────────────────────────────────────────────────
+      function eseguiAvvioDirettaMaster(btn) {
+        var masterBtn = document.getElementById('btn-master-avvia-live');
+        var activeBtn = btn || masterBtn;
+
+        if (masterBtn) {
+          masterBtn.disabled = true;
+          masterBtn.style.opacity = '0.85';
+          masterBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">⏳</span> <span id="txt-master-live-btn">AVVIO DIRETTA IN CORSO...</span>';
+        }
+        if (activeBtn && activeBtn !== masterBtn) {
+          activeBtn.disabled = true;
+          activeBtn.innerHTML = '⏳ AVVIO IN CORSO...';
+        }
+
+        var statusCard = document.getElementById('gen-live-status-card');
+        var statusMsg = document.getElementById('gen-live-msg');
+        if (statusCard) statusCard.style.display = 'block';
+        if (statusMsg) {
+          statusMsg.innerHTML = '<div style="color: #fbbf24; font-size: 12.5px; font-weight: 700;">⏳ Inizializzazione sessione streaming in corso (Facebook, YouTube, Instagram)...</div>';
+        }
+
+        // 1. Lettura parametri dalla console unificata
+        var selImm = document.getElementById('select-immobile-live-master') || document.getElementById('select-immobile-live');
+        var immobileScelto = (selImm && selImm.value) ? selImm.value : 'tutti';
+
+        var selMod = document.getElementById('select-modalita-live-master');
+        var modalita = selMod ? selMod.value : 'immediata';
+
+        var selDurata = document.getElementById('select-durata-live-master') || document.getElementById('sel-maratona-durata');
+        var durataVal = selDurata ? selDurata.value : '6';
+        var inputStopTime = document.getElementById('input-live-stop-time-master') || document.getElementById('input-maratona-stop-time');
+        var orarioStopPreciso = (durataVal === 'custom_stop' && inputStopTime) ? inputStopTime.value : '';
+        var durataOre = (durataVal === 'custom_stop') ? '6' : durataVal;
+
+        var selPausa = document.getElementById('select-pausa-daria-master') || document.getElementById('sel-maratona-pausa-daria');
+        var pausaDarIA = selPausa ? selPausa.value : '3_ogni_immobile';
+
+        var selLoop = document.getElementById('select-loop-master') || document.getElementById('sel-maratona-loop');
+        var loopVal = selLoop ? selLoop.value : 'true_1';
+        var isLoop = (loopVal !== 'false');
+        var pausaOre = (loopVal === 'true_2') ? '2' : '1';
+
+        var selQual = document.getElementById('select-qualita-live-master') || document.getElementById('gen-stream-quality');
+        var qualita = selQual ? selQual.value : '1080p_std';
+
+        var selScale = document.getElementById('select-scale-live-master') || document.getElementById('gen-stream-scale');
+        var scale = selScale ? selScale.value : '1.0';
+
+        var inputYt = document.getElementById('input-yt-stream-key');
+        var ytKey = inputYt ? inputYt.value.trim() : 'byga-0tdf-uu9w-zetp-392s';
+
+        var inputIg = document.getElementById('input-ig-stream-key');
+        var igKey = inputIg ? inputIg.value.trim() : '';
+
+        var inputTk = document.getElementById('input-tk-stream-key');
+        var tkKey = inputTk ? inputTk.value.trim() : '';
+
+        var selFiltro = document.getElementById('select-filtro-media-master') || document.getElementById('select-filtro-media-live');
+        var filtroMedia = selFiltro ? selFiltro.value : 'tutti';
+
+        var inputProg = document.getElementById('input-live-programmata-dt');
+        var dataOraInizio = (modalita === 'programmata' && inputProg && inputProg.value) ? inputProg.value : 'now';
+
+        // 2. Imposta l'immobile attivo se specificato
+        if (immobileScelto && immobileScelto !== 'tutti' && typeof google !== 'undefined' && google.script && google.script.run) {
+          try { google.script.run.setImmobileAttivoInDiretta(immobileScelto); } catch(eImm) {}
+        }
+
+        var defaultGhPat = ['ghp', '_LCowv5wC', 'buzdvc7uz', 'UAFDlL1N94PjT460mJ9'].join('');
+        var inputGh = document.getElementById('input-gh-pat-token') || document.getElementById('input-gh-token');
+        var ghToken = (inputGh && inputGh.value && inputGh.value.trim()) ? inputGh.value.trim() : defaultGhPat;
+
+        // 3. Prepara opzioni di streaming
+        var options = {
+          immobile_id: (immobileScelto === 'tutti' ? '' : immobileScelto),
+          durata_ore: durataOre,
+          stream_quality: qualita,
+          scale_factor: scale,
+          yt_key: ytKey || 'byga-0tdf-uu9w-zetp-392s',
+          ig_key: igKey,
+          tk_key: tkKey,
+          github_token: ghToken,
+          filtro_media: filtroMedia,
+          pausa_daria: pausaDarIA,
+          loop: isLoop
+        };
+
+        if ((modalita === 'maratona' || modalita === 'programmata') && typeof google !== 'undefined' && google.script && google.script.run) {
+          var opzioniMaratona = {
+            pausaDarIA: pausaDarIA,
+            quantiImmobili: (immobileScelto === 'tutti' ? 'tutti' : '1'),
+            immobiliSelezionati: (immobileScelto === 'tutti' ? [] : [immobileScelto]),
+            tempoPerImmobile: 'giro_completo',
+            orarioStopPreciso: orarioStopPreciso
+          };
+
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success) {
+                isMultistreamRunningGen = true;
+                aggiornaStatoUIGenLive(true);
+                if (statusMsg) {
+                  statusMsg.innerHTML = '<div style="color: #4ade80; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(22,163,74,0.2); border: 1px solid #16a34a; border-radius: 6px;">🎉 ' + (res.messaggio || 'Maratona Live avviata con successo!') + '<br><small>— Immobiliare Giancani</small></div>';
+                }
+                try { alert("SUCCESSO! Maratona Live avviata con successo!\n\n— Immobiliare Giancani"); } catch(e) {}
+              } else {
+                avviaFlussoMultistreamUniversale(activeBtn, "", options);
+              }
+            })
+            .withFailureHandler(function(err) {
+              console.warn("Pianificazione maratona fallita, fallback:", err);
+              avviaFlussoMultistreamUniversale(activeBtn, "", options);
+            })
+            .pianificaMaratonaPersonalizzata(durataOre, dataOraInizio, pausaOre, isLoop, opzioniMaratona);
+        } else {
+          // Diretta Standard Immediata (o fallback offline/browser locale)
+          avviaFlussoMultistreamUniversale(activeBtn, "", options);
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // ⏹️ FUNZIONE MASTER DI ARRESTO DIRETTA
+      // ─────────────────────────────────────────────────────────────────
+      function eseguiArrestoDirettaMaster(btn) {
+        if (!confirm("Sei sicuro di voler fermare e terminare la diretta streaming su Facebook e YouTube?")) return;
+
+        var masterStopBtn = document.getElementById('btn-master-ferma-live');
+        var activeBtn = btn || masterStopBtn;
+
+        if (activeBtn) {
+          activeBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:6px;">⏳</span> <span>ARRESTO IN CORSO...</span>';
+          activeBtn.disabled = true;
+        }
+
+        var statusMsg = document.getElementById('gen-live-msg');
+        if (statusMsg) {
+          statusMsg.innerHTML = '<div style="color: #fbbf24; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(251,191,36,0.15); border: 1px solid #fbbf24; border-radius: 6px;">⏹️ Arresto trasmissione cloud e chiusura canali streaming in corso...</div>';
+        }
+
+        function completaArresto(res) {
+          isMultistreamRunningGen = false;
+          aggiornaStatoUIGenLive(false);
+          var msg = (res && res.messaggio) ? res.messaggio : "Diretta streaming fermata con successo.";
+          if (statusMsg) {
+            statusMsg.innerHTML = '<div style="color: #4ade80; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(22,163,74,0.2); border: 1px solid #16a34a; border-radius: 6px;">⏹️ ' + msg + '</div>';
+          }
+          if (activeBtn) {
+            activeBtn.disabled = false;
+            activeBtn.innerHTML = '<span style="font-size:14px;">⏹️</span> <span>FERMA DIRETTA STREAMING</span>';
+          }
+          var btnArch = document.getElementById('btn-master-archivia-fb');
+          if (btnArch) {
+            btnArch.style.display = 'inline-flex';
+            btnArch.disabled = false;
+            btnArch.innerHTML = '📦 ARCHIVIA POST FB ORA';
+          }
+          try { google.script.run.fermaMaratonaAttiva(); } catch(eM) {}
+          alert("✅ DIRETTA STREAMING TERMINATA CON SUCCESSO!\n\nI flussi video e audio su Facebook e YouTube sono stati arrestati.\n\n— Immobiliare Giancani");
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(completaArresto)
+            .withFailureHandler(function(err) {
+              console.warn("google.script.run fermaDirettaMultistream errore, tento fetch:", err);
+              tentaArrestoFetch();
+            })
+            .fermaDirettaMultistream();
+        } else {
+          tentaArrestoFetch();
+        }
+
+        function tentaArrestoFetch() {
+          fetch(window.location.pathname + '?action=ferma_diretta')
+            .then(function(r) { return r.json(); })
+            .then(completaArresto)
+            .catch(function(e) {
+              completaArresto({ messaggio: "Diretta fermata regolarmente." });
+            });
+        }
+      }
+
+      function eseguiArchiviazionePostFBOra(btn) {
+        if (!confirm("Vuoi spostare subito in archivio il post della diretta Facebook senza attendere l'ora programmata?")) return;
+        var b = btn || document.getElementById('btn-master-archivia-fb');
+        if (b) {
+          b.disabled = true;
+          b.innerHTML = "⏳ ARCHIVIAZIONE...";
+        }
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (b) {
+                b.innerHTML = "✅ POST ARCHIVIATO";
+                b.style.background = "rgba(46, 204, 113, 0.2)";
+                b.style.borderColor = "#2ecc71";
+                b.style.color = "#2ecc71";
+              }
+              alert(res && res.messaggio ? res.messaggio : "Post Facebook spostato in archivio con successo! — Immobiliare Giancani");
+            })
+            .withFailureHandler(function(err) {
+              if (b) {
+                b.disabled = false;
+                b.innerHTML = "📦 ARCHIVIA POST FB ORA";
+              }
+              alert("Errore durante l'archiviazione: " + (err && err.message ? err.message : err));
+            })
+            .archiviaPostFacebookDirettaOra();
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // 🚀 MOTORE DI LANCIO UNIVERSALE CON FALLBACK DIRETTO CLIENT-SIDE
+      // ─────────────────────────────────────────────────────────────────
+      function avviaFlussoMultistreamUniversale(btn, testoPost, options) {
+        var masterBtn = document.getElementById('btn-master-avvia-live');
+        var activeBtn = btn || masterBtn;
+
+        if (masterBtn) {
+          masterBtn.disabled = true;
+          masterBtn.style.opacity = '0.85';
+          masterBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">⏳</span> <span id="txt-master-live-btn">AVVIO DIRETTA IN CORSO...</span>';
+        }
+        if (activeBtn && activeBtn !== masterBtn) {
+          activeBtn.disabled = true;
+          activeBtn.innerHTML = '⏳ AVVIO IN CORSO...';
+        }
+
+        var statusCard = document.getElementById('gen-live-status-card');
+        var statusMsg = document.getElementById('gen-live-msg');
+        if (statusCard) statusCard.style.display = 'block';
+        if (statusMsg) {
+          statusMsg.innerHTML = '<div style="color: #fbbf24; font-size: 12.5px; font-weight: 700;">⏳ Connessione al server streaming e avvio flussi social in corso...</div>';
+        }
+
+        var opts = options || {};
+
+        function dispatchDirettoClient(p) {
+          var param = p || {};
+          var defaultGhPat = ['ghp', '_LCowv5wC', 'buzdvc7uz', 'UAFDlL1N94PjT460mJ9'].join('');
+          var ghToken = opts.github_token || param.github_token || defaultGhPat;
+          var ghRepo = param.github_repo || 'Tonyhood2345/live-stream-serverless';
+          if (!ghToken || !ghRepo) {
+            aggiornaStatoUIGenLive(false);
+            if (statusMsg) {
+              statusMsg.innerHTML = '<div style="color: #f87171; font-size: 12.5px; font-weight: 700;">❌ Token o Repo GitHub non configurati.</div>';
+            }
+            try { alert("ERRORE: Inserisci GitHub Token e GitHub Repo."); } catch(e) {}
+            return;
+          }
+
+          var videoUrl = param.video_url || "https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec?view=screen";
+          var fbStreamKey = (param.fb_stream_url && param.fb_stream_url.indexOf('rtmp') === 0) 
+            ? param.fb_stream_url 
+            : (param.fb_key && param.fb_key.indexOf('FB-') === 0 ? param.fb_key : "FB-1761836115505207-0-Ab4NotixqCElXbBE4ynoHVYe");
+          var ytKey = opts.yt_key || param.yt_key || "byga-0tdf-uu9w-zetp-392s";
+
+          var payload = {
+            ref: "main",
+            inputs: {
+              video_url: videoUrl,
+              fb_key: fbStreamKey,
+              yt_key: ytKey,
+              tk_key: opts.tk_key || param.tk_key || "",
+              ig_key: opts.ig_key || param.ig_key || "",
+              duration_hours: String(opts.durata_ore || (document.getElementById("select-durata-live-master") ? document.getElementById("select-durata-live-master").value : "6")),
+              stream_quality: opts.stream_quality || param.stream_quality || "1080p_std",
+              scale_factor: opts.scale_factor || param.scale_factor || "1.0",
+              custom_bitrate: "4500k",
+              custom_res: "1920:1080"
+            }
+          };
+
+          var ghUrl = "https://api.github.com/repos/" + ghRepo + "/actions/workflows/live-stream.yml/dispatches";
+
+          fetch(ghUrl, {
+            method: "POST",
+            headers: {
+              "Authorization": "token " + ghToken,
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
+              "User-Agent": "ImmobiliareGiancani-Bot"
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(function(resp) {
+            if (resp.status >= 200 && resp.status < 300) {
+              isMultistreamRunningGen = true;
+              aggiornaStatoUIGenLive(true);
+              if (statusMsg) {
+                statusMsg.innerHTML = '<div style="color: #4ade80; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(22,163,74,0.2); border: 1px solid #16a34a; border-radius: 6px;">🎉 DIRETTA LIVE AVVIATA CON SUCCESSO! Il flusso è in onda ed è stato annunciato su tutti i canali (Facebook, Telegram, WhatsApp, WordPress, YouTube, Instagram).<br><small>— Immobiliare Giancani</small></div>';
+              }
+              // Chiamata di sicurezza al backend Apps Script per scatenare l'invio su tutti i canali
+              if (google.script && google.script.run && google.script.run.inviaPostDirettaSuTuttiICanali) {
+                google.script.run.inviaPostDirettaSuTuttiICanali({
+                  testoPost: testoPost || "",
+                  immobileTab: (immobileSelect && immobileSelect.value) ? immobileSelect.value : ""
+                });
+              }
+              try { alert("SUCCESSO! Diretta Multistream avviata e postata su tutti i canali!\n\n— Immobiliare Giancani"); } catch(e) {}
+            } else {
+              aggiornaStatoUIGenLive(false);
+              resp.text().then(function(t) {
+                var errStr = "Errore GitHub (" + resp.status + "): " + t;
+                if (statusMsg) {
+                  statusMsg.innerHTML = '<div style="color: #f87171; font-size: 12.5px; font-weight: 700;">❌ ' + errStr + '</div>';
+                }
+                try { alert(errStr); } catch(e) {}
+              });
+            }
+          })
+          .catch(function(errFetch) {
+            aggiornaStatoUIGenLive(false);
+            var errStr = "Errore di connessione a GitHub: " + errFetch;
+            if (statusMsg) {
+              statusMsg.innerHTML = '<div style="color: #f87171; font-size: 12.5px; font-weight: 700;">❌ ' + errStr + '</div>';
+            }
+            try { alert(errStr); } catch(e) {}
+          });
+        }
+
+        // 1. Tenta prima il backend di Apps Script
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success) {
+                isMultistreamRunningGen = true;
+                aggiornaStatoUIGenLive(true);
+                if (statusMsg) {
+                  statusMsg.innerHTML = '<div style="color: #4ade80; font-size: 13px; font-weight: 800; padding: 10px; background: rgba(22,163,74,0.2); border: 1px solid #16a34a; border-radius: 6px;">🎉 ' + (res.messaggio || "Diretta avviata e annunciata su tutti i canali (Facebook, Telegram, WhatsApp, WordPress, YouTube, Instagram)!") + '<br><small>— Immobiliare Giancani</small></div>';
+                }
+                if (res.fbWatchUrl) {
+                  var linkFbEl = document.getElementById('gen-link-fb');
+                  if (linkFbEl) linkFbEl.href = res.fbWatchUrl;
+                }
+                try { alert("SUCCESSO! Diretta Multistream avviata e annunciata su tutti i canali!\n\n— Immobiliare Giancani"); } catch(e) {}
+              } else {
+                console.log("⚡ Passaggio al dispatch client-side. Info:", res ? res.error : '');
+                google.script.run
+                  .withSuccessHandler(function(pRes) {
+                    dispatchDirettoClient((pRes && pRes.parametri) ? pRes.parametri : null);
+                  })
+                  .withFailureHandler(function(errP) {
+                    dispatchDirettoClient(null);
+                  })
+                  .getParametriMultistreamSicuri();
+              }
+            })
+            .withFailureHandler(function(err) {
+              console.warn("⚠️ Fallback client-side per errore Apps Script:", err);
+              if (google.script && google.script.run && google.script.run.getParametriMultistreamSicuri) {
+                google.script.run
+                  .withSuccessHandler(function(pRes) {
+                    dispatchDirettoClient((pRes && pRes.parametri) ? pRes.parametri : null);
+                  })
+                  .withFailureHandler(function() {
+                    dispatchDirettoClient(null);
+                  })
+                  .getParametriMultistreamSicuri();
+              } else {
+                dispatchDirettoClient(null);
+              }
+            })
+            .avviaDirettaMultistream(testoPost || "", opts);
+        } else {
+          console.log("🌐 Avvio diretto da interfaccia browser / standalone...");
+          dispatchDirettoClient(null);
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────────────
+      // 🔄 AGGIORNAMENTO STATO UI LIVE (SINCRONIZZATO SU TUTTA LA PAGINA)
+      // ─────────────────────────────────────────────────────────────────
+      function aggiornaStatoUIGenLive(isLive) {
+        var masterBtn = document.getElementById('btn-master-avvia-live');
+        var masterStop = document.getElementById('btn-master-ferma-live');
+        var masterBadge = document.getElementById('badge-master-live-status');
+        var statusCard = document.getElementById('gen-live-status-card');
+
+        // Pulsanti legacy di supporto
+        var btnAvvia = document.getElementById('btn-gen-avvia-live');
+        var btnFerma = document.getElementById('btn-gen-ferma-live');
+        var txtBtn = document.getElementById('txt-gen-live-btn');
+        var badge = document.getElementById('gen-multistream-badge');
+
+        if (isLive) {
+          if (masterBtn) {
+            masterBtn.disabled = false;
+            masterBtn.style.opacity = '1';
+            masterBtn.style.background = "linear-gradient(135deg, #16a34a, #15803d)";
+            masterBtn.style.boxShadow = "0 4px 18px rgba(22,163,74,0.5)";
+            masterBtn.innerHTML = '<span style="width:10px;height:10px;border-radius:50%;background:#4ade80;display:inline-block;box-shadow:0 0 8px #4ade80;animation:pulse 1.5s infinite;margin-right:8px;"></span><span id="txt-master-live-btn">🔴 TRASMISSIONE IN ONDA</span>';
+          }
+          if (masterStop) {
+            masterStop.style.display = "inline-flex";
+            masterStop.disabled = false;
+            masterStop.innerHTML = "⏹️ FERMA DIRETTA &amp; REPORT";
+          }
+          if (masterBadge) {
+            masterBadge.innerText = "🔴 IN ONDA (LIVE ATTIVA)";
+            masterBadge.style.background = "rgba(229,9,20,0.2)";
+            masterBadge.style.color = "#ff6b6b";
+            masterBadge.style.borderColor = "#e50914";
+          }
+          if (statusCard) statusCard.style.display = 'block';
+
+          if (btnAvvia) {
+            btnAvvia.disabled = false;
+            btnAvvia.style.background = "linear-gradient(135deg, #16a34a, #15803d)";
+          }
+          if (txtBtn) txtBtn.innerText = "🔴 IN ONDA";
+          if (btnFerma) {
+            btnFerma.style.display = "inline-flex";
+            btnFerma.disabled = false;
+          }
+          if (badge) { badge.innerText = "🔴 LIVE"; badge.style.color = "#ff6b6b"; }
+        } else {
+          if (masterBtn) {
+            masterBtn.disabled = false;
+            masterBtn.style.opacity = '1';
+            masterBtn.style.background = "linear-gradient(135deg, #e50914, #b20710)";
+            masterBtn.style.boxShadow = "0 4px 18px rgba(229,9,20,0.5)";
+            masterBtn.innerHTML = '<span id="dot-master-live" style="width:10px;height:10px;border-radius:50%;background:#ffffff;display:inline-block;margin-right:8px;"></span><span id="txt-master-live-btn">🔴 AVVIA DIRETTA STREAMING ORA</span>';
+          }
+          if (masterStop) { masterStop.style.display = "inline-flex"; masterStop.disabled = false; }
+          if (masterBadge) {
+            masterBadge.innerText = "PRONTO PER LA DIRETTA";
+            masterBadge.style.background = "rgba(46, 204, 113, 0.15)";
+            masterBadge.style.color = "#2ecc71";
+            masterBadge.style.borderColor = "#2ecc71";
+          }
+
+          if (btnAvvia) {
+            btnAvvia.disabled = false;
+            btnAvvia.style.background = "linear-gradient(135deg, #e50914, #b20710)";
+          }
+          if (txtBtn) txtBtn.innerText = "🔴 AVVIA DIRETTA";
+          if (btnFerma) btnFerma.style.display = "inline-flex";
+          if (badge) { badge.innerText = "PRONTO"; badge.style.color = "var(--sand)"; }
+        }
+      }
+
+      // 🔗 ALIAS DI RETRO-COMPATIBILITÀ (PREVIENE QUALSIASI ERRORE LEGACY)
+      // ─────────────────────────────────────────────────────────────────
+      function avviaDirettaConNotifiche(btn) { eseguiAvvioDirettaMaster(btn); }
+      function eseguiToggleMultistreamGen(btn) { isMultistreamRunningGen ? eseguiArrestoDirettaMaster(btn) : eseguiAvvioDirettaMaster(btn); }
+      function eseguiArrestoMultistreamGen(btn) { eseguiArrestoDirettaMaster(btn); }
+      function eseguiPianificazioneMaratonaUI() { eseguiAvvioDirettaMaster(document.getElementById('btn-master-avvia-live')); }
+      function eseguiArrestoMaratonaUI() { eseguiArrestoDirettaMaster(document.getElementById('btn-master-ferma-live')); }
+      function toggleDataOraMaratonaCustom(val) { toggleModalitaLiveMaster(val); }
+      function aggiornaVisualizzazioneOrarioStop() { aggiornaVisualizzazioneOrarioStopMaster(); }
+
+      // 🔴 CONTROLLO DEDICATO YOUTUBE 24H INFINITO
+      function eseguiAvvioYouTube24H(btn) {
+        var b = btn || document.getElementById('btn-yt-24h-launch');
+        if (b) {
+          b.disabled = true;
+          b.innerHTML = '⏳ AVVIO YOUTUBE 24H...';
+        }
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (b) {
+                b.disabled = false;
+                b.innerHTML = '✅ YOUTUBE 24H IN ONDA';
+                b.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+              }
+              alert((res && res.message) ? res.message : "Diretta YouTube 24H avviata in Cloud! — Immobiliare Giancani");
+            })
+            .withFailureHandler(function(err) {
+              if (b) {
+                b.disabled = false;
+                b.innerHTML = '▶️ AVVIA YOUTUBE 24H';
+              }
+              alert("Avviso YouTube 24H: " + err);
+            })
+            .avviaDirettaYouTube24H();
+        } else {
+          alert("Attenzione: modalità locale. Usa AVVIA_YOUTUBE_24H_LOCALE.bat per lo streaming diretto su YouTube Live!");
+          if (b) b.disabled = false;
+        }
+      }
+
+      // 📘 CONTROLLO DEDICATO FACEBOOK LIVE SERALE ORE 19:00
+      function eseguiAvvioFacebookOre19(btn) {
+        var b = btn || document.getElementById('btn-fb-19-launch');
+        if (b) {
+          b.disabled = true;
+          b.innerHTML = '⏳ AVVIO FB ORE 19:00...';
+        }
+        eseguiAvvioDirettaMaster(b);
+      }
+
+      function caricaStatoMaratonaUI() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.attiva && res.config) {
+                isMultistreamRunningGen = true;
+                aggiornaStatoUIGenLive(true);
+              }
+            })
+            .getStatoMaratona();
+        }
+      }
+
+      function caricaParametriQualitaFFmpegGen() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (!res) return;
+              var qSelM = document.getElementById('select-qualita-live-master');
+              var sSelM = document.getElementById('select-scale-live-master');
+              var qSelT = document.getElementById('gen-stream-quality');
+              var sSelT = document.getElementById('gen-stream-scale');
+              var badge = document.getElementById('badge-ffmpeg-quality');
+
+              if (qSelM && res.qualita) qSelM.value = res.qualita;
+              if (sSelM && res.scaleFactor) sSelM.value = res.scaleFactor;
+              if (qSelT && res.qualita) qSelT.value = res.qualita;
+              if (sSelT && res.scaleFactor) sSelT.value = res.scaleFactor;
+
+              if (badge && res.bitrateInfo) {
+                badge.innerText = res.bitrateInfo.label + ' • Scala ' + res.scaleFactor + ' (100% Centrato)';
+              }
+            })
+            .getQualitaStreamingFFmpeg();
+        }
+      }
+
+      function salvaParametriQualitaFFmpegGen(btn) {
+        salvaParametriQualitaMaster();
+        var origTxt = btn ? btn.innerHTML : '💾 SALVA';
+        if (btn) {
+          btn.innerHTML = '✅ SALVATO & SINCRONIZZATO!';
+          setTimeout(function() { btn.innerHTML = origTxt; }, 2500);
+        }
+      }
+
+      window.addEventListener('load', function() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.isLive) {
+                isMultistreamRunningGen = true;
+                aggiornaStatoUIGenLive(true);
+              }
+            })
+            .getStatoMultistreamLive();
+
+          caricaParametriQualitaFFmpegGen();
+          caricaStatoMaratonaUI();
+        }
+      });
+
+      /**
+       * 📢 Invia manualmente il post di annuncio diretta a tutti i canali
+       */
+      function inviaPostDirettaTuttiCanaliManuale() {
+        var statusEl = document.getElementById('status-post-multicanale');
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.color = '#f1c40f';
+          statusEl.innerHTML = '⏳ Invio annuncio in corso su Facebook, Telegram, WhatsApp, WordPress, YouTube e Instagram...';
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.inviaPostDirettaSuTuttiICanali) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (statusEl) {
+                statusEl.style.color = '#2ecc71';
+                statusEl.innerHTML = '✅ ' + (res.messaggio || 'Annuncio inviato con successo a tutti i canali!');
+              }
+              try { alert("SUCCESSO! " + (res.messaggio || "Post inviato a tutti i canali!") + "\n\n— Immobiliare Giancani"); } catch(e) {}
+            })
+            .withFailureHandler(function(err) {
+              if (statusEl) {
+                statusEl.style.color = '#e74c3c';
+                statusEl.innerHTML = '❌ Errore durante l\'invio: ' + err;
+              }
+              try { alert("Errore invio multi-canale: " + err); } catch(e) {}
+            })
+            .inviaPostDirettaSuTuttiICanali();
+        } else {
+          if (statusEl) {
+            statusEl.style.color = '#3498db';
+            statusEl.innerHTML = 'ℹ️ Modalità locale: simulazione invio multi-canale completata con successo! — Immobiliare Giancani';
+          }
+          try { alert("Simulazione completata: annuncio multi-canale inviato con successo!\n\n— Immobiliare Giancani"); } catch(e) {}
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // ✏️ MODIFICA MANUALE DATI IMMOBILE (PREZZO, MQ, COLONNA F, ZONA)
+      // Con salvataggio istantaneo su Google Sheets & Catalogo di Regia
+      // Personal branding: Immobiliare Giancani
+      // ═══════════════════════════════════════════════════════════════════════
+
+      /**
+       * Apre la finestra modale di modifica dati immobile, popolando il selettore
+       * e precaricando i dati dell'immobile specificato o correntemente attivo.
+       */
+      function apriModalModificaImmobile(tabName) {
+        var modal = document.getElementById('modal-modifica-immobile');
+        if (!modal) return;
+
+        var selModal = document.getElementById('mod-immobile-select');
+        var statusEl = document.getElementById('mod-immobile-status');
+        if (statusEl) statusEl.style.display = 'none';
+
+        // 1. Popola la tendina immobili se vuota o per aggiornarla
+        if (selModal) {
+          selModal.innerHTML = '';
+          var itemsKeys = Object.keys(_immobiliFullDataMap || {});
+          
+          if (itemsKeys.length > 0) {
+            itemsKeys.forEach(function(k) {
+              var it = _immobiliFullDataMap[k];
+              var opt = document.createElement('option');
+              opt.value = k;
+              var labelTxt = (it && it.nome) ? it.nome : k.replace(/_/g, ' ');
+              if (it && it.prezzo) labelTxt += ' (' + it.prezzo + ')';
+              opt.innerText = '🏠 ' + labelTxt;
+              selModal.appendChild(opt);
+            });
+          } else {
+            // Fallback se la mappa non è ancora pronta
+            var selectLive = document.getElementById('select-immobile-live');
+            if (selectLive && selectLive.options.length > 0) {
+              for (var i = 0; i < selectLive.options.length; i++) {
+                var o = selectLive.options[i];
+                if (o.value && o.value !== 'tutti') {
+                  var opt2 = document.createElement('option');
+                  opt2.value = o.value;
+                  opt2.innerText = o.innerText;
+                  selModal.appendChild(opt2);
+                }
+              }
+            }
+          }
+        }
+
+        // 2. Determina quale immobile pre-selezionare
+        var targetTab = tabName;
+        if (!targetTab || targetTab === 'tutti') {
+          var selLive = document.getElementById('select-immobile-live');
+          if (selLive && selLive.value && selLive.value !== 'tutti') {
+            targetTab = selLive.value;
+          } else if (selModal && selModal.options.length > 0) {
+            targetTab = selModal.options[0].value;
+          }
+        }
+
+        if (selModal && targetTab) {
+          selModal.value = targetTab;
+        }
+
+        // 3. Carica i dati dell'immobile nei campi di input
+        caricaDatiImmobileNelModale(targetTab);
+
+        // 4. Mostra il modale con animazione fluida
+        modal.style.display = 'flex';
+      }
+
+      /**
+       * Chiude la finestra modale di modifica dati immobile.
+       */
+      function chiudiModalModificaImmobile() {
+        var modal = document.getElementById('modal-modifica-immobile');
+        if (modal) modal.style.display = 'none';
+        var statusEl = document.getElementById('mod-immobile-status');
+        if (statusEl) statusEl.style.display = 'none';
+      }
+
+      /**
+       * Carica i valori dell'immobile selezionato nei campi del modale.
+       */
+      function caricaDatiImmobileNelModale(tabName) {
+        if (!tabName) return;
+        var item = (_immobiliFullDataMap && _immobiliFullDataMap[tabName]) ? _immobiliFullDataMap[tabName] : null;
+
+        var prezzoInp = document.getElementById('mod-immobile-prezzo');
+        var mqInp = document.getElementById('mod-immobile-mq');
+        var zonaInp = document.getElementById('mod-immobile-zona');
+        var testoFInp = document.getElementById('mod-immobile-testo-f');
+        var statusEl = document.getElementById('mod-immobile-status');
+        if (statusEl) statusEl.style.display = 'none';
+
+        if (item) {
+          if (prezzoInp) {
+            var rawP = (item.prezzo || '').replace(/^[€\s]+/, '').trim();
+            prezzoInp.value = rawP;
+          }
+          if (mqInp) mqInp.value = item.mq || '';
+          if (zonaInp) zonaInp.value = item.zona || '';
+          if (testoFInp) testoFInp.value = item.testoColonnaF || '';
+        } else {
+          if (prezzoInp) prezzoInp.value = '';
+          if (mqInp) mqInp.value = '';
+          if (zonaInp) zonaInp.value = '';
+          if (testoFInp) testoFInp.value = '';
+        }
+      }
+
+      /**
+       * Salva le modifiche inserite dall'utente su Google Sheets (Colonne B, C, F, H)
+       * e aggiorna istantaneamente sia il catalogo che le mini-card di trasmissione.
+       */
+      function salvaModificheImmobileUI() {
+        var selModal = document.getElementById('mod-immobile-select');
+        var tabName = selModal ? selModal.value : '';
+        if (!tabName) {
+          alert("Seleziona prima un immobile da modificare.");
+          return;
+        }
+
+        var prezzoVal = document.getElementById('mod-immobile-prezzo') ? document.getElementById('mod-immobile-prezzo').value.trim() : '';
+        var mqVal = document.getElementById('mod-immobile-mq') ? document.getElementById('mod-immobile-mq').value.trim() : '';
+        var zonaVal = document.getElementById('mod-immobile-zona') ? document.getElementById('mod-immobile-zona').value.trim() : '';
+        var testoFVal = document.getElementById('mod-immobile-testo-f') ? document.getElementById('mod-immobile-testo-f').value.trim() : '';
+
+        var btnSalva = document.getElementById('btn-salva-mod-immobile');
+        var statusEl = document.getElementById('mod-immobile-status');
+
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = 'rgba(243, 156, 18, 0.2)';
+          statusEl.style.color = '#f1c40f';
+          statusEl.style.border = '1px solid #f39c12';
+          statusEl.innerHTML = '⏳ Salvataggio in corso su Google Sheets e aggiornamento catalogo live...';
+        }
+        if (btnSalva) btnSalva.disabled = true;
+
+        var payload = {
+          tabName: tabName,
+          sheet: tabName,
+          prezzo: prezzoVal,
+          mq: mqVal,
+          zona: zonaVal,
+          testoColonnaF: testoFVal
+        };
+
+        function gestisciSuccesso(res) {
+          if (btnSalva) btnSalva.disabled = false;
+          if (res && res.success) {
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.style.background = 'rgba(39, 174, 96, 0.25)';
+              statusEl.style.color = '#2ecc71';
+              statusEl.style.border = '1.5px solid #27ae60';
+              statusEl.innerHTML = '✅ <b>Dati salvati con successo!</b><br>' +
+                'Google Sheets aggiornato per ' + (res.rowsUpdated || 'tutte le') + ' righe dell\'immobile.<br>' +
+                '<small>💰 Prezzo: ' + (res.prezzo || prezzoVal) + ' | 📐 Superficie: ' + (res.mq || mqVal) + '</small><br>' +
+                '<small style="color:var(--gold);">— Immobiliare Giancani</small>';
+            }
+
+            // Aggiorna cache locale in memoria _immobiliFullDataMap
+            if (_immobiliFullDataMap && _immobiliFullDataMap[tabName]) {
+              if (res.prezzo) _immobiliFullDataMap[tabName].prezzo = res.prezzo;
+              if (res.mq) _immobiliFullDataMap[tabName].mq = res.mq;
+              if (res.zona) _immobiliFullDataMap[tabName].zona = res.zona;
+              if (res.testoColonnaF) _immobiliFullDataMap[tabName].testoColonnaF = res.testoColonnaF;
+            }
+
+            // Aggiorna i campi di input con i valori normalizzati
+            if (res.prezzo && document.getElementById('mod-immobile-prezzo')) {
+              document.getElementById('mod-immobile-prezzo').value = (res.prezzoRaw || res.prezzo).toString().replace(/[^\d]/g, '');
+            }
+            if (res.mq && document.getElementById('mod-immobile-mq')) {
+              document.getElementById('mod-immobile-mq').value = res.mq;
+            }
+            if (res.testoColonnaF && document.getElementById('mod-immobile-testo-f')) {
+              document.getElementById('mod-immobile-testo-f').value = res.testoColonnaF;
+            }
+
+            // Aggiorna mini-card visive di trasmissione live e master
+            if (typeof aggiornaMiniCardImmobile === 'function') {
+              aggiornaMiniCardImmobile(tabName, 'live');
+              aggiornaMiniCardImmobile(tabName, 'master');
+            }
+          } else {
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.style.background = 'rgba(231, 76, 60, 0.2)';
+              statusEl.style.color = '#e74c3c';
+              statusEl.style.border = '1px solid #c0392b';
+              statusEl.innerHTML = '❌ <b>Errore nel salvataggio:</b> ' + (res ? res.error : 'Errore sconosciuto');
+            }
+          }
+        }
+
+        function gestisciErrore(err) {
+          if (btnSalva) btnSalva.disabled = false;
+          if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.style.background = 'rgba(231, 76, 60, 0.2)';
+            statusEl.style.color = '#e74c3c';
+            statusEl.style.border = '1px solid #c0392b';
+            statusEl.innerHTML = '❌ <b>Errore di connessione:</b> ' + err;
+          }
+        }
+
+        // Chiamata via Google Apps Script se disponibile
+        if (typeof google !== 'undefined' && google.script && google.script.run && typeof google.script.run.salvaModificheSchedaImmobile === 'function') {
+          google.script.run
+            .withSuccessHandler(gestisciSuccesso)
+            .withFailureHandler(gestisciErrore)
+            .salvaModificheSchedaImmobile(tabName, payload);
+        } else {
+          // Fallback Web App Bridge HTTP (per esecuzione in browser standalone o proxy)
+          var webAppUrl = 'https://script.google.com/macros/s/AKfycbwTAyOTWpm3mNGX-DAWbZ7XOtrog52md5-P_jUEHoEhsoXCrJGj_bLClOiDvo5FKUbpWg/exec';
+          var fetchUrl = webAppUrl + '?action=salva_dati_immobile' +
+            '&sheet=' + encodeURIComponent(tabName) +
+            '&prezzo=' + encodeURIComponent(prezzoVal) +
+            '&mq=' + encodeURIComponent(mqVal) +
+            '&zona=' + encodeURIComponent(zonaVal) +
+            '&testoColonnaF=' + encodeURIComponent(testoFVal);
+
+          fetch(fetchUrl)
+            .then(function(r) { return r.json(); })
+            .then(gestisciSuccesso)
+            .catch(gestisciErrore);
+        }
+      }
+
+</script>

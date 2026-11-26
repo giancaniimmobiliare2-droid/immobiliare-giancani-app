@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Test YouTube Origins</title>
+</head>
+<body style="margin:0; background:black;">
+    <iframe id="p1" width="640" height="360" 
+        src="https://www.youtube-nocookie.com/embed/BQwlP3yXJPc?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&enablejsapi=1" 
+        referrerpolicy="strict-origin-when-cross-origin" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+    <iframe id="p2" width="640" height="360" 
+        src="https://www.youtube.com/embed/BQwlP3yXJPc?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&enablejsapi=1&origin=https://www.youtube.com" 
+        referrerpolicy="strict-origin-when-cross-origin" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+</body>
+</html>

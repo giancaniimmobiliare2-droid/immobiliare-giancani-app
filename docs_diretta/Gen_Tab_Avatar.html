@@ -1,0 +1,455 @@
+        <!-- 🎭 TAB SPECIALE: STUDIO REGIA AVATAR, CONDUTTORI (DARIA, ANTONIO GIANCANI, DARIO), ZOOM (50%-250%) & VOCI -->
+        <div id="tab-avatar" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title" style="font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span>🎭</span> Studio Regia Avatar: Conduttori (DarIA &bull; Antonio Giancani &bull; DarIO), Zoom Calibrato (50% - 250%) &amp; Voci
+            </div>
+            <button class="btn-tutorial-trigger" onclick="toggleMiniTutorial(this, 'tut-avatar-section')">❓ Guida Rapida</button>
+          </div>
+
+          <div id="tut-avatar-section" class="mini-tutorial-box" style="display:none;">
+            <h4>💡 Guida Rapida: 🎭 Avatar, Antonio Giancani &amp; DarIO, Zoom Calibrato &amp; Voci</h4>
+            <div class="tut-serve">
+              <strong>🎯 A cosa serve:</strong> Questo modulo controlla in tempo reale l'intero asset scenico della diretta live: presenza degli avatar (DarIA, <strong>Antonio Giancani</strong> e DarIO), zoom ottico del browser virtuale 360° (da 50% a 250%), voci ufficiali con test audio, e sincronizzazione delle battute e curiosità storiche estratte rigorosamente dalla <strong>Colonna F</strong> con personal branding <strong>Immobiliare Giancani</strong>.
+            </div>
+            <div class="tut-steps">
+              <strong>🛠️ Come si usa:</strong>
+              <ol>
+                <li><strong>Avatar in Onda:</strong> Premi "METTI GLI AVATAR" o "TOGLI GLI AVATAR" per alternare tra conduzione a due e visione a tutto schermo dell'immobile.</li>
+                <li><strong>Zoom Calibrato (50%-250%):</strong> Muovi lo slider o clicca sui pulsanti preset (es. 125% per l'inquadratura perfetta). Lo zoom si applica istantaneamente al player in diretta!</li>
+                <li><strong>Voci Ufficiali:</strong> Scegli le voci di DarIA e DarIO, ascolta l'anteprima audio con un click e premi "Salva Configurazione Voci".</li>
+                <li><strong>Foglio Battute Dario:</strong> Clicca su "Apri Google Spreadsheet" per visualizzare o modificare le battute in Colonna F, oppure usa il pulsante "Estrai Casuale" per testarle.</li>
+              </ol>
+            </div>
+            <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-avatar-section')">✖️ Chiudi Guida</div>
+          </div>
+
+          <!-- CARD FOGLIO GOOGLE & STATUS LIVE -->
+          <div class="section-card" style="background: linear-gradient(135deg, rgba(201,163,94,0.15), rgba(12,9,7,0.95)); border: 1.5px solid var(--gold); margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 12px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 26px;">📊</span>
+                <div>
+                  <div style="font-size: 14px; font-weight: 800; color: var(--gold-bright);">
+                    FOGLI GOOGLE COLLEGATI IN TEMPO REALE (COLONNA F)
+                  </div>
+                  <div style="font-size: 11.5px; color: var(--sand);">
+                    I testi delle stanze, le battute di DarIO e le curiosità cittadine sono estratti rigorosamente dalla <strong>Colonna F</strong> con branding <strong>Immobiliare Giancani</strong>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="https://docs.google.com/spreadsheets/d/1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE/edit" target="_blank" class="btn-gold" style="width: auto; padding: 8px 18px; font-size: 11px; text-decoration: none;">
+                  📊 Apri Google Spreadsheet Completo ↗
+                </a>
+                <button type="button" onclick="sincronizzaFoglioBattuteDarioBtn(this)" class="btn-gold" style="width: auto; padding: 8px 16px; font-size: 11px; background: rgba(255,255,255,0.08); border: 1px solid var(--gold); color: var(--gold-bright);">
+                  ⚡ Sincronizza Foglio Battute
+                </button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+              <div style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <div style="font-size: 10px; font-weight: 700; color: var(--sand); text-transform: uppercase;">Foglio Battute Dario</div>
+                  <div id="status-sheet-battute" style="font-size: 13px; font-weight: 800; color: #2ecc71;">🟢 ATTIVO (16 Battute in Colonna F)</div>
+                </div>
+                <span style="font-size: 20px;">🃏</span>
+              </div>
+              <div style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <div style="font-size: 10px; font-weight: 700; color: var(--sand); text-transform: uppercase;">Foglio Storie Città</div>
+                  <div id="status-sheet-storie" style="font-size: 13px; font-weight: 800; color: #2ecc71;">🟢 ATTIVO (301 Storie Favara/AG)</div>
+                </div>
+                <span style="font-size: 20px;">🏛️</span>
+              </div>
+              <div style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <div style="font-size: 10px; font-weight: 700; color: var(--sand); text-transform: uppercase;">Personal Branding</div>
+                  <div style="font-size: 13px; font-weight: 800; color: var(--gold-bright);">Immobiliare Giancani</div>
+                </div>
+                <span style="font-size: 20px;">⭐</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTROLLO AVATAR ON / OFF -->
+          <div class="avatar-control-bar" style="margin-bottom: 16px;">
+            <div class="avatar-control-info">
+              <span class="avatar-control-icon">🎭</span>
+              <div>
+                <div class="avatar-control-title">CONTROLLO AVATAR IN DIRETTA (DarIA &amp; DarIO)</div>
+                <div class="avatar-control-subtitle">Attiva o rimuovi gli avatar con un click: scegli se mostrare la conduzione virtuale o trasmettere solo l'immobile a tutto schermo</div>
+              </div>
+            </div>
+            <div class="avatar-control-actions" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <span class="badge-status-on quick-badge-avatar" id="avatar-status-badge-tab">
+                🟢 AVATAR ATTIVI IN ONDA
+              </span>
+              <button type="button" onclick="avviaCaroselloConAvatar()" style="background: #e67e22; color: #fff; border: 1px solid #f39c12; border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Avvia il carosello video Post_YouTube con commento vocale di DarIA & DarIO">
+                📺 Carosello CON Avatar
+              </button>
+              <button type="button" onclick="avviaCaroselloSenzaAvatar()" style="background: #d35400; color: #fff; border: 1px solid #e67e22; border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Avvia il carosello video Post_YouTube a tutto schermo senza avatar">
+                🎬 Carosello SENZA Avatar
+              </button>
+              <button type="button" class="btn-avatar-on quick-btn-avatar-on" onclick="avviaDirettaConAvatar()" style="border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Manda in onda la diretta tour con DarIA & DarIO">
+                🎙️ Diretta CON Avatar
+              </button>
+              <button type="button" class="btn-avatar-off quick-btn-avatar-off" onclick="avviaDirettaSenzaAvatar()" style="border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Manda in onda la diretta tour a tutto schermo senza avatar">
+                🖼️ Diretta SENZA Avatar
+              </button>
+            </div>
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════════════════════
+               🌟 SELETTORE CONDUTTORI AVATAR IN ONDA (1 DONNA + 1 UOMO)
+               Permette di scegliere chi mandare in onda (coppia in conduzione).
+               Figure cliccabili con switch istantaneo in qualsiasi momento della diretta.
+               ═══════════════════════════════════════════════════════════════════════ -->
+          <div class="section-card" id="card-coppia-avatar" style="background: rgba(18, 14, 10, 0.98); border: 2px solid var(--gold); margin-bottom: 20px; box-shadow: 0 12px 35px rgba(0,0,0,0.85); border-radius: 16px; padding: 20px;">
+            
+            <!-- HEADER DELLA SEZIONE CON STATO COPPIA IN ONDA -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1.5px solid var(--line-soft); padding-bottom: 16px; margin-bottom: 18px;">
+              <div>
+                <div style="font-size: 16px; font-weight: 900; color: var(--gold-bright); display: flex; align-items: center; gap: 10px; letter-spacing: 0.02em;">
+                  <span>👥</span> CONDUTTORI AVATAR IN DIRETTA (DarIA &bull; ANTONIO GIANCANI &bull; DarIO)
+                </div>
+                <div style="font-size: 11.5px; color: var(--sand); margin-top: 4px;">
+                  Scegli la coppia che conduce la diretta streaming. Clicca su <strong>Antonio Giancani</strong> (Direttore Generale) o su un altro conduttore per mandarlo <strong>immediatamente in onda</strong>.
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <div id="coppia-on-air-banner" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(201,163,94,0.2)); border: 1.5px solid var(--gold-bright); padding: 8px 16px; border-radius: 999px; box-shadow: 0 0 15px rgba(201,163,94,0.3);">
+                  <span class="status-pulse-dot" style="width: 10px; height: 10px; background: #ef4444; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>
+                  <span style="font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">IN ONDA ORA:</span>
+                  <span id="banner-donna-nome" style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">DarIA Bionda</span>
+                  <span style="color: var(--sand-dim); font-size: 11px;">+</span>
+                  <span id="banner-uomo-nome" style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">Antonio Giancani</span>
+                </div>
+            </div>
+
+            <!-- 👑 SELETTORE MODALITÀ CONDUZIONE IN DIRETTA (SOLO ANTONIO / ANTONIO PRIMO / SOLA DARIA / COPPIA) -->
+            <div style="background: linear-gradient(135deg, rgba(201,163,94,0.14), rgba(20,15,10,0.96)); border: 2px solid var(--gold); border-radius: 14px; padding: 18px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.7);">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid rgba(201,163,94,0.25); padding-bottom: 10px;">
+                <div>
+                  <div style="font-size: 15px; font-weight: 900; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; letter-spacing: 0.02em;">
+                    <span>👑</span> MODALITÀ CONDUZIONE: CONDUTTORE UNICO O COPPIA IN STUDIO
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); margin-top: 2px;">
+                    Scegli se mandare in onda <strong>Antonio Giancani da solo</strong> (conduttore unico), Antonio come primo conduttore, o la conduzione a coppia. Switch istantaneo in diretta.
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" onclick="impostaModalitaConduzioneUI('solo_antonio')" style="background: linear-gradient(135deg, #d4a853, #9a7322); color: #0d0905; font-weight: 900; font-size: 11.5px; padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer; box-shadow: 0 2px 10px rgba(212,168,83,0.4); display: flex; align-items: center; gap: 6px;">
+                    ⚡ Solo Antonio (1-Click)
+                  </button>
+                  <button type="button" onclick="impostaModalitaConduzioneUI('antonio_primo')" style="background: rgba(201,163,94,0.18); border: 1.5px solid var(--gold); color: var(--gold-bright); font-weight: 800; font-size: 11px; padding: 6px 12px; border-radius: 20px; cursor: pointer;">
+                    🌟 Antonio 1° Conduttore
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px;" id="grid-modalita-conduzione">
+                
+                <!-- SCHEDA 1: SOLO ANTONIO GIANCANI (Conduttore Unico) -->
+                <div id="card-mode-solo-antonio" class="mode-conductor-card" onclick="impostaModalitaConduzioneUI('solo_antonio')" style="cursor: pointer; background: rgba(14,10,6,0.92); border: 2.5px solid var(--gold-bright); border-radius: 12px; padding: 14px; transition: all 0.25s ease; position: relative; box-shadow: 0 0 18px rgba(201,163,94,0.35);">
+                  <div style="position: absolute; top: 10px; right: 10px; background: #ef4444; color: #fff; font-size: 9px; font-weight: 900; padding: 2px 7px; border-radius: 10px;" id="badge-solo-antonio-live">CONSIGLIATO</div>
+                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="font-size: 30px;">👑</div>
+                    <div>
+                      <div style="font-size: 13.5px; font-weight: 900; color: var(--gold-bright);">SOLO ANTONIO</div>
+                      <div style="font-size: 10px; font-weight: 800; color: #2ecc71; text-transform: uppercase;">Conduttore Unico</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); line-height: 1.35; margin-bottom: 10px;">
+                    Antonio Giancani conduce <strong>da solo l'intera trasmissione</strong>: gestisce presentazioni, descrizioni e risposte in chat.
+                  </div>
+                  <div id="btn-label-solo-antonio" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 800; border-radius: 6px; padding: 6px; font-size: 11px; text-align: center;">
+                    👑 Attivo: Unico Conduttore
+                  </div>
+                </div>
+
+                <!-- SCHEDA 2: ANTONIO PRIMO CONDUTTORE + DARIA CO-CONDUTTRICE -->
+                <div id="card-mode-antonio-primo" class="mode-conductor-card" onclick="impostaModalitaConduzioneUI('antonio_primo')" style="cursor: pointer; background: rgba(14,10,6,0.7); border: 1.5px solid rgba(201,163,94,0.3); border-radius: 12px; padding: 14px; transition: all 0.25s ease;">
+                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="font-size: 30px;">🌟</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 900; color: var(--ivory);">ANTONIO 1° + DARIA</div>
+                      <div style="font-size: 10px; font-weight: 700; color: var(--gold); text-transform: uppercase;">Antonio Box Principale</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); line-height: 1.35; margin-bottom: 10px;">
+                    Antonio Giancani al box sinistro (primo conduttore), DarIA al desk di supporto come co-conduttrice.
+                  </div>
+                  <div id="btn-label-antonio-primo" style="background: rgba(255,255,255,0.06); color: var(--sand); border: 1px solid var(--line-soft); border-radius: 6px; padding: 6px; font-size: 11px; text-align: center; font-weight: 700;">
+                    Metti Antonio 1° Posto
+                  </div>
+                </div>
+
+                <!-- SCHEDA 3: SOLA DARIA (Conduttrice Unica) -->
+                <div id="card-mode-solo-daria" class="mode-conductor-card" onclick="impostaModalitaConduzioneUI('solo_daria')" style="cursor: pointer; background: rgba(14,10,6,0.7); border: 1.5px solid rgba(201,163,94,0.3); border-radius: 12px; padding: 14px; transition: all 0.25s ease;">
+                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="font-size: 30px;">👩</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 900; color: var(--ivory);">SOLA DARIA</div>
+                      <div style="font-size: 10px; font-weight: 700; color: #ffb4d6; text-transform: uppercase;">Conduttrice Unica</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); line-height: 1.35; margin-bottom: 10px;">
+                    DarIA conduce da sola la trasmissione senza co-conduttore secondario sul desk destro.
+                  </div>
+                  <div id="btn-label-solo-daria" style="background: rgba(255,255,255,0.06); color: var(--sand); border: 1px solid var(--line-soft); border-radius: 6px; padding: 6px; font-size: 11px; text-align: center; font-weight: 700;">
+                    Imposta Sola DarIA
+                  </div>
+                </div>
+
+                <!-- SCHEDA 4: COPPIA CLASSICA (DarIA Prima + Antonio/DarIO Desk) -->
+                <div id="card-mode-coppia" class="mode-conductor-card" onclick="impostaModalitaConduzioneUI('coppia')" style="cursor: pointer; background: rgba(14,10,6,0.7); border: 1.5px solid rgba(201,163,94,0.3); border-radius: 12px; padding: 14px; transition: all 0.25s ease;">
+                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="font-size: 30px;">👥</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 900; color: var(--ivory);">COPPIA STANDARD</div>
+                      <div style="font-size: 10px; font-weight: 700; color: var(--sand-dim); text-transform: uppercase;">DarIA (1°) + Antonio (2°)</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); line-height: 1.35; margin-bottom: 10px;">
+                    Coppia standard: DarIA al box principale e Antonio Giancani (o altro uomo) al desk destro.
+                  </div>
+                  <div id="btn-label-coppia" style="background: rgba(255,255,255,0.06); color: var(--sand); border: 1px solid var(--line-soft); border-radius: 6px; padding: 6px; font-size: 11px; text-align: center; font-weight: 700;">
+                    Imposta Coppia Standard
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- SEZIONE 1: CONDUTTRICI DONNE (4 SCELTE) -->
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="font-size: 13px; font-weight: 800; color: #ffb4d6; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  <span>👩</span> Seleziona Conduttrice Donna (Agente Immobiliare)
+                </div>
+                <span style="font-size: 11px; color: var(--sand-dim);">1 Donna attiva alla volta</span>
+              </div>
+
+              <div id="grid-avatar-donne" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+                <!-- Verranno renderizzate dinamicamente da renderizzaRosterAvatarUI() -->
+              </div>
+            </div>
+
+            <!-- SEZIONE 2: CONDUTTORI UOMINI (4 SCELTI) -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="font-size: 13px; font-weight: 800; color: #93c5fd; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  <span>👨</span> Seleziona Conduttore Uomo (Agente &amp; Desk Digitale)
+                </div>
+                <span style="font-size: 11px; color: var(--sand-dim);">1 Uomo attivo alla volta</span>
+              </div>
+
+              <div id="grid-avatar-uomini" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+                <!-- Verranno renderizzate dinamicamente da renderizzaRosterAvatarUI() -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ZOOM CALIBRATO DA 50% A 250% -->
+          <div class="section-card" style="background: rgba(18, 14, 10, 0.98); border: 1.5px solid var(--gold); margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 10px;">
+              <div class="section-title" style="margin: 0; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                🔍 Zoom Calibrato Diretta &amp; Browser Virtuale (da 50% a 250%)
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="zoom-tab-display" style="background: var(--gold); color: #120c04; font-weight: 900; font-size: 13px; padding: 5px 14px; border-radius: 999px; letter-spacing: 0.05em;">
+                  125% (Ottimale Consigliato)
+                </span>
+                <span id="zoom-tab-save-indicator" style="display: none; color: #2ecc71; font-size: 11px; font-weight: 700;">
+                  ✅ Sincronizzato in Diretta!
+                </span>
+              </div>
+            </div>
+
+            <p style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px; line-height: 1.5;">
+              Regola con precisione millimetrica l'ampiezza dell'inquadratura, il campo visivo 360° e lo zoom della diretta streaming. Puoi scegliere qualsiasi percentuale tra <strong>50% (Panoramico Ultra Largo)</strong> e <strong>250% (Zoom Ravvicinato Dettagli)</strong>. Il valore ideale predefinito è <strong>125%</strong>.
+            </p>
+
+            <!-- SLIDER RANGE 50% - 250% -->
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px; background: rgba(0,0,0,0.5); padding: 14px 18px; border-radius: 12px; border: 1px solid var(--line-soft);">
+              <span style="font-size: 12px; font-weight: 800; color: var(--sand-dim); min-width: 60px;">50% Min</span>
+              <input type="range" id="zoom-tab-slider" min="50" max="250" step="5" value="125" style="flex: 1; cursor: pointer; accent-color: var(--gold-bright); height: 10px;" oninput="cambiaZoomTab(this.value)" onchange="salvaZoomTabRemoto(this.value)">
+              <span style="font-size: 12px; font-weight: 800; color: var(--gold-bright); min-width: 60px; text-align: right;">250% Max</span>
+            </div>
+
+            <!-- PULSANTI PRESET RAPIDI & INCREMENTI -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" onclick="impostaPresetZoomTab(50)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                ➖ 50%
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(75)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                75%
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(100)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                100% (Standard)
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(125)" class="btn-preset-zoom-tab active" style="padding: 7px 14px; border-radius: 8px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: 1px solid var(--gold-bright); color: #120c04; font-size: 11px; font-weight: 800; cursor: pointer;">
+                ⭐ 125% (Consigliato)
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(150)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                150%
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(175)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                175%
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(200)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                200%
+              </button>
+              <button type="button" onclick="impostaPresetZoomTab(250)" class="btn-preset-zoom-tab" style="padding: 7px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                ➕ 250% Max
+              </button>
+              <div style="margin-left: auto; display: flex; gap: 6px;">
+                <button type="button" onclick="incrementaZoomTab(-5)" class="btn-step-zoom" style="padding: 7px 12px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid var(--line-soft); color: var(--sand); font-weight: 800; font-size: 11px; cursor: pointer;" title="Riduci zoom del 5%">
+                  ➖ -5%
+                </button>
+                <button type="button" onclick="incrementaZoomTab(5)" class="btn-step-zoom" style="padding: 7px 12px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid var(--line-soft); color: var(--sand); font-weight: 800; font-size: 11px; cursor: pointer;" title="Aumenta zoom del 5%">
+                  ➕ +5%
+                </button>
+                <button type="button" onclick="salvaZoomTabRemoto(document.getElementById('zoom-tab-slider').value)" class="btn-gold" style="width: auto; padding: 7px 16px; font-size: 11px;">
+                  💾 Salva Zoom
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SELETTORE VOCI UFFICIALI DARIA & DARIO -->
+          <div class="section-card" style="background: rgba(18, 14, 10, 0.98); border: 1.5px solid var(--gold); margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 10px;">
+              <div class="section-title" style="margin: 0; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                🗣️ Selettore Voci Ufficiali: DarIA &amp; DarIO (Elenco Completo &amp; Test Audio)
+              </div>
+              <span id="voci-tab-save-indicator" style="display: none; color: #2ecc71; font-size: 11px; font-weight: 700;">
+                ✅ Voci Salvate per la Diretta!
+              </span>
+            </div>
+
+            <p style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px; line-height: 1.5;">
+              Scegli le voci ufficiali dall'elenco per ciascun conduttore virtuale. Puoi ascoltare un'anteprima audio immediata e regolare tono (pitch) e velocità (rate).
+            </p>
+
+            <div class="form-grid cols-2" style="margin-bottom: 16px;">
+              <!-- VOCE DARIA -->
+              <div style="background: rgba(0,0,0,0.5); padding: 14px; border-radius: 12px; border: 1px solid rgba(245,212,133,0.3);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <label style="color: var(--gold-bright); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                    🎙️ VOCE DARIA (Presentazione &amp; Spazi):
+                  </label>
+                  <span style="font-size: 10px; color: var(--sand); background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 999px;">Femminile</span>
+                </div>
+                <select id="select-voce-daria-tab" onchange="salvaConfigurazioneVociTab()" style="margin-bottom: 10px; font-size: 12px; font-weight: 600;">
+                  <option value="it-IT-ElsaNeural">it-IT-ElsaNeural (Naturale, Chiara - Consigliata DarIA)</option>
+                  <option value="it-IT-IsabellaNeural">it-IT-IsabellaNeural (Elegante, Professionale)</option>
+                  <option value="it-IT-PalmiraNeural">it-IT-PalmiraNeural (Calda, Solare)</option>
+                  <option value="it-IT-ImmacolataNeural">it-IT-ImmacolataNeural (Dolce, Rassicurante)</option>
+                  <option value="it-IT-FabiolaNeural">it-IT-FabiolaNeural (Moderna, Dinamica)</option>
+                  <option value="it-IT-Alice">it-IT-Alice (Standard Browser)</option>
+                  <option value="Google italiano">Google italiano (Femminile)</option>
+                </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Tono / Pitch: <span id="pitch-daria-tab-val">1.18</span></label>
+                    <input type="range" id="pitch-daria-tab" min="0.7" max="1.5" step="0.05" value="1.18" oninput="document.getElementById('pitch-daria-tab-val').textContent=this.value" onchange="salvaConfigurazioneVociTab()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Velocità / Rate: <span id="rate-daria-tab-val">1.02</span></label>
+                    <input type="range" id="rate-daria-tab" min="0.7" max="1.5" step="0.05" value="1.02" oninput="document.getElementById('rate-daria-tab-val').textContent=this.value" onchange="salvaConfigurazioneVociTab()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                </div>
+                <button type="button" onclick="testVoceRegiaTab('daria')" class="btn-gold" style="width: 100%; min-height: 36px; padding: 6px 12px; font-size: 11px; font-weight: 800; background: rgba(201,163,94,0.18); border: 1px solid var(--gold); color: var(--gold-bright);">
+                  🔊 Ascolta Anteprima Voce DarIA
+                </button>
+              </div>
+
+              <!-- VOCE MASCHILE (ANTONIO GIANCANI & DARIO) -->
+              <div style="background: rgba(0,0,0,0.5); padding: 14px; border-radius: 12px; border: 1px solid rgba(245,212,133,0.3);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <label style="color: var(--gold-bright); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                    💻 VOCE MASCHILE (Antonio Giancani &amp; DarIO):
+                  </label>
+                  <span style="font-size: 10px; color: var(--sand); background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 999px;">Maschile</span>
+                </div>
+                <select id="select-voce-dario-tab" onchange="salvaConfigurazioneVociTab()" style="margin-bottom: 10px; font-size: 12px; font-weight: 600;">
+                  <option value="it-IT-DiegoNeural" selected>it-IT-DiegoNeural (Antonio Giancani - Autorevole &amp; Carismatico)</option>
+                  <option value="it-IT-GiuseppeNeural">it-IT-GiuseppeNeural (DarIO - Caldo, Siciliano / Accogliente)</option>
+                  <option value="it-IT-CosimoNeural">it-IT-CosimoNeural (DarIO - Brioso, Coinvolgente, Ironico)</option>
+                  <option value="it-IT-PierluigiNeural">it-IT-PierluigiNeural (Istituzionale, Profondo)</option>
+                  <option value="it-IT-CataldoNeural">it-IT-CataldoNeural (Simpatico, Diretto)</option>
+                  <option value="Google italiano">Google italiano (Maschile)</option>
+                </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Tono / Pitch: <span id="pitch-dario-tab-val">0.84</span></label>
+                    <input type="range" id="pitch-dario-tab" min="0.5" max="1.3" step="0.05" value="0.84" oninput="document.getElementById('pitch-dario-tab-val').textContent=this.value" onchange="salvaConfigurazioneVociTab()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Velocità / Rate: <span id="rate-dario-tab-val">0.98</span></label>
+                    <input type="range" id="rate-dario-tab" min="0.7" max="1.5" step="0.05" value="0.98" oninput="document.getElementById('rate-dario-tab-val').textContent=this.value" onchange="salvaConfigurazioneVociTab()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                </div>
+                <button type="button" onclick="testVoceRegiaTab('dario')" class="btn-gold" style="width: 100%; min-height: 36px; padding: 6px 12px; font-size: 11px; font-weight: 800; background: rgba(201,163,94,0.18); border: 1px solid var(--gold); color: var(--gold-bright);">
+                  🔊 Ascolta Anteprima Voce DarIO
+                </button>
+              </div>
+            </div>
+
+            <button type="button" onclick="salvaConfigurazioneVociTab()" class="btn-gold" style="width: 100%; font-size: 13px; font-weight: 900; letter-spacing: 0.05em; padding: 12px;">
+              💾 SALVA CONFIGURAZIONE VOCI PER LA DIRETTA SHOW
+            </button>
+          </div>
+
+          <!-- ANTEPRIMA BATTUTE DARIO & STORIE CITTÀ -->
+          <div class="form-grid cols-2" style="margin-bottom: 16px;">
+            <!-- BOX BATTUTE DARIO -->
+            <div class="section-card" style="background: rgba(18, 14, 10, 0.98); border: 1.5px solid var(--gold);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="section-title" style="margin: 0; color: var(--gold-bright); font-size: 13px;">
+                  🃏 Battuta Comica DarIO (Colonna F)
+                </div>
+                <button type="button" onclick="caricaAnteprimaBattutaDario()" class="btn-tutorial-trigger" style="padding: 4px 10px; min-height: 28px;">
+                  🎲 Estrai Casuale
+                </button>
+              </div>
+              <div id="box-anteprima-battuta" style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line-soft); min-height: 70px; font-size: 12px; color: var(--ivory); font-style: italic; line-height: 1.4; display: flex; align-items: center;">
+                "DarIA, in questo soggiorno ci starebbe un maxi schermo così grande che i vicini guarderebbero la partita gratis dalla collina di fronte! — Immobiliare Giancani"
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <span style="font-size: 10px; color: var(--sand-dim);">Prelevata da: <strong>Battute_Dario &gt; Colonna F</strong></span>
+                <button type="button" onclick="pronunciaTestoTab(document.getElementById('box-anteprima-battuta').innerText, 'dario')" class="btn-gold" style="width: auto; padding: 4px 12px; min-height: 28px; font-size: 11px;">
+                  🔊 Ascolta con Voce DarIO
+                </button>
+              </div>
+            </div>
+
+            <!-- BOX METEO & STORIE FAVARA / AGRIGENTO -->
+            <div class="section-card" style="background: rgba(18, 14, 10, 0.98); border: 1.5px solid var(--gold);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="section-title" style="margin: 0; color: var(--gold-bright); font-size: 13px;">
+                  ☀️ Meteo Live &amp; Storie Favara/Agrigento
+                </div>
+                <button type="button" onclick="caricaAnteprimaStoriaCitta()" class="btn-tutorial-trigger" style="padding: 4px 10px; min-height: 28px;">
+                  🎲 Altra Storia
+                </button>
+              </div>
+              <div style="background: rgba(0,0,0,0.5); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line-soft); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <span style="font-size: 12px; font-weight: 700; color: var(--gold-bright);">Favara / Agrigento:</span>
+                  <span id="tab-meteo-temp" style="font-size: 12px; color: var(--ivory); margin-left: 6px;">☀️ 26°C Sereno (Aggiornato ogni 5 min)</span>
+                </div>
+                <span style="font-size: 10px; color: var(--sand-dim);">Live Open-Meteo</span>
+              </div>
+              <div id="box-anteprima-storia" style="background: rgba(0,0,0,0.5); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line-soft); min-height: 60px; font-size: 11.5px; color: var(--sand); line-height: 1.4;">
+                "Favara è celebre nel mondo per il Farm Cultural Park: uno straordinario polo d arte contemporanea a cielo aperto nato nel cuore del centro storico dei Sette Cortili. — Immobiliare Giancani"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- /#tab-avatar -->
+

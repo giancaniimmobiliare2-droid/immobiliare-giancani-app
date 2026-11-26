@@ -1,0 +1,750 @@
+<script>
+      // 🎬 COSTRUTTORE PALINSESTO DINAMICO & RUNDOWN MANAGER (DarIA & DarIO)
+      // ═══════════════════════════════════════════════════════════════════════
+      var _scalettaDinamica = [];
+      var _fogliPalinsestoDisponibili = [];
+      var _immobilePalinsestoCorrente = '';
+
+      function getIconaBloccoTipo(tipo) {
+        if (tipo === 'stanza') return '🏠';
+        if (tipo === 'teatrino') return '🎭';
+        if (tipo === 'spot') return '📺';
+        if (tipo === 'sport') return '⚽';
+        if (tipo === 'meteo') return '🌤️';
+        if (tipo === 'nozioni') return '📚';
+        if (tipo === 'storyteller') return '🏛️';
+        if (tipo === 'worldclock') return '🌍';
+        if (tipo === 'intro') return '🏰';
+        return '✨';
+      }
+
+      function calcolaMetrichePalinsesto() {
+        var totSec = 0;
+        var attivi = 0;
+        (_scalettaDinamica || []).forEach(function(b) {
+          if (b.attivo) {
+            totSec += (parseInt(b.durataSec) || 30);
+            attivi++;
+          }
+        });
+        
+        var min = Math.floor(totSec / 60);
+        var sec = totSec % 60;
+        var strDurata = min + ' min ' + (sec < 10 ? '0' + sec : sec) + ' sec';
+        var cicliOra = totSec > 0 ? (3600 / totSec).toFixed(1) : 0;
+
+        var elImm = document.getElementById('pal-badge-immobile-nome');
+        var elBlocchi = document.getElementById('pal-badge-totale-blocchi');
+        var elDurata = document.getElementById('pal-badge-durata-totale');
+        var elCicli = document.getElementById('pal-badge-cicli-ora');
+
+        if (elImm) elImm.innerText = (_immobilePalinsestoCorrente || 'Villa Favara').replace(/_/g, ' ');
+        if (elBlocchi) elBlocchi.innerText = attivi + ' / ' + _scalettaDinamica.length;
+        if (elDurata) elDurata.innerText = strDurata;
+        if (elCicli) elCicli.innerText = '~' + cicliOra;
+      }
+
+      function renderPalinsestoRundown() {
+        var container = document.getElementById('palinsesto-rundown-container');
+        if (!container) return;
+
+        calcolaMetrichePalinsesto();
+
+        if (!_scalettaDinamica || _scalettaDinamica.length === 0) {
+          container.innerHTML = `
+            <div style="background: rgba(0,0,0,0.4); border: 1px dashed var(--line); border-radius: 8px; padding: 25px; text-align: center;">
+              <div style="font-size: 14px; font-weight: 700; color: var(--gold-bright); margin-bottom: 6px;">Nessun blocco presente nella scaletta</div>
+              <div style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px;">Clicca il pulsante arancione per precompilare subito tutte le stanze dell'immobile attivo con testi Colonna F e sketch!</div>
+              <button type="button" onclick="precompilaPalinsestoDaImmobileUI()" class="btn-gold" style="width: auto; padding: 8px 18px; font-size: 11.5px; background: linear-gradient(135deg, #e67e22, #d35400); color: #fff; border: none; font-weight: 800;">
+                🔄 PRECOMPILA DA IMMOBILE ATTIVO
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        var html = '';
+        _scalettaDinamica.forEach(function(b, idx) {
+          var isAttivo = (b.attivo !== false);
+          var icona = b.icona || getIconaBloccoTipo(b.tipo);
+          var durata = parseInt(b.durataSec) || 30;
+          var voce = b.voce || 'DarIA';
+          var testoPreview = (b.testoColonnaF || b.testo || '').substring(0, 140) + ((b.testoColonnaF || '').length > 140 ? '...' : '');
+
+          var borderCol = isAttivo ? 'rgba(201,163,94,0.35)' : 'rgba(255,255,255,0.1)';
+          var bgCard = isAttivo ? 'rgba(0,0,0,0.5)' : 'rgba(30,30,30,0.4)';
+          var opacityStyle = isAttivo ? '1' : '0.55';
+
+          html += `
+            <div id="pal-card-${idx}" style="background: ${bgCard}; border: 1px solid ${borderCol}; border-radius: 8px; padding: 10px 14px; opacity: ${opacityStyle}; transition: all 0.2s ease; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;">
+              
+              <!-- SINISTRA: NUMERO, ICONA, TITOLO E ANTEPRIMA COLONNA F -->
+              <div style="display: flex; align-items: center; gap: 10px; flex: 1.8; min-width: 260px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--gold); background: rgba(241,196,15,0.15); border: 1px solid var(--gold); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  #${idx + 1}
+                </div>
+                <div style="font-size: 20px; flex-shrink: 0;">${icona}</div>
+                <div style="overflow: hidden;">
+                  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; font-weight: 800; color: #fff;">${b.titolo || 'Blocco Scaletta'}</span>
+                    <span style="font-size: 10px; padding: 1px 6px; border-radius: 6px; background: rgba(52,152,219,0.25); color: #38bdf8; font-weight: 700; text-transform: uppercase;">${b.tipo || 'rubrica'}</span>
+                    ${b.sorgente ? `<span style="font-size: 9.5px; color: var(--sand); opacity: 0.8;">(${b.sorgente.replace(/_/g, ' ')})</span>` : ''}
+                  </div>
+                  <div style="font-size: 11px; color: var(--sand); margin-top: 3px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 460px;">
+                    🗣️ "${testoPreview || 'Testo estratto da Colonna F...'}"
+                  </div>
+                </div>
+              </div>
+
+              <!-- CENTRO: VOCE SPEAKER -->
+              <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                <label style="font-size: 10px; color: var(--gold); font-weight: 700;">Voce:</label>
+                <select onchange="cambiaVoceBlocco(${idx}, this.value)" style="padding: 4px 8px; font-size: 11px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 5px;">
+                  <option value="DarIA" ${voce === 'DarIA' ? 'selected' : ''}>👩 DarIA</option>
+                  <option value="DarIO" ${voce === 'DarIO' ? 'selected' : ''}>👨 DarIO</option>
+                  <option value="Duo" ${voce === 'Duo' || voce === 'Coppia' ? 'selected' : ''}>👫 Duo</option>
+                </select>
+              </div>
+
+              <!-- DESTRA: CONTROLLI DURATA (+ / - e CHIPS) -->
+              <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                <label style="font-size: 10px; color: var(--gold); font-weight: 700;">Durata:</label>
+                <button type="button" onclick="cambiaDurataBlocco(${idx}, -5)" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #555; border-radius: 4px; width: 24px; height: 24px; font-weight: bold; cursor: pointer;">-</button>
+                <input type="number" value="${durata}" min="5" max="300" onchange="impostaDurataBlocco(${idx}, this.value)" style="width: 44px; text-align: center; padding: 3px; font-size: 11.5px; font-weight: 800; background: rgba(0,0,0,0.7); color: #2ecc71; border: 1px solid var(--line); border-radius: 4px;">
+                <span style="font-size: 10px; color: var(--sand);">sec</span>
+                <button type="button" onclick="cambiaDurataBlocco(${idx}, 5)" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #555; border-radius: 4px; width: 24px; height: 24px; font-weight: bold; cursor: pointer;">+</button>
+
+                <!-- Chips durata rapida -->
+                <div style="display: flex; gap: 3px; margin-left: 4px;">
+                  <button type="button" onclick="impostaDurataBlocco(${idx}, 15)" style="padding: 2px 5px; font-size: 9px; background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; cursor: pointer;">15s</button>
+                  <button type="button" onclick="impostaDurataBlocco(${idx}, 30)" style="padding: 2px 5px; font-size: 9px; background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; cursor: pointer;">30s</button>
+                  <button type="button" onclick="impostaDurataBlocco(${idx}, 45)" style="padding: 2px 5px; font-size: 9px; background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; cursor: pointer;">45s</button>
+                </div>
+              </div>
+
+              <!-- PULSANTI AZIONE: SALI, SCENDI, TOGGLE ON/OFF, ELIMINA -->
+              <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+                <button type="button" onclick="spostaBloccoPalinsesto(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} style="background: rgba(255,255,255,0.08); color: #fff; border: 1px solid #555; border-radius: 4px; padding: 4px 7px; font-size: 11px; cursor: pointer;" title="Sposta sopra">⬆️</button>
+                <button type="button" onclick="spostaBloccoPalinsesto(${idx}, 1)" ${idx === _scalettaDinamica.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} style="background: rgba(255,255,255,0.08); color: #fff; border: 1px solid #555; border-radius: 4px; padding: 4px 7px; font-size: 11px; cursor: pointer;" title="Sposta sotto">⬇️</button>
+                
+                <button type="button" onclick="toggleBloccoAttivo(${idx})" style="background: ${isAttivo ? 'rgba(46,204,113,0.2)' : 'rgba(231,76,60,0.2)'}; color: ${isAttivo ? '#2ecc71' : '#e74c3c'}; border: 1px solid ${isAttivo ? '#2ecc71' : '#e74c3c'}; border-radius: 4px; padding: 4px 8px; font-size: 10px; font-weight: 800; cursor: pointer;" title="Attiva o escludi dalla rotazione">
+                  ${isAttivo ? '🟢 ON' : '⚪ OFF'}
+                </button>
+
+                <button type="button" onclick="rimuoviBloccoPalinsesto(${idx})" style="background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); border-radius: 4px; padding: 4px 7px; font-size: 12px; cursor: pointer;" title="Rimuovi dalla scaletta">🗑️</button>
+              </div>
+
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function spostaBloccoPalinsesto(idx, delta) {
+        var target = idx + delta;
+        if (target < 0 || target >= _scalettaDinamica.length) return;
+        var temp = _scalettaDinamica[idx];
+        _scalettaDinamica[idx] = _scalettaDinamica[target];
+        _scalettaDinamica[target] = temp;
+        renderPalinsestoRundown();
+      }
+
+      function cambiaDurataBlocco(idx, deltaSec) {
+        if (!_scalettaDinamica[idx]) return;
+        var cur = parseInt(_scalettaDinamica[idx].durataSec) || 30;
+        cur = Math.max(5, Math.min(300, cur + deltaSec));
+        _scalettaDinamica[idx].durataSec = cur;
+        renderPalinsestoRundown();
+      }
+
+      function impostaDurataBlocco(idx, sec) {
+        if (!_scalettaDinamica[idx]) return;
+        var val = parseInt(sec) || 30;
+        _scalettaDinamica[idx].durataSec = Math.max(5, Math.min(300, val));
+        renderPalinsestoRundown();
+      }
+
+      function cambiaVoceBlocco(idx, voce) {
+        if (!_scalettaDinamica[idx]) return;
+        _scalettaDinamica[idx].voce = voce;
+      }
+
+      function toggleBloccoAttivo(idx) {
+        if (!_scalettaDinamica[idx]) return;
+        _scalettaDinamica[idx].attivo = !(_scalettaDinamica[idx].attivo !== false);
+        renderPalinsestoRundown();
+      }
+
+      function rimuoviBloccoPalinsesto(idx) {
+        if (!confirm('Rimuovere questo blocco dalla scaletta?')) return;
+        _scalettaDinamica.splice(idx, 1);
+        renderPalinsestoRundown();
+      }
+
+      function precompilaPalinsestoDaImmobileUI() {
+        var selImm = document.getElementById('select-immobile-live') || document.getElementById('select-proprietario-immobile');
+        var immName = selImm ? selImm.value : 'Villa_Favara';
+
+        var container = document.getElementById('palinsesto-rundown-container');
+        if (container) container.innerHTML = '<div style="text-align:center; color:var(--gold-bright); padding:25px; font-size:12px;">⏳ Estrazione stanze da Colonna F e generazione scaletta in corso per ' + immName.replace(/_/g, ' ') + '...</div>';
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success && res.blocchi) {
+              _scalettaDinamica = res.blocchi;
+              _immobilePalinsestoCorrente = res.immobile || immName;
+              renderPalinsestoRundown();
+              mostraStatusPalinsesto('✅ Palinsesto precompilato con successo da ' + _immobilePalinsestoCorrente.replace(/_/g, ' ') + '! Durata ciclo: ' + res.durataFormattata, '#2ecc71');
+            } else {
+              alert('Errore precompilazione: ' + (res ? res.error : ''));
+              caricaPalinsestoDinamicoCompleto();
+            }
+          })
+          .withFailureHandler(function(err) {
+            alert('Errore precompilazione palinsesto: ' + (err && err.message ? err.message : err));
+            caricaPalinsestoDinamicoCompleto();
+          })
+          .generaPalinsestoPrecompilatoImmobile(immName);
+      }
+
+      
+      // ═══════════════════════════════════════════════════════════════════════
+      // 📅 GESTORE CALENDARIO PALINSESTO SERALE (20:00 - 01:00) & NOTIFICHE TELEGRAM
+      // Equa Rotazione Immobili ad Esaurimento Completo (Fair Round-Robin)
+      // Nessun immobile si ripete finché tutti non sono andati in onda
+      // Branding: Immobiliare Giancani
+      // ═══════════════════════════════════════════════════════════════════════
+      var _palinsestoSettimanaleDati = [];
+      var _fogliImmobiliCalendario = [];
+      var _giornoIdOggi = 'lunedi';
+      var _datiRotazioneEqua = null;
+      var _programmaSeraleAttivo = true;
+
+      function caricaCalendarioPalinsestoSettimanaleUI() {
+        if (typeof google === 'undefined' || !google.script || !google.script.run) {
+          console.warn('Ambiente locale, caricamento calendario mock.');
+          renderCalendarioSettimanaleMock();
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              _palinsestoSettimanaleDati = res.calendario || [];
+              _fogliImmobiliCalendario = res.fogliDisponibili || [];
+              _giornoIdOggi = res.giornoIdOggi || 'lunedi';
+              _datiRotazioneEqua = res.rotazioneEqua || null;
+              _programmaSeraleAttivo = (res.programmaSeraleAttivo !== false);
+              renderCalendarioSettimanaleUI();
+            } else {
+              mostraStatusCalendario('⚠️ Errore caricamento calendario: ' + (res ? res.error : ''), '#e74c3c');
+            }
+          })
+          .withFailureHandler(function(err) {
+            mostraStatusCalendario('❌ Errore caricamento calendario: ' + (err && err.message ? err.message : err), '#e74c3c');
+          })
+          .getCalendarioPalinsestoSettimanale();
+      }
+
+      function renderCalendarioSettimanaleUI() {
+        // 1. Aggiorna il Widget di Avanzamento Equa Rotazione
+        if (_datiRotazioneEqua) {
+          var rot = _datiRotazioneEqua;
+          var elBadgeCiclo = document.getElementById('rot-badge-ciclo');
+          if (elBadgeCiclo) {
+            elBadgeCiclo.textContent = 'Ciclo #' + (rot.cicloAttivo || 1) + (rot.cicloCompleto ? ' (100% Completato! 🏆)' : ' (In corso)');
+          }
+          var elConteggio = document.getElementById('rot-text-conteggio');
+          if (elConteggio) {
+            elConteggio.textContent = (rot.conteggioAndatiInOnda || 0) + ' su ' + (rot.totaleImmobili || 0) + ' immobili trasmessi (' + (rot.percentualeAvanzamento || 0) + '%)';
+          }
+          var elProgressBar = document.getElementById('rot-progress-bar');
+          if (elProgressBar) {
+            elProgressBar.style.width = (rot.percentualeAvanzamento || 0) + '%';
+          }
+          var elStatAndati = document.getElementById('rot-stat-andati');
+          if (elStatAndati) {
+            elStatAndati.innerHTML = '✅ <b>' + (rot.conteggioAndatiInOnda || 0) + '</b> già andati in onda';
+          }
+          var elStatRimanenti = document.getElementById('rot-stat-rimanenti');
+          if (elStatRimanenti) {
+            elStatRimanenti.innerHTML = '⏳ <b>' + (rot.conteggioRimanenti || 0) + '</b> in attesa del loro turno';
+          }
+        }
+
+        // 2. Aggiorna il pulsante Toggle Programma Serale (20:00 - 01:00)
+        var btnToggle = document.getElementById('btn-toggle-prog-serale');
+        var iconToggle = document.getElementById('icon-prog-serale');
+        var labelToggle = document.getElementById('label-prog-serale');
+        if (btnToggle && iconToggle && labelToggle) {
+          if (_programmaSeraleAttivo) {
+            btnToggle.style.background = 'rgba(46,204,113,0.18)';
+            btnToggle.style.color = '#2ecc71';
+            btnToggle.style.border = '1px solid #2ecc71';
+            iconToggle.textContent = '🟢';
+            labelToggle.textContent = 'SERALE: ATTIVO (20:00 - 01:00)';
+          } else {
+            btnToggle.style.background = 'rgba(231,76,60,0.18)';
+            btnToggle.style.color = '#e74c3c';
+            btnToggle.style.border = '1px solid #e74c3c';
+            iconToggle.textContent = '⏸️';
+            labelToggle.textContent = 'SERALE: IN PAUSA';
+          }
+        }
+
+        // 3. Renderizza la griglia delle 7 Card dei giorni
+        var container = document.getElementById('grid-calendario-settimanale');
+        if (!container) return;
+
+        if (!_palinsestoSettimanaleDati || _palinsestoSettimanaleDati.length === 0) {
+          container.innerHTML = '<div style="color:var(--sand); text-align:center; padding:20px; grid-column: 1 / -1;">Nessuna programmazione trovata. Clicca "🔄 AUTO-PROGRAMMA ROTAZIONE EQUA".</div>';
+          return;
+        }
+
+        var andatiList = (_datiRotazioneEqua && _datiRotazioneEqua.andatiInOnda) ? _datiRotazioneEqua.andatiInOnda : [];
+        var cicloNum = (_datiRotazioneEqua && _datiRotazioneEqua.cicloAttivo) ? _datiRotazioneEqua.cicloAttivo : 1;
+
+        var html = '';
+        for (var i = 0; i < _palinsestoSettimanaleDati.length; i++) {
+          var item = _palinsestoSettimanaleDati[i];
+          var isOggi = (item.id === _giornoIdOggi);
+          var cardBorder = isOggi ? '2px solid var(--gold-bright)' : '1px solid rgba(245,212,133,0.2)';
+          var cardBg = isOggi ? 'linear-gradient(180deg, rgba(201,163,94,0.18), rgba(20,16,12,0.95))' : 'rgba(25, 20, 15, 0.85)';
+
+          var giaAndato = andatiList.indexOf(item.tabImmobile) !== -1;
+
+          html += '<div style="background:' + cardBg + '; border:' + cardBorder + '; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px; position:relative; box-shadow:0 6px 18px rgba(0,0,0,0.5);">';
+
+          // Intestazione Card: Giorno e Badge Oggi
+          html += '<div>';
+          html += '  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">';
+          html += '    <span style="font-size:13px; font-weight:900; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.05em;">' + (item.giorno || item.id) + '</span>';
+          if (isOggi) {
+            html += '    <span style="background:#2ecc71; color:#120c04; font-size:9.5px; font-weight:900; padding:2px 7px; border-radius:999px; text-transform:uppercase;">🟢 IN ONDA OGGI</span>';
+          }
+          html += '  </div>';
+
+          // Orario fisso 20:00 - 01:00
+          html += '  <div style="font-size:11px; font-weight:700; color:var(--sand); display:flex; align-items:center; gap:5px; margin-bottom:10px; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">';
+          html += '    <span>🌙</span> <span>20:00 - 01:00</span> <span style="font-size:9.5px; color:var(--gold-dark); margin-left:auto;">(5 ore)</span>';
+          html += '  </div>';
+
+          // Badge di stato Equa Rotazione per questo immobile
+          if (giaAndato) {
+            html += '  <div style="font-size:10px; font-weight:800; color:#2ecc71; background:rgba(46,204,113,0.12); border:1px solid rgba(46,204,113,0.35); padding:3px 7px; border-radius:5px; margin-bottom:10px; display:flex; align-items:center; gap:5px;">';
+            html += '    <span>✅</span> <span>Già trasmesso nel Ciclo #' + cicloNum + '</span>';
+            html += '  </div>';
+          } else {
+            html += '  <div style="font-size:10px; font-weight:800; color:#e67e22; background:rgba(230,126,34,0.12); border:1px solid rgba(230,126,34,0.35); padding:3px 7px; border-radius:5px; margin-bottom:10px; display:flex; align-items:center; gap:5px;">';
+            html += '    <span>⏳</span> <span>Prioritario • In coda Ciclo #' + cicloNum + '</span>';
+            html += '  </div>';
+          }
+
+          // Selettore Immobile
+          html += '  <label style="font-size:10.5px; font-weight:800; color:var(--sand-dim); display:block; margin-bottom:4px;">🏠 IMMOBILE PROGRAMMATO:</label>';
+          html += '  <select id="cal-sel-giorno-' + item.id + '" onchange="aggiornaImmobileGiornoCalendario(\'' + item.id + '\', this.value)" style="width:100%; font-size:11.5px; font-weight:700; padding:8px; border-radius:8px; background:rgba(12,9,6,0.95); border:1px solid var(--gold); color:var(--ivory); cursor:pointer; margin-bottom:8px;">';
+
+          // Opzioni dropdown
+          var trovato = false;
+          if (_fogliImmobiliCalendario && _fogliImmobiliCalendario.length > 0) {
+            for (var f = 0; f < _fogliImmobiliCalendario.length; f++) {
+              var tab = _fogliImmobiliCalendario[f].tabName;
+              var tit = _fogliImmobiliCalendario[f].titolo || tab.replace(/_/g, ' ');
+              var sel = (item.tabImmobile === tab) ? ' selected' : '';
+              if (sel) trovato = true;
+              html += '    <option value="' + tab + '"' + sel + '>' + tit + '</option>';
+            }
+          }
+          if (!trovato && item.tabImmobile) {
+            html += '    <option value="' + item.tabImmobile + '" selected>' + (item.titoloImmobile || item.tabImmobile.replace(/_/g, ' ')) + '</option>';
+          }
+
+          html += '  </select>';
+          html += '</div>';
+
+          // Pulsante rapido per mandare subito in onda
+          html += '<button type="button" onclick="cambiaImmobileLive(document.getElementById(&quot;cal-sel-giorno-' + item.id + '&quot;).value)" style="width:100%; padding:6px 10px; font-size:10.5px; font-weight:800; border-radius:6px; background:rgba(201,163,94,0.15); border:1px solid var(--gold); color:var(--gold-bright); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; transition:all 0.2s ease;">';
+          html += '  <span>🚀</span> Metti Subito in Onda';
+          html += '</button>';
+
+          html += '</div>';
+        }
+
+        container.innerHTML = html;
+      }
+
+      function aggiornaImmobileGiornoCalendario(giornoId, tabName) {
+        for (var i = 0; i < _palinsestoSettimanaleDati.length; i++) {
+          if (_palinsestoSettimanaleDati[i].id === giornoId) {
+            _palinsestoSettimanaleDati[i].tabImmobile = tabName;
+            _palinsestoSettimanaleDati[i].titoloImmobile = tabName.replace(/_/g, ' ');
+            break;
+          }
+        }
+        renderCalendarioSettimanaleUI();
+        mostraStatusCalendario('✏️ Modificato ' + giornoId + ' con ' + tabName.replace(/_/g, ' ') + '. Clicca "SALVA & NOTIFICA TELEGRAM" per confermare.', '#f1c40f');
+      }
+
+      function autoProgrammaRotazioneEquaUI() {
+        if (typeof google === 'undefined' || !google.script || !google.script.run) {
+          autoProgrammaRotazioneImmobiliDiversi();
+          return;
+        }
+
+        mostraStatusCalendario('🔄 Calcolo rotazione equa ad esaurimento (nessun duplicato finché tutti non hanno trasmesso)...', '#f1c40f');
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              _palinsestoSettimanaleDati = res.calendario || [];
+              _datiRotazioneEqua = res.statoRotazione || null;
+              renderCalendarioSettimanaleUI();
+              mostraStatusCalendario('✅ ' + (res.messaggio || 'Palinsesto settimanale programmato con equa rotazione!'), '#2ecc71');
+            } else {
+              mostraStatusCalendario('⚠️ Errore programmazione equa: ' + (res ? res.error : ''), '#e74c3c');
+            }
+          })
+          .withFailureHandler(function(err) {
+            mostraStatusCalendario('❌ Errore programmazione equa: ' + (err && err.message ? err.message : err), '#e74c3c');
+          })
+          .autoProgrammaRotazioneEquaSettimanale();
+      }
+
+      function toggleProgrammaSeraleAutomaticoUI() {
+        var nuovoStato = !_programmaSeraleAttivo;
+        mostraStatusCalendario('⏳ Aggiornamento automazione serale (20:00 - 01:00)...', '#f1c40f');
+
+        if (typeof google === 'undefined' || !google.script || !google.script.run) {
+          _programmaSeraleAttivo = nuovoStato;
+          renderCalendarioSettimanaleUI();
+          mostraStatusCalendario('ℹ️ Ambiente locale: stato programma serale impostato su ' + (nuovoStato ? 'ATTIVO' : 'IN PAUSA'), '#3498db');
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              _programmaSeraleAttivo = res.attivo;
+              renderCalendarioSettimanaleUI();
+              mostraStatusCalendario('✅ ' + (res.messaggio || 'Automazione serale aggiornata con successo!'), '#2ecc71');
+            } else {
+              mostraStatusCalendario('⚠️ Errore aggiornamento serale: ' + (res ? res.error : ''), '#e74c3c');
+            }
+          })
+          .withFailureHandler(function(err) {
+            mostraStatusCalendario('❌ Errore aggiornamento serale: ' + (err && err.message ? err.message : err), '#e74c3c');
+          })
+          .attivaProgrammaSeraleAutomatico(nuovoStato);
+      }
+
+      function autoProgrammaRotazioneImmobiliDiversi() {
+        if (!_fogliImmobiliCalendario || _fogliImmobiliCalendario.length === 0) {
+          alert('Nessun immobile disponibile per la rotazione. Assicurati che i fogli immobile siano caricati.');
+          return;
+        }
+
+        for (var i = 0; i < _palinsestoSettimanaleDati.length; i++) {
+          var fIdx = i % _fogliImmobiliCalendario.length;
+          var tab = _fogliImmobiliCalendario[fIdx].tabName;
+          _palinsestoSettimanaleDati[i].tabImmobile = tab;
+          _palinsestoSettimanaleDati[i].titoloImmobile = _fogliImmobiliCalendario[fIdx].titolo || tab.replace(/_/g, ' ');
+        }
+
+        renderCalendarioSettimanaleUI();
+        mostraStatusCalendario('🔄 Immobili distribuiti a rotazione senza ripetizioni! Clicca "SALVA & NOTIFICA TELEGRAM" per salvare e inviare su Telegram.', '#3498db');
+      }
+
+      function salvaCalendarioPalinsestoSettimanaleUI() {
+        if (!_palinsestoSettimanaleDati || _palinsestoSettimanaleDati.length === 0) {
+          alert('Nessun dato di calendario da salvare.');
+          return;
+        }
+
+        mostraStatusCalendario('💾 Salvataggio palinsesto serale e invio notifica Telegram in corso...', '#f1c40f');
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              mostraStatusCalendario('✅ ' + (res.messaggio || 'Palinsesto salvato con successo e notifica Telegram inviata!'), '#2ecc71');
+              if (res.statoRotazione) {
+                _datiRotazioneEqua = res.statoRotazione;
+                renderCalendarioSettimanaleUI();
+              }
+            } else {
+              mostraStatusCalendario('⚠️ Errore salvataggio: ' + (res ? res.error : ''), '#e74c3c');
+            }
+          })
+          .withFailureHandler(function(err) {
+            mostraStatusCalendario('❌ Errore salvataggio: ' + (err && err.message ? err.message : err), '#e74c3c');
+          })
+          .salvaCalendarioPalinsestoSettimanale({ calendario: _palinsestoSettimanaleDati });
+      }
+
+      function mostraStatusCalendario(msg, color) {
+        var el = document.getElementById('status-calendario-palinsesto');
+        if (!el) return;
+        el.style.display = 'block';
+        el.style.background = 'rgba(0,0,0,0.85)';
+        el.style.border = '1px solid ' + color;
+        el.style.color = color;
+        el.innerText = msg;
+        setTimeout(function() {
+          if (el) el.style.display = 'none';
+        }, 6000);
+      }
+
+      function renderCalendarioSettimanaleMock() {
+        _palinsestoSettimanaleDati = [
+          { id: 'lunedi', giorno: 'Lunedì', orario: '20:00 - 01:00', tabImmobile: 'VILLA_FAVARA_RIFINITA', titoloImmobile: 'Villa Favara Rifinita' },
+          { id: 'martedi', giorno: 'Martedì', orario: '20:00 - 01:00', tabImmobile: 'ATTICO_CENTRO_AGRIGENTO', titoloImmobile: 'Attico Centro Agrigento' },
+          { id: 'mercoledi', giorno: 'Mercoledì', orario: '20:00 - 01:00', tabImmobile: 'CASALE_RUSTICO_GIARDINO', titoloImmobile: 'Casale Rustico Giardino' },
+          { id: 'giovedi', giorno: 'Giovedì', orario: '20:00 - 01:00', tabImmobile: 'APPARTAMENTO_VISTA_TEMPLI', titoloImmobile: 'Appartamento Vista Templi' },
+          { id: 'venerdi', giorno: 'Venerdì', orario: '20:00 - 01:00', tabImmobile: 'VILLA_PISCINA_SAN_LEONE', titoloImmobile: 'Villa Piscina San Leone' },
+          { id: 'sabato', giorno: 'Sabato', orario: '20:00 - 01:00', tabImmobile: 'DIMORA_STORICA_CORTILE', titoloImmobile: 'Dimora Storica Cortile' },
+          { id: 'domenica', giorno: 'Domenica', orario: '20:00 - 01:00', tabImmobile: 'PENTHOUSE_TERRAZZA_MARE', titoloImmobile: 'Penthouse Terrazza Mare' }
+        ];
+        _fogliImmobiliCalendario = _palinsestoSettimanaleDati.map(function(x) { return { tabName: x.tabImmobile, titolo: x.titoloImmobile }; });
+        _datiRotazioneEqua = {
+          cicloAttivo: 1,
+          cicliCompletati: 0,
+          totaleImmobili: 28,
+          andatiInOnda: ['VILLA_FAVARA_RIFINITA', 'ATTICO_CENTRO_AGRIGENTO'],
+          conteggioAndatiInOnda: 2,
+          conteggioRimanenti: 26,
+          percentualeAvanzamento: 7,
+          cicloCompleto: false
+        };
+        renderCalendarioSettimanaleUI();
+      }
+
+
+      function salvaPalinsestoDinamicoCompleto() {
+        if (!_scalettaDinamica || _scalettaDinamica.length === 0) {
+          alert('Nessun blocco presente da salvare. Clicca prima "PRECOMPILA DA IMMOBILE".');
+          return;
+        }
+
+        mostraStatusPalinsesto('💾 Salvataggio scaletta e sincronizzazione diretta in corso...', '#f1c40f');
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              mostraStatusPalinsesto('✅ ' + (res.messaggio || 'Palinsesto dinamico salvato e attivo in diretta!'), '#2ecc71');
+            } else {
+              mostraStatusPalinsesto('⚠️ Errore salvataggio: ' + (res ? res.error : ''), '#e74c3c');
+            }
+          })
+          .withFailureHandler(function(err) {
+            mostraStatusPalinsesto('❌ Errore salvataggio: ' + (err && err.message ? err.message : err), '#e74c3c');
+          })
+          .salvaPalinsestoDinamicoWeb(_scalettaDinamica);
+      }
+
+      function mostraStatusPalinsesto(msg, color) {
+        var el = document.getElementById('status-salvataggio-palinsesto');
+        if (!el) return;
+        el.style.display = 'block';
+        el.style.background = color === '#2ecc71' ? 'rgba(46,204,113,0.15)' : (color === '#e74c3c' ? 'rgba(231,76,60,0.15)' : 'rgba(241,196,15,0.15)');
+        el.style.border = '1px solid ' + color;
+        el.style.color = color;
+        el.innerHTML = msg;
+        setTimeout(function() { el.style.display = 'none'; }, 8000);
+      }
+
+      function caricaPalinsestoDinamicoCompleto() {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success && res.blocchi && res.blocchi.length > 0) {
+              _scalettaDinamica = res.blocchi;
+              _immobilePalinsestoCorrente = res.immobile || 'Villa_Favara';
+            }
+            renderPalinsestoRundown();
+          })
+          .withFailureHandler(function(err) {
+            console.warn('Fallback caricamento palinsesto:', err);
+            renderPalinsestoRundown();
+          })
+          .getPalinsestoDinamicoWeb();
+      }
+
+      function caricaFogliDisponibiliPicker() {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success && res.fogli) {
+              _fogliPalinsestoDisponibili = res.fogli;
+              var sel = document.getElementById('add-blocco-foglio');
+              if (sel) {
+                sel.innerHTML = res.fogli.map(function(f) {
+                  return '<option value="' + f.tabName + '">📑 ' + f.titolo + ' (' + f.righe + ' righe)</option>';
+                }).join('');
+              }
+            }
+          })
+          .getFogliDisponibiliPerPalinsesto();
+      }
+
+      function apriModalAggiungiBloccoPalinsesto() {
+        var modal = document.getElementById('modal-aggiungi-blocco-palinsesto');
+        if (modal) modal.style.display = 'flex';
+        caricaFogliDisponibiliPicker();
+      }
+
+      function chiudiModalAggiungiBlocco() {
+        var modal = document.getElementById('modal-aggiungi-blocco-palinsesto');
+        if (modal) modal.style.display = 'none';
+      }
+
+      function aggiornaCampiNuovoBlocco(tipo) {
+        var groupFoglio = document.getElementById('group-add-foglio-sorgente');
+        var inputTitolo = document.getElementById('add-blocco-titolo');
+        var inputDurata = document.getElementById('add-blocco-durata');
+
+        if (tipo === 'stanza') {
+          if (groupFoglio) groupFoglio.style.display = 'block';
+          if (inputTitolo) inputTitolo.placeholder = 'es. Cucina Abitabile o Soggiorno 360';
+          if (inputDurata) inputDurata.value = 30;
+        } else if (tipo === 'teatrino') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Teatrino Comico DarIA & DarIO';
+          if (inputDurata) inputDurata.value = 35;
+        } else if (tipo === 'spot') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Spot Pubblicità & Sponsor';
+          if (inputDurata) inputDurata.value = 30;
+        } else if (tipo === 'sport') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Notizie & Sport Attualità';
+          if (inputDurata) inputDurata.value = 30;
+        } else if (tipo === 'meteo') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Previsioni Meteo Favara & Agrigento';
+          if (inputDurata) inputDurata.value = 30;
+        } else if (tipo === 'nozioni') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Nozioni Immobiliari & Consigli';
+          if (inputDurata) inputDurata.value = 35;
+        } else if (tipo === 'storyteller') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Storyteller & Curiosità Territorio';
+          if (inputDurata) inputDurata.value = 40;
+        } else if (tipo === 'worldclock') {
+          if (groupFoglio) groupFoglio.style.display = 'none';
+          if (inputTitolo) inputTitolo.value = 'Orologio Mondiale & Clienti Esteri';
+          if (inputDurata) inputDurata.value = 25;
+        } else {
+          if (groupFoglio) groupFoglio.style.display = 'block';
+        }
+      }
+
+      function confermaAggiungiNuovoBlocco() {
+        var tipo = document.getElementById('add-blocco-tipo').value;
+        var titolo = document.getElementById('add-blocco-titolo').value.trim() || 'Nuovo Blocco';
+        var durata = parseInt(document.getElementById('add-blocco-durata').value) || 30;
+        var voce = document.getElementById('add-blocco-voce').value || 'DarIA';
+        var testo = document.getElementById('add-blocco-testo').value.trim();
+        var foglioSel = document.getElementById('add-blocco-foglio') ? document.getElementById('add-blocco-foglio').value : '';
+
+        var icona = getIconaBloccoTipo(tipo);
+
+        var nuovoBlocco = {
+          id: 'blk_usr_' + Date.now(),
+          tipo: tipo,
+          icona: icona,
+          titolo: titolo,
+          sorgente: foglioSel || tipo,
+          durataSec: durata,
+          voce: voce,
+          lingua: 'it-IT',
+          testoColonnaF: testo || (titolo + ' — Presentato da DarIA e DarIO per Immobiliare Giancani'),
+          attivo: true
+        };
+
+        _scalettaDinamica.push(nuovoBlocco);
+        chiudiModalAggiungiBlocco();
+        renderPalinsestoRundown();
+        mostraStatusPalinsesto('➕ Nuovo blocco "' + titolo + '" aggiunto alla scaletta!', '#2ecc71');
+      }
+
+      // Auto-caricamento all'avvio
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(caricaPalinsestoDinamicoCompleto, 1200);
+        setTimeout(caricaCalendarioPalinsestoSettimanaleUI, 1400);
+      });
+
+
+      function caricaPalinsestoWeb() {
+        google.script.run.withSuccessHandler(function(res) {
+          if (res && res.success) {
+            _palinsestoFasce = res.palinsesto || [];
+            renderPalinsestoBuilder();
+          }
+        }).leggiPalinsestoWeb();
+      }
+
+      window.onload = function() {
+
+        // Auto-sblocco immediato se già autorizzato in precedenza o in locale
+        try {
+          if (localStorage.getItem('phone_auth_unlocked') === 'true' || window.location.protocol === 'file:') {
+            sbloccaPannello();
+          }
+        } catch(eAU) {}
+
+  if (typeof caricaTempiRegiaUI === 'function') { try { caricaTempiRegiaUI(); } catch(eT){} }
+
+        var cleanParam = sanitizePhone(phoneUrlParam);
+        if (cleanParam.indexOf(TELEFONO_AUTORIZZATO) !== -1 || cleanParam === TELEFONO_AUTORIZZATO) {
+          sbloccaPannello();
+          caricaGeminiKeyWeb();
+          caricaPalinsestoWeb();
+        }
+      };
+    
+
+// ─── GESTORE ACCORDION / ELENCHI RICHIUDIBILI DAL FOGLIO SHEET ───
+function toggleAccordionBox(containerId, btnEl) {
+  var box = document.getElementById(containerId);
+  if (!box) return;
+  var isCurrentlyOpen = (box.style.display === 'block');
+  
+  if (isCurrentlyOpen) {
+    box.style.display = 'none';
+    if (btnEl) {
+      btnEl.classList.remove('open');
+      var badge = btnEl.querySelector('.acc-badge');
+      if (badge) badge.innerHTML = '👁️ Clicca per Aprire';
+    }
+  } else {
+    box.style.display = 'block';
+    if (btnEl) {
+      btnEl.classList.add('open');
+      var badge = btnEl.querySelector('.acc-badge');
+      if (badge) badge.innerHTML = '🙈 Clicca per Chiudere';
+    }
+  }
+}
+
+// ❓ GESTORE MINI TUTORIAL INTERATTIVO PER OGNI RIQUADRO
+function toggleMiniTutorial(btn, tutId) {
+  var box = document.getElementById(tutId);
+  if (!box) return;
+  if (box.style.display === 'block') {
+    box.style.display = 'none';
+    if (btn) {
+      btn.style.background = 'rgba(255, 215, 0, 0.15)';
+      btn.style.color = 'var(--gold, #f1c40f)';
+    }
+  } else {
+    box.style.display = 'block';
+    if (btn) {
+      btn.style.background = '#f1c40f';
+      btn.style.color = '#000';
+    }
+  }
+}
+
+
+
+
+</script>

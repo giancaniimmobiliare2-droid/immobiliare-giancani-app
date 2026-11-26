@@ -1,0 +1,923 @@
+<script>
+  function caricaAnteprimaPostSocialAI() {
+    var sel = document.getElementById('select-palinsesto-immobile');
+    var tab = sel ? sel.value : '';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.success) {
+          var titEl = document.getElementById('ai-social-titolo');
+          var descEl = document.getElementById('ai-social-descrizione');
+          if (titEl) titEl.value = res.titolo;
+          if (descEl) descEl.value = res.descrizione;
+        }
+      })
+      .generaDatiDirettaSocialIA(tab);
+  }
+
+  function copiaTestoPostSocialAI() {
+    var descEl = document.getElementById('ai-social-descrizione');
+    if (descEl) {
+      descEl.select();
+      navigator.clipboard.writeText(descEl.value).then(function() {
+        alert("📋 Testo Post copiato negli appunti!\n\nImmobiliare Giancani");
+      });
+    }
+  }
+
+  function pubblicaSuThreadsAI() {
+    var descEl = document.getElementById('ai-social-descrizione');
+    var testo = descEl ? descEl.value : "";
+    if (!testo) {
+      var tit = document.getElementById('ai-social-titolo') ? document.getElementById('ai-social-titolo').value : "Diretta Live Immobiliare";
+      testo = "🔴 SIAMO IN DIRETTA ORA!\n\n" + tit + "\n\nScopri tutti gli ambienti e i dettagli in diretta streaming!\n\nImmobiliare Giancani";
+    }
+    var urlThreads = "https://www.threads.net/intent/post?text=" + encodeURIComponent(testo);
+    window.open(urlThreads, '_blank');
+  }
+
+  function salvaPostSocialNelFoglio() {
+    var tit = document.getElementById('ai-social-titolo').value;
+    var desc = document.getElementById('ai-social-descrizione').value;
+    alert("💾 Salvataggio impostazioni social in corso...");
+  }
+
+  // 💬 LIVE CHAT TEST & DARIA SIMULATOR
+  function testaRispostaAIDarIAUI() {
+    var autore = document.getElementById('test-chat-autore').value.trim() || 'Spettatore Live';
+    var msg = document.getElementById('test-chat-msg').value.trim();
+    if (!msg) { alert("Inserisci un commento di prova."); return; }
+
+    var outBox = document.getElementById('test-chat-output-box');
+    var outText = document.getElementById('test-chat-risposta-text');
+    if (outBox) outBox.style.display = 'block';
+    if (outText) outText.innerHTML = '⏳ <em>DarIA sta elaborando la risposta con il pool Groq AI...</em>';
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.success && res.risposta) {
+          if (outText) outText.innerHTML = '<strong>' + autore + ':</strong> "' + msg + '"<br><br><strong>🎙️ DarIA:</strong> "' + res.risposta + '"';
+          if (res.audioUrl) {
+            try {
+              var snd = new Audio(res.audioUrl);
+              snd.play().catch(function(e) {});
+            } catch(eAudio) {}
+          }
+        } else {
+          if (outText) outText.innerHTML = '⚠️ Risposta: ' + (res && res.error ? res.error : 'Nessuna risposta generata.');
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (outText) outText.innerHTML = '❌ Errore chiamata IA: ' + err.toString();
+      })
+      .generaRispostaAIDarIA(msg, autore, 'Facebook Live');
+  }
+
+  // 📸 RTMP LIVE CHANNELS
+  function salvaCanaliRTMPUI() {
+    var tk = document.getElementById('input-tiktok-rtmp') ? document.getElementById('input-tiktok-rtmp').value.trim() : '';
+    var ig = document.getElementById('input-instagram-rtmp') ? document.getElementById('input-instagram-rtmp').value.trim() : '';
+    var st = document.getElementById('rtmp-status-msg');
+
+    if (tk) {
+      google.script.run.salvaConfigurazioneTikTokLive(tk);
+    }
+    if (ig) {
+      google.script.run.salvaConfigurazioneInstagramLive(ig);
+    }
+    if (st) {
+      st.style.display = 'block';
+      st.innerText = '✅ Configurazione RTMP TikTok e Instagram salvata con successo! — Immobiliare Giancani';
+      setTimeout(function() { st.style.display = 'none'; }, 5000);
+    }
+  }
+
+  // ⏱️ TEMPI REGIA PALINSESTO
+  
+function caricaConfigurazioneTempiRegiaUI() {
+  if (typeof caricaTempiRegiaUI === 'function') {
+    try { caricaTempiRegiaUI(); } catch(eT){}
+  }
+}
+
+function caricaTempiRegiaUI() {
+    google.script.run.withSuccessHandler(function(res) {
+      if (res && res.success && res.tempi) {
+        var t = res.tempi;
+        if (document.getElementById('cfg-durata-foto') && t.durataFotoSec) document.getElementById('cfg-durata-foto').value = t.durataFotoSec;
+        if (document.getElementById('cfg-freq-yt') && t.freqYouTubeMin) document.getElementById('cfg-freq-yt').value = t.freqYouTubeMin;
+        if (document.getElementById('cfg-freq-pubb') && t.freqPubblicitaMin) document.getElementById('cfg-freq-pubb').value = t.freqPubblicitaMin;
+        if (document.getElementById('cfg-freq-meteo') && t.freqMeteoMin) document.getElementById('cfg-freq-meteo').value = t.freqMeteoMin;
+        if (document.getElementById('cfg-freq-notizie') && t.freqNotizieMin) document.getElementById('cfg-freq-notizie').value = t.freqNotizieMin;
+        if (document.getElementById('cfg-freq-teatrino') && t.freqTeatrinoMin) document.getElementById('cfg-freq-teatrino').value = t.freqTeatrinoMin;
+      }
+    }).getConfigurazioneTempiRegia();
+  }
+
+  function salvaTempiRegiaUI() {
+    var payload = {
+      durataFotoSec: parseFloat(document.getElementById('cfg-durata-foto').value) || 12,
+      freqYouTubeMin: parseFloat(document.getElementById('cfg-freq-yt').value) || 5,
+      freqPubblicitaMin: parseFloat(document.getElementById('cfg-freq-pubb').value) || 10,
+      freqMeteoMin: parseFloat(document.getElementById('cfg-freq-meteo').value) || 15,
+      freqNotizieMin: parseFloat(document.getElementById('cfg-freq-notizie').value) || 10,
+      freqTeatrinoMin: parseFloat(document.getElementById('cfg-freq-teatrino').value) || 5
+    };
+    var st = document.getElementById('tempi-status-msg');
+    google.script.run.withSuccessHandler(function(res) {
+      if (st) {
+        st.style.display = 'block';
+        st.innerText = '✅ ' + (res && res.messaggio ? res.messaggio : 'Tempi salvati nel foglio!');
+        setTimeout(function() { st.style.display = 'none'; }, 4000);
+      }
+    }).salvaConfigurazioneTempiRegia(payload);
+  }
+
+  // 🔑 GROQ MULTI-KEY POOL
+  function caricaChiaviGroqPoolUI() {
+    google.script.run.withSuccessHandler(function(keys) {
+      if (Array.isArray(keys)) {
+        if (keys[0] && document.getElementById('groq-key-1')) document.getElementById('groq-key-1').value = keys[0];
+        if (keys[1] && document.getElementById('groq-key-2')) document.getElementById('groq-key-2').value = keys[1];
+        if (keys[2] && document.getElementById('groq-key-3')) document.getElementById('groq-key-3').value = keys[2];
+      }
+    }).getElencoChiaviGroqPool();
+  }
+
+  function salvaChiaviGroqPoolUI() {
+    var k1 = document.getElementById('groq-key-1').value.trim();
+    var k2 = document.getElementById('groq-key-2').value.trim();
+    var k3 = document.getElementById('groq-key-3').value.trim();
+    var arr = [];
+    if (k1) arr.push(k1);
+    if (k2) arr.push(k2);
+    if (k3) arr.push(k3);
+
+    var st = document.getElementById('groq-status-msg');
+    google.script.run.withSuccessHandler(function(res) {
+      if (st) {
+        st.style.display = 'block';
+        st.innerText = '✅ Pool Groq API aggiornato con ' + arr.length + ' chiavi attive!';
+        setTimeout(function() { st.style.display = 'none'; }, 4000);
+      }
+    }).salvaChiaviGroqPool(arr);
+  }
+
+  // 🎭 CONTROLLO MODALITÀ AVATAR (DarIA & DarIO)
+  function aggiornaStatoUIAvatar(mode) {
+    var badges = document.querySelectorAll('.quick-badge-avatar, #quick-badge-avatar');
+    var btnsOn = document.querySelectorAll('.quick-btn-avatar-on, #quick-btn-avatar-on');
+    var btnsOff = document.querySelectorAll('.quick-btn-avatar-off, #quick-btn-avatar-off');
+
+    badges.forEach(function(b) {
+      if (mode === 'CON_AVATAR') {
+        b.className = 'badge-status-on quick-badge-avatar';
+        b.innerText = '🟢 AVATAR ATTIVI IN ONDA';
+      } else {
+        b.className = 'badge-status-off quick-badge-avatar';
+        b.innerText = '⚪ VUOTO (SENZA AVATAR)';
+      }
+    });
+
+    btnsOn.forEach(function(b) {
+      if (mode === 'CON_AVATAR') {
+        b.style.opacity = '1';
+        b.style.outline = '2px solid #ffffff';
+      } else {
+        b.style.opacity = '0.6';
+        b.style.outline = 'none';
+      }
+    });
+
+    btnsOff.forEach(function(b) {
+      if (mode === 'CON_AVATAR') {
+        b.style.opacity = '0.6';
+        b.style.outline = 'none';
+      } else {
+        b.style.opacity = '1';
+        b.style.outline = '2px solid #ffffff';
+      }
+    });
+  }
+
+  function selezionaModalitaAvatar(mode) {
+    aggiornaStatoUIAvatar(mode);
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          console.log('Modalità Avatar aggiornata:', res ? res.message : mode);
+        })
+        .withFailureHandler(function(err) {
+          alert('⚠️ Errore salvataggio modalità: ' + (err && err.message ? err.message : err));
+        })
+        .impostaModalitaAvatar(mode);
+    }
+  }
+
+  function caricaModalitaAvatarUI() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.mode) {
+            aggiornaStatoUIAvatar(res.mode);
+          }
+        })
+        .getModalitaAvatar();
+    }
+  }
+
+  // 📐 GESTIONE POSIZIONE GRAFICA SET AVATAR (SINISTRA, CENTRO, DESTRA)
+  function aggiornaUIPosizioneAvatar(pos) {
+    var p = String(pos || 'destra').toLowerCase().trim();
+    if (['sinistra', 'centro', 'destra'].indexOf(p) === -1) p = 'destra';
+    var btns = {
+      'sinistra': document.getElementById('btn-pos-sinistra'),
+      'centro': document.getElementById('btn-pos-centro'),
+      'destra': document.getElementById('btn-pos-destra')
+    };
+    Object.keys(btns).forEach(function(k) {
+      var btn = btns[k];
+      if (!btn) return;
+      if (k === p) {
+        btn.classList.add('active');
+        btn.style.background = 'linear-gradient(135deg, var(--gold), var(--gold-dark))';
+        btn.style.border = '1px solid var(--gold-bright)';
+        btn.style.color = '#120c04';
+        btn.style.padding = '8px 18px';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'rgba(255,255,255,0.06)';
+        btn.style.border = '1px solid var(--line-soft)';
+        btn.style.color = 'var(--ivory)';
+        btn.style.padding = '8px 16px';
+      }
+    });
+  }
+
+  function selezionaPosizioneSetAvatar(pos) {
+    var p = String(pos || 'destra').toLowerCase().trim();
+    if (['sinistra', 'centro', 'destra'].indexOf(p) === -1) p = 'destra';
+    aggiornaUIPosizioneAvatar(p);
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (typeof mostraNotificaGen === 'function') {
+            mostraNotificaGen('📐 Posizione Avatar impostata: ' + p.toUpperCase() + ' — Immobiliare Giancani', 'success');
+          }
+        })
+        .withFailureHandler(function(err) {
+          console.error('Errore pos avatar:', err);
+        })
+        .salvaPosizioneSetAvatar(p);
+    } else if (typeof SCRIPT_URL !== 'undefined') {
+      fetch(SCRIPT_URL + '?action=salva_posizione_avatar&posizione=' + encodeURIComponent(p))
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          if (typeof mostraNotificaGen === 'function') {
+            mostraNotificaGen('📐 Posizione Avatar impostata: ' + p.toUpperCase() + ' — Immobiliare Giancani', 'success');
+          }
+        })
+        .catch(function(e){ console.error(e); });
+    }
+  }
+
+  function caricaPosizioneSetAvatarUI() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.posizione) {
+            aggiornaUIPosizioneAvatar(res.posizione);
+          }
+        })
+        .getPosizioneSetAvatar();
+    } else if (typeof SCRIPT_URL !== 'undefined') {
+      fetch(SCRIPT_URL + '?action=get_posizione_avatar')
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          if (res && res.posizione) aggiornaUIPosizioneAvatar(res.posizione);
+        })
+        .catch(function(e){});
+    }
+  }
+
+  // 🚀 AZIONI RAPIDE 1-CLICK: CAROSELLO & DIRETTA CON/SENZA AVATAR
+  function evidenziaPulsanteModo(idBtnAttivo) {
+    ['btn-top-carosello-avatar', 'btn-top-carosello-noavatar', 'btn-top-diretta-avatar', 'btn-top-diretta-noavatar'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        if (id === idBtnAttivo) {
+          el.style.outline = '2.5px solid #ffffff';
+          el.style.transform = 'scale(1.04)';
+          el.style.filter = 'brightness(1.15)';
+        } else {
+          el.style.outline = 'none';
+          el.style.transform = 'scale(1)';
+          el.style.filter = 'brightness(0.9)';
+        }
+      }
+    });
+  }
+
+  function avviaCaroselloConAvatar() {
+    evidenziaPulsanteModo('btn-top-carosello-avatar');
+    selezionaModalitaAvatar('CON_AVATAR');
+    cambiaImmobileLive('Post_YouTube');
+  }
+
+  function avviaCaroselloSenzaAvatar() {
+    evidenziaPulsanteModo('btn-top-carosello-noavatar');
+    selezionaModalitaAvatar('VUOTO');
+    cambiaImmobileLive('Post_YouTube');
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ⏮️⏭️ NAVIGAZIONE MANUALE CAROSELLO (AVANTI / INDIETRO)
+  // ═══════════════════════════════════════════════════════════════════════
+  function navigaCarosello(direzione) {
+    var btnPrev = document.getElementById('btn-carosello-prev');
+    var btnNext = document.getElementById('btn-carosello-next');
+    var label   = document.getElementById('label-carosello-index');
+    
+    // Feedback visivo: blocca pulsanti durante navigazione
+    if (btnPrev) btnPrev.disabled = true;
+    if (btnNext) btnNext.disabled = true;
+    if (label)  label.textContent = '⏳';
+
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data) { 
+          if (btnPrev) btnPrev.disabled = false;
+          if (btnNext) btnNext.disabled = false;
+          if (label)  label.textContent = '–/–';
+          return; 
+        }
+        // Aggiorna il counter nel label
+        var tot = data.totaleMedia || '?';
+        var idx = (data.indiceCorrente !== undefined) ? (data.indiceCorrente + 1) : '?';
+        if (label) label.textContent = idx + '/' + tot;
+        
+        // Aggiorna titolo video corrente nel pannello se presente
+        var titolEl = document.getElementById('info-carosello-titolo');
+        if (titolEl && data.titolo) titolEl.textContent = data.titolo;
+
+        // Sblocca pulsanti
+        if (btnPrev) btnPrev.disabled = false;
+        if (btnNext) btnNext.disabled = false;
+
+        // Mostra notifica breve
+        mostraNotificaGen('⏭️ Video: ' + (data.titolo || 'N/D') + ' — Immobiliare Giancani', 'success');
+      })
+      .withFailureHandler(function(err) {
+        console.error('navigaCarosello error:', err);
+        if (btnPrev) btnPrev.disabled = false;
+        if (btnNext) btnNext.disabled = false;
+        if (label)  label.textContent = '–/–';
+        mostraNotificaGen('⚠️ Errore navigazione carosello', 'error');
+      })
+      .getCaroselloPostYouTube(direzione);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // 🎵 CONFIGURAZIONE TIKTOK LIVE
+  // ═══════════════════════════════════════════════════════════════════════
+  function salvaTikTokKey() {
+    var input = document.getElementById('input-tiktok-stream-key');
+    if (!input || !input.value.trim()) {
+      mostraNotificaGen('⚠️ Inserire una chiave stream TikTok valida', 'warning');
+      return;
+    }
+    var key = input.value.trim();
+    var btn = document.getElementById('btn-salva-tiktok');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Salvataggio...'; }
+    
+    google.script.run
+      .withSuccessHandler(function(r) {
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Salva Chiave'; }
+        if (r && r.success) {
+          mostraNotificaGen('✅ TikTok LIVE configurato! La chiave sarà usata al prossimo avvio diretta — Immobiliare Giancani', 'success');
+          var statoEl = document.getElementById('stato-tiktok');
+          if (statoEl) { statoEl.textContent = '✅ Attivo'; statoEl.style.color = '#2ecc71'; }
+        } else {
+          mostraNotificaGen('❌ Errore: ' + (r && r.error ? r.error : 'Sconosciuto'), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Salva Chiave'; }
+        mostraNotificaGen('❌ Errore TikTok: ' + err, 'error');
+      })
+      .salvaConfigurazioneTikTokLive(key);
+  }
+
+  function disattivaTikTok() {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        mostraNotificaGen('⚪ TikTok LIVE disattivato — Immobiliare Giancani', 'info');
+        var statoEl = document.getElementById('stato-tiktok');
+        if (statoEl) { statoEl.textContent = '⚪ Inattivo'; statoEl.style.color = '#aaa'; }
+      })
+      .disattivaCanaleTikTokLive();
+  }
+
+
+  function avviaDirettaConAvatar() {
+    evidenziaPulsanteModo('btn-top-diretta-avatar');
+    selezionaModalitaAvatar('CON_AVATAR');
+    var sel = document.getElementById('select-immobile-live-palinsesto') || document.getElementById('select-immobile-live');
+    var val = sel ? sel.value : '';
+    if (val && val !== 'Post_YouTube' && val !== 'Regia_Immobile') {
+      cambiaImmobileLive(val);
+    } else {
+      cambiaImmobileLive('VILLA_FAVARA_RIFINITA');
+    }
+  }
+
+  function avviaDirettaSenzaAvatar() {
+    evidenziaPulsanteModo('btn-top-diretta-noavatar');
+    selezionaModalitaAvatar('VUOTO');
+    var sel = document.getElementById('select-immobile-live-palinsesto') || document.getElementById('select-immobile-live');
+    var val = sel ? sel.value : '';
+    if (val && val !== 'Post_YouTube' && val !== 'Regia_Immobile') {
+      cambiaImmobileLive(val);
+    } else {
+      cambiaImmobileLive('VILLA_FAVARA_RIFINITA');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // 🎭 SELETTORE LIVE COPPIA CONDUTTORI AVATAR IN ONDA & MODALITÀ CONDUZIONE
+  // ═══════════════════════════════════════════════════════════════════════
+  var currentCoppiaAvatarRegia = {
+    donna: 'daria_bionda',
+    uomo: 'antonio_giancani',
+    modalita: 'solo_antonio',
+    primario: 'antonio_giancani'
+  };
+
+  function impostaModalitaConduzioneUI(mode, skipServer) {
+    if (!mode) mode = 'solo_antonio';
+    currentCoppiaAvatarRegia.modalita = mode;
+
+    if (mode === 'solo_antonio' || mode === 'antonio_primo') {
+      currentCoppiaAvatarRegia.uomo = 'antonio_giancani';
+      currentCoppiaAvatarRegia.primario = 'antonio_giancani';
+    } else if (mode === 'solo_daria') {
+      currentCoppiaAvatarRegia.primario = currentCoppiaAvatarRegia.donna || 'daria_bionda';
+    } else {
+      currentCoppiaAvatarRegia.primario = currentCoppiaAvatarRegia.donna || 'daria_bionda';
+    }
+
+    // 1. Aggiorna stile schede modalità conduzione
+    var modes = ['solo_antonio', 'antonio_primo', 'solo_daria', 'coppia'];
+    modes.forEach(function(m) {
+      var card = document.getElementById('card-mode-' + m.replace('_', '-'));
+      var btnLbl = document.getElementById('btn-label-' + m.replace('_', '-'));
+      var isCur = (m === mode);
+      if (card) {
+        if (isCur) {
+          card.style.background = 'linear-gradient(135deg, rgba(201,163,94,0.22), rgba(25,20,15,0.98))';
+          card.style.border = '2.5px solid var(--gold-bright)';
+          card.style.boxShadow = '0 0 24px rgba(201,163,94,0.5), inset 0 0 12px rgba(201,163,94,0.15)';
+        } else {
+          card.style.background = 'rgba(14,10,6,0.7)';
+          card.style.border = '1.5px solid rgba(201,163,94,0.3)';
+          card.style.boxShadow = 'none';
+        }
+      }
+      if (btnLbl) {
+        if (isCur) {
+          btnLbl.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          btnLbl.style.color = '#fff';
+          btnLbl.style.border = 'none';
+          btnLbl.textContent = '✅ ATTUALMENTE IN ONDA';
+        } else {
+          btnLbl.style.background = 'rgba(255,255,255,0.06)';
+          btnLbl.style.color = 'var(--sand)';
+          btnLbl.style.border = '1px solid var(--line-soft)';
+          if (m === 'solo_antonio') btnLbl.textContent = '👑 Imposta Conduttore Unico';
+          else if (m === 'antonio_primo') btnLbl.textContent = 'Metti Antonio 1° Posto';
+          else if (m === 'solo_daria') btnLbl.textContent = 'Imposta Sola DarIA';
+          else btnLbl.textContent = 'Imposta Coppia Standard';
+        }
+      }
+    });
+
+    // 2. Aggiorna Banner e Griglia Roster
+    renderizzaRosterAvatarUI();
+
+    // 3. Salva in localStorage locale
+    try {
+      localStorage.setItem('GIANCANI_COPPIA_AVATAR', JSON.stringify(currentCoppiaAvatarRegia));
+      localStorage.setItem('GIANCANI_MODALITA_CONDUZIONE', mode);
+    } catch(eLS) {}
+
+    // 4. Mostra feedback visivo immediato
+    var ind = document.getElementById('coppia-save-indicator');
+    if (ind) {
+      ind.style.display = 'inline-block';
+      ind.textContent = '⚡ Invio in Diretta...';
+      ind.style.color = '#2ecc71';
+    }
+
+    // 5. Broadcast immediato sub-millisecondo alla finestra della diretta
+    try {
+      var bc = new BroadcastChannel('giancani_live_channel');
+      bc.postMessage({ type: 'CAMBIO_AVATAR', coppia: currentCoppiaAvatarRegia });
+    } catch(eBC) {}
+
+    // 6. Salvataggio su Google Apps Script PropertiesService
+    if (!skipServer && typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (ind) {
+            ind.textContent = '✨ ' + (mode === 'solo_antonio' ? 'Antonio Unico Conduttore!' : 'In Onda Ora!');
+            setTimeout(function(){ ind.style.display = 'none'; }, 3500);
+          }
+        })
+        .withFailureHandler(function(err) {
+          if (ind) {
+            ind.textContent = '⚠️ Errore salvataggio';
+            ind.style.color = '#ef4444';
+          }
+        })
+        .impostaAvatarInOnda(currentCoppiaAvatarRegia.donna, currentCoppiaAvatarRegia.uomo, currentCoppiaAvatarRegia.modalita, currentCoppiaAvatarRegia.primario);
+    }
+  }
+
+  function renderizzaRosterAvatarUI() {
+    if (!window.AVATAR_ROSTER) return;
+
+    var gridD = document.getElementById('grid-avatar-donne');
+    var gridU = document.getElementById('grid-avatar-uomini');
+
+    // 1. Render Donne
+    if (gridD && window.AVATAR_ROSTER.donne) {
+      gridD.innerHTML = '';
+      window.AVATAR_ROSTER.donne.forEach(function(d) {
+        var isDonnaOnAir = (currentCoppiaAvatarRegia.modalita !== 'solo_antonio') && (currentCoppiaAvatarRegia.donna === d.id);
+        var card = document.createElement('div');
+        card.className = 'avatar-roster-card' + (isDonnaOnAir ? ' active-on-air' : '');
+        card.setAttribute('data-id', d.id);
+        card.setAttribute('data-role', 'donna');
+        card.onclick = function() { selezionaAvatarInOnda('donna', d.id); };
+
+        card.style.cssText = 'background: ' + (isDonnaOnAir ? 'linear-gradient(135deg, rgba(201,163,94,0.25), rgba(25,20,15,0.98))' : 'rgba(25, 20, 15, 0.95)') + ';' +
+          'border: ' + (isDonnaOnAir ? '2.5px solid var(--gold-bright)' : '1.5px solid rgba(201,163,94,0.25)') + ';' +
+          'box-shadow: ' + (isDonnaOnAir ? '0 0 24px rgba(201,163,94,0.55), inset 0 0 15px rgba(201,163,94,0.15)' : '0 6px 16px rgba(0,0,0,0.6)') + ';' +
+          'border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; position: relative; display: flex; flex-direction: column;';
+
+        var imgHtml = d.img ?
+          '<img src="' + d.img + '" alt="' + d.nome + '" style="width:100%; height:195px; object-fit:contain; object-position:bottom center; display:block; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.7)) brightness(' + (isDonnaOnAir ? '1.05' : '0.94') + ');">' :
+          '<div style="width:100%; height:195px; background:#120c04; display:flex; align-items:center; justify-content:center; font-size:40px;">👩</div>';
+
+        var badgeOnAirHtml = isDonnaOnAir ?
+          '<div style="position:absolute; top:8px; right:8px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:4px 10px; border-radius:20px; box-shadow:0 0 10px #ef4444; display:flex; align-items:center; gap:4px; z-index:2;">🔴 IN ONDA</div>' :
+          '<div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:var(--sand-dim); font-size:9.5px; font-weight:700; padding:3px 8px; border-radius:20px; z-index:2;">Pronta</div>';
+
+        var badgeCapelliHtml = '<div style="position:absolute; top:8px; left:8px; background:' + (d.coloreBadge || '#d4a853') + '; color:#fff; font-size:9.5px; font-weight:800; padding:3px 8px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.6); text-transform:uppercase; z-index:2;">' + d.capelli + '</div>';
+
+        var voceTagHtml = d.voce ?
+          '<div style="margin-top:6px; padding:5px 8px; border-radius:6px; background:rgba(212,168,83,0.12); border:1px solid rgba(212,168,83,0.25); font-size:10px; color:var(--sand); display:flex; align-items:center; gap:5px;">' +
+            '🎙️ <strong style="color:var(--gold-bright);">' + d.voce.azure.replace('it-IT-','').replace('Neural','') + '</strong> &bull; ' + d.voce.personalita +
+          '</div>' : '';
+
+        var btnHtml = isDonnaOnAir ?
+          '<div style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:800; border-radius:8px; padding:7px; font-size:11px; text-align:center; box-shadow:0 2px 8px rgba(16,185,129,0.4);">✅ ATTUALMENTE IN ONDA</div>' :
+          '<div style="background:rgba(255,255,255,0.06); color:var(--sand); border:1px solid var(--line-soft); border-radius:8px; padding:7px; font-size:11px; font-weight:700; text-align:center;">▶ Metti in Onda</div>';
+
+        card.innerHTML =
+          '<div style="position:relative; width:100%; height:195px; overflow:hidden; background:radial-gradient(circle at 50% 35%, rgba(201,163,94,0.18) 0%, #110d08 85%); border-bottom:1px solid rgba(201,163,94,0.2);">' +
+            imgHtml +
+            badgeCapelliHtml +
+            badgeOnAirHtml +
+          '</div>' +
+          '<div style="padding:12px; flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:6px;">' +
+            '<div>' +
+              '<div style="font-size:13.5px; font-weight:900; color:' + (isDonnaOnAir ? 'var(--gold-bright)' : 'var(--ivory)') + ';">' + d.nome + '</div>' +
+              '<div style="font-size:10px; font-weight:700; color:var(--gold); text-transform:uppercase; margin-bottom:4px;">' + d.ruolo + '</div>' +
+              '<div style="font-size:11px; color:var(--sand-dim); line-height:1.35;">' + d.descrizione + '</div>' +
+              voceTagHtml +
+            '</div>' +
+            btnHtml +
+          '</div>';
+
+        gridD.appendChild(card);
+      });
+    }
+
+    // 2. Render Uomini
+    if (gridU && window.AVATAR_ROSTER.uomini) {
+      gridU.innerHTML = '';
+      window.AVATAR_ROSTER.uomini.forEach(function(u) {
+        var isUomoOnAir = (currentCoppiaAvatarRegia.modalita !== 'solo_daria') && (currentCoppiaAvatarRegia.uomo === u.id);
+        var card = document.createElement('div');
+        card.className = 'avatar-roster-card' + (isUomoOnAir ? ' active-on-air' : '');
+        card.setAttribute('data-id', u.id);
+        card.setAttribute('data-role', 'uomo');
+        card.onclick = function() { selezionaAvatarInOnda('uomo', u.id); };
+
+        card.style.cssText = 'background: ' + (isUomoOnAir ? 'linear-gradient(135deg, rgba(201,163,94,0.25), rgba(25,20,15,0.98))' : 'rgba(25, 20, 15, 0.95)') + ';' +
+          'border: ' + (isUomoOnAir ? '2.5px solid var(--gold-bright)' : '1.5px solid rgba(201,163,94,0.25)') + ';' +
+          'box-shadow: ' + (isUomoOnAir ? '0 0 24px rgba(201,163,94,0.55), inset 0 0 15px rgba(201,163,94,0.15)' : '0 6px 16px rgba(0,0,0,0.6)') + ';' +
+          'border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; position: relative; display: flex; flex-direction: column;';
+
+        var imgHtml = u.img ?
+          '<img src="' + u.img + '" alt="' + u.nome + '" style="width:100%; height:195px; object-fit:contain; object-position:bottom center; display:block; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.7)) brightness(' + (isUomoOnAir ? '1.05' : '0.94') + ');">' :
+          '<div style="width:100%; height:195px; background:#120c04; display:flex; align-items:center; justify-content:center; font-size:40px;">👨</div>';
+
+        var badgeOnAirHtml = isUomoOnAir ?
+          '<div style="position:absolute; top:8px; right:8px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:4px 10px; border-radius:20px; box-shadow:0 0 10px #ef4444; display:flex; align-items:center; gap:4px; z-index:2;">🔴 IN ONDA</div>' :
+          '<div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:var(--sand-dim); font-size:9.5px; font-weight:700; padding:3px 8px; border-radius:20px; z-index:2;">Pronto</div>';
+
+        var badgeCapelliHtml = '<div style="position:absolute; top:8px; left:8px; background:' + (u.coloreBadge || '#d4a853') + '; color:#fff; font-size:9.5px; font-weight:800; padding:3px 8px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.6); text-transform:uppercase; z-index:2;">' + u.capelli + '</div>';
+
+        var voceTagHtml = u.voce ?
+          '<div style="margin-top:6px; padding:5px 8px; border-radius:6px; background:rgba(212,168,83,0.12); border:1px solid rgba(212,168,83,0.25); font-size:10px; color:var(--sand); display:flex; align-items:center; gap:5px;">' +
+            '🎙️ <strong style="color:var(--gold-bright);">' + u.voce.azure.replace('it-IT-','').replace('Neural','') + '</strong> &bull; ' + u.voce.personalita +
+          '</div>' : '';
+
+        var btnHtml = isUomoOnAir ?
+          '<div style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:800; border-radius:8px; padding:7px; font-size:11px; text-align:center; box-shadow:0 2px 8px rgba(16,185,129,0.4);">✅ ATTUALMENTE IN ONDA</div>' :
+          '<div style="background:rgba(255,255,255,0.06); color:var(--sand); border:1px solid var(--line-soft); border-radius:8px; padding:7px; font-size:11px; font-weight:700; text-align:center;">▶ Metti in Onda</div>';
+
+        card.innerHTML =
+          '<div style="position:relative; width:100%; height:195px; overflow:hidden; background:radial-gradient(circle at 50% 35%, rgba(201,163,94,0.18) 0%, #110d08 85%); border-bottom:1px solid rgba(201,163,94,0.2);">' +
+            imgHtml +
+            badgeCapelliHtml +
+            badgeOnAirHtml +
+          '</div>' +
+          '<div style="padding:12px; flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:6px;">' +
+            '<div>' +
+              '<div style="font-size:13.5px; font-weight:900; color:' + (isUomoOnAir ? 'var(--gold-bright)' : 'var(--ivory)') + ';">' + u.nome + '</div>' +
+              '<div style="font-size:10px; font-weight:700; color:var(--gold); text-transform:uppercase; margin-bottom:4px;">' + u.ruolo + '</div>' +
+              '<div style="font-size:11px; color:var(--sand-dim); line-height:1.35;">' + u.descrizione + '</div>' +
+              voceTagHtml +
+            '</div>' +
+            btnHtml +
+          '</div>';
+
+        gridU.appendChild(card);
+      });
+    }
+
+    // 3. Aggiorna Banner Superiore
+    aggiornaBannerCoppiaUI();
+  }
+
+  function aggiornaBannerCoppiaUI() {
+    if (!window.AVATAR_ROSTER) return;
+    var dInfo = (window.AVATAR_ROSTER.donne || []).find(function(x){ return x.id === currentCoppiaAvatarRegia.donna; });
+    var uInfo = (window.AVATAR_ROSTER.uomini || []).find(function(x){ return x.id === currentCoppiaAvatarRegia.uomo; });
+
+    var elDonna = document.getElementById('banner-donna-nome');
+    var elUomo = document.getElementById('banner-uomo-nome');
+    var banner = document.getElementById('coppia-on-air-banner');
+
+    if (banner) {
+      if (currentCoppiaAvatarRegia.modalita === 'solo_antonio') {
+        banner.innerHTML = '<span class="status-pulse-dot" style="width: 10px; height: 10px; background: #ef4444; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>' +
+          '<span style="font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">IN ONDA ORA:</span>' +
+          '<span style="font-size: 12.5px; font-weight: 900; color: var(--gold-bright);">👑 Antonio Giancani (Conduttore Unico)</span>';
+      } else if (currentCoppiaAvatarRegia.modalita === 'antonio_primo') {
+        banner.innerHTML = '<span class="status-pulse-dot" style="width: 10px; height: 10px; background: #ef4444; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>' +
+          '<span style="font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">IN ONDA ORA:</span>' +
+          '<span style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">🌟 Antonio Giancani (1°)</span>' +
+          '<span style="color: var(--sand-dim); font-size: 11px;">+</span>' +
+          '<span style="font-size: 12px; font-weight: 900; color: #ffb4d6;">' + (dInfo ? dInfo.nome : 'DarIA') + ' (2°)</span>';
+      } else if (currentCoppiaAvatarRegia.modalita === 'solo_daria') {
+        banner.innerHTML = '<span class="status-pulse-dot" style="width: 10px; height: 10px; background: #ef4444; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>' +
+          '<span style="font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">IN ONDA ORA:</span>' +
+          '<span style="font-size: 12.5px; font-weight: 900; color: #ffb4d6;">👩 ' + (dInfo ? dInfo.nome : 'DarIA') + ' (Conduttrice Unica)</span>';
+      } else {
+        banner.innerHTML = '<span class="status-pulse-dot" style="width: 10px; height: 10px; background: #ef4444; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>' +
+          '<span style="font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">IN ONDA ORA:</span>' +
+          '<span id="banner-donna-nome" style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">' + (dInfo ? dInfo.nome : 'DarIA') + '</span>' +
+          '<span style="color: var(--sand-dim); font-size: 11px;">+</span>' +
+          '<span id="banner-uomo-nome" style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">' + (uInfo ? uInfo.nome : 'Antonio Giancani') + '</span>';
+      }
+    }
+  }
+
+  function selezionaAvatarInOnda(ruolo, id) {
+    if (ruolo === 'donna') {
+      currentCoppiaAvatarRegia.donna = id;
+      if (currentCoppiaAvatarRegia.modalita === 'solo_antonio') {
+        // Se era in solo_antonio e clicca una donna, passa alla coppia con Antonio primo
+        currentCoppiaAvatarRegia.modalita = 'antonio_primo';
+      }
+    } else if (ruolo === 'uomo') {
+      currentCoppiaAvatarRegia.uomo = id;
+      if (currentCoppiaAvatarRegia.modalita === 'solo_daria') {
+        currentCoppiaAvatarRegia.modalita = 'coppia';
+      }
+    }
+
+    // Aggiorna UI all'istante
+    renderizzaRosterAvatarUI();
+
+    // Mostra feedback visivo immediato
+    var ind = document.getElementById('coppia-save-indicator');
+    if (ind) {
+      ind.style.display = 'inline-block';
+      ind.textContent = '⚡ Invio in Diretta...';
+      ind.style.color = '#2ecc71';
+    }
+
+    // Broadcast locale immediato se la diretta è aperta nello stesso browser
+    try {
+      var bc = new BroadcastChannel('giancani_live_channel');
+      bc.postMessage({ type: 'CAMBIO_AVATAR', coppia: currentCoppiaAvatarRegia });
+    } catch(eBC) {}
+
+    // Chiamata server Apps Script
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (ind) {
+            ind.textContent = '✨ In Onda Ora!';
+            setTimeout(function(){ ind.style.display = 'none'; }, 3500);
+          }
+        })
+        .withFailureHandler(function(err) {
+          if (ind) {
+            ind.textContent = '⚠️ Errore salvataggio';
+            ind.style.color = '#ef4444';
+          }
+        })
+        .impostaAvatarInOnda(currentCoppiaAvatarRegia.donna, currentCoppiaAvatarRegia.uomo, currentCoppiaAvatarRegia.modalita, currentCoppiaAvatarRegia.primario);
+    }
+  }
+
+  function caricaCoppiaAvatarUI() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && (res.donna || res.uomo || res.modalita)) {
+            currentCoppiaAvatarRegia.donna = res.donna || currentCoppiaAvatarRegia.donna;
+            currentCoppiaAvatarRegia.uomo = res.uomo || currentCoppiaAvatarRegia.uomo;
+            currentCoppiaAvatarRegia.modalita = res.modalita || currentCoppiaAvatarRegia.modalita;
+            currentCoppiaAvatarRegia.primario = res.primario || currentCoppiaAvatarRegia.primario;
+          } else if (res && res.coppia) {
+            currentCoppiaAvatarRegia = Object.assign(currentCoppiaAvatarRegia, res.coppia);
+          }
+          impostaModalitaConduzioneUI(currentCoppiaAvatarRegia.modalita, true);
+        })
+        .withFailureHandler(function() {
+          impostaModalitaConduzioneUI(currentCoppiaAvatarRegia.modalita, true);
+        })
+        .getCoppiaAvatarAttiva();
+    } else {
+      impostaModalitaConduzioneUI(currentCoppiaAvatarRegia.modalita, true);
+    }
+  }
+
+  /* =============== MONITOR COMMENTI SOCIAL & CHAT DAL VIVO (FACEBOOK, INSTAGRAM, YOUTUBE, WEB) =============== */
+  function caricaStoricoCommentiLiveUI() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        renderizzaFeedCommentiLiveUI(res);
+      })
+      .getElencoCommentiLiveRecenti();
+  }
+
+  function renderizzaFeedCommentiLiveUI(commenti) {
+    var container = document.getElementById('elenco-commenti-live-feed');
+    var badge = document.getElementById('badge-commenti-count');
+    if (!container) return;
+
+    if (!commenti || commenti.length === 0) {
+      if (badge) badge.textContent = '0 commenti';
+      container.innerHTML = '<div style="text-align:center; color:var(--sand-dim); font-size:12px; padding:16px;">' +
+        'Nessun commento recente ricevuto. Quando un utente commenta su Facebook, Instagram, YouTube o in chat, il messaggio apparirà qui all\'istante e gli avatar risponderanno a voce in diretta!' +
+        '</div>';
+      return;
+    }
+
+    if (badge) badge.textContent = commenti.length + (commenti.length === 1 ? ' commento' : ' commenti');
+
+    var html = '';
+    commenti.forEach(function(c) {
+      var platBadge = c.piattaforma === 'Facebook' ? '<span style="background:#1877f2; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">📘 Facebook</span>' :
+                      c.piattaforma === 'Instagram' ? '<span style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">📸 Instagram</span>' :
+                      c.piattaforma === 'YouTube' ? '<span style="background:#ff0000; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">🔴 YouTube</span>' :
+                      '<span style="background:#2ecc71; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">💬 Web Chat</span>';
+
+      var orario = c.timestamp ? new Date(c.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '';
+
+      html += '<div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            platBadge +
+            '<strong style="color:var(--gold-bright); font-size:12px;">' + (c.autore || 'Spettatore') + '</strong>' +
+            (c.stanza ? '<span style="font-size:10px; color:#3498db; background:rgba(52,152,219,0.15); padding:2px 6px; border-radius:4px;">📍 Stanza: ' + c.stanza.toUpperCase() + '</span>' : '') +
+          '</div>' +
+          '<span style="font-size:10px; color:var(--sand-dim);">' + orario + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px; color:white; margin-bottom:6px;"><b>Domanda:</b> <i>"' + (c.messaggio || '') + '"</i></div>' +
+        '<div style="background:rgba(0,0,0,0.3); border-left:3px solid var(--gold); padding:6px 10px; border-radius:4px; font-size:11.5px; color:var(--sand);">' +
+          '<div style="margin-bottom:2px;"><b style="color:#e67e22;">🎙️ DarIA:</b> ' + (c.dariaTxt || '') + '</div>' +
+          '<div><b style="color:#3498db;">💻 DarIO:</b> ' + (c.darioTxt || '') + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  function pollaCommentiDirettaUI(btn) {
+    var oldTxt = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '⏳ Controllo...'; btn.disabled = true; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          if (res && res.success) {
+            caricaStoricoCommentiLiveUI();
+            var n = res.nuoviCommentiCount || (res.nuoviCommenti ? res.nuoviCommenti.length : 0);
+            mostraNotificaRegia('Commenti Social: ' + n + ' nuovi commenti rilevati!', 'success');
+          } else {
+            mostraNotificaRegia('Errore polling commenti: ' + (res ? res.error : 'sconosciuto'), 'warning');
+          }
+        })
+        .withFailureHandler(function(err) {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          mostraNotificaRegia('Errore: ' + err, 'error');
+        })
+        .pollaCommentiDiretta();
+    }
+  }
+
+  function resettaCommentiVistiUI(btn) {
+    if (!confirm('Vuoi davvero resettare la lista dei commenti già visti per Facebook, Instagram e YouTube?')) return;
+    var oldTxt = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '⏳...'; btn.disabled = true; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function() {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          mostraNotificaRegia('Commenti già visti resettati con successo!', 'success');
+          caricaStoricoCommentiLiveUI();
+        })
+        .withFailureHandler(function(err) {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          mostraNotificaRegia('Errore reset: ' + err, 'error');
+        })
+        .resettaCommentiVistiRegia();
+    }
+  }
+
+  function simulaCommentoLiveUI() {
+    var plat = document.getElementById('sim-commento-plat').value;
+    var autore = (document.getElementById('sim-commento-autore').value || 'Spettatore Live').trim();
+    var testo = (document.getElementById('sim-commento-testo').value || '').trim();
+    var resBox = document.getElementById('sim-commento-risultato');
+    var btn = document.getElementById('btn-sim-invia');
+
+    if (!testo) {
+      alert('Inserisci il testo della domanda da simulare!');
+      return;
+    }
+
+    var oldTxt = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '⏳ Invio in corso...'; btn.disabled = true; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          if (res && res.success) {
+            if (resBox) {
+              resBox.style.display = 'block';
+              resBox.innerHTML = '<div style="color:#2ecc71; font-weight:bold; margin-bottom:4px;">✅ Domanda inviata in diretta! DarIA &amp; DarIO rispondono a voce:</div>' +
+                '<div><b>🎙️ DarIA:</b> ' + (res.risposta ? res.risposta.dariaTxt : '') + '</div>' +
+                '<div><b>💻 DarIO:</b> ' + (res.risposta ? res.risposta.darioTxt : '') + '</div>' +
+                (res.risposta && res.risposta.stanza ? '<div style="margin-top:4px; color:#3498db;">📍 <i>Navigazione automatica alla stanza: ' + res.risposta.stanza.toUpperCase() + '</i></div>' : '');
+            }
+            mostraNotificaRegia('Domanda mandata in diretta con successo!', 'success');
+            caricaStoricoCommentiLiveUI();
+          } else {
+            if (resBox) {
+              resBox.style.display = 'block';
+              resBox.style.borderColor = '#e74c3c';
+              resBox.style.background = 'rgba(231,76,60,0.15)';
+              resBox.innerHTML = '<span style="color:#e74c3c;">⚠️ Errore invio: ' + (res ? res.error : 'sconosciuto') + '</span>';
+            }
+          }
+        })
+        .withFailureHandler(function(err) {
+          if (btn) { btn.innerHTML = oldTxt; btn.disabled = false; }
+          if (resBox) {
+            resBox.style.display = 'block';
+            resBox.style.borderColor = '#e74c3c';
+            resBox.innerHTML = '<span style="color:#e74c3c;">⚠️ Errore connessione: ' + err + '</span>';
+          }
+        })
+        .elaboraCommentoEsternoDiretto(testo, autore, plat);
+    }
+  }
+
+
+</script>

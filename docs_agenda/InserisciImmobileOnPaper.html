@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Inserimento Immobile su Carta — Immobiliare Giancani</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at top right, #0f172a, #020617);
+      min-height: 100vh;
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="text-slate-100 flex flex-col items-center justify-start p-4 md:p-8">
+
+  <div class="w-full max-w-2xl glass rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+    
+    <!-- HEADER -->
+    <div class="text-center space-y-2">
+      <div class="inline-flex items-center justify-center p-3 bg-amber-500/10 text-amber-400 rounded-2xl border border-amber-500/20 text-2xl">
+        📝
+      </div>
+      <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white uppercase">Nuovo Immobile su Carta</h1>
+      <p class="text-xs text-slate-400 max-w-md mx-auto">Inserimento rapido off-market con geolocalizzazione GPS protetta. Coordinato da <span class="text-amber-400 font-semibold">Immobiliare Giancani</span>.</p>
+    </div>
+
+    <!-- MAIN FORM -->
+    <form id="paperForm" onsubmit="salvaImmobile(event)" class="space-y-6">
+      
+      <!-- SEZIONE 1: DATI ECONOMICI E TIPOLOGIA -->
+      <div class="bg-white/5 p-5 rounded-2xl border border-white/5 space-y-4">
+        <h3 class="text-xs font-black uppercase tracking-wider text-amber-400">🏢 Dettagli Principali</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Tipologia Immobile</label>
+            <select id="tipologia" required class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+              <option value="Appartamento">Appartamento</option>
+              <option value="Villa Singola">Villa Singola</option>
+              <option value="Villa a Schiera">Villa a Schiera</option>
+              <option value="Rustico">Rustico</option>
+              <option value="Attico">Attico</option>
+              <option value="Locale Commerciale">Locale Commerciale</option>
+              <option value="Terreno">Terreno</option>
+              <option value="Garage">Garage</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Prezzo Richiesto (€)</label>
+            <input type="number" id="prezzo" required placeholder="Es. 125000" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Mq Totali</label>
+            <input type="number" id="mq" required placeholder="Es. 110" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Locali (Vani)</label>
+            <input type="number" id="locali" value="3" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Bagni</label>
+            <input type="number" id="bagni" value="1" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Stato Bozza</label>
+            <input type="text" value="SU CARTA (Bozza)" readonly class="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-500 font-bold select-none focus:outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- SEZIONE 2: LOCALIZZAZIONE & GPS LIVE -->
+      <div class="bg-white/5 p-5 rounded-2xl border border-white/5 space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-black uppercase tracking-wider text-amber-400">📍 Localizzazione e GPS</h3>
+          <button type="button" onclick="rilevaPosizione()" class="text-[10px] bg-amber-500 hover:bg-amber-450 text-slate-950 font-extrabold px-3 py-1 rounded-lg transition-all active:scale-95">Rileva Posizione GPS 🛰️</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Città</label>
+            <input type="text" id="citta" value="Favara" required class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Via / Indirizzo</label>
+            <input type="text" id="via" required placeholder="Via degli Oleandri" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Civico</label>
+            <input type="text" id="civico" placeholder="Es. 12" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">CAP</label>
+            <input type="text" id="cap" value="92018" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Zona / Frazione</label>
+            <input type="text" id="zona" placeholder="Es. Luna" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Stato Visibilità GPS</label>
+            <input type="text" value="PROTETTA 🔐" readonly class="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-amber-500 font-black text-center focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Lat & Lng Geolocation fields -->
+        <div class="grid grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Latitudine GPS</label>
+            <input type="text" id="lat" readonly placeholder="Nessuna coordinata" class="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-mono focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Longitudine GPS</label>
+            <input type="text" id="lng" readonly placeholder="Nessuna coordinata" class="w-full bg-slate-950/50 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-mono focus:outline-none">
+          </div>
+        </div>
+        <p id="gpsStatus" class="text-[10px] text-slate-500 italic">Il GPS verrà rilevato non appena clicchi su "Rileva Posizione GPS".</p>
+      </div>
+
+      <!-- SEZIONE 3: CONTATTI PROPRIETARIO -->
+      <div class="bg-white/5 p-5 rounded-2xl border border-white/5 space-y-4">
+        <h3 class="text-xs font-black uppercase tracking-wider text-amber-400">👤 Informazioni Proprietario</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Nome Proprietario</label>
+            <input type="text" id="proprietario" placeholder="Mario Rossi" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Telefono Proprietario</label>
+            <input type="text" id="telefonoProprietario" placeholder="+39 320 000 0000" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
+          </div>
+        </div>
+      </div>
+
+      <!-- SEZIONE 4: DESCRIZIONE EVERGREEN (COLONNA F) -->
+      <div class="bg-white/5 p-5 rounded-2xl border border-white/5 space-y-4">
+        <h3 class="text-xs font-black uppercase tracking-wider text-amber-400">✍️ Descrizione Evergreen (Colonna F)</h3>
+        <div>
+          <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Descrizione Pubblica per Incrocio Domanda/Offerta</label>
+          <textarea id="descrizione" required rows="4" placeholder="Es. Bellissimo appartamento posto al secondo piano con tripla esposizione soleggiata, rifiniture di pregio e posto auto condominiale..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 transition-all resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- BOTTONI SUBMIT -->
+      <div class="flex flex-col gap-3">
+        <button type="submit" id="submitBtn" class="w-full py-4 bg-amber-500 hover:bg-amber-450 text-slate-950 font-black uppercase tracking-wider text-xs rounded-2xl shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]">
+          Salva Immobile su Carta 🚀
+        </button>
+        <button type="button" onclick="chiudiFinestra()" class="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-bold text-xs rounded-2xl border border-white/5 transition-all">
+          Torna Indietro
+        </button>
+      </div>
+
+    </form>
+
+    <!-- LOADING & SUCCESS MODAL -->
+    <div id="loaderModal" class="hidden fixed inset-0 bg-slate-950/80 flex items-center justify-center z-50 p-4">
+      <div class="glass max-w-sm w-full p-8 rounded-3xl text-center space-y-4 border border-amber-500/20">
+        <div class="animate-spin text-3xl text-amber-500">⏳</div>
+        <p class="text-sm font-bold uppercase tracking-wider text-white">Salvataggio in corso...</p>
+        <p class="text-xs text-slate-400">Scrittura del database e allineamento GPS coordinati da Immobiliare Giancani.</p>
+      </div>
+    </div>
+
+    <div id="successModal" class="hidden fixed inset-0 bg-slate-950/90 flex items-center justify-center z-50 p-4">
+      <div class="glass max-w-md w-full p-8 rounded-3xl text-center space-y-6 border border-emerald-500/20">
+        <div class="text-4xl text-emerald-400">✅</div>
+        <div class="space-y-2">
+          <h3 class="text-xl font-extrabold text-white uppercase">Immobile Registrato!</h3>
+          <p class="text-xs text-slate-400">L'immobile su carta è stato salvato nel database ed è pronto per gli incroci con gli acquirenti.</p>
+        </div>
+        <div class="bg-slate-900 p-4 rounded-xl border border-white/5 font-mono text-xs">
+          <span class="text-slate-400">ID Immobile: </span>
+          <span id="savedId" class="text-amber-400 font-bold"></span>
+        </div>
+        <button onclick="nuovoInserimento()" class="w-full py-3 bg-amber-500 hover:bg-amber-450 text-slate-950 font-black uppercase text-xs tracking-wider rounded-xl transition-all">
+          Nuovo Inserimento
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function rilevaPosizione() {
+      var status = document.getElementById('gpsStatus');
+      if (!navigator.geolocation) {
+        status.textContent = "Geolocalizzazione non supportata dal tuo browser.";
+        status.className = "text-[10px] text-rose-400 font-bold";
+        return;
+      }
+
+      status.textContent = "Rilevamento satellitare in corso...";
+      status.className = "text-[10px] text-amber-400 italic animate-pulse";
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          document.getElementById('lat').value = position.coords.latitude.toFixed(6);
+          document.getElementById('lng').value = position.coords.longitude.toFixed(6);
+          status.textContent = "Posizione acquisita con successo! Precisione: " + position.coords.accuracy.toFixed(1) + " metri.";
+          status.className = "text-[10px] text-emerald-400 font-bold";
+        },
+        function(error) {
+          status.textContent = "Errore GPS: " + error.message;
+          status.className = "text-[10px] text-rose-400 font-bold";
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    function salvaImmobile(e) {
+      e.preventDefault();
+      
+      var dati = {
+        tipologia: document.getElementById('tipologia').value,
+        prezzo: document.getElementById('prezzo').value,
+        mq: document.getElementById('mq').value,
+        locali: document.getElementById('locali').value,
+        bagni: document.getElementById('bagni').value,
+        citta: document.getElementById('citta').value,
+        via: document.getElementById('via').value,
+        civico: document.getElementById('civico').value,
+        cap: document.getElementById('cap').value,
+        zona: document.getElementById('zona').value,
+        lat: document.getElementById('lat').value,
+        lng: document.getElementById('lng').value,
+        proprietario: document.getElementById('proprietario').value,
+        telefonoProprietario: document.getElementById('telefonoProprietario').value,
+        descrizione: document.getElementById('descrizione').value
+      };
+
+      document.getElementById('loaderModal').classList.remove('hidden');
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          document.getElementById('loaderModal').classList.add('hidden');
+          if (res.ok) {
+            document.getElementById('savedId').textContent = res.idImmobile;
+            document.getElementById('successModal').classList.remove('hidden');
+          } else {
+            alert("Errore: " + res.error);
+          }
+        })
+        .withFailureHandler(function(err) {
+          document.getElementById('loaderModal').classList.add('hidden');
+          alert("Errore di rete: " + err);
+        })
+        .arSalvaImmobileSuCarta(dati);
+    }
+
+    function nuovoInserimento() {
+      document.getElementById('successModal').classList.add('hidden');
+      document.getElementById('paperForm').reset();
+      document.getElementById('lat').value = '';
+      document.getElementById('lng').value = '';
+      document.getElementById('gpsStatus').textContent = "Il GPS verrà rilevato non appena clicchi su 'Rileva Posizione GPS'.";
+      document.getElementById('gpsStatus').className = "text-[10px] text-slate-500 italic";
+    }
+
+    function chiudiFinestra() {
+      window.close();
+    }
+  </script>
+</body>
+</html>

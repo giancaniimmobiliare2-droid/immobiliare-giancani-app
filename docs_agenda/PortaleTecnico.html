@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portale Tecnico | Immobiliare Giancani</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#030712',
+            surface: '#0b0f19',
+            surfaceLight: '#181e2e',
+            accent: '#6366f1',
+            accentLight: '#8b5cf6',
+            emeraldCustom: '#10b981',
+            mutedCustom: '#9ca3af',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #030712;
+      color: #f3f4f6;
+    }
+    .glass {
+      background: rgba(11, 15, 25, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .glass-hover:hover {
+      background: rgba(11, 15, 25, 0.85);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="w-full max-w-4xl mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-accentLight flex items-center justify-center font-display text-xl font-bold shadow-lg shadow-accent/20">🛠️</div>
+      <div>
+        <h1 class="font-display font-bold text-base leading-tight">Portale Tecnico</h1>
+        <p class="text-[10px] text-mutedCustom font-medium uppercase tracking-wider">Gestione Documentazione</p>
+      </div>
+    </div>
+    <div id="badge-ticket" class="hidden px-3.5 py-1 rounded-full text-xs font-semibold bg-accent/10 border border-accent/20 text-accentLight">
+      Ticket
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-grow w-full max-w-4xl mx-auto px-4 py-4 flex flex-col gap-6">
+
+    <!-- LOADER -->
+    <div id="loading" class="flex flex-col items-center justify-center py-20 gap-4">
+      <div class="text-4xl animate-spin text-accent">⏳</div>
+      <p class="text-xs font-bold uppercase tracking-widest text-mutedCustom animate-pulse">Caricamento Portale in corso...</p>
+    </div>
+
+    <!-- CONTENITORE ELENCO PRATICHE (Se manca ticket nell'URL) -->
+    <div id="sezioneAccesso" class="hidden glass rounded-3xl p-6 space-y-6 shadow-2xl border border-white/10 mt-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
+        <div>
+          <h3 class="text-xl font-display font-extrabold tracking-tight">Portafoglio Pratiche Attive</h3>
+          <p class="text-xs text-mutedCustom mt-1">Seleziona un immobile per aggiornare lo stato e caricare i documenti.</p>
+        </div>
+        
+        <!-- Search Box -->
+        <div class="relative w-full md:max-w-xs">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-mutedCustom">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </span>
+          <input type="text" id="ricercaPraticaInput" onkeyup="filtraPratiche()" placeholder="Cerca proprietario, ticket o città..." class="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 focus:border-accent rounded-xl text-xs font-semibold transition-all focus:outline-none focus:ring-1 focus:ring-accent text-white placeholder-mutedCustom/40">
+        </div>
+      </div>
+
+      <!-- Contenitore Lista -->
+      <div id="elencoPraticheContainer" class="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+        <div class="text-center py-10 text-mutedCustom text-xs">
+          <i class="fa-solid fa-spinner animate-spin text-lg text-accent mb-2"></i><br>Caricamento pratiche...
+        </div>
+      </div>
+    </div>
+
+    <!-- AREA DI LAVORO TECNICO -->
+    <div id="areaLavoro" class="hidden space-y-6">
+      
+      <!-- Pulsante per tornare alla lista -->
+      <div class="flex justify-start">
+        <button onclick="tornaAllaLista()" class="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-all active:scale-[0.98] border border-white/5">
+          <i class="fa-solid fa-arrow-left"></i> Torna alla lista
+        </button>
+      </div>
+
+      <!-- PROPERTY OVERVIEW CARD -->
+      <div class="glass rounded-3xl p-6 flex flex-col md:flex-row gap-5 items-center justify-between border border-white/10 shadow-lg">
+        <div class="flex items-center gap-4 flex-col md:flex-row text-center md:text-left">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accent to-accentLight flex items-center justify-center shadow-lg shadow-accent/20">
+            <i class="fa-solid fa-map-location-dot text-2xl text-white"></i>
+          </div>
+          <div>
+            <h3 id="ind_immobile" class="font-display font-extrabold text-lg leading-snug">Indirizzo...</h3>
+            <p id="prop_immobile" class="text-xs text-mutedCustom mt-1">Proprietario: --</p>
+          </div>
+        </div>
+        <span id="badge-stato-immobile" class="bg-indigo-500/10 border border-indigo-500/20 text-accentLight px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">TECNICO ASSEGNATO</span>
+      </div>
+
+      <!-- AMAZON TRACKER -->
+      <div class="glass rounded-3xl p-6 border border-white/5 space-y-4">
+        <div class="flex items-center justify-between text-[10px] text-mutedCustom uppercase font-bold tracking-wider">
+          <span>Stato Avanzamento Pratica</span>
+          <span id="tracker-percentage" class="text-accentLight">0%</span>
+        </div>
+        
+        <div class="relative flex items-center justify-between w-full py-2">
+          <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full z-0"></div>
+          <div id="tracker-line" class="absolute left-0 top-1/2 -translate-y-1/2 h-[4px] bg-gradient-to-r from-accent to-accentLight rounded-full z-0 transition-all duration-1000" style="width: 0%;"></div>
+          
+          <div class="flex flex-col items-center gap-1.5 z-10">
+            <div id="step-circle-1" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom">
+              <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <span class="text-[8px] font-bold text-mutedCustom uppercase">Incarico</span>
+          </div>
+          <div class="flex flex-col items-center gap-1.5 z-10">
+            <div id="step-circle-2" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <span class="text-[8px] font-bold text-mutedCustom uppercase">Verifica</span>
+          </div>
+          <div class="flex flex-col items-center gap-1.5 z-10">
+            <div id="step-circle-3" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <span class="text-[8px] font-bold text-mutedCustom uppercase">Certificati</span>
+          </div>
+          <div class="flex flex-col items-center gap-1.5 z-10">
+            <div id="step-circle-4" class="w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <span class="text-[8px] font-bold text-mutedCustom uppercase">Conforme</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECKLIST E CARICAMENTO DOCUMENTI -->
+      <div class="glass rounded-3xl p-6 border border-white/5 space-y-4">
+        <h4 class="text-sm font-display font-bold uppercase text-mutedCustom tracking-wider">
+          <i class="fa-solid fa-upload mr-1.5 text-accent"></i> Carica e Aggiorna Documentazione
+        </h4>
+        
+        <div id="listaDocumenti" class="space-y-4">
+          <!-- Popolato via JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full max-w-4xl mx-auto px-4 py-8 text-center border-t border-white/5 space-y-2 mt-auto">
+    <p class="text-xs text-mutedCustom">Pannello perito tecnico abilitato.</p>
+    <p class="text-sm font-display font-extrabold text-white tracking-wide">Immobiliare Giancani</p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    let currentTicket = "";
+    let tutteLePratiche = [];
+
+    window.onload = function() {
+      currentTicket = "<?= ticket ?>";
+      if (currentTicket && currentTicket.trim() !== "") {
+        inizializzaPratica(currentTicket);
+      } else {
+        caricaElencoPratiche();
+      }
+    };
+
+    // Carica la lista di tutte le pratiche dal server
+    function caricaElencoPratiche() {
+      document.getElementById('areaLavoro').classList.add('hidden');
+      document.getElementById('sezioneAccesso').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+      
+      google.script.run
+        .withSuccessHandler(function(lista) {
+          tutteLePratiche = lista || [];
+          renderElencoPratiche(tutteLePratiche);
+        })
+        .withFailureHandler(function(err) {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('sezioneAccesso').classList.remove('hidden');
+          document.getElementById('elencoPraticheContainer').innerHTML = `
+            <div class="text-center py-6 text-red-400 text-xs">
+              <i class="fa-solid fa-triangle-exclamation text-lg mb-2"></i><br>Errore caricamento pratiche: ${err.message}
+            </div>
+          `;
+        })
+        .dcOttieniListaPratiche();
+    }
+
+    // Renderizza la lista pratiche in HTML
+    function renderElencoPratiche(lista) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('sezioneAccesso').classList.remove('hidden');
+      
+      const container = document.getElementById('elencoPraticheContainer');
+      if (lista.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-mutedCustom text-xs">Nessuna pratica attiva nel database.</div>`;
+        return;
+      }
+      
+      container.innerHTML = lista.map((p, idx) => {
+        let coloreProgresso = 'bg-accent';
+        if (p.percentuale === 100) coloreProgresso = 'bg-emeraldCustom';
+        else if (p.percentuale > 40) coloreProgresso = 'bg-indigo-400';
+        
+        return `
+          <div onclick="inizializzaPratica('${p.ticket}')" class="glass-hover p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer transition-all duration-300">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-accentLight bg-accent/10 border border-accent/20 px-2 py-0.5 rounded-full">${p.ticket}</span>
+                <strong class="text-sm font-display text-slate-100">${p.proprietario}</strong>
+              </div>
+              <p class="text-xs text-mutedCustom"><i class="fa-solid fa-location-dot text-[10px] mr-1"></i> ${p.indirizzo}</p>
+            </div>
+            
+            <div class="flex items-center gap-3 min-w-[120px] justify-between md:justify-end">
+              <div class="w-24 bg-white/5 h-2 rounded-full overflow-hidden relative">
+                <div class="h-full ${coloreProgresso} rounded-full" style="width: ${p.percentuale}%"></div>
+              </div>
+              <span class="text-xs font-bold text-slate-300 w-8 text-right">${p.percentuale}%</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Filtra la lista localmente mentre il tecnico digita
+    function filtraPratiche() {
+      let query = document.getElementById('ricercaPraticaInput').value.trim().toLowerCase();
+      if (!query) {
+        renderElencoPratiche(tutteLePratiche);
+        return;
+      }
+      
+      let filtrate = tutteLePratiche.filter(p => {
+        return p.ticket.toLowerCase().includes(query) ||
+               p.proprietario.toLowerCase().includes(query) ||
+               p.indirizzo.toLowerCase().includes(query);
+      });
+      
+      renderElencoPratiche(filtrate);
+    }
+
+    // Torna alla lista
+    function tornaAllaLista() {
+      currentTicket = "";
+      // Ricarica la lista per allineare le percentuali aggiornate dopo eventuali modifiche
+      caricaElencoPratiche();
+    }
+
+    function inizializzaPratica(ticket) {
+      currentTicket = ticket;
+      document.getElementById('sezioneAccesso').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+      
+      google.script.run
+        .withSuccessHandler(renderPortale)
+        .withFailureHandler(function(err) {
+          alert("Impossibile caricare il ticket inserito: " + err.message);
+          caricaElencoPratiche();
+        })
+        .OttieniDatiReportVenditore(ticket);
+    }
+
+    function renderPortale(dati) {
+      if (!dati) {
+        alert("Nessun dato trovato per questo Ticket!");
+        caricaElencoPratiche();
+        return;
+      }
+      
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('areaLavoro').classList.remove('hidden');
+      
+      let badgeTck = document.getElementById('badge-ticket');
+      badgeTck.innerText = dati.ticket;
+      badgeTck.classList.remove('hidden');
+      
+      document.getElementById('ind_immobile').innerText = dati.indirizzo;
+      document.getElementById('prop_immobile').innerText = "Proprietario: " + dati.proprietario;
+      
+      // Renderizza la checklist di documenti
+      const container = document.getElementById('listaDocumenti');
+      container.innerHTML = "";
+      
+      dati.documentiChecklist.forEach((doc, idx) => {
+        let isVer = doc.stato === 'VERIFICATO';
+        let isChecking = doc.stato === 'IN_VERIFICA';
+        
+        let selectHtml = `
+          <select onchange="aggiornaStatoDocumento('${doc.documento}', this.value)" class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-accent">
+            <option value="MANCANTE" ${doc.stato === 'MANCANTE' ? 'selected' : ''} class="bg-surface text-white">❌ Mancante</option>
+            <option value="IN_VERIFICA" ${isChecking ? 'selected' : ''} class="bg-surface text-white">⏳ In Verifica</option>
+            <option value="VERIFICATO" ${isVer ? 'selected' : ''} class="bg-surface text-white">✅ Verificato</option>
+          </select>
+        `;
+        
+        let statusBadge = `
+          <span class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center flex-shrink-0 bg-red-500/10 border-red-500/20 text-red-400">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </span>
+        `;
+        if (isVer) {
+          statusBadge = `
+            <span class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center flex-shrink-0 bg-emerald-500/10 border-emerald-500/20 text-emeraldCustom">
+              <i class="fa-solid fa-circle-check"></i>
+            </span>
+          `;
+        } else if (isChecking) {
+          statusBadge = `
+            <span class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center flex-shrink-0 bg-amber-500/10 border-amber-500/20 text-amber-400">
+              <i class="fa-solid fa-circle-notch animate-spin"></i>
+            </span>
+          `;
+        }
+        
+        container.innerHTML += `
+          <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl gap-3">
+            <div class="flex items-center gap-3">
+              ${statusBadge}
+              <div>
+                <p class="text-xs font-bold text-slate-200">${doc.documento}</p>
+                <p class="text-[10px] text-mutedCustom mt-0.5">${doc.note || 'Nessuna nota.'}</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-3 justify-end">
+              ${selectHtml}
+              
+              <!-- Input Upload File -->
+              <label class="flex items-center gap-1.5 bg-accent hover:bg-accent/90 text-white font-bold px-3 py-2 rounded-xl cursor-pointer text-xs transition-all active:scale-[0.98]">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Carica PDF
+                <input type="file" accept=".pdf,image/*" onchange="uploadFile('${doc.documento}', this, ${idx})" class="hidden">
+              </label>
+              
+              <span id="spinner-upload-${idx}" class="hidden text-accent text-xs animate-spin">⏳</span>
+              <span id="check-upload-${idx}" class="hidden text-emeraldCustom text-xs"><i class="fa-solid fa-check-double"></i> Caricato</span>
+            </div>
+          </div>
+        `;
+      });
+      
+      // Calcolo e aggiornamento Amazon Tracker
+      aggiornaTrackerGrafico(dati.documentiChecklist);
+    }
+
+    function aggiornaTrackerGrafico(documenti) {
+      let totalDocs = documenti.length;
+      let verifiedDocs = documenti.filter(d => d.stato === 'VERIFICATO').length;
+      let inVerDocs = documenti.filter(d => d.stato === 'IN_VERIFICA').length;
+      
+      let percentage = Math.round(((verifiedDocs + (inVerDocs * 0.5)) / totalDocs) * 100);
+      document.getElementById('tracker-percentage').innerText = percentage + '%';
+      
+      let step1 = true;
+      let step2 = false;
+      let step3 = false;
+      let step4 = false;
+      
+      let plani = documenti.find(d => d.documento.toLowerCase().includes('planimetria'));
+      let atto = documenti.find(d => d.documento.toLowerCase().includes('atto'));
+      if ((!plani || plani.stato === 'VERIFICATO' || plani.stato === 'IN_VERIFICA') &&
+          (!atto || atto.stato === 'VERIFICATO' || atto.stato === 'IN_VERIFICA')) {
+        step2 = true;
+      }
+      
+      let ape = documenti.find(d => d.documento.toLowerCase().includes('ape') || d.documento.toLowerCase().includes('attestato'));
+      let visura = documenti.find(d => d.documento.toLowerCase().includes('visura'));
+      if (step2 && 
+          (!ape || ape.stato === 'VERIFICATO' || ape.stato === 'IN_VERIFICA') &&
+          (!visura || visura.stato === 'VERIFICATO' || visura.stato === 'IN_VERIFICA')) {
+        step3 = true;
+      }
+      
+      if (verifiedDocs === totalDocs) {
+        step4 = true;
+      }
+      
+      let progressWidth = 0;
+      if (step1) progressWidth = 10;
+      if (step2) progressWidth = 40;
+      if (step3) progressWidth = 70;
+      if (step4) progressWidth = 100;
+      document.getElementById('tracker-line').style.width = progressWidth + '%';
+      
+      const setStepColor = (num, active) => {
+        let el = document.getElementById('step-circle-' + num);
+        if (el) {
+          if (active) {
+            el.className = "w-8 h-8 rounded-full bg-emeraldCustom/10 border-2 border-emeraldCustom flex items-center justify-center text-xs text-emeraldCustom shadow-lg shadow-emeraldCustom/20 transition-all duration-500";
+          } else {
+            el.className = "w-8 h-8 rounded-full bg-surfaceLight border border-white/10 flex items-center justify-center text-xs text-mutedCustom transition-all duration-500";
+          }
+        }
+      };
+      
+      setStepColor(1, step1);
+      setStepColor(2, step2);
+      setStepColor(3, step3);
+      setStepColor(4, step4);
+    }
+
+    // 1. Funzione per aggiornare lo stato del documento al cambio del selettore
+    function aggiornaStatoDocumento(documento, nuovoStato) {
+      google.script.run
+        .withSuccessHandler(function() {
+          inizializzaPratica(currentTicket); // ricarica per mostrare i dati allineati
+        })
+        .withFailureHandler(function(err) {
+          alert("Errore aggiornamento stato: " + err.message);
+        })
+        .dcAggiornaStatoDocumentoTecnico(currentTicket, documento, nuovoStato);
+    }
+
+    // 2. Funzione per l'upload del file PDF/Immagine e la conversione in Base64
+    function uploadFile(documento, inputElement, index) {
+      let file = inputElement.files[0];
+      if (!file) return;
+      
+      let spinner = document.getElementById('spinner-upload-' + index);
+      let check = document.getElementById('check-upload-' + index);
+      
+      spinner.classList.remove('hidden');
+      check.classList.add('hidden');
+      
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        let base64Data = e.target.result.split(',')[1];
+        
+        google.script.run
+          .withSuccessHandler(function(res) {
+            spinner.classList.add('hidden');
+            check.classList.remove('hidden');
+            // ricarica la pratica per allineare l'interfaccia con il nuovo stato VERIFICATO e note aggiornate
+            setTimeout(() => { inizializzaPratica(currentTicket); }, 1500);
+          })
+          .withFailureHandler(function(err) {
+            spinner.classList.add('hidden');
+            alert("Errore durante il caricamento del file: " + err.message);
+          })
+          .dcSalvaDocumentoTecnicoDrive(currentTicket, documento, base64Data, file.name);
+      };
+      reader.onloadstart = function() {
+        spinner.classList.remove('hidden');
+        check.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>

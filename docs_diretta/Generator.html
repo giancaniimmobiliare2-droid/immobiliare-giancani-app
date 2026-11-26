@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!-- Auto-Vision AI Generator, 9-Tab Studio Regia con Selettore 6 Voci Edge-TTS, Upload Mobile, Editor 360° & Vista Sferica — Immobiliare Giancani (v131.0) -->
+<html lang="it">
+  <head>
+
+<script>
+
+/**
+ * 🏷️ Estrae la tipologia principale dell'immobile dal nome della cartella o del foglio
+ * Es: "appartamento in via xx yyy" -> "Appartamento", "villa con piscina" -> "Villa"
+ */
+function estraiTipoImmobileDaNomeCartella(nomeCartellaOTab) {
+  if (!nomeCartellaOTab) return "Appartamento";
+  var clean = String(nomeCartellaOTab).replace(/_/g, ' ').trim();
+  var lower = clean.toLowerCase();
+
+  if (lower.indexOf("villa") !== -1) return "Villa";
+  if (lower.indexOf("appartamento") !== -1) return "Appartamento";
+  if (lower.indexOf("attico") !== -1) return "Attico";
+  if (lower.indexOf("casa indipendente") !== -1 || lower.indexOf("indipendente") !== -1) return "Casa Indipendente";
+  if (lower.indexOf("rustico") !== -1 || lower.indexOf("casale") !== -1) return "Rustico";
+  if (lower.indexOf("monolocale") !== -1) return "Monolocale";
+  if (lower.indexOf("bilocale") !== -1) return "Bilocale";
+  if (lower.indexOf("trilocale") !== -1) return "Trilocale";
+  if (lower.indexOf("quadrilocale") !== -1) return "Quadrilocale";
+  if (lower.indexOf("mansarda") !== -1) return "Mansarda";
+  if (lower.indexOf("duplex") !== -1) return "Duplex";
+  if (lower.indexOf("palazzina") !== -1 || lower.indexOf("stabile") !== -1) return "Palazzina";
+  if (lower.indexOf("ufficio") !== -1) return "Ufficio";
+  if (lower.indexOf("commerciale") !== -1 || lower.indexOf("locale") !== -1 || lower.indexOf("negozio") !== -1) return "Locale Commerciale";
+  if (lower.indexOf("garage") !== -1 || lower.indexOf("box") !== -1) return "Garage";
+  if (lower.indexOf("terreno") !== -1) return "Terreno";
+  if (lower.indexOf("deposito") !== -1 || lower.indexOf("magazzino") !== -1) return "Magazzino";
+
+  var primaParola = clean.split(/\s+/)[0];
+  if (primaParola && primaParola.length >= 4 && !primaParola.match(/^\d+$/)) {
+    return primaParola.charAt(0).toUpperCase() + primaParola.slice(1).toLowerCase();
+  }
+  return "Appartamento";
+}
+
+/**
+ * 🔍 Riconosce la stanza dal nome del file (o fallback al tipo immobile se non riconosciuto)
+ * Es: se vede wc/bagno scrive "Bagno", se non capisce scrive "Appartamento" (o "Villa")
+ */
+function deduciStanzaOImmobile(rawBase, tipoImmobileDefault) {
+  var fallbackTipo = tipoImmobileDefault || "Appartamento";
+  if (!rawBase) return fallbackTipo;
+  var bLow = rawBase.toLowerCase().trim();
+
+  // 1. Sanitari / WC / Bagno ("se vede il wc scrive bagno")
+  if (bLow.match(/\b(wc|bagno|toilette|servizio|doccia|lavanderia|bidet|bath|water)\b/) || bLow.indexOf("wc") !== -1 || bLow.indexOf("bagno") !== -1) {
+    return "Bagno";
+  }
+  // 2. Cucina
+  if (bLow.match(/\b(cucina|cottura|kitchen|angolo_cottura|tinello|pranzo)\b/) || bLow.indexOf("cucina") !== -1) {
+    return "Cucina";
+  }
+  // 3. Camera da letto
+  if (bLow.match(/\b(camera|letto|matrimoniale|notte|singola|padronale|bed)\b/) || bLow.indexOf("camera") !== -1) {
+    return "Camera da letto";
+  }
+  // 4. Cameretta
+  if (bLow.indexOf("cameretta") !== -1 || bLow.indexOf("ragazzi") !== -1 || bLow.indexOf("bambin") !== -1) {
+    return "Cameretta";
+  }
+  // 5. Soggiorno / Living / Salone
+  if (bLow.match(/\b(soggiorno|salone|living|salotto|relax)\b/) || bLow.indexOf("soggiorno") !== -1 || bLow.indexOf("salone") !== -1) {
+    return "Soggiorno";
+  }
+  // 6. Terrazzo / Balcone
+  if (bLow.match(/\b(terrazz|balcon|verand|loggia|vista|panorama)\b/) || bLow.indexOf("terrazz") !== -1 || bLow.indexOf("balcon") !== -1) {
+    return "Terrazzo";
+  }
+  // 7. Esterno / Giardino / Facciata
+  if (bLow.match(/\b(giardin|estern|cortil|portic|facciata|prospetto)\b/) || bLow.indexOf("giardin") !== -1 || bLow.indexOf("estern") !== -1) {
+    return "Esterno";
+  }
+  // 8. Garage / Box
+  if (bLow.match(/\b(garage|box|auto|posto_auto)\b/) || bLow.indexOf("garage") !== -1) {
+    return "Garage";
+  }
+  // 9. Ingresso / Corridoio
+  if (bLow.match(/\b(ingresso|entrata|corridoio|disimpegno|atrio)\b/) || bLow.indexOf("ingresso") !== -1) {
+    return "Ingresso";
+  }
+
+  // Se è un file camera generico (IMG, DSC, numeri) o se non capisce: scrive il tipo immobile (es. Appartamento)
+  return fallbackTipo;
+}
+
+
+// 🌐 BRIDGE UNIVERSALE LOCALE PER GOOGLE APPS SCRIPT
+if (typeof google === 'undefined' || !google.script || !google.script.run) {
+  console.log('ℹ️ Rilevata esecuzione locale di Generator.html: attivazione Web App Bridge Universale');
+  window.google = window.google || {};
+  window.google.script = window.google.script || {};
+
+  function makeSafeProxy(successCb, failCb) {
+    var fn = function() {
+      if (typeof successCb === 'function') {
+        try { successCb({ success: true, localMock: true }); } catch(e){}
+      }
+      return makeSafeProxy(successCb, failCb);
+    };
+    return new Proxy(fn, {
+      get: function(target, prop) {
+        if (prop === 'withSuccessHandler') {
+          return function(scb) { return makeSafeProxy(scb, failCb); };
+        }
+        if (prop === 'withFailureHandler') {
+          return function(fcb) { return makeSafeProxy(successCb, fcb); };
+        }
+        return makeSafeProxy(successCb, failCb);
+      },
+      apply: function(target, thisArg, argArray) {
+        if (typeof successCb === 'function') {
+          try { successCb({ success: true, localMock: true }); } catch(e){}
+        }
+        return makeSafeProxy(successCb, failCb);
+      }
+    });
+  }
+
+  window.google.script.run = makeSafeProxy(null, null);
+}
+</script>
+
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Studio Regia & Controllo Live v131.0 — Immobiliare Giancani</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <?!= include('AvatarAssets') ?>
+
+    <!-- 🎨 FOGLIO DI STILE CSS LUXURY MODULARE -->
+    <?!= include('Generator_Style') ?>
+  </head>
+  <body>
+
+    <!-- 🏰 HEADER, CONTROLLI MASTER & NAVIGAZIONE TAB -->
+    <?!= include('Generator_Header') ?>
+
+    <!-- NAVIGAZIONE SEMPLIFICATA: Android = Home a card con immagini, PC = flusso a 4 fasi -->
+    <?!= include('Generator_Nav_Images') ?>
+    <?!= include('Generator_Nav_V2') ?>
+
+        <!-- 📑 11 TAB OPERATIVI SUDDIVISI IN MODULI -->
+        <?!= include('Gen_Tab_Analytics') ?>
+        <?!= include('Gen_Tab_Avatar') ?>
+        <?!= include('Gen_Tab_Palinsesto') ?>
+        <?!= include('Gen_Tab_Ruoli') ?>
+        <?!= include('Gen_Tab_Telegram') ?>
+        <?!= include('Gen_Tab_Impostazioni') ?>
+        <?!= include('Gen_Tab_Galleria') ?>
+        <?!= include('Gen_Tab_Live') ?>
+        <?!= include('Gen_Tab_AutoVision') ?>
+        <?!= include('Gen_Tab_AzureTTS') ?>
+        <?!= include('Gen_Tab_BotStorie') ?>
+        <?!= include('Gen_Tab_CanzoniSuno') ?>
+        <?!= include('Gen_Tab_TimelineEditor') ?>
+
+      </div> <!-- /#main-panel -->
+    </div> <!-- /.container -->
+
+    <!-- ═══ MODALI & FINESTRE DI DIALOGO ═══ -->
+    <?!= include('Generator_Modals') ?>
+
+    <!-- 💻 MODULI SCRIPT JAVASCRIPT CLIENT-SIDE -->
+    <?!= include('Gen_Script_Core') ?>
+    <?!= include('Gen_Script_Avatar') ?>
+    <?!= include('Gen_Script_Galleria') ?>
+    <?!= include('Gen_Script_Palinsesto') ?>
+    <?!= include('Gen_Script_Pannellum360') ?>
+    <?!= include('Gen_Script_LiveMaster') ?>
+    <?!= include('Gen_Script_Comments') ?>
+    <?!= include('Gen_Script_BotStorie') ?>
+    <?!= include('Gen_Script_CanzoniSuno') ?>
+    <?!= include('Gen_Script_TimelineEditor') ?>
+
+  </body>
+</html>

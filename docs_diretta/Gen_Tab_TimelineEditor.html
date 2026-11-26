@@ -1,0 +1,1193 @@
+<!-- 🎞️ TAB: STUDIO TIMELINE MULTI-TRACCIA & MONTATORE RITMICO (9:16) -->
+<div id="tab-timeline-editor" class="tab-content">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       🎞️ STUDIO TIMELINE MULTI-TRACCIA & EDITOR OGGETTI — IMMOBILIARE GIANCANI
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .timeline-studio-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    /* TOP DECK: PREVIEW MONITOR (SX) & CONTROLLI INSPECTOR OGGETTI (DX) */
+    .timeline-top-deck {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 992px) {
+      .timeline-top-deck {
+        grid-template-columns: 320px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* 9:16 MONITOR VERTICALE CINEMATOGRAFICO */
+    .timeline-monitor-box {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 9/16;
+      background: #000;
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(201,163,94,0.25);
+      margin: 0 auto;
+    }
+    .timeline-monitor-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s ease, transform 0.4s ease;
+    }
+    .timeline-monitor-bg.fx-zoom {
+      transform: scale(1.08);
+    }
+    .timeline-monitor-bg.fx-pan {
+      transform: scale(1.1) translateX(-15px);
+    }
+
+    /* VIGNETTE CINEMATICHE MORBIDE */
+    .timeline-monitor-vignette-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 110px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .timeline-monitor-vignette-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 230px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* CALLOUT SCENA ALTO (FLUTTUANTE SENZA BOX CON OMBRA 3D) */
+    .timeline-monitor-callout {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      right: 10px;
+      color: #ffe85f;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-shadow: 0 0 10px rgba(255,215,0,0.5), 0 2px 6px #000, 0 3px 0 #000;
+      z-index: 3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.25s ease;
+    }
+
+    /* SOTTOTITOLO CINETICO A TEMPO DI BEAT */
+    .timeline-monitor-subtitle {
+      position: absolute;
+      bottom: 22px;
+      left: 14px;
+      right: 14px;
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.95);
+      z-index: 3;
+      text-align: center;
+    }
+    .timeline-monitor-subtitle .highlight-gold {
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255,215,0,0.6);
+    }
+    .timeline-monitor-badge-time {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      background: rgba(0,0,0,0.85);
+      color: #22c55e;
+      font-size: 9.5px;
+      font-family: monospace;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #22c55e;
+      z-index: 4;
+    }
+
+    /* EFFETTO FLASH SUL MONITOR */
+    .timeline-monitor-flash-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.08s ease;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       🎛️ INSPECTOR CARD & EDITOR OGGETTI
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .timeline-inspector-card {
+      background: linear-gradient(135deg, rgba(22, 17, 12, 0.98), rgba(12, 9, 7, 0.99));
+      border: 1.5px solid var(--gold);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.85), 0 0 20px rgba(201,163,94,0.15);
+    }
+    .timeline-inspector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(201,163,94,0.25);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .timeline-inspector-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* TABS DI NAVIGAZIONE EDITOR OGGETTI */
+    .obj-editor-tabs-nav {
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(201, 163, 94, 0.25);
+      border-radius: 10px;
+      padding: 5px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .obj-tab-btn {
+      flex: 1;
+      min-width: 105px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .obj-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+    .obj-tab-btn.active {
+      background: linear-gradient(135deg, rgba(201, 163, 94, 0.35), rgba(166, 81, 45, 0.4));
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(201, 163, 94, 0.3);
+    }
+
+    /* PANNELLI DELL'INSPECTOR */
+    .obj-editor-panel {
+      display: none;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(201, 163, 94, 0.2);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+    .obj-editor-panel.active {
+      display: block;
+      animation: fadeInObj 0.2s ease;
+    }
+    @keyframes fadeInObj {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .obj-field-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 640px) {
+      .obj-field-row.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+      .obj-field-row.three-col {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .obj-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--gold-lt);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .obj-input, .obj-select, .obj-textarea {
+      width: 100%;
+      background: rgba(10, 14, 20, 0.9);
+      border: 1.5px solid rgba(201, 163, 94, 0.35);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 11.5px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .obj-input:focus, .obj-select:focus, .obj-textarea:focus {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    .obj-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(201,163,94,0.25);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+    .obj-slider {
+      flex: 1;
+      accent-color: var(--gold-bright);
+      cursor: pointer;
+    }
+    .obj-slider-val {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    /* PALETTE COLOR PILLS */
+    .obj-color-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 5px;
+    }
+    .obj-color-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .obj-color-btn:hover {
+      transform: scale(1.15);
+    }
+    .obj-color-btn.active {
+      border-color: #fff;
+      box-shadow: 0 0 10px #fff;
+    }
+
+    /* PULSANTI AZIONE NELL'EDITOR */
+    .obj-actions-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(201, 163, 94, 0.2);
+    }
+    .btn-obj-save {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      border: 1px solid #4ade80;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+      transition: all 0.2s;
+    }
+    .btn-obj-save:hover {
+      background: #22c55e;
+      color: #000;
+      transform: translateY(-1px);
+    }
+    .btn-obj-delete {
+      background: rgba(220, 38, 38, 0.2);
+      color: #f87171;
+      border: 1px solid #ef4444;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-obj-delete:hover {
+      background: #dc2626;
+      color: #fff;
+    }
+    .btn-obj-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      border: 1px solid rgba(201, 163, 94, 0.3);
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-obj-action:hover {
+      background: rgba(201,163,94,0.25);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    /* TOOLBAR CONTROLLI TRASPORTO TIMELINE */
+    .timeline-transport-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .btn-transport {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--gold);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-transport:hover {
+      background: var(--gold);
+      color: #000;
+    }
+    .btn-transport-play {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #4ade80;
+      color: #fff;
+      padding: 8px 18px;
+    }
+    .btn-transport-play:hover {
+      background: #22c55e;
+      color: #000;
+    }
+    .btn-transport-render {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-color: var(--gold-bright);
+      color: #120c04;
+      padding: 10px 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+    }
+    .btn-transport-render:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(245,158,11,0.6);
+      color: #000;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       LA TIMELINE MULTI-TRACCIA ORIZZONTALE (SEZIONE INFERIORE)
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .timeline-multi-box {
+      background: #060a14;
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85);
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .timeline-quick-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(201, 163, 94, 0.25);
+    }
+    .timeline-toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-tl-tool {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(201, 163, 94, 0.3);
+      color: #e2e8f0;
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .btn-tl-tool:hover {
+      background: rgba(201, 163, 94, 0.2);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    .timeline-ruler-wrap {
+      display: flex;
+      border-bottom: 1.5px solid rgba(201,163,94,0.3);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      margin-left: 140px;
+      position: relative;
+      min-width: 760px;
+    }
+    .timeline-ruler-tick {
+      flex: 1;
+      font-size: 10px;
+      font-family: monospace;
+      color: #94a3b8;
+      border-left: 1px solid rgba(255,255,255,0.15);
+      padding-left: 4px;
+      height: 14px;
+    }
+
+    /* AGO DEL CURSORE (PLAYHEAD NEEDLE) */
+    .timeline-needle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 140px;
+      width: 2px;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444, 0 0 4px #fff;
+      pointer-events: none;
+      z-index: 30;
+      transition: left 0.1s linear;
+    }
+    .timeline-needle::before {
+      content: '▼';
+      position: absolute;
+      top: -10px;
+      left: -5px;
+      color: #ef4444;
+      font-size: 11px;
+    }
+
+    /* TRACCE MULTI-PIANO */
+    .timeline-track-lane {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+      min-width: 900px;
+    }
+    .track-badge-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,163,94,0.25);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .track-badge-label:hover {
+      border-color: var(--gold);
+      background: rgba(201,163,94,0.15);
+    }
+
+    .track-content-lane {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 6px 8px;
+      position: relative;
+    }
+
+    /* BLOCCO CLIP VIDEO */
+    .timeline-clip-block {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+      border: 1.5px solid rgba(201, 163, 94, 0.4);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.2s;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .timeline-clip-block:hover, .timeline-clip-block.active {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 14px rgba(201,163,94,0.45);
+      transform: translateY(-1px);
+    }
+    .timeline-clip-block .clip-dur {
+      font-size: 9.5px;
+      color: #38bdf8;
+      font-family: monospace;
+    }
+
+    /* PILLOLA TRANSIZIONE INTER-CLIP */
+    .timeline-trans-pill {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.25));
+      border: 1.5px dashed var(--gold-bright);
+      border-radius: 14px;
+      color: var(--gold-bright);
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .timeline-trans-pill:hover {
+      background: var(--gold-bright);
+      color: #000;
+      border-style: solid;
+      transform: scale(1.08);
+      box-shadow: 0 0 12px rgba(245, 212, 133, 0.6);
+    }
+    .timeline-trans-pill.trans-flash { border-color: #fff; color: #fff; background: rgba(255,255,255,0.25); }
+    .timeline-trans-pill.trans-sfumatura { border-color: #38bdf8; color: #38bdf8; background: rgba(56,189,248,0.2); }
+    .timeline-trans-pill.trans-glow { border-color: #ffd700; color: #ffd700; background: rgba(255,215,0,0.25); }
+    .timeline-trans-pill.trans-cut { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.2); }
+
+    /* BLOCCHI SOTTOTITOLI & AUDIO */
+    .timeline-sub-block {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid #c084fc;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 10.5px;
+      color: #e9d5ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .timeline-sub-block:hover, .timeline-sub-block.active {
+      background: rgba(168, 85, 247, 0.35);
+      border-color: #e9d5ff;
+      box-shadow: 0 0 10px rgba(168,85,247,0.4);
+    }
+
+    .timeline-audio-block {
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.25), rgba(16, 185, 129, 0.15));
+      border: 1px solid #22c55e;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 10.5px;
+      color: #86efac;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      cursor: pointer;
+    }
+    .timeline-audio-block:hover {
+      background: rgba(34, 197, 94, 0.35);
+    }
+
+    .timeline-branding-block {
+      background: linear-gradient(90deg, rgba(201, 163, 94, 0.3), rgba(166, 81, 45, 0.3));
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    /* SELETTORI FONT & EFFETTI */
+    .timeline-font-grid, .timeline-effect-grid, .timeline-trans-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 7px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+    .btn-font-choice, .btn-effect-choice, .btn-trans-choice {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(201, 163, 94, 0.3);
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-font-choice:hover, .btn-font-choice.active,
+    .btn-effect-choice:hover, .btn-effect-choice.active,
+    .btn-trans-choice:hover, .btn-trans-choice.active {
+      background: linear-gradient(135deg, rgba(201, 163, 94, 0.25), rgba(212, 168, 83, 0.15));
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      box-shadow: 0 0 10px rgba(201, 163, 94, 0.3);
+    }
+
+    /* EFFETTI TIPOGRAFICI NEL MONITOR ANTEPRIMA */
+    .monitor-font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+    .monitor-font-anton { font-family: 'Anton', 'Impact', sans-serif !important; letter-spacing: 0.5px; }
+    .monitor-font-bebas { font-family: 'Bebas Neue', 'Impact', sans-serif !important; letter-spacing: 1px; }
+    .monitor-font-cinzel { font-family: 'Cinzel', serif !important; letter-spacing: 0.5px; }
+    .monitor-font-spacegrotesk { font-family: 'Space Grotesk', sans-serif !important; }
+    .monitor-font-playfair { font-family: 'Playfair Display', serif !important; font-style: italic; }
+    .monitor-font-bahnschrift { font-family: 'Bahnschrift', 'Segoe UI', sans-serif !important; }
+
+    /* RETRO SPUNTATO E ILLUMINAZIONE GLOW NEL MONITOR */
+    .effect-retro_gold .karaoke-pop {
+      background: rgba(18, 14, 10, 0.9);
+      border: 1.5px solid #ffd700;
+      border-radius: 8px;
+      padding: 2px 7px;
+      color: #fff9e6;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+      display: inline-block;
+      animation: popPill 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .effect-retro_neon .karaoke-pop {
+      background: rgba(10, 18, 30, 0.9);
+      border: 1.5px solid #00f0ff;
+      border-radius: 8px;
+      padding: 2px 7px;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.9);
+      display: inline-block;
+      animation: popPill 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .effect-glow_solo .karaoke-pop {
+      color: #fffbeb;
+      text-shadow: 0 0 8px #ffd700, 0 0 16px #f59e0b, 0 0 24px #d97706;
+      font-weight: 900;
+      display: inline-block;
+      animation: popPill 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .effect-pop_minimal .karaoke-pop {
+      color: #ffd700;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.95);
+      font-weight: 800;
+      display: inline-block;
+    }
+    @keyframes popPill {
+      0% { transform: scale(0.85); opacity: 0.6; }
+      100% { transform: scale(1.0); opacity: 1; }
+    }
+  </style>
+
+  <!-- ═══ INTESTAZIONE TAB ═══ -->
+  <div class="tab-header-bar">
+    <div class="section-title" style="display:flex; align-items:center; gap:10px;">
+      <span>🎞️ Studio Timeline Multi-Traccia &amp; Editor Oggetti (9:16)</span>
+      <span class="suno-badge-pill badge-suno-live">Editor Oggetti Attivo</span>
+      <span class="suno-badge-pill badge-suno-gold">Colonna F Sync</span>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <a href="https://script.google.com/macros/s/AKfycbwEeH82YCSoOc-KRZx6pSQa_k3Kb5i252_Ajljlo20IOBinGiqA1E0ZE_2gKljHpLu3/exec?page=video_editor" target="_blank" class="suno-tag-btn" style="border-color:#38bdf8; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+        🖥️ Editor Schermo Intero ↗
+      </a>
+      <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-timeline-editor')">❓ Guida Timeline</button>
+    </div>
+  </div>
+
+  <div class="timeline-studio-wrap">
+
+    <!-- ═══ TOP DECK: PREVIEW MONITOR & EDITOR DEGLI OGGETTI ═══ -->
+    <div class="timeline-top-deck">
+
+      <!-- 1. MONITOR VERTICALE 9:16 CON ANTEPRIMA EFFETTI IN TEMPO REALE -->
+      <div class="timeline-monitor-box" id="timeline-screen-monitor">
+        <!-- VIGNETTE CINEMATICHE MORBIDE -->
+        <div class="timeline-monitor-vignette-top"></div>
+        <div class="timeline-monitor-vignette-bottom"></div>
+
+        <!-- CALLOUT VISIVO SCENA (Inquadratura corrente - Fluttuante 3D Shadow) -->
+        <div class="timeline-monitor-callout" id="timeline-monitor-callout-txt">
+          <span>🌿</span> ARCHITETTURA DI PREGIO &amp; INGRESSO ESCLUSIVO
+        </div>
+
+        <!-- IMMAGINE/VIDEO CLIP DI SCENA -->
+        <img class="timeline-monitor-bg" id="timeline-monitor-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=600&auto=format&fit=crop" alt="Monitor Scena">
+
+        <!-- SOTTOTITOLO CINETICO A TEMPO DI BEAT -->
+        <div class="timeline-monitor-subtitle" id="timeline-monitor-sub-txt">
+          🏡 <span class="highlight-gold">VENDITA ESCLUSIVA</span><br>
+          <span style="font-size:11px; font-weight:600; color:#e2e8f0;">Luminosa dimora a Favara in posizione di pregio</span><br>
+          <div style="display:inline-block; margin-top:8px; background:rgba(10,8,6,0.95); border:2px solid #ffd700; border-radius:14px; padding:4px 14px; box-shadow:0 0 14px rgba(255,215,0,0.45);"><span style="font-family:'Anton','Impact',sans-serif; font-size:13.5px; font-weight:900; letter-spacing:1px; color:#ffe666;">— IMMOBILIARE GIANCANI</span></div>
+        </div>
+
+        <!-- TIMECODE BADGE -->
+        <div class="timeline-monitor-badge-time" id="timeline-monitor-tc">00:03.80 / 00:16.00</div>
+
+        <!-- EFFETTO FLASH (SI ILLUMINA BIANCO SUL BEAT) -->
+        <div class="timeline-monitor-flash-overlay" id="timeline-monitor-flash"></div>
+      </div>
+
+      <!-- 2. PANNELLO PRINCIPALE: EDITOR DEGLI OGGETTI DELLA TIMELINE -->
+      <div class="timeline-inspector-card">
+        <div class="timeline-inspector-header">
+          <div class="timeline-inspector-title">
+            <span>🎛️ Editor degli Oggetti della Timeline</span>
+            <span id="badge-obj-active" style="font-size:11px; background:rgba(34,197,94,0.2); color:#4ade80; border:1px solid #22c55e; padding:2px 8px; border-radius:10px;">CLIP 1 SELEZIONATA</span>
+          </div>
+          <div style="font-size:11px; color:var(--sand);">
+            Modifica clip, testi, dissolvenze e audio con anteprima istantanea nel monitor 9:16
+          </div>
+        </div>
+
+        <!-- SELETTORE TAB PER CATEGORIA OGGETTO -->
+        <div class="obj-editor-tabs-nav">
+          <button type="button" class="obj-tab-btn active" id="obj-tab-btn-clip" onclick="selezionaTabEditorOggetti('clip')">
+            <span>🎬</span> Clip Video &amp; Foto
+          </button>
+          <button type="button" class="obj-tab-btn" id="obj-tab-btn-testo" onclick="selezionaTabEditorOggetti('testo')">
+            <span>📝</span> Testi &amp; Typography
+          </button>
+          <button type="button" class="obj-tab-btn" id="obj-tab-btn-trans" onclick="selezionaTabEditorOggetti('trans')">
+            <span>⚡</span> Dissolvenze &amp; Stacchi
+          </button>
+          <button type="button" class="obj-tab-btn" id="obj-tab-btn-audio" onclick="selezionaTabEditorOggetti('audio')">
+            <span>🎵</span> Audio &amp; Beat
+          </button>
+          <button type="button" class="obj-tab-btn" id="obj-tab-btn-add" onclick="selezionaTabEditorOggetti('add')">
+            <span>➕</span> Aggiungi Oggetto
+          </button>
+        </div>
+
+        <!-- ═══ PANNELLO 1: 🎬 EDIT CLIP VIDEO / IMMAGINE ═══ -->
+        <div class="obj-editor-panel active" id="obj-panel-clip">
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">
+                <span>Clip Selezionata da Modificare:</span>
+                <span id="obj-clip-idx-badge" style="color:var(--gold-bright);">#1 di 4</span>
+              </div>
+              <select id="obj-clip-select" class="obj-select" onchange="onSelectClipDropdown(this.value)">
+                <!-- Opzioni popolate dinamicamente -->
+              </select>
+            </div>
+            <div>
+              <div class="obj-label">Titolo Scena / Inquadratura:</div>
+              <input type="text" id="obj-clip-titolo" class="obj-input" placeholder="es. 1. 🌿 Facciata & Ingresso" oninput="onLiveUpdateClipData()">
+            </div>
+          </div>
+
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">Immagine o Video Clip (URL):</div>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="obj-clip-img" class="obj-input" placeholder="https://..." oninput="onLiveUpdateClipData()">
+                <button type="button" onclick="apriScegliMediaDaGalleria()" class="btn-obj-action" style="padding:4px 10px; font-size:10px;" title="Scegli dalla galleria foto dell'immobile">📂 Sfoglia</button>
+              </div>
+            </div>
+            <div>
+              <div class="obj-label">
+                <span>Durata Clip (Secondi):</span>
+                <span id="obj-clip-dur-display" class="obj-slider-val">3.8s</span>
+              </div>
+              <div class="obj-slider-wrap">
+                <input type="range" min="1.0" max="10.0" step="0.1" value="3.8" id="obj-clip-dur-range" class="obj-slider" oninput="onClipDurSlider(this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">Effetto Movimento / Color Grading:</div>
+              <select id="obj-clip-fx" class="obj-select" onchange="onLiveUpdateClipData()">
+                <option value="ken_burns_zoom_in">🔍 Ken Burns Zoom In Lento (Luxury)</option>
+                <option value="ken_burns_pan_right">↔️ Panoramica Lenta Orizzontale</option>
+                <option value="warm_luxury">☀️ Filtro Caldo Dorato Sicilia</option>
+                <option value="vivid_punch">✨ Color Grading Vivace HDR</option>
+                <option value="none">🎞️ Originale (Nessun filtro)</option>
+              </select>
+            </div>
+            <div>
+              <div class="obj-label">Transizione in Uscita di questa Clip:</div>
+              <select id="obj-clip-trans" class="obj-select" onchange="onLiveUpdateClipData()">
+                <option value="flash">⚡ Flash Bianco sul Beat</option>
+                <option value="glow">✨ Bagliore Dorato Luxury</option>
+                <option value="sfumatura">🌫️ Dissolvenza Morbida</option>
+                <option value="cut">✂️ Taglio Netto a Tempo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="obj-actions-wrap">
+            <button type="button" onclick="salvaModificheClip()" class="btn-obj-save">
+              <span>💾</span> Salva &amp; Applica Modifiche Clip
+            </button>
+            <button type="button" onclick="duplicaClipTimeline()" class="btn-obj-action">
+              <span>📋</span> Duplica Clip
+            </button>
+            <button type="button" onclick="eliminaClipAttivaTimeline()" class="btn-obj-delete">
+              <span>🗑️</span> Elimina Clip
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ PANNELLO 2: 📝 EDIT TESTI, TYPOGRAPHY & GLOW ═══ -->
+        <div class="obj-editor-panel" id="obj-panel-testo">
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">Icona Emoji Callout Scena:</div>
+              <input type="text" id="obj-text-emoji" class="obj-input" placeholder="es. 🌿, 🏰, 🛋️, ✨" style="max-width:120px;" oninput="onLiveUpdateTextData()">
+            </div>
+            <div>
+              <div class="obj-label">Testo Callout Scena (In Alto Sotto Logo):</div>
+              <input type="text" id="obj-text-callout" class="obj-input" placeholder="es. ARCHITETTURA DI PREGIO & INGRESSO ESCLUSIVO" oninput="onLiveUpdateTextData()">
+            </div>
+          </div>
+
+          <div class="obj-field-row">
+            <div>
+              <div class="obj-label">
+                <span>Sottotitolo / Copione Narrativo (In Basso da Colonna F):</span>
+                <button type="button" onclick="caricaFraseColonnaFInEditor()" class="suno-tag-btn" style="padding:2px 8px; font-size:10px;">📋 Ricarica da Colonna F</button>
+              </div>
+              <textarea id="obj-text-sub" class="obj-textarea" rows="2" placeholder="Testo recitato a tempo di battito..." oninput="onLiveUpdateTextData()"></textarea>
+            </div>
+          </div>
+
+          <!-- SELETTORE FONT -->
+          <div class="obj-label" style="margin-top:10px;">🔤 Font Tipografico dello Spot:</div>
+          <div class="timeline-font-grid">
+            <button type="button" class="btn-font-choice active" id="btn-font-montserrat" onclick="impostaFontTipografico('montserrat')">
+              <span>✨</span> Montserrat
+            </button>
+            <button type="button" class="btn-font-choice" id="btn-font-anton" onclick="impostaFontTipografico('anton')">
+              <span>💥</span> Anton Bold
+            </button>
+            <button type="button" class="btn-font-choice" id="btn-font-spacegrotesk" onclick="impostaFontTipografico('spacegrotesk')">
+              <span>📐</span> Space Grotesk
+            </button>
+            <button type="button" class="btn-font-choice" id="btn-font-bebas" onclick="impostaFontTipografico('bebas')">
+              <span>🏛️</span> Bebas Neue
+            </button>
+            <button type="button" class="btn-font-choice" id="btn-font-bahnschrift" onclick="impostaFontTipografico('bahnschrift')">
+              <span>⚡</span> Bahnschrift
+            </button>
+            <button type="button" class="btn-font-choice" id="btn-font-cinzel" onclick="impostaFontTipografico('cinzel')">
+              <span>👑</span> Cinzel Luxury
+            </button>
+          </div>
+
+          <!-- SELETTORE EFFETTO TESTO (RETRO & GLOW) -->
+          <div class="obj-label" style="margin-top:10px;">✨ Effetto Animazione &amp; Retro Parola (Glow / Capsule):</div>
+          <div class="timeline-effect-grid">
+            <button type="button" class="btn-effect-choice active" id="btn-eff-retro_gold" onclick="impostaEffettoTesto('retro_gold')">
+              <span>🟡</span> Retro Gold Capsule
+            </button>
+            <button type="button" class="btn-effect-choice" id="btn-eff-retro_neon" onclick="impostaEffettoTesto('retro_neon')">
+              <span>🔷</span> Retro Neon Cyber
+            </button>
+            <button type="button" class="btn-effect-choice" id="btn-eff-glow_solo" onclick="impostaEffettoTesto('glow_solo')">
+              <span>✨</span> Luxury Halo 360°
+            </button>
+            <button type="button" class="btn-effect-choice" id="btn-eff-pop_minimal" onclick="impostaEffettoTesto('pop_minimal')">
+              <span>🏷️</span> 3D Shadow Minimal
+            </button>
+          </div>
+
+          <div class="obj-actions-wrap">
+            <button type="button" onclick="salvaModificheTesto()" class="btn-obj-save">
+              <span>💾</span> Salva &amp; Applica Testo nel Monitor
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ PANNELLO 3: ⚡ EDIT DISSOLVENZE & TRANSIZIONI ═══ -->
+        <div class="obj-editor-panel" id="obj-panel-trans">
+          <div class="obj-label">⚡ Stile Master Transizioni Tra Le Clip:</div>
+          <div class="timeline-trans-selector-grid">
+            <button type="button" class="btn-trans-choice active" id="btn-trans-mix" onclick="impostaTransizioneMaster('mix')">
+              <span>🔀</span> Mix Alternato (Flash + Glow + Sfumatura)
+            </button>
+            <button type="button" class="btn-trans-choice" id="btn-trans-flash" onclick="impostaTransizioneMaster('flash')">
+              <span>⚡</span> Flash Bianco sul Beat
+            </button>
+            <button type="button" class="btn-trans-choice" id="btn-trans-sfumatura" onclick="impostaTransizioneMaster('sfumatura')">
+              <span>🌫️</span> Sfumatura Morbida (Dissolvenza)
+            </button>
+            <button type="button" class="btn-trans-choice" id="btn-trans-glow" onclick="impostaTransizioneMaster('glow')">
+              <span>✨</span> Bagliore Oro Luxury
+            </button>
+            <button type="button" class="btn-trans-choice" id="btn-trans-cut" onclick="impostaTransizioneMaster('cut')">
+              <span>✂️</span> Taglio Netto a Tempo
+            </button>
+          </div>
+
+          <div class="obj-label" style="margin-top:12px;">🎚️ Impostazioni Dettagliate Stacchi Tra Clip:</div>
+          <div id="obj-trans-list-container" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Righe transizioni popolate dinamicamente -->
+          </div>
+
+          <div class="obj-actions-wrap">
+            <button type="button" onclick="testaTransizioneMonitor()" class="btn-obj-save" style="background:linear-gradient(135deg, #f59e0b, #d97706); border-color:#fbbf24;">
+              <span>⚡</span> Prova Effetto Flash/Sfumatura nel Monitor
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ PANNELLO 4: 🎵 EDIT AUDIO & BEAT ═══ -->
+        <div class="obj-editor-panel" id="obj-panel-audio">
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">Traccia Sonora / Canzone:</div>
+              <select id="obj-audio-select" class="obj-select" onchange="onCambioTracciaAudio(this.value)">
+                <option value="electronic_modern_9.mp3">🥁 Beat Ritmico 124 BPM (Default Spot TV)</option>
+                <option value="cinematic_emozione_6.mp3">🎻 Cinematic Emozione & Archi Luxury</option>
+                <option value="ambient_ispirazione_1.mp3">☕ Lofi Chillout Dolce & Rilassante</option>
+                <option value="jazz_lounge_business_7.mp3">🎷 Jazz Lounge Notturno</option>
+                <option value="suno_cantata">🎤 Canzone Cantata Suno AI (Da Studio Canzoni)</option>
+              </select>
+            </div>
+            <div>
+              <div class="obj-label">Profilo Vocale Narrazione / Cantato:</div>
+              <select id="obj-audio-voce" class="obj-select">
+                <option value="duetto">👥 Duetto (Isabella + Diego Alternati)</option>
+                <option value="it-IT-IsabellaNeural">👩 Isabella Neural (Dolce & Emozionale)</option>
+                <option value="it-IT-DiegoNeural">👨 Diego Neural (Autorevole & Sicuro)</option>
+                <option value="suno_singing">✨ Voce Cantata con Melodia (Suno AI)</option>
+                <option value="strumentale">🔇 Solo Strumentale (Nessuna voce)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="obj-field-row two-col">
+            <div>
+              <div class="obj-label">
+                <span>Volume Sottofondo Musicale:</span>
+                <span id="obj-audio-vol-display" class="obj-slider-val">85%</span>
+              </div>
+              <div class="obj-slider-wrap">
+                <input type="range" min="0" max="100" value="85" id="obj-audio-vol-range" class="obj-slider" oninput="onAudioVolSlider(this.value)">
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; background:rgba(0,0,0,0.4); padding:10px 14px; border-radius:8px; border:1px solid rgba(201,163,94,0.25);">
+              <input type="checkbox" id="obj-audio-ducking" checked style="width:18px; height:18px; cursor:pointer;">
+              <label for="obj-audio-ducking" style="font-size:11px; color:#cbd5e1; cursor:pointer;">
+                <strong>Auto-Ducking Intelligente:</strong> abbassa la musica a -14dB in automatico durante le parole.
+              </label>
+            </div>
+          </div>
+
+          <div class="obj-actions-wrap">
+            <button type="button" onclick="salvaModificheAudio()" class="btn-obj-save">
+              <span>💾</span> Salva Impostazioni Audio
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ PANNELLO 5: ➕ AGGIUNGI OGGETTO ALLA TIMELINE ═══ -->
+        <div class="obj-editor-panel" id="obj-panel-add">
+          <div style="font-size:12px; font-weight:800; color:var(--gold-bright); margin-bottom:12px;">
+            Scegli il tipo di oggetto che desideri inserire nella sequenza della timeline:
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+            
+            <div onclick="aggiungiNuovaClipTimeline()" style="background:rgba(255,255,255,0.04); border:1.5px dashed var(--gold); border-radius:12px; padding:16px; cursor:pointer; text-align:center; transition:all 0.2s;" onmouseover="this.style.background='rgba(201,163,94,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.transform='translateY(0)';">
+              <span style="font-size:32px;">🎬</span>
+              <div style="font-size:12.5px; font-weight:800; color:#fff; margin-top:6px;">+ Aggiungi Clip Video / Foto</div>
+              <div style="font-size:10.5px; color:var(--sand); margin-top:4px;">Inserisce una nuova scena immobiliare con durata calibrata</div>
+            </div>
+
+            <div onclick="aggiungiNuovoTestoTimeline()" style="background:rgba(255,255,255,0.04); border:1.5px dashed #38bdf8; border-radius:12px; padding:16px; cursor:pointer; text-align:center; transition:all 0.2s;" onmouseover="this.style.background='rgba(56,189,248,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.transform='translateY(0)';">
+              <span style="font-size:32px;">📝</span>
+              <div style="font-size:12.5px; font-weight:800; color:#38bdf8; margin-top:6px;">+ Aggiungi Callout / Frase</div>
+              <div style="font-size:10.5px; color:var(--sand); margin-top:4px;">Inserisce una riga narrativa o badge contestuale da Colonna F</div>
+            </div>
+
+            <div onclick="inserisciNuovaTransizioneTimeline()" style="background:rgba(255,255,255,0.04); border:1.5px dashed #f59e0b; border-radius:12px; padding:16px; cursor:pointer; text-align:center; transition:all 0.2s;" onmouseover="this.style.background='rgba(245,158,11,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.transform='translateY(0)';">
+              <span style="font-size:32px;">⚡</span>
+              <div style="font-size:12.5px; font-weight:800; color:#fbbf24; margin-top:6px;">+ Inserisci Dissolvenza</div>
+              <div style="font-size:10.5px; color:var(--sand); margin-top:4px;">Aggiunge un effetto flash bianco o sfumatura tra due clip</div>
+            </div>
+
+            <div onclick="importaCanzoneSunoInTimeline()" style="background:rgba(255,255,255,0.04); border:1.5px dashed #c084fc; border-radius:12px; padding:16px; cursor:pointer; text-align:center; transition:all 0.2s;" onmouseover="this.style.background='rgba(192,132,252,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.transform='translateY(0)';">
+              <span style="font-size:32px;">🎵</span>
+              <div style="font-size:12.5px; font-weight:800; color:#c084fc; margin-top:6px;">+ Importa Canzone Suno</div>
+              <div style="font-size:10.5px; color:var(--sand); margin-top:4px;">Collega un brano musicale cantato dallo Studio Suno</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CONTROLLI DI TRASPORTO (PLAY/PAUSE/RENDER) -->
+        <div class="timeline-transport-bar">
+          <button type="button" id="btn-timeline-play" onclick="togglePlayTimeline()" class="btn-transport btn-transport-play">
+            <span id="timeline-play-icon">▶️</span> <span id="timeline-play-label">AVVIA ANTEPRIMA</span>
+          </button>
+          <button type="button" onclick="resetTimelineToStart()" class="btn-transport" title="Torna all'inizio (00:00)">
+            <span>⏮️</span> 00:00
+          </button>
+          <button type="button" onclick="eseguiRenderingSpotRitmicoDaTimeline()" class="btn-transport btn-transport-render">
+            <span>🎬</span> MONTA VIDEO CON QUESTA TIMELINE
+          </button>
+        </div>
+        <div id="timeline-render-status" style="font-size:11px; color:var(--gold-bright); margin-top:8px; display:none;"></div>
+
+      </div>
+
+    </div>
+
+    <!-- ═══ SEZIONE INFERIORE: LA TIMELINE MULTI-TRACCIA INTERATTIVA ═══ -->
+    <div class="timeline-multi-box" id="timeline-tracks-container">
+
+      <!-- TOOLBAR RAPIDA TRACCE -->
+      <div class="timeline-quick-toolbar">
+        <div style="font-size:12.5px; font-weight:800; color:var(--gold-bright); display:flex; align-items:center; gap:8px;">
+          <span>🎞️ SEQUENZA MULTI-TRACCIA TIMELINE</span>
+          <span id="timeline-total-dur-badge" style="font-size:10px; background:rgba(201,163,94,0.2); color:var(--gold-bright); border:1px solid var(--gold); padding:2px 8px; border-radius:10px;">DURATA TOTALE: 16.0s</span>
+        </div>
+        <div class="timeline-toolbar-actions">
+          <button type="button" onclick="aggiungiNuovaClipTimeline()" class="btn-tl-tool" title="Aggiungi una nuova clip video alla sequenza">
+            <span>➕ Clip</span>
+          </button>
+          <button type="button" onclick="selezionaTabEditorOggetti('testo')" class="btn-tl-tool" title="Modifica testi e sottotitoli">
+            <span>📝 Testi</span>
+          </button>
+          <button type="button" onclick="ciclaTutteLeTransizioni()" class="btn-tl-tool" title="Alterna stile transizioni tra le clip">
+            <span>⚡ Transizioni</span>
+          </button>
+          <button type="button" onclick="eliminaUltimaClipTimeline()" class="btn-tl-tool" style="color:#f87171;" title="Elimina l'ultima clip della sequenza">
+            <span>🗑️ Rimuovi Ultima</span>
+          </button>
+          <button type="button" onclick="ripristinaTimelineDefault()" class="btn-tl-tool" title="Ripristina le 4 scene iniziali">
+            <span>🔄 Reset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SCALA DEI TEMPI (RULER DINAMICO) -->
+      <div class="timeline-ruler-wrap" id="timeline-ruler-container">
+        <!-- Generata dinamicamente in base alla durata totale -->
+      </div>
+
+      <!-- AGO DEL CURSORE (PLAYHEAD NEEDLE) -->
+      <div class="timeline-needle" id="timeline-playhead-needle"></div>
+
+      <!-- TRACCIA 1: 🎬 CLIP VIDEO & TRANSIZIONI (VIDEO LANE DINAMICA) -->
+      <div class="timeline-track-lane">
+        <div class="track-badge-label" onclick="selezionaTabEditorOggetti('clip')" title="Tocca per aprire l'editor clip video">
+          <span>🎬</span> Video Clips
+        </div>
+        <div class="track-content-lane" id="lane-video-clips">
+          <!-- Popolata dinamicamente con blocchi clip e pillole di transizione -->
+        </div>
+      </div>
+
+      <!-- TRACCIA 2: 📝 TESTO CANZONE & CALLOUT SCENA (COLONNA F) -->
+      <div class="timeline-track-lane">
+        <div class="track-badge-label" onclick="selezionaTabEditorOggetti('testo')" title="Tocca per aprire l'editor testi e font">
+          <span>📝</span> Testi Colonna F
+        </div>
+        <div class="track-content-lane" id="lane-text-subtitles">
+          <!-- Popolata dinamicamente con i blocchi narrativi -->
+        </div>
+      </div>
+
+      <!-- TRACCIA 3: 🎵 AUDIO MUSICA & BEAT MARKERS -->
+      <div class="timeline-track-lane">
+        <div class="track-badge-label" onclick="selezionaTabEditorOggetti('audio')" title="Tocca per impostare musica e voce">
+          <span>🎵</span> Beat &amp; Audio
+        </div>
+        <div class="track-content-lane" id="lane-audio-music">
+          <!-- Popolata dinamicamente con audio bar -->
+        </div>
+      </div>
+
+      <!-- TRACCIA 4: 👑 PERSONAL BRANDING & WATERMARK -->
+      <div class="timeline-track-lane">
+        <div class="track-badge-label" onclick="selezionaTabEditorOggetti('testo')" title="Logo e firma ufficiale dell'agenzia">
+          <span>👑</span> Branding Logo
+        </div>
+        <div class="track-content-lane">
+          <div class="timeline-branding-block">
+            <span>🏰 Logo Ufficiale Giancani Protetto in Alto (y=65, Lanczos HD)</span>
+            <span>⭐ — Immobiliare Giancani (Firma d'Autore Inviolabile ad Alto Impatto)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- /#tab-timeline-editor -->

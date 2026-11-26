@@ -1,0 +1,783 @@
+        <!-- ⏰ TAB 3: PALINSESTO TV, SCALETTA & SPOT -->
+        <div id="tab-palinsesto" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title">⏰ Palinsesto TV, Scaletta & Spot Sponsor</div>
+            <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-palinsesto')">❓ Tutorial & Guida</button>
+          </div>
+
+          <!-- ============================================================
+               🎭 PULSANTIERA REGIA: METTI & TOGLI AVATAR IN DIRETTA
+               Branding: Immobiliare Giancani
+               ============================================================ -->
+          <div class="avatar-control-bar">
+            <!-- Lato Sinistro: Titolo e Descrizione -->
+            <div class="avatar-control-info">
+              <span class="avatar-control-icon">🎭</span>
+              <div>
+                <div class="avatar-control-title">CONTROLLO AVATAR IN DIRETTA (DarIA &amp; DarIO)</div>
+                <div class="avatar-control-subtitle">Scegli con un click se mandare in onda gli avatar o trasmettere solo l'immobile a tutto schermo</div>
+              </div>
+            </div>
+
+            <!-- Lato Destro: Indicatore di Stato e Pulsanti di Controllo -->
+            <div class="avatar-control-actions">
+              <!-- Indicatore di Stato in Tempo Reale -->
+              <span class="badge-status-on quick-badge-avatar">
+                🟢 AVATAR ATTIVI IN ONDA
+              </span>
+
+              <!-- Pulsante 1: METTI GLI AVATAR -->
+              <button type="button" class="btn-avatar-on quick-btn-avatar-on" onclick="selezionaModalitaAvatar('CON_AVATAR')">
+                ✅ METTI GLI AVATAR
+              </button>
+
+              <!-- Pulsante 2: TOGLI GLI AVATAR -->
+              <button type="button" class="btn-avatar-off quick-btn-avatar-off" onclick="selezionaModalitaAvatar('VUOTO')">
+                ❌ TOGLI GLI AVATAR
+              </button>
+            </div>
+          </div>
+
+          
+          <!-- ============================================================
+               📐 SELETTORE POSIZIONE SET AVATAR (SINISTRA, CENTRO, DESTRA)
+               Branding: Immobiliare Giancani
+               ============================================================ -->
+          <div class="avatar-control-bar" style="margin-top: 8px; border-color: rgba(245,212,133,0.35); background: rgba(12,16,28,0.9);">
+            <div class="avatar-control-info">
+              <span class="avatar-control-icon">📐</span>
+              <div>
+                <div class="avatar-control-title">POSIZIONE SET AVATAR (DARIA &amp; DARIO)</div>
+                <div class="avatar-control-subtitle">Scegli la disposizione grafica dei conduttori a schermo (a Sinistra, al Centro o a Destra)</div>
+              </div>
+            </div>
+            <div class="avatar-control-actions" id="group-btn-pos-avatar">
+              <button type="button" class="btn-pos-avatar" id="btn-pos-sinistra" onclick="selezionaPosizioneSetAvatar('sinistra')" style="padding: 8px 16px; font-size: 11.5px; font-weight: 800; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory);">
+                👈 A SINISTRA
+              </button>
+              <button type="button" class="btn-pos-avatar" id="btn-pos-centro" onclick="selezionaPosizioneSetAvatar('centro')" style="padding: 8px 16px; font-size: 11.5px; font-weight: 800; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory);">
+                🎯 AL CENTRO
+              </button>
+              <button type="button" class="btn-pos-avatar active" id="btn-pos-destra" onclick="selezionaPosizioneSetAvatar('destra')" style="padding: 8px 18px; font-size: 11.5px; font-weight: 800; border-radius: 8px; cursor: pointer; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: 1px solid var(--gold-bright); color: #120c04;">
+                👉 A DESTRA (STANDARD)
+              </button>
+            </div>
+          </div>
+
+
+          <!-- ============================================================
+               🔍 ZOOM CALIBRATO DIRETTA (50% - 250%) — REGIA & VIRTUAL BROWSER
+               ============================================================ -->
+          <div class="section-card" style="background: rgba(20, 16, 12, 0.95); border: 1px solid var(--gold); margin-top: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 10px;">
+              <div class="section-title" style="margin: 0; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                🔍 Zoom Calibrato Diretta &amp; Browser Virtuale (50% - 250%)
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="zoom-regia-display" style="background: var(--gold); color: #120c04; font-weight: 900; font-size: 13px; padding: 4px 12px; border-radius: 999px; letter-spacing: 0.05em;">
+                  125% (Ottimale Consigliato)
+                </span>
+                <span id="zoom-save-indicator" style="display: none; color: #2ecc71; font-size: 11px; font-weight: 700;">
+                  ✅ Sincronizzato in Diretta!
+                </span>
+              </div>
+            </div>
+
+            <p style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px; line-height: 1.5;">
+              Regola con precisione millimetrica l'inquadratura, il campo visivo 360° e lo zoom della diretta show. Le modifiche vengono trasmesse all'istante al player live e memorizzate nella regia.
+            </p>
+
+            <!-- SLIDER RANGE 50% - 250% -->
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px; background: rgba(0,0,0,0.4); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line-soft);">
+              <span style="font-size: 12px; font-weight: 800; color: var(--sand-dim);">50% (Panoramico)</span>
+              <input type="range" id="zoom-regia-slider" min="50" max="250" step="5" value="125" style="flex: 1; cursor: pointer; accent-color: var(--gold-bright); height: 8px;" oninput="aggiornaVisualeZoomRegia(this.value)" onchange="salvaZoomRegiaRemoto(this.value)">
+              <span style="font-size: 12px; font-weight: 800; color: var(--gold-bright);">250% (Dettaglio)</span>
+            </div>
+
+            <!-- PULSANTI PRESET RAPIDI & INCREMENTI -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" onclick="impostaPresetZoom(50)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                ➖ 50%
+              </button>
+              <button type="button" onclick="impostaPresetZoom(75)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                75%
+              </button>
+              <button type="button" onclick="impostaPresetZoom(100)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                100% (Standard)
+              </button>
+              <button type="button" onclick="impostaPresetZoom(125)" class="btn-preset-zoom active" style="padding: 6px 14px; border-radius: 8px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: 1px solid var(--gold-bright); color: #120c04; font-size: 11px; font-weight: 800; cursor: pointer;">
+                ⭐ 125% (Consigliato)
+              </button>
+              <button type="button" onclick="impostaPresetZoom(150)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                150%
+              </button>
+              <button type="button" onclick="impostaPresetZoom(200)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                200%
+              </button>
+              <button type="button" onclick="impostaPresetZoom(250)" class="btn-preset-zoom" style="padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-soft); color: var(--ivory); font-size: 11px; font-weight: 700; cursor: pointer;">
+                ➕ 250%
+              </button>
+              <div style="margin-left: auto; display: flex; gap: 6px;">
+                <button type="button" onclick="incrementaZoomRegia(-5)" class="btn-step-zoom" style="padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid var(--line-soft); color: var(--sand); font-weight: 800; font-size: 11px; cursor: pointer;" title="Riduci zoom del 5%">
+                  -5%
+                </button>
+                <button type="button" onclick="incrementaZoomRegia(5)" class="btn-step-zoom" style="padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid var(--line-soft); color: var(--sand); font-weight: 800; font-size: 11px; cursor: pointer;" title="Aumenta zoom del 5%">
+                  +5%
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               🗣️ SELETTORE VOCI UFFICIALI DARIA & DARIO (CON ELENCO COMPLETO)
+               ============================================================ -->
+          <div class="section-card" style="background: rgba(20, 16, 12, 0.95); border: 1px solid var(--gold); margin-top: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 10px;">
+              <div class="section-title" style="margin: 0; color: var(--gold-bright); display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                🗣️ Selettore Voci Ufficiali: DarIA &amp; DarIO (con Elenco &amp; Test Audio)
+              </div>
+              <span id="voci-save-indicator" style="display: none; color: #2ecc71; font-size: 11px; font-weight: 700;">
+                ✅ Voci Salvate per la Diretta!
+              </span>
+            </div>
+
+            <p style="font-size: 11.5px; color: var(--sand); margin-bottom: 14px; line-height: 1.5;">
+              Scegli le voci ufficiali dall'elenco completo per la conduzione in diretta. Puoi ascoltare un'anteprima audio immediata e regolare tono e velocità per ciascun conduttore virtuale.
+            </p>
+
+            <div class="form-grid cols-2" style="margin-bottom: 16px;">
+              <!-- VOCE DARIA (FEMMINILE) -->
+              <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(245,212,133,0.3);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <label style="color: var(--gold-bright); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                    🎙️ VOCE DARIA (Guida &amp; Spazi):
+                  </label>
+                  <span style="font-size: 10px; color: var(--sand); background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 999px;">Femminile</span>
+                </div>
+                <select id="select-voce-daria" onchange="salvaConfigurazioneVociRegia()" style="margin-bottom: 10px; font-size: 12px; font-weight: 600;">
+                  <option value="">Rilevamento Automatico (Consigliata: Elsa / Isabella / Alice)</option>
+                </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Tono / Pitch: <span id="pitch-daria-val">1.18</span></label>
+                    <input type="range" id="pitch-daria" min="0.7" max="1.5" step="0.05" value="1.18" oninput="document.getElementById('pitch-daria-val').textContent=this.value" onchange="salvaConfigurazioneVociRegia()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Velocità / Rate: <span id="rate-daria-val">1.02</span></label>
+                    <input type="range" id="rate-daria" min="0.7" max="1.5" step="0.05" value="1.02" oninput="document.getElementById('rate-daria-val').textContent=this.value" onchange="salvaConfigurazioneVociRegia()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                </div>
+                <button type="button" onclick="testVoceRegia('daria')" class="btn-gold" style="width: 100%; min-height: 34px; padding: 6px 12px; font-size: 11px; font-weight: 800; background: rgba(201,163,94,0.15); border: 1px solid var(--gold); color: var(--gold-bright);">
+                  🔊 Ascolta Voce DarIA
+                </button>
+              </div>
+
+              <!-- VOCE DARIO (MASCHILE) -->
+              <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(245,212,133,0.3);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <label style="color: var(--gold-bright); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                    💻 VOCE DARIO (Mercato &amp; Battute):
+                  </label>
+                  <span style="font-size: 10px; color: var(--sand); background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 999px;">Maschile</span>
+                </div>
+                <select id="select-voce-dario" onchange="salvaConfigurazioneVociRegia()" style="margin-bottom: 10px; font-size: 12px; font-weight: 600;">
+                  <option value="">Rilevamento Automatico (Consigliata: Diego / Cosimo / Giuseppe)</option>
+                </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Tono / Pitch: <span id="pitch-dario-val">0.84</span></label>
+                    <input type="range" id="pitch-dario" min="0.5" max="1.3" step="0.05" value="0.84" oninput="document.getElementById('pitch-dario-val').textContent=this.value" onchange="salvaConfigurazioneVociRegia()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                  <div>
+                    <label style="font-size: 10px; color: var(--sand);">Velocità / Rate: <span id="rate-dario-val">0.98</span></label>
+                    <input type="range" id="rate-dario" min="0.7" max="1.5" step="0.05" value="0.98" oninput="document.getElementById('rate-dario-val').textContent=this.value" onchange="salvaConfigurazioneVociRegia()" style="width: 100%; accent-color: var(--gold-bright);">
+                  </div>
+                </div>
+                <button type="button" onclick="testVoceRegia('dario')" class="btn-gold" style="width: 100%; min-height: 34px; padding: 6px 12px; font-size: 11px; font-weight: 800; background: rgba(201,163,94,0.15); border: 1px solid var(--gold); color: var(--gold-bright);">
+                  🔊 Ascolta Voce DarIO
+                </button>
+              </div>
+            </div>
+
+            <button type="button" onclick="salvaConfigurazioneVociRegia()" class="btn-gold" style="width: 100%; font-size: 13px; font-weight: 900; letter-spacing: 0.05em;">
+              💾 SALVA CONFIGURAZIONE VOCI PER LA DIRETTA SHOW <span id="voci-save-indicator" style="display: none; color: #4ade80; margin-left: 8px;">✅ Salvato!</span>
+            </button>
+          </div>
+
+          <!-- 🤖 ANTEPRIMA POST SOCIAL MEDIA MANAGER AI -->
+          <div class="section-card" style="background: rgba(201,163,94,0.06); border: 1px solid var(--gold); margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+              <div class="section-title" style="margin: 0; color: var(--gold-bright); display: flex; align-items: center; gap: 8px;">
+                🤖 Post Social Media Manager AI (Facebook & YouTube)
+              </div>
+              <button onclick="caricaAnteprimaPostSocialAI()" class="btn-gold" style="width: auto; min-height: 34px; padding: 4px 12px; font-size: 11px;">
+                🔄 Rigenera Post AI
+              </button>
+            </div>
+
+            <p style="font-size: 11px; color: var(--sand); margin-bottom: 10px;">
+              L'IA genera automaticamente il post perfetto con descrizione dell'immobile (Colonna F), stanze visitabili, località, palinsesto orari, lingue e hashtag virali:
+            </p>
+
+            <div style="margin-bottom: 8px;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--gold); display: block; margin-bottom: 4px;">TITOLO LIVE SOCIAL:</label>
+              <input type="text" id="ai-social-titolo" style="width: 100%; padding: 8px 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.4); border: 1px solid var(--line); color: var(--ivory); font-size: 12px; font-weight: 700;">
+            </div>
+
+            <div style="margin-bottom: 10px;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--gold); display: block; margin-bottom: 4px;">TESTO COMPLETO POST / DESCRIZIONE SOCIAL:</label>
+              <textarea id="ai-social-descrizione" rows="8" style="width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.4); border: 1px solid var(--line); color: var(--ivory); font-size: 11px; font-family: monospace; line-height: 1.4;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onclick="copiaTestoPostSocialAI()" class="btn-gold" style="flex: 1; min-width: 130px; min-height: 36px; padding: 6px; font-size: 11px; background: rgba(255,255,255,0.08); color: var(--sand); border: 1px solid var(--line-soft);">
+                📋 Copia Testo Post
+              </button>
+              <button onclick="pubblicaSuThreadsAI()" class="btn-gold" style="flex: 1; min-width: 140px; min-height: 36px; padding: 6px; font-size: 11px; background: #000; color: #fff; border: 1px solid #555;">
+                🧵 Pubblica su Threads
+              </button>
+              <button onclick="salvaPostSocialNelFoglio()" class="btn-gold" style="flex: 1; min-width: 140px; min-height: 36px; padding: 6px; font-size: 11px;">
+                💾 Salva su Impostazioni_Social
+              </button>
+            </div>
+          </div>
+
+          <!-- ✨ SEZIONE AI INFLUENCER EVENT CREATOR -->
+          <div class="section-card" style="border-color: #9b59b6; background: rgba(155, 89, 182, 0.08);">
+            <div class="section-title" style="color: #9b59b6;">✨ AI Influencer Event Creator (Copilot) <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-ai-copilot')" title="Guida & Mini Tutorial: ✨ AI Influencer Event Creator (Copilot)">❓</button></div>
+<div id="tut-ai-copilot" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: ✨ AI Influencer Event Creator (Copilot)</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Utilizza l'Intelligenza Artificiale (Google Gemini) per generare titoli virali, descrizioni accattivanti con hashtag e prompt grafici per i post social.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Inserisci le parole chiave dell'immobile (es. Attico, Terrazzo Panoramico, Vista Mare).</li><li>Seleziona il tono di voce (Influencer Entusiasta, Lusso & Esclusivo, Professionale).</li><li>Clicca <em>'🤖 GENERA PACCHETTO DIRETTA ORA'</em> e incolla i testi generati su Facebook e YouTube.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-ai-copilot')">✖️ Chiudi Guida</div>
+</div>
+            <div style="font-size:12px; color:var(--sand); margin-bottom:12px;">Genera un pacchetto completo da incollare su Facebook Live o YouTube. Usa l'Intelligenza Artificiale per scrivere copy virali!</div>
+            
+            <div class="form-grid cols-2" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label>Parole Chiave Immobile (es. Villa, Piscina, Mare):</label>
+                <input type="text" id="ai-keywords" placeholder="Es. Attico 120mq, vista centro storico">
+              </div>
+              <div class="form-group">
+                <label>Tono di Voce:</label>
+                <select id="ai-tone">
+                  <option value="Influencer Entusiasta e Coinvolgente">🤩 Influencer Entusiasta</option>
+                  <option value="Lussuoso, Esclusivo ed Elegante">💎 Lussuoso & Esclusivo</option>
+                  <option value="Professionale ed Autorevole">👔 Professionale & Serio</option>
+                </select>
+              </div>
+            </div>
+
+            <button onclick="generaPacchettoAI()" class="btn-gold" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; margin-bottom: 16px;">
+              🤖 GENERA PACCHETTO DIRETTA ORA
+            </button>
+
+            <!-- Box di Output -->
+            <div id="ai-output-box" style="display: none; background: rgba(0,0,0,0.5); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--line-soft);">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label style="color: var(--gold-bright);">Titolo Evento (Copia & Incolla):</label>
+                <input type="text" id="ai-out-titolo" readonly style="color: #fff; font-weight: bold;">
+              </div>
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label style="color: var(--gold-bright);">Descrizione con Hashtag:</label>
+                <textarea id="ai-out-desc" readonly style="min-height: 100px; color: #fff;"></textarea>
+              </div>
+              <div class="form-group">
+                <label style="color: #3498db;">Prompt Immagine (Midjourney/DALL-E):</label>
+                <textarea id="ai-out-prompt" readonly style="min-height: 60px; color: #3498db;"></textarea>
+              </div>
+            </div>
+            <div id="ai-loading" style="display: none; color: #f1c40f; font-size: 12px; font-weight: bold; text-align: center;">⏳ Generazione magia in corso con Gemini...</div>
+            
+            <script>
+var SHEET_ID_GLOBAL = "1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE";
+
+              function generaPacchettoAI() {
+                var kw = document.getElementById('ai-keywords').value;
+                var tone = document.getElementById('ai-tone').value;
+                if (!kw) { alert('Inserisci delle parole chiave!'); return; }
+                
+                document.getElementById('ai-output-box').style.display = 'none';
+                document.getElementById('ai-loading').style.display = 'block';
+                
+                google.script.run.withSuccessHandler(function(res) {
+                  document.getElementById('ai-loading').style.display = 'none';
+                  if (res.error) {
+                    alert('Errore AI: ' + res.error);
+                  } else {
+                    document.getElementById('ai-output-box').style.display = 'block';
+                    document.getElementById('ai-out-titolo').value = res.titolo;
+                    document.getElementById('ai-out-desc').value = res.descrizione;
+                    document.getElementById('ai-out-prompt').value = res.promptImg;
+                  }
+                }).generaEventoLiveAI(kw, tone);
+              }
+            </script>
+          </div>
+
+                    <!-- 🔴 QUADRO DI REGIA UNIFICATO: IMMOBILI & VIDEO YOUTUBE IN ONDA -->
+          <div class="section-card" style="border-color: #e74c3c; background: linear-gradient(180deg, rgba(231, 76, 60, 0.08) 0%, rgba(20, 20, 20, 0.6) 100%); margin-bottom: 20px;">
+            <div class="section-title" style="color: #e74c3c; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <span style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:18px;">🔴</span> Quadro di Regia: Forzatura Immobili & Video YouTube in Onda
+              </span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span id="badge-ora-in-onda" style="background:#27ae60; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:20px; box-shadow:0 0 10px rgba(39,174,96,0.5);">
+                  🟢 IN ONDA: <span id="txt-ora-in-onda">Immobile Live</span>
+                </span>
+                <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-forzatura-immobile')" title="Guida & Mini Tutorial">❓</button>
+              </div>
+            </div>
+
+            <div id="tut-forzatura-immobile" class="mini-tutorial-box">
+              <h4>💡 Guida Rapida: Quadro di Regia Immobili & Video YouTube</h4>
+              <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Ti permette di decidere all'istante cosa trasmettere in diretta live: un immobile specifico dal foglio Google oppure un video dal tuo canale YouTube ufficiale.</div>
+              <div class="tut-steps">
+                <strong>🛠️ Come funziona:</strong>
+                <ol>
+                  <li><strong>Immobili:</strong> Seleziona la scheda immobile dal menu e clicca su "🔴 Manda Immobile in Onda".</li>
+                  <li><strong>Video YouTube:</strong> Clicca sul pulsante "🔴 Manda in Onda" accanto a qualsiasi video YouTube per trasmetterlo subito a schermo.</li>
+                </ol>
+              </div>
+              <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-forzatura-immobile')">✖️ Chiudi Guida</div>
+            </div>
+
+            <!-- GRIGLIA A 2 SEZIONI CHIARE ED INTUITIVE -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-top: 12px;">
+              
+              <!-- 🏠 COLONNA 1: FORZATURA SCHEDA IMMOBILE -->
+              <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 14px;">
+                <h4 style="margin: 0 0 8px 0; color: #f39c12; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                  <span>🏠</span> Seleziona Immobile da Trasmettere
+                </h4>
+                <div style="font-size: 11px; color: var(--sand); margin-bottom: 10px;">
+                  Cambia istantaneamente le foto, i prezzi e le descrizioni parlate nella diretta:
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <select id="select-immobile-live-palinsesto" onchange="cambiaImmobileLive(this.value)" style="flex: 1; background: rgba(15,15,15,0.9); border: 1px solid #e74c3c; color: #fff; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 12px;"></select>
+                  <button type="button" onclick="cambiaImmobileLive(document.getElementById('select-immobile-live-palinsesto').value)" style="background: #e74c3c; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; white-space: nowrap;">🔴 In Onda</button>
+                </div>
+              </div>
+
+              <!-- 🎥 COLONNA 2: CONTROLLI GENERALI YOUTUBE -->
+              <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(204,24,30,0.3); border-radius: 8px; padding: 14px;">
+                <h4 style="margin: 0 0 8px 0; color: #ff6b6b; font-size: 13px; display: flex; align-items: center; justify-content: space-between;">
+                  <span style="display:flex; align-items:center; gap:6px;"><span>🎥</span> Canale YouTube (@immobiliaregiancani761)</span>
+                  <button id="post-yt-toggle-main-btn" onclick="toggleStatoPostYTGlobale()" style="border: none; border-radius: 4px; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; background: #2ecc71; color: white;">✅ ON</button>
+                </h4>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-size: 11px; color: var(--sand); font-weight: bold;">⏱️ Intervallo:</label>
+                    <input type="number" id="post-yt-freq-global" value="20" min="1" max="120" style="width: 50px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #cc181e; border-radius: 4px; padding: 3px; text-align: center; font-size: 11px;">
+                    <span style="font-size:11px; color:var(--sand);">min</span>
+                    <button onclick="salvaImpostazioniPostYTUI()" style="background: #2c3e50; color: #fff; border: 1px solid #4a6278; border-radius: 4px; padding: 3px 8px; font-size: 10px; cursor: pointer;">💾 Salva</button>
+                  </div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button onclick="sincronizzaVideoYouTubeCanaleUI()" style="background: #c0392b; color: #fff; border: none; border-radius: 4px; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer;">📥 Sincronizza</button>
+                    <button onclick="avviaCaroselloConAvatar()" style="background: #e67e22; color: #fff; border: none; border-radius: 4px; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer;" title="Trasmetti tutti i video YouTube a rotazione con commento di DarIA & DarIO">📺 Carosello CON Avatar</button>
+                    <button onclick="avviaCaroselloSenzaAvatar()" style="background: #d35400; color: #fff; border: none; border-radius: 4px; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer;" title="Trasmetti tutti i video YouTube a rotazione a tutto schermo senza avatar">🎬 Carosello SENZA Avatar</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- 🎬 ELENCO VIDEO YOUTUBE PER LA TRASMISSIONE ISTANTANEA -->
+            <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 12px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 6px;">
+                  <span>🎬</span> Video Disponibili nel Canale YouTube (Clicca per Mandare Subito in Onda):
+                </span>
+                <button onclick="caricaPannelloPostYouTube()" style="background: transparent; border: 1px solid #555; color: var(--sand); border-radius: 4px; padding: 2px 8px; font-size: 10px; cursor: pointer;">🔄 Ricarica Lista</button>
+              </div>
+              <div id="gestore-post-yt-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; padding-right: 4px;">
+                <div style="color:var(--sand); font-size:12px; text-align:center; padding:10px;">Caricamento video dal canale YouTube...</div>
+              </div>
+            </div>
+
+          </div>
+
+                    
+
+                    
+          <!-- ============================================================
+               📅 CALENDARIO PALINSESTO SERALE (20:00 - 01:00)
+               Rotazione Immobili Diversi (> 7 immobili) & Notifica Telegram
+               Branding: Immobiliare Giancani
+               ============================================================ -->
+          <div class="section-card" id="card-calendario-palinsesto-serale" style="border: 1px solid var(--gold); background: rgba(18, 14, 10, 0.95); border-radius: 14px; padding: 20px; margin-bottom: 24px; box-shadow: 0 12px 35px rgba(0,0,0,0.75);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid rgba(245,212,133,0.25); padding-bottom: 14px;">
+              <div>
+                <div class="section-title" style="margin: 0; font-size: 17px; color: var(--gold-bright); display: flex; align-items: center; gap: 10px;">
+                  <span>📅</span> Calendario Palinsesto Serale (20:00 - 01:00) • Rotazione Immobili Senza Ripetizioni
+                </div>
+                <div style="font-size: 12px; color: var(--sand); margin-top: 5px; line-height: 1.5;">
+                  Programmazione serale in diretta (<b>20:00 - 01:00</b>). Regola di <b>Equa Rotazione ad Esaurimento</b>: se un immobile è andato in onda, <b>non torna in onda se prima non lo fanno tutti gli altri</b> a catalogo.
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <button type="button" id="btn-toggle-prog-serale" onclick="toggleProgrammaSeraleAutomaticoUI()" class="btn-gold" style="width: auto; min-height: 38px; padding: 8px 14px; font-size: 11.5px; background: rgba(46,204,113,0.18); color: #2ecc71; border: 1px solid #2ecc71; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Attiva o disattiva l'avvio automatico serale alle 20:00">
+                  <span id="icon-prog-serale">🟢</span> <span id="label-prog-serale">SERALE: ATTIVO (20:00 - 01:00)</span>
+                </button>
+                <button type="button" onclick="autoProgrammaRotazioneEquaUI()" class="btn-gold" style="width: auto; min-height: 38px; padding: 8px 16px; font-size: 11.5px; background: linear-gradient(135deg, #e67e22, #d35400); color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Distribuisce prioritariamente gli immobili non ancora andati in onda (Zero Ripetizioni)">
+                  🔄 AUTO-PROGRAMMA ROTAZIONE EQUA
+                </button>
+                <button type="button" onclick="salvaCalendarioPalinsestoSettimanaleUI()" class="btn-gold" style="width: auto; min-height: 38px; padding: 8px 18px; font-size: 11.5px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(46,204,113,0.35); display: flex; align-items: center; gap: 6px;">
+                  💾 SALVA &amp; NOTIFICA TELEGRAM
+                </button>
+              </div>
+            </div>
+
+            <!-- STATUS BAR SALVATAGGIO & TELEGRAM FEEDBACK -->
+            <div id="status-calendario-palinsesto" style="display: none; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 12px; font-weight: 700;"></div>
+
+            <!-- WIDGET AVANZAMENTO EQUA ROTAZIONE AD ESAURIMENTO -->
+            <div id="box-stato-rotazione-equa" style="background: rgba(0,0,0,0.45); border: 1px solid rgba(201,163,94,0.35); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 800; color: var(--gold-bright);">
+                  <span>⚖️ STATO EQUA ROTAZIONE:</span>
+                  <span id="rot-badge-ciclo" style="background: rgba(201,163,94,0.22); border: 1px solid var(--gold); border-radius: 6px; padding: 2px 8px; font-size: 11px; color: var(--gold);">Caricamento ciclo...</span>
+                </div>
+                <div id="rot-text-conteggio" style="font-size: 11.5px; color: var(--sand); font-weight: 700;">
+                  Calcolo immobili in attesa...
+                </div>
+              </div>
+              <div style="width: 100%; height: 9px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; position: relative;">
+                <div id="rot-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #e67e22, #2ecc71); border-radius: 5px; transition: width 0.4s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--sand-dim); flex-wrap: wrap; gap: 6px;">
+                <span id="rot-stat-andati">⏳ 0 andati in onda</span>
+                <span id="rot-stat-regola" style="color: var(--gold-dark); font-style: italic;">🔒 Regola attiva: nessun immobile si ripete finché tutti non sono andati in onda</span>
+                <span id="rot-stat-rimanenti">⏳ 0 in attesa del loro turno</span>
+              </div>
+            </div>
+
+            <!-- GRIGLIA SETTIMANALE 7 GIORNI -->
+            <div id="grid-calendario-settimanale" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 16px;">
+              <div style="text-align: center; color: var(--sand); font-size: 12px; padding: 20px; grid-column: 1 / -1;">
+                ⏳ Caricamento calendario palinsesto e immobili disponibili...
+              </div>
+            </div>
+
+            <!-- INFORMATIVA REGIA & BANDIERA IMMOBILIARE GIANCANI -->
+            <div style="background: rgba(241,196,15,0.08); border: 1px dashed rgba(241,196,15,0.3); border-radius: 8px; padding: 10px 14px; font-size: 11.5px; color: var(--sand); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div>
+                📡 <b>Automazione Regia:</b> Nello slot orario <b>20:00 - 01:00</b> la regia trasmette in automatico l'immobile del giorno programmato, con testi da Colonna F e metrature in <b>metri quadri</b>.
+              </div>
+              <div style="font-weight: 800; color: var(--gold-bright);">
+                — Immobiliare Giancani
+              </div>
+            </div>
+          </div>
+
+
+                    <div class="section-card" id="card-costruttore-palinsesto" style="border: 1px solid var(--gold); background: rgba(0,0,0,0.55); border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+              <div>
+                <div class="section-title" style="margin: 0; font-size: 16px; color: var(--gold-bright); display: flex; align-items: center; gap: 8px;">
+                  🎬 Costruttore Palinsesto Dinamico &amp; Scaletta Rundown
+                </div>
+                <div style="font-size: 11.5px; color: var(--sand); margin-top: 4px;">
+                  Visualizza e gestisci l'esatta sequenza di tutto ciò che presenteranno <b>DarIA</b> e <b>DarIO</b> (Stanze Colonna F, Teatrino, Spot, Meteo, Sport, Nozioni, Storyteller).
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onclick="precompilaPalinsestoDaImmobileUI()" class="btn-gold" style="width: auto; min-height: 36px; padding: 6px 14px; font-size: 11px; background: linear-gradient(135deg, #e67e22, #d35400); color: white; border: none; border-radius: 6px; font-weight: 800;" title="Precompila tutte le stanze dell'immobile attivo con testi Colonna F e intermezzi">
+                  🔄 PRECOMPILA DA IMMOBILE
+                </button>
+                <button type="button" onclick="apriModalAggiungiBloccoPalinsesto()" class="btn-gold" style="width: auto; min-height: 36px; padding: 6px 14px; font-size: 11px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 6px; font-weight: 800;">
+                  ➕ AGGIUNGI BLOCCO
+                </button>
+                <button type="button" onclick="salvaPalinsestoDinamicoCompleto()" class="btn-gold" style="width: auto; min-height: 36px; padding: 6px 16px; font-size: 11px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 6px; font-weight: 800; box-shadow: 0 4px 14px rgba(46,204,113,0.35);">
+                  💾 SALVA &amp; APPLICA IN DIRETTA
+                </button>
+              </div>
+            </div>
+
+            <!-- BARRA METRICHE & STATO SCALETTA IN TEMPO REALE -->
+            <div style="background: rgba(201,163,94,0.1); border: 1px solid rgba(201,163,94,0.35); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 12px; font-weight: 700; color: #fff;">🏠 Immobile di Riferimento:</span>
+                <span id="pal-badge-immobile-nome" style="background: rgba(241,196,15,0.2); color: var(--gold-bright); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; border: 1px solid var(--gold);">Villa Favara</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="font-size: 12px; color: var(--sand);">
+                  🔢 Blocchi: <b id="pal-badge-totale-blocchi" style="color: #fff;">0</b>
+                </div>
+                <div style="font-size: 12px; color: var(--sand);">
+                  ⏱️ Durata Ciclo: <b id="pal-badge-durata-totale" style="color: #2ecc71; font-size: 13px;">0 min 00 sec</b>
+                </div>
+                <div style="font-size: 11px; background: rgba(52,152,219,0.25); color: #38bdf8; padding: 3px 8px; border-radius: 10px; font-weight: 700;">
+                  🔄 <span id="pal-badge-cicli-ora">~0</span> cicli/ora
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTENITORE BLOCCHI SCALETTA DINAMICA -->
+            <div id="palinsesto-rundown-container" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; min-height: 120px;">
+              <div style="text-align: center; color: var(--sand); padding: 25px; font-size: 12px;">⏳ Caricamento scaletta palinsesto in corso...</div>
+            </div>
+
+            <div id="status-salvataggio-palinsesto" style="display: none; padding: 10px; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 12px;"></div>
+
+            <!-- MODALE AGGIUNGI BLOCCO PERSONALIZZATO -->
+            <div id="modal-aggiungi-blocco-palinsesto" style="display: none; background: rgba(0,0,0,0.85); position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+              <div style="background: #18120c; border: 1px solid var(--gold); border-radius: 12px; max-width: 520px; width: 100%; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.9);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                  <div style="font-size: 15px; font-weight: 800; color: var(--gold-bright);">➕ Aggiungi Nuovo Blocco al Palinsesto</div>
+                  <button type="button" onclick="chiudiModalAggiungiBlocco()" style="background: none; border: none; color: #aaa; font-size: 20px; cursor: pointer;">✕</button>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Tipo di Contenuto / Rubrica:</label>
+                  <select id="add-blocco-tipo" onchange="aggiornaCampiNuovoBlocco(this.value)" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px;">
+                    <option value="stanza">🏠 Stanza Immobile (Foto/360° da Colonna F)</option>
+                    <option value="teatrino">🎭 Teatrino Comico DarIA &amp; DarIO</option>
+                    <option value="spot">📺 Spot Pubblicità &amp; Sponsor</option>
+                    <option value="sport">⚽ Notizie &amp; Sport Attualità</option>
+                    <option value="meteo">🌤️ Previsioni Meteo Locali</option>
+                    <option value="nozioni">📚 Nozioni &amp; Pillole Immobiliari</option>
+                    <option value="storyteller">🏛️ Storyteller &amp; Curiosità Città</option>
+                    <option value="worldclock">🌍 Orologio Mondiale &amp; Saluto Estero</option>
+                    <option value="custom">✨ Blocco Personalizzato da Foglio Google</option>
+                  </select>
+                </div>
+
+                <div class="form-group" id="group-add-foglio-sorgente" style="margin-bottom: 12px;">
+                  <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Foglio Google Sheet Sorgente:</label>
+                  <select id="add-blocco-foglio" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px;">
+                    <option value="">Caricamento fogli disponibili...</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Titolo del Blocco:</label>
+                  <input type="text" id="add-blocco-titolo" onfocus="autoAttivaSottoDettagli('add-blocco-titolo', 'smart-sub-blocco')" placeholder="es. Cucina &amp; Living o Rubrica del Giorno" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px;">
+                  <div class="smart-stanze-container" id="smart-stanze-blocco-container">
+                    <div class="smart-stanze-scroll">
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Bagno', 'smart-sub-blocco')">🚿 Bagno</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Cucina', 'smart-sub-blocco')">🍳 Cucina</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Salotto', 'smart-sub-blocco')">🛋️ Salotto</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Zona Living', 'smart-sub-blocco')">🏡 Zona Living</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Camera da Letto', 'smart-sub-blocco')">🛏️ Camera da Letto</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Cameretta', 'smart-sub-blocco')">🧸 Cameretta</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Balcone', 'smart-sub-blocco')">🌇 Balcone</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Terrazzo', 'smart-sub-blocco')">☀️ Terrazzo</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Giardino', 'smart-sub-blocco')">🌿 Giardino</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Garage / Box', 'smart-sub-blocco')">🚗 Garage</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Lavanderia', 'smart-sub-blocco')">🧺 Lavanderia</button>
+                      <button type="button" class="smart-chip" onclick="inserisciStanzaSmart('add-blocco-titolo', 'Ripostiglio', 'smart-sub-blocco')">📦 Ripostiglio</button>
+                      <button type="button" class="smart-chip smart-chip-more" onclick="apriCatalogoCompletoStanze('add-blocco-titolo', 'smart-sub-blocco')">➕ Tutte...</button>
+                    </div>
+                    <div class="smart-subdetails-bar" id="smart-sub-blocco" style="display:none;"></div>
+                  </div>
+                </div>
+
+                <div class="form-grid cols-2" style="margin-bottom: 12px;">
+                  <div class="form-group">
+                    <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Durata (Secondi):</label>
+                    <input type="number" id="add-blocco-durata" value="30" min="10" max="300" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px;">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Voce Speaker:</label>
+                    <select id="add-blocco-voce" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px;">
+                      <option value="DarIA">👩 DarIA (Femmina)</option>
+                      <option value="DarIO">👨 DarIO (Maschio)</option>
+                      <option value="Duo">👫 Duo Insieme</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label style="font-size: 11px; color: var(--gold); font-weight: 700;">Testo Parlato (Colonna F o Personalizzato):</label>
+                  <textarea id="add-blocco-testo" rows="3" placeholder="Inserisci il testo o lascia vuoto per estrarlo in automatico dalla Colonna F..." style="width: 100%; padding: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--line); border-radius: 6px; font-size: 11.5px;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                  <button type="button" onclick="chiudiModalAggiungiBlocco()" class="btn-gold" style="background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555; padding: 8px 14px; font-size: 11px;">Annulla</button>
+                  <button type="button" onclick="confermaAggiungiNuovoBlocco()" class="btn-gold" style="background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; border: none; padding: 8px 18px; font-size: 11px; font-weight: 800;">➕ INSERISCI BLOCCO</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🌍 MODULO INTEGRATO: FORZA LINGUA IMMEDIATA DARIA -->
+            <div style="background: rgba(52, 152, 219, 0.09); border: 1px solid rgba(52, 152, 219, 0.35); border-radius: 10px; padding: 14px; margin-top: 14px;">
+              <div style="font-size: 13px; font-weight: 800; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                🌍 Forza Lingua Immediata DarIA (Parla Subito)
+              </div>
+              <div style="font-size: 11px; color: var(--sand); margin-bottom: 10px;">
+                Fai pronunciare a DarIA una frase istantanea in un'altra lingua o imposta la lingua di tutto il palinsesto in tempo reale:
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 10px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Seleziona Lingua Istantanea:</label>
+                <div id="quick-lang-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  <button type="button" onclick="selezionaLinguaIstantanea('it', this)" class="btn-lang-chip active-lang" style="padding: 5px 10px; border-radius: 8px; border: 1px solid #f1c40f; background: rgba(241,196,15,0.25); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇮🇹 Italiano</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('en', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇬🇧 Inglese</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('fr', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇫🇷 Francese</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('de', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇩🇪 Tedesco</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('es', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇪🇸 Spagnolo</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('pt', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇵🇹 Portoghese</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('ar', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇸🇦 Arabo</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('zh', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇨🇳 Cinese</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('ja', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇯🇵 Giapponese</button>
+                  <button type="button" onclick="selezionaLinguaIstantanea('ru', this)" class="btn-lang-chip" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;">🇷🇺 Russo</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label style="font-size: 11px;">Testo Personalizzato da Far Pronunciare a DarIA (opzionale):</label>
+                <input type="text" id="palinsesto-testo-lingua-custom" placeholder="Lascia vuoto per leggere e tradurre l'immobile corrente di Colonna F..." style="font-size: 12px; color: #fff; padding: 6px 10px;">
+              </div>
+
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onclick="eseguiParlaLinguaImmediata(true)" class="btn-gold" style="flex: 1.4; min-width: 190px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; font-weight: 800; font-size: 11px; padding: 7px 12px;">
+                  🗣️ FAI PARLARE DARIA SUBITO ORA
+                </button>
+                <button type="button" onclick="eseguiParlaLinguaImmediata(false)" class="btn-gold" style="flex: 1; min-width: 160px; background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid var(--gold); font-size: 11px; padding: 7px 12px;">
+                  🔴 IMPOSTA LINGUA PALINSESTO
+                </button>
+                <button type="button" onclick="ripristinaLinguaItaliano()" class="btn-gold" style="flex: 0.7; min-width: 130px; background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.2); font-size: 11px; padding: 7px 12px;">
+                  🔄 RESET ITALIANO
+                </button>
+              </div>
+              <div id="pal-lingua-status" style="margin-top: 8px; font-size: 11px; color: #2ecc71; display: none;"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+              <div class="section-title" style="margin: 0;">📊 Riepilogo Grafico & Didascalia <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-riepilogo-didascalia')" title="Guida & Mini Tutorial: 📊 Riepilogo Grafico & Didascalia">❓</button></div>
+<div id="tut-riepilogo-didascalia" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 📊 Riepilogo Grafico & Didascalia</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Genera la scaletta formattata del palinsesto con gli orari di trasmissione da incollare come didascalia nei post social o inviare ai clienti.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Clicca sul pulsante per generare automaticamente il testo con gli orari aggiornati.</li><li>Condividi la guida TV con un tocco su Telegram o WhatsApp.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-riepilogo-didascalia')">✖️ Chiudi Guida</div>
+</div>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="inviaPalinsestoTelegramWeb()" style="background: rgba(52,152,219,0.25); color: #3498db; border: 1px solid #3498db; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 700; cursor: pointer; min-height: 36px;">📱 TELEGRAM</button>
+                <button onclick="condividiScalettaWhatsAppWeb()" style="background: rgba(46,204,113,0.25); color: #2ecc71; border: 1px solid #2ecc71; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 700; cursor: pointer; min-height: 36px;">💬 WHATSAPP</button>
+              </div>
+            </div>
+            <div class="sheet-accordion-btn" onclick="toggleAccordionBox('acc-guida-tv', this)">
+              <span>📺 Visualizza Scaletta & Orari Palinsesto</span>
+              <span class="acc-badge" style="color:var(--gold); font-size:11px;">👁️ Clicca per Aprire</span>
+            </div>
+            <div id="acc-guida-tv" class="sheet-accordion-body">
+              <div id="guida-tv-container" class="tvguide-grid"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">⏱️ Durata Permanenza Foto & Intermezzi <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-durata-tempi')" title="Guida & Mini Tutorial: ⏱️ Durata Permanenza Foto & Intermezzi">❓</button></div>
+<div id="tut-durata-tempi" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: ⏱️ Durata Permanenza Foto & Intermezzi</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Imposta i tempi di visualizzazione in secondi di ogni immagine, video o panorama 360° prima di avanzare alla stanza successiva.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Regola i secondi per le foto standard, i video e i virtual tour 360°.</li><li>Clicca <em>'Salva Tempi'</em> per applicare le modifiche alla diretta live.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-durata-tempi')">✖️ Chiudi Guida</div>
+</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Permanenza Foto (Sec):</label><input type="number" id="cfg-durata-foto" value="12" min="3" max="120" title="Durata visualizzazione di ogni foto prima di passare alla stanza successiva"></div>
+              <div class="form-group">
+                <label>🎵 Rotazione Musica (Min):</label>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <input type="number" id="cfg-durata-musica" value="3" min="1" max="60" style="flex:1;" title="Ogni quanti minuti cambiare brano di sottofondo">
+                  <button type="button" id="btn-toggle-musica" onclick="toggleMusicaSottofondoUI()" style="background:#27ae60; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;" title="Attiva o disattiva la musica di sottofondo">🔊 MUSICA: ON</button>
+                </div>
+              </div>
+              <div class="form-group"><label>📢 Timer Spot / Pubblicità (Min):</label><input type="number" id="cfg-freq-pubblicita" value="10" min="1" max="120" title="Ogni quanti minuti far scattare lo spot pubblicitario in diretta"></div>
+              <div class="form-group"><label>🎥 Timer Video YouTube (Min):</label><input type="number" id="cfg-freq-youtube" value="20" min="1" max="120" title="Ogni quanti minuti mandare in onda un video immobile dal canale YouTube"></div>
+              <div class="form-group"><label>Frequenza Meteo (Min):</label><input type="number" id="cfg-freq-meteo" value="15"></div>
+              <div class="form-group"><label>Frequenza Notizie (Min):</label><input type="number" id="cfg-freq-notizie" value="30"></div>
+              <div class="form-group"><label>Frequenza Orario (Min):</label><input type="number" id="cfg-freq-orario" value="10"></div>
+            </div>
+            <button onclick="salvaConfigurazioneRegiaCompleta()" class="btn-gold" style="margin-top: 16px;">💾 SALVA TEMPI & REGIA</button>
+          </div>
+
+          <!-- NUOVA SEZIONE: Fogli di Supporto & Intermezzi -->
+          <div class="section-card" style="margin-top: 15px; border-color: #9b59b6;">
+            <div class="section-title" style="color: #9b59b6;">🎭 Fogli di Supporto, Intermezzi & Notizie <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-fogli-supporto')" title="Guida & Mini Tutorial: 🎭 Fogli di Supporto, Intermezzi & Notizie">❓</button></div>
+<div id="tut-fogli-supporto" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🎭 Fogli di Supporto, Intermezzi & Notizie</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Collega i fogli Google ausiliari contenenti le battute del teatrino comico tra DarIA e DarIO, le notizie della città e le previsioni meteo.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Verifica che i fogli di supporto siano correttamente collegati.</li><li>Ricarica le notizie o il meteo locale per aggiornare i contenuti periodici della diretta.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-fogli-supporto')">✖️ Chiudi Guida</div>
+</div>
+            <div style="font-size:12px; color:var(--sand); margin-bottom:12px;">Gestisci rapidamente i dialoghi, la pubblicità e le rubriche speciali in onda.</div>
+            
+            <div class="sheet-accordion-btn" onclick="toggleAccordionBox('acc-fogli-supporto', this)">
+              <span>📂 Elenco Schede di Supporto & Rubriche Google Sheet</span>
+              <span class="acc-badge" style="color:var(--gold); font-size:11px;">👁️ Clicca per Aprire</span>
+            </div>
+            <div id="acc-fogli-supporto" class="sheet-accordion-body">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px;">
+                <script>
+var SHEET_ID_GLOBAL = "1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE";
+
+                  const fogliServizio = ['Musica_Sottofondo', 'Dialoghi_Duo', 'Pubblicita_Spot', 'Storyteller_Citta', 'Teatrino', 'Nozioni_Immobiliari', 'Notizie_Sport_Attualita'];
+                  fogliServizio.forEach(function(nome) {
+                    document.write(`
+                      <div style="background: rgba(155,89,182,0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(155,89,182,0.3); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold; font-size: 13px; color: #fff;">${nome.replace(/_/g, ' ')}</span>
+                        <div style="display: flex; gap: 6px;">
+                          <button onclick="window.open('https://docs.google.com/spreadsheets/d/1V1U67iYY7G4UyRw-D5QJgIcltH2QM34ifFfqEr9T7TE/edit', '_blank')" style="background: #34495e; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;" title="Apri Google Sheets">✏️ Apri</button>
+                          <button onclick="cambiaImmobileLive('${nome}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer;" title="Manda subito in diretta">🔴 In Onda</button>
+                        </div>
+                      </div>
+                    `);
+                  });
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- NUOVA SEZIONE: GESTORE PUBBLICITA SPOT -->
+          <div class="section-card" style="margin-top: 15px; border-color: #f39c12;">
+            <div class="section-title" style="color: #f39c12;">📺 Gestore Pubblicità & Spot in Diretta <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-gestore-pubblicita')" title="Guida & Mini Tutorial: 📺 Gestore Pubblicità & Spot in Diretta">❓</button></div>
+<div id="tut-gestore-pubblicita" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 📺 Gestore Pubblicità & Spot in Diretta</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Pianifica l'apparizione di banner pubblicitari, sponsor locali o annunci promozionali dell'agenzia durante la diretta a intervalli regolari.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Carica l'immagine o il logo dello sponsor e imposta il tempo di visualizzazione.</li><li>Inserisci il testo promozionale che DarIA leggerà durante la pubblicità e clicca <em>'Salva Spot'</em>.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-gestore-pubblicita')">✖️ Chiudi Guida</div>
+</div>
+            <div style="font-size:12px; color:var(--sand); margin-bottom:12px;">Modifica i tempi degli annunci e scegli quali mandare in onda (salvataggio automatico).</div>
+            
+            <div class="sheet-accordion-btn" onclick="toggleAccordionBox('acc-pubblicita-spot', this)">
+              <span>📺 Elenco Annunci & Sponsor dal Foglio (Pubblicita_Spot)</span>
+              <span class="acc-badge" style="color:var(--gold); font-size:11px;">👁️ Clicca per Aprire</span>
+            </div>
+            <div id="acc-pubblicita-spot" class="sheet-accordion-body">
+              <div id="gestore-pubblicita-container" style="display: flex; flex-direction: column; gap: 8px; max-height:300px; overflow-y:auto; padding-right:6px;">
+                <div style="color:#fff; font-size:12px;">⏳ Caricamento spot pubblicitari in corso...</div>
+              </div>
+              <button onclick="caricaPannelloPubblicita()" class="btn-gold" style="margin-top:12px; width:auto; font-size:11px; padding:6px 12px; min-height:auto;">🔄 Aggiorna Lista Spot</button>
+            </div>
+          </div>
+
+        </div>
+

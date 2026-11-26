@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Selezione Esclusiva VIP — Antonio Giancani</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { display: none; }
+    body { background-color: #0b141a; color: #e9edef; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 bg-slate-950">
+
+  <div class="max-w-md mx-auto w-full">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center shadow-2xl relative overflow-hidden mb-6">
+      <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-amber-500/20">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <span class="bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Accesso VIP Riservato</span>
+      <h1 class="text-xl font-extrabold text-white mt-3 uppercase tracking-tight"><?= nome ?></h1>
+      <p class="text-xs text-slate-400 mt-1 font-mono">Tel: <?= numero ?></p>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 mb-6 text-sm leading-relaxed text-slate-300">
+      <p class="mb-3"><i class="fa-solid fa-star text-amber-400 mr-2"></i> Benvenuto nella selezione privata degli immobili corrispondenti alle tue preferenze.</p>
+      <p class="text-xs text-slate-400">Le nostre offerte esclusive vengono aggiornate in tempo reale in base ai criteri impostati nel sistema.</p>
+    </div>
+
+    <div id="vipList" class="space-y-4">
+      <div class="text-center py-8 text-slate-500">
+        <i class="fa-solid fa-circle-notch fa-spin text-2xl text-amber-400 mb-2"></i>
+        <p class="text-xs font-bold uppercase tracking-wider">Caricamento portafoglio VIP...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center py-6 border-t border-slate-900 mt-8">
+    <p class="text-base font-black text-amber-400 tracking-wide uppercase">Antonio Giancani</p>
+    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Consulenza & Gestione Immobiliare Esclusiva</p>
+  </div>
+
+</body>
+</html>

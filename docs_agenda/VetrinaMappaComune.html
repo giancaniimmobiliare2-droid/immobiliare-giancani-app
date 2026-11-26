@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vetrina Immobili Mappa Territoriale — Immobiliare Giancani</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet.js CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <style>
+    body { font-family: 'Outfit', system-ui, -apple-system, sans-serif; background: #f0fdf4; color: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #e2e8f0; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #86efac; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #22c55e; }
+    #map { height: 100%; width: 100%; min-height: 480px; border-radius: 16px; border: 2px solid #bbf7d0; box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.1); }
+    .light-card { background: #ffffff; border: 1.5px solid #dcfce7; box-shadow: 0 4px 15px -2px rgba(22, 163, 74, 0.05); }
+    .city-btn { background: #ffffff; color: #166534; border: 1.5px solid #bbf7d0; font-weight: 700; }
+    .city-btn:hover { background: #dcfce7; border-color: #22c55e; }
+    .city-btn.active { background: linear-gradient(135deg, #16a34a, #15803d); border-color: #15803d; color: #ffffff; font-weight: 800; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
+    .orange-badge { background: linear-gradient(135deg, #f97316, #ea580c); color: #ffffff; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-emerald-50/30">
+
+  <!-- HEADER CHIARO CON VERDE E TOCCO ARANCIO -->
+  <header class="bg-white/95 backdrop-blur border-b border-emerald-100 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-500 flex items-center justify-center text-white text-xl font-black shadow-md shadow-emerald-500/20">
+        🌿
+      </div>
+      <div>
+        <h1 class="text-sm md:text-base font-black uppercase tracking-wider text-emerald-950 flex items-center gap-2">
+          <span>Vetrina Immobili Mappa</span>
+          <span id="badgeComuneSelezionato" class="orange-badge text-[11px] px-3 py-0.5 rounded-full font-black uppercase shadow-sm">
+            Tutti i Comuni
+          </span>
+        </h1>
+        <p class="text-[11px] text-emerald-700 font-medium">Mappa Interattiva Territoriale Live • Immobiliare Giancani</p>
+      </div>
+    </div>
+
+    <!-- SELETTORE RAPIDO COMUNI CON BOTTONI CHIARI E VERDI -->
+    <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar max-w-full py-1">
+      <button onclick="selezionaComune('Tutti')" class="city-btn active text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🌐 Tutti i Comuni
+      </button>
+      <button onclick="selezionaComune('Favara')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🏰 Favara
+      </button>
+      <button onclick="selezionaComune('Agrigento')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🏛️ Agrigento
+      </button>
+      <button onclick="selezionaComune('Villaggio Mosè')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🏪 Villaggio Mosè
+      </button>
+      <button onclick="selezionaComune('San Leone')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🏖️ San Leone
+      </button>
+      <button onclick="selezionaComune('Realmonte')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🏔️ Realmonte
+      </button>
+      <button onclick="selezionaComune('Porto Empedocle')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        ⚓ Porto Empedocle
+      </button>
+      <button onclick="selezionaComune('Canicattì')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🌱 Canicattì
+      </button>
+      <button onclick="selezionaComune('Aragona')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        ⛰️ Aragona
+      </button>
+      <button onclick="selezionaComune('Palma di Montechiaro')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        👑 Palma
+      </button>
+      <button onclick="selezionaComune('Licata')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        🚨 Licata
+      </button>
+      <button onclick="selezionaComune('Sciacca')" class="city-btn text-xs px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap">
+        ♨️ Sciacca
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENITORE PRINCIPALE (MAPPA + LISTA) -->
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-[1700px] mx-auto w-full">
+
+    <!-- COLONNA SINISTRA: MAPPA INTERATTIVA LEAFLET (7 colonne) -->
+    <div class="lg:col-span-7 flex flex-col gap-3 min-h-[480px]">
+      <div class="light-card rounded-2xl p-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-black text-emerald-800 uppercase tracking-wider">
+          <i class="fa-solid fa-map-location-dot text-orange-500 text-sm"></i>
+          <span>Mappa Interattiva — <span id="labelConteggioMap" class="text-orange-600 font-extrabold">0</span> Immobili Visibili</span>
+        </div>
+        <div class="text-[11px] text-emerald-700 font-extrabold bg-emerald-100/80 px-2.5 py-1 rounded-lg">
+          Immobiliare Giancani
+        </div>
+      </div>
+      <div class="flex-1 relative rounded-2xl overflow-hidden shadow-lg border border-emerald-200">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: LISTA SCHEDE IMMOBILI (5 colonne) -->
+    <div class="lg:col-span-5 flex flex-col gap-3">
+      
+      <!-- RICERCA & FILTRI AVANZATI -->
+      <div class="light-card rounded-2xl p-3 flex flex-col gap-3">
+        
+        <!-- Riga 1: Ricerca e Aggiorna -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+            <input type="text" id="filterInput" oninput="applicaFiltroTesto()" placeholder="Cerca generico (titolo, tipologia, ecc)..." 
+              class="w-full bg-slate-50 text-xs text-slate-900 font-medium pl-9 pr-3 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
+          </div>
+          <button onclick="caricaTuttiImmobili()" class="bg-emerald-600 hover:bg-emerald-700 text-xs text-white font-bold px-3.5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate"></i>
+            <span class="hidden sm:inline">Aggiorna</span>
+          </button>
+        </div>
+
+        <!-- Riga 2: Tipologia e Prezzo -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          
+          <!-- Pulsantiera Tipologia -->
+          <div class="flex-1 flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1">
+            <button onclick="selezionaTipologia('Tutte')" class="tipo-btn active text-[11px] px-3 py-1.5 rounded-lg border border-emerald-600 bg-emerald-500 text-white font-bold whitespace-nowrap transition-all shadow-sm">
+              <i class="fa-solid fa-border-all mr-1"></i> Tutte
+            </button>
+            <button onclick="selezionaTipologia('Appartament')" class="tipo-btn text-[11px] px-3 py-1.5 rounded-lg border border-emerald-200 bg-white text-slate-600 font-bold whitespace-nowrap transition-all hover:bg-emerald-50">
+              <i class="fa-solid fa-building mr-1"></i> Appartamenti
+            </button>
+            <button onclick="selezionaTipologia('Vill')" class="tipo-btn text-[11px] px-3 py-1.5 rounded-lg border border-emerald-200 bg-white text-slate-600 font-bold whitespace-nowrap transition-all hover:bg-emerald-50">
+              <i class="fa-solid fa-house-chimney-window mr-1"></i> Ville
+            </button>
+            <button onclick="selezionaTipologia('Terren')" class="tipo-btn text-[11px] px-3 py-1.5 rounded-lg border border-emerald-200 bg-white text-slate-600 font-bold whitespace-nowrap transition-all hover:bg-emerald-50">
+              <i class="fa-solid fa-leaf mr-1"></i> Terreni
+            </button>
+            <button onclick="selezionaTipologia('Local')" class="tipo-btn text-[11px] px-3 py-1.5 rounded-lg border border-emerald-200 bg-white text-slate-600 font-bold whitespace-nowrap transition-all hover:bg-emerald-50">
+              <i class="fa-solid fa-shop mr-1"></i> Locali
+            </button>
+          </div>
+
+          <!-- Dropdown Scala Prezzi -->
+          <div class="sm:w-48 flex-shrink-0 relative">
+            <i class="fa-solid fa-euro-sign absolute left-3 top-2.5 text-emerald-600 text-[11px]"></i>
+            <select id="prezzoSelect" onchange="applicaFiltroTesto()" class="w-full bg-white text-[11px] text-slate-700 font-bold pl-7 pr-3 py-2 rounded-lg border border-emerald-200 focus:outline-none focus:border-emerald-600 appearance-none cursor-pointer">
+              <option value="Tutti">Qualsiasi Prezzo</option>
+              <option value="50000">Fino a 50.000 €</option>
+              <option value="100000">Fino a 100.000 €</option>
+              <option value="150000">Fino a 150.000 €</option>
+              <option value="250000">Fino a 250.000 €</option>
+              <option value="250001">Oltre 250.000 €</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-3 top-2.5 text-slate-400 text-[10px] pointer-events-none"></i>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CONTAINER CARDS -->
+      <div class="light-card rounded-2xl p-4 flex-1 overflow-hidden flex flex-col max-h-[600px] lg:max-h-[calc(100vh-140px)]">
+        <div id="loadingStatus" class="py-12 text-center text-emerald-700 text-xs font-bold">
+          <i class="fa-solid fa-circle-notch fa-spin text-3xl text-emerald-600 mb-3 block"></i>
+          Caricamento immobili in corso...
+        </div>
+        
+        <div id="cardsGrid" class="space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-1 hidden"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-emerald-100 px-4 py-3 text-center text-[11px] text-emerald-800 font-black tracking-wider uppercase shadow-inner">
+    Immobiliare Giancani • Vetrina Mappa Territoriale Immobili
+  </footer>
+
+  <script>
+    // PRELOAD SERVER-SIDE SICURO DA GOOGLE APPS SCRIPT
+    var SERVER_PRELOAD = [];
+    try {
+      SERVER_PRELOAD = <?!= (typeof IMMOBILI_PRELOAD !== 'undefined' && IMMOBILI_PRELOAD) ? IMMOBILI_PRELOAD : '[]' ?>;
+    } catch(ePreload) {
+      SERVER_PRELOAD = [];
+    }
+
+    var allImmobili = [];
+    var currentComune = "Tutti";
+    var currentTipologia = "Tutte";
+    var map, featureGroup;
+    var markersStore = {};
+
+    var CITY_CONFIGS = {
+      'favara':                { color: '#16a34a', icon: 'fa-chess-rook',      label: 'Favara',               base: [37.31872, 13.65757],  zoom: 14 },
+      'agrigento':             { color: '#2563eb', icon: 'fa-landmark',        label: 'Agrigento',            base: [37.31154, 13.57641],  zoom: 14 },
+      'villaggio mosè':        { color: '#059669', icon: 'fa-store',           label: 'Villaggio Mosè',       base: [37.27343, 13.60781],  zoom: 14 },
+      'san leone':             { color: '#0284c7', icon: 'fa-umbrella-beach',  label: 'San Leone',            base: [37.26285, 13.58504],  zoom: 14 },
+      'realmonte':             { color: '#0d9488', icon: 'fa-mountain-sun',   label: 'Realmonte',            base: [37.30939, 13.46934],  zoom: 14 },
+      'porto empedocle':       { color: '#4f46e5', icon: 'fa-anchor',          label: 'Porto Empedocle',      base: [37.29053, 13.52780],  zoom: 14 },
+      'canicattì':             { color: '#7c3aed', icon: 'fa-seedling',        label: 'Canicattì',            base: [37.36052, 13.84900],  zoom: 13 },
+      'aragona':               { color: '#d97706', icon: 'fa-mountain',        label: 'Aragona',              base: [37.39934, 13.62070],  zoom: 14 },
+      'palma di montechiaro':  { color: '#db2777', icon: 'fa-crown',           label: 'Palma di Montechiaro', base: [37.19684, 13.76330],  zoom: 13 },
+      'licata':                { color: '#1e40af', icon: 'fa-ship',            label: 'Licata',               base: [37.10399, 13.94731],  zoom: 13 },
+      'sciacca':               { color: '#e11d48', icon: 'fa-spa',             label: 'Sciacca',              base: [37.50880, 13.08454],  zoom: 13 }
+    };
+
+    function getCityCfg(txt) {
+      txt = (txt || '').toLowerCase();
+      for (var key in CITY_CONFIGS) {
+        if (txt.indexOf(key) !== -1) return CITY_CONFIGS[key];
+      }
+      return CITY_CONFIGS['favara'];
+    }
+
+    function scatterCoords(lat, lng, seed) {
+      var numSeed = parseInt(String(seed).replace(/\D/g, '')) || 42;
+      var angle = ((numSeed * 13) % 360) * (Math.PI / 180.0);
+      var dist = (0.25 + ((numSeed * 7) % 50) * 0.01) / 111.0;
+      return [lat + dist * Math.cos(angle), lng + dist * Math.sin(angle)];
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var paramComune = urlParams.get('comune') || urlParams.get('citta') || urlParams.get('localita');
+      if (paramComune) {
+        currentComune = paramComune;
+      } else {
+        currentComune = "Tutti";
+      }
+
+      initMap();
+      caricaTuttiImmobili();
+    });
+
+    function initMap() {
+      var mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
+      map = L.map(mapContainer, {
+        center: [37.31872, 13.65757],
+        zoom: 13,
+        zoomControl: true,
+        scrollWheelZoom: false
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; Immobiliare Giancani | OpenStreetMap',
+        maxZoom: 19
+      }).addTo(map);
+
+      featureGroup = L.featureGroup().addTo(map);
+
+      if (typeof L !== 'undefined' && typeof L.markerClusterGroup === 'function') {
+        markerClusterGroup = L.markerClusterGroup({
+          disableClusteringAtZoom: 16,
+          spiderfyOnMaxZoom: true,
+          showCoverageOnHover: false,
+          maxClusterRadius: 35
+        }).addTo(map);
+      } else {
+        markerClusterGroup = featureGroup;
+      }
+    }
+
+    function formatGScriptData(gData) {
+      if (!Array.isArray(gData)) return [];
+      return gData.map(function(item) {
+        return {
+          id: item.id,
+          title: { rendered: item.titolo || 'Immobile Immobiliare Giancani' },
+          link: item.link || '#',
+          _foto: item.foto || item.Foto_Bot_1 || item.foto1 || '',
+          meta: {
+            _immobile_citta: item.citta || item.Citta || 'Favara',
+            _immobile_indirizzo: item.via || '',
+            _immobile_prezzo: item.prezzo || '',
+            _immobile_latitude: item.lat,
+            _immobile_longitude: item.lng,
+            _immobile_superficie: item.mq || '--',
+            _immobile_camere: item.camere || '--',
+            _immobile_bagni: item.bagni || '--'
+          }
+        };
+      });
+    }
+
+    function caricaTuttiImmobili() {
+      // 1. Mostra subito i dati se precaricati, altrimenti imposta il fallback dimostrativo immediato
+      if (Array.isArray(SERVER_PRELOAD) && SERVER_PRELOAD.length > 0) {
+        allImmobili = formatGScriptData(SERVER_PRELOAD);
+        selezionaComune(currentComune);
+      } else {
+        applicaFallbackDimostrativo();
+      }
+
+      // 2. Tenta aggiornamento in background via Google Apps Script (se disponibile)
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        try {
+          google.script.run
+            .withSuccessHandler(function(gData) {
+              if (Array.isArray(gData) && gData.length > 0) {
+                allImmobili = formatGScriptData(gData);
+                selezionaComune(currentComune);
+              }
+            })
+            .withFailureHandler(function(err) {
+              console.warn("getImmobiliMappaData non bloccante:", err);
+            })
+            .getImmobiliMappaData();
+        } catch(eRun) {
+          console.warn("gas run bypass:", eRun);
+        }
+      }
+
+      // 3. Esegue sempre il fetch diretto dall'API REST WordPress Giancani
+      fetchWpData();
+    }
+
+    function fetchWpData() {
+      fetch('https://www.immobiliaregiancani.it/wp-json/giancani/v1/search')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (Array.isArray(data) && data.length > 0) {
+            var formattedWp = data.map(function(wpItem) {
+              var rawLink = wpItem.permalink || wpItem.link || '#';
+              var wpTitle = typeof wpItem.title === 'object' ? (wpItem.title.rendered || '') : (wpItem.title || '');
+              var wpPhoto = wpItem.photo || '';
+              if (!wpPhoto && wpItem._embedded && wpItem._embedded['wp:featuredmedia'] && wpItem._embedded['wp:featuredmedia'][0]) {
+                wpPhoto = wpItem._embedded['wp:featuredmedia'][0].source_url || '';
+              }
+              var m = wpItem.meta || {};
+              return {
+                id: 'WP-' + (wpItem.id || Math.random()),
+                title: { rendered: wpTitle || 'Immobile Immobiliare Giancani' },
+                link: rawLink,
+                _foto: wpPhoto,
+                meta: {
+                  _immobile_citta: m._immobile_citta || wpItem.location || 'Favara',
+                  _immobile_indirizzo: m._immobile_indirizzo || wpItem.location || '',
+                  _immobile_prezzo: m._immobile_prezzo || (wpItem.price && wpItem.price.indexOf('Contattaci') === -1 ? wpItem.price : ''),
+                  _immobile_latitude: wpItem.lat || m._immobile_latitude || '',
+                  _immobile_longitude: wpItem.lng || m._immobile_longitude || '',
+                  _immobile_superficie: (m._immobile_superficie || wpItem.mq || '120').toString().replace(/\bmq\.?|\bm\^2|\bm²\b/gi, 'metri quadri'),
+                  _immobile_camere: m._immobile_camere || wpItem.camere || '--',
+                  _immobile_bagni: m._immobile_bagni || wpItem.bagni || '--'
+                }
+              };
+            });
+
+            // Arricchisce gli immobili esistenti con i permalink reali e aggiunge i nuovi da WP
+            formattedWp.forEach(function(wpItem) {
+              var wpLink = wpItem.link;
+              var wpTitleNorm = (wpItem.title ? (wpItem.title.rendered || '') : '').toLowerCase().trim();
+
+              var found = false;
+              allImmobili.forEach(function(existing) {
+                var exTitleNorm = (existing.title ? (existing.title.rendered || '') : '').toLowerCase().trim();
+                if (exTitleNorm && wpTitleNorm && (exTitleNorm.indexOf(wpTitleNorm.substring(0, 15)) !== -1 || wpTitleNorm.indexOf(exTitleNorm.substring(0, 15)) !== -1)) {
+                  if (wpLink && wpLink !== '#') {
+                    existing.link = wpLink;
+                  }
+                  if (!existing._foto && wpItem._foto) {
+                    existing._foto = wpItem._foto;
+                  }
+                  found = true;
+                }
+              });
+
+              if (!found) {
+                allImmobili.push(wpItem);
+              }
+            });
+
+            selezionaComune(currentComune);
+          }
+        })
+        .catch(function(err) {
+          console.warn("Fetch WP giancani/v1/search non bloccante:", err);
+        });
+    }
+
+    function applicaFallbackDimostrativo() {
+      if (allImmobili.length === 0) {
+        allImmobili = formatGScriptData([
+          { id: "DA-1", titolo: "Appartamento Panoramico Corso Vittorio Veneto 151", citta: "Favara", via: "Corso Vittorio Veneto 151", lat: "37.31872", lng: "13.65757", link: "https://www.immobiliaregiancani.it/immobili/", mq: "120 metri quadri" },
+          { id: "DA-2", titolo: "Villa Indipendente San Biagio con Giardino", citta: "Favara", via: "Contrada Priolo 12", lat: "37.32500", lng: "13.66200", link: "https://www.immobiliaregiancani.it/immobili/", mq: "220 metri quadri" },
+          { id: "DA-3", titolo: "Attico Vista Mare San Leone", citta: "Agrigento", via: "Viale delle Dune 5", lat: "37.26400", lng: "13.58900", link: "https://www.immobiliaregiancani.it/immobili/", mq: "140 metri quadri" }
+        ]);
+        selezionaComune(currentComune);
+      }
+    }
+
+    function selezionaTipologia(tipo) {
+      currentTipologia = tipo;
+      document.querySelectorAll('.tipo-btn').forEach(function(btn) {
+        var isTutte = (tipo === 'Tutte' && btn.textContent.indexOf('Tutte') !== -1);
+        var isMatch = (!isTutte && tipo !== 'Tutte' && btn.textContent.indexOf(tipo) !== -1);
+        if (isTutte || isMatch) {
+          btn.classList.add('active', 'bg-emerald-500', 'text-white', 'border-emerald-600');
+          btn.classList.remove('bg-white', 'text-slate-600', 'border-emerald-200');
+        } else {
+          btn.classList.remove('active', 'bg-emerald-500', 'text-white', 'border-emerald-600');
+          btn.classList.add('bg-white', 'text-slate-600', 'border-emerald-200');
+        }
+      });
+      renderData();
+    }
+
+    function selezionaComune(comune) {
+      currentComune = comune;
+
+      document.querySelectorAll('.city-btn').forEach(function(btn) {
+        var txt = btn.textContent.trim().toLowerCase();
+        var target = comune.toLowerCase();
+        if ((target === 'tutti' && txt.indexOf('tutti') !== -1) || (target !== 'tutti' && txt.indexOf(target) !== -1)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      var badge = document.getElementById('badgeComuneSelezionato');
+      badge.textContent = (comune === 'Tutti') ? 'Tutti i Comuni' : ('Comune di ' + comune);
+
+      renderData();
+
+      // 🗺️ Vola sulla città selezionata
+      if (map) {
+        if (comune === 'Tutti') {
+          if (featureGroup && featureGroup.getLayers().length > 0) {
+            try { map.flyToBounds(featureGroup.getBounds(), { padding: [40, 40], duration: 1.2 }); } catch(e) {
+              map.flyTo([37.31872, 13.65757], 11, { duration: 1.2 });
+            }
+          } else {
+            map.flyTo([37.31872, 13.65757], 11, { duration: 1.2 });
+          }
+        } else {
+          // Cerca configurazione città (ricerca flessibile case-insensitive)
+          var key = comune.toLowerCase();
+          var cfg = CITY_CONFIGS[key] || null;
+          if (!cfg) {
+            for (var k in CITY_CONFIGS) {
+              if (key.indexOf(k) !== -1 || k.indexOf(key) !== -1) { cfg = CITY_CONFIGS[k]; break; }
+            }
+          }
+
+          if (cfg && cfg.base) {
+            var defaultZoom = cfg.zoom || 14;
+            // Prima tenta di adattarsi ai bounds degli immobili reali
+            var lats = [], lngs = [];
+            allImmobili.forEach(function(it) {
+              var m = it.meta || {};
+              var citIt = (m._immobile_citta || m.citta || '').toLowerCase();
+              if (citIt.indexOf(key) === -1 && key.indexOf(citIt) === -1) return;
+              var lt = parseFloat(m._immobile_latitude || m.lat || 0);
+              var lg = parseFloat(m._immobile_longitude || m.lng || 0);
+              if (lt > 36 && lt < 40 && lg > 12 && lg < 16) { lats.push(lt); lngs.push(lg); }
+            });
+
+            if (lats.length > 1) {
+              var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+              var minLng = Math.min.apply(null, lngs), maxLng = Math.max.apply(null, lngs);
+              try {
+                map.flyToBounds([[minLat, minLng],[maxLat, maxLng]], { padding: [60, 60], duration: 1.2, maxZoom: 15 });
+              } catch(e) { map.flyTo(cfg.base, defaultZoom, { duration: 1.2 }); }
+            } else {
+              // Fallback diretto sulle coordinate della città — sempre funziona
+              map.flyTo(cfg.base, defaultZoom, { duration: 1.2 });
+            }
+          }
+        }
+      }
+    }
+
+    function applicaFiltroTesto() {
+      renderData();
+    }
+
+    function renderData() {
+      var filterInputEl = document.getElementById('filterInput');
+      var filterText = (filterInputEl ? filterInputEl.value || '' : '').toLowerCase();
+      var prezzoSelectEl = document.getElementById('prezzoSelect');
+      var maxPrezzo = prezzoSelectEl ? prezzoSelectEl.value : 'Tutti';
+
+      if (featureGroup && typeof featureGroup.clearLayers === 'function') featureGroup.clearLayers();
+      if (markerClusterGroup && typeof markerClusterGroup.clearLayers === 'function' && markerClusterGroup !== featureGroup) {
+        markerClusterGroup.clearLayers();
+      }
+      markersStore = {};
+
+      var filtered = allImmobili.filter(function(it) {
+        var meta = it.meta || {};
+        var title = (it.title ? it.title.rendered || '' : '').toLowerCase();
+        var citta = (meta._immobile_citta || meta.citta || meta._immobile_localita || '').toLowerCase();
+        var via = (meta._immobile_indirizzo || '').toLowerCase();
+        var typeWp = (it.tipo || meta._immobile_tipologia || '').toLowerCase();
+        var numPrezzo = parseInt(String(meta._immobile_prezzo || meta.prezzo || '0').replace(/\D/g, ''), 10) || 0;
+        
+        var matchesComune = (currentComune === 'Tutti') || 
+                            !citta ||
+                            (citta.indexOf(currentComune.toLowerCase()) !== -1) || 
+                            (title.indexOf(currentComune.toLowerCase()) !== -1) ||
+                            (via.indexOf(currentComune.toLowerCase()) !== -1);
+
+        var matchesQuery = !filterText || 
+                           (title.indexOf(filterText) !== -1) || 
+                           (via.indexOf(filterText) !== -1) || 
+                           (citta.indexOf(filterText) !== -1) ||
+                           (typeWp.indexOf(filterText) !== -1);
+
+        var matchesTipologia = (currentTipologia === 'Tutte') ||
+                               (title.indexOf(currentTipologia.toLowerCase()) !== -1) ||
+                               (typeWp.indexOf(currentTipologia.toLowerCase()) !== -1);
+
+        var matchesPrezzo = true;
+        if (maxPrezzo !== 'Tutti' && numPrezzo > 0) {
+          var limit = parseInt(maxPrezzo, 10);
+          if (limit === 250001) {
+            matchesPrezzo = numPrezzo >= 250000;
+          } else {
+            matchesPrezzo = numPrezzo <= limit;
+          }
+        }
+
+        return matchesComune && matchesQuery && matchesTipologia && matchesPrezzo;
+      });
+
+      document.getElementById('labelConteggioMap').textContent = filtered.length;
+      document.getElementById('loadingStatus').classList.add('hidden');
+      var grid = document.getElementById('cardsGrid');
+      grid.classList.remove('hidden');
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="py-12 text-center text-emerald-700 text-xs font-extrabold bg-white rounded-2xl border border-emerald-100 p-6">Nessun immobile trovato. Mostrando catalogo completo...</div>';
+        return;
+      }
+
+      filtered.forEach(function(it) {
+        var meta = it.meta || {};
+        var title = it.title ? (it.title.rendered || '') : 'Immobile Immobiliare Giancani';
+        var link = it.link || '#';
+        var price = meta._immobile_prezzo || meta.prezzo || '';
+        var priceText = price ? '€ ' + Number(price).toLocaleString('it-IT') : 'Trattativa Riservata';
+        var citta = meta._immobile_citta || meta.citta || meta._immobile_localita || 'Favara';
+        var via = meta._immobile_indirizzo || '';
+        var mq = meta._immobile_superficie || '--';
+        var camere = meta._immobile_camere || '--';
+        var bagni = meta._immobile_bagni || '--';
+        var cfg = getCityCfg(citta + ' ' + via + ' ' + title);
+
+        // Foto: prima da WordPress embedded, poi dal campo _foto (foglio Google)
+        var photo = '';
+        if (it._embedded && it._embedded['wp:featuredmedia'] && it._embedded['wp:featuredmedia'][0]) {
+          photo = it._embedded['wp:featuredmedia'][0].source_url || '';
+        }
+        if (!photo && it._foto) {
+          photo = it._foto;
+        }
+
+        // Coordinate lat/lng dalla meta
+        var lat = parseFloat(meta._immobile_latitude || meta.lat || 0);
+        var lng = parseFloat(meta._immobile_longitude || meta.lng || 0);
+        if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+          var p = scatterCoords(cfg.base[0], cfg.base[1], it.id);
+          lat = p[0]; lng = p[1];
+        }
+
+        // Approssimazione Posizione Privacy: offset deterministico (~35-45m) per indicare la ZONA senza posizione esatta
+        var numSeed = parseInt(String(it.id).replace(/\D/g, '')) || 1;
+        var privacyLatOffset = (((numSeed * 13) % 30) - 15) * 0.00012;
+        var privacyLngOffset = (((numSeed * 29) % 30) - 15) * 0.00012;
+        var displayLat = lat + privacyLatOffset;
+        var displayLng = lng + privacyLngOffset;
+
+        // Cerchio Area Zona Privacy: raggio 40m e opacità 0.15
+        var circle = L.circle([displayLat, displayLng], {
+          color: cfg.color,
+          fillColor: cfg.color,
+          fillOpacity: 0.15,
+          radius: 40,
+          weight: 1.5
+        });
+
+        // Pin Zona Discreto 20x20px
+        var icon = L.divIcon({
+          className: 'custom-map-city-pin',
+          html: '<div style="width:20px;height:20px;border-radius:50%;background:' + cfg.color + ';border:2px solid #ffffff;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:#ffffff;font-size:9px;"><i class="fa-solid ' + cfg.icon + '"></i></div>',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        });
+
+        var marker = L.marker([displayLat, displayLng], { icon: icon });
+
+        var photoHtml = photo ? '<img src="' + photo + '" style="width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px;" />' : '';
+        var popupContent = '<div style="font-family:system-ui;padding:6px;max-width:250px;color:#0f172a;">' +
+          photoHtml +
+          '<h4 style="margin:0 0 6px;font-size:13px;font-weight:800;color:#0f172a;">' + title + '</h4>' +
+          '<div style="font-size:15px;font-weight:900;color:#15803d;margin-bottom:6px;">' + priceText + '</div>' +
+          '<div style="font-size:11px;color:#475569;margin-bottom:10px;">📍 Zona ' + cfg.label + ' (Posizione Approssimativa)</div>' +
+          '<a href="' + link + '" target="_blank" style="display:block;text-align:center;background:#16a34a;color:#ffffff;padding:8px 12px;border-radius:10px;text-decoration:none;font-size:11px;font-weight:800;">Vedi Scheda Immobile (Tema Giancani) →</a>' +
+          '<div style="font-size:10px;color:#f97316;margin-top:8px;text-align:right;font-weight:900;">Immobiliare Giancani</div>' +
+        '</div>';
+
+        marker.bindPopup(popupContent);
+        circle.bindPopup(popupContent);
+
+        featureGroup.addLayer(circle);
+        markerClusterGroup.addLayer(marker);
+
+        markersStore[it.id] = { marker: marker, lat: displayLat, lng: displayLng };
+
+        // Card Griglia Destra: Tag <a> nativo HTML per garantire apertura istantanea dell'annuncio
+        var card = document.createElement('a');
+        card.href = link && link !== '#' ? link : 'javascript:void(0);';
+        card.target = '_blank';
+        card.className = 'bg-white border border-emerald-100 hover:border-emerald-500 p-3 rounded-2xl transition-all shadow-sm hover:shadow-md flex gap-3 items-center group cursor-pointer block no-underline text-inherit';
+
+        card.onclick = function(e) {
+          if (link && link !== '#') {
+            try { window.open(link, '_blank'); } catch(errOpen) {}
+            return true;
+          } else {
+            e.preventDefault();
+            map.setView([displayLat, displayLng], 17, { animate: true });
+            marker.openPopup();
+            return false;
+          }
+        };
+
+        var imgHtml = photo 
+          ? '<img src="' + photo + '" class="w-24 h-24 rounded-xl object-cover border border-emerald-100 flex-shrink-0 group-hover:scale-105 transition-transform" />'
+          : '<div class="w-24 h-24 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0"><i class="fa-solid fa-house text-3xl"></i></div>';
+
+        card.innerHTML = imgHtml +
+          '<div class="flex-1 min-w-0 space-y-1">' +
+            '<div class="flex items-center justify-between gap-1">' +
+              '<span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-lg text-white" style="background:' + cfg.color + ';">' + cfg.label + '</span>' +
+              '<span class="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">' + priceText + '</span>' +
+            '</div>' +
+            '<h3 class="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">' + title + '</h3>' +
+            '<div class="flex items-center gap-2.5 text-[10px] text-slate-500 font-bold">' +
+              '<span><strong class="text-slate-800">' + (String(mq).toLowerCase().includes('metri quadri') ? mq : (mq + ' metri quadri')) + '</strong></span>' +
+              '<span>•</span>' +
+              '<span><strong class="text-slate-800">' + camere + '</strong> Camere</span>' +
+              '<span>•</span>' +
+              '<span><strong class="text-slate-800">' + bagni + '</strong> Bagni</span>' +
+            '</div>' +
+            '<div class="flex items-center justify-between pt-1">' +
+              '<span onclick="event.stopPropagation(); map.setView([' + displayLat + ', ' + displayLng + '], 17); markersStore[\'' + it.id + '\'].marker.openPopup();" class="text-[10px] text-orange-600 font-extrabold flex items-center gap-1 hover:underline cursor-pointer"><i class="fa-solid fa-location-dot text-orange-500"></i> Mostra in Mappa</span>' +
+              '<a href="' + link + '" target="_blank" onclick="event.stopPropagation();" class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg font-bold transition-colors shadow-sm">Scheda →</a>' +
+            '</div>' +
+          '</div>';
+
+        grid.appendChild(card);
+      });
+
+      if (featureGroup.getLayers().length > 0) {
+        try { map.fitBounds(featureGroup.getBounds(), { padding: [40, 40] }); } catch(e) {}
+      }
+    }
+  </script>
+</body>
+</html>

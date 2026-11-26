@@ -1,0 +1,101 @@
+        <!-- 🎯 TAB RUOLI & CONTROLLO FRASI DIRETTA -->
+        <div id="tab-ruoli" class="tab-content">
+          <div class="tab-header-bar">
+            <div class="section-title">🎯 Studio Ruoli & Controllo Frasi Diretta</div>
+            <button class="btn-tutorial-trigger" onclick="apriTutorialTab('tab-ruoli')">❓ Tutorial & Guida</button>
+          </div>
+
+          <div class="section-card" style="background: rgba(30, 144, 255, 0.08); border-color: rgba(30, 144, 255, 0.3);">
+            <div class="section-title" style="color: #70a1ff;">🎙️ Gestione Ruoli Voce (DarIA, Antonio Giancani &amp; DarIO), Lettura Colonne &amp; Salvataggio in Colonna J <button type="button" class="btn-help-mini" onclick="toggleMiniTutorial(this, 'tut-gestione-ruoli-voce')" title="Guida & Mini Tutorial: 🎙️ Gestione Ruoli Voce & Salvataggio Colonna J">❓</button></div>
+<div id="tut-gestione-ruoli-voce" class="mini-tutorial-box">
+  <h4>💡 Guida Rapida: 🎙️ Gestione Ruoli Voce & Salvataggio Colonna J</h4>
+  <div class="tut-serve"><strong>🎯 A cosa serve:</strong> Assegna le voci (Antonio Giancani, DarIO maschile, DarIA femminile) alle varie stanze dell'immobile, leggendo il testo di Colonna F e generando i file MP3 su Drive in Colonna J.</div>
+  <div class="tut-steps">
+    <strong>🛠️ Come funziona (Mini Tutorial):</strong>
+    <ol>
+      <li>Seleziona il foglio dell'immobile da configurare.</li><li>Ascolta l'anteprima vocale di ciascuna riga e cambia la voce associata se necessario.</li><li>Clicca <em>'Salva Audio in Colonna J'</em> per creare e registrare il file MP3 permanente su Google Drive.</li>
+    </ol>
+  </div>
+  <div class="tut-close-btn" onclick="toggleMiniTutorial(null, 'tut-gestione-ruoli-voce')">✖️ Chiudi Guida</div>
+</div>
+            
+            <div style="background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: #2ecc71;">
+              ✅ <strong>GRATIS AL 100%!</strong> Anteprima foto/video per ogni riga. Scegli la colonna da leggere, la colonna di rilevamento voce (<strong>DarIA / Antonio Giancani / DarIO</strong>) ed i link degli audio MP3 generati verranno salvati su Google Drive ed in <strong>Colonna J</strong>!
+            </div>
+
+            <!-- FORM SELEZIONE COLONNE -->
+            <div class="form-grid cols-3" style="margin-bottom: 16px;">
+              <div class="form-group">
+                <label>🏠 Immobile / Foglio Google Sheet:</label>
+                <select id="ruoli-select-immobile" onchange="caricaStanzePerRuoli(this.value)"></select>
+              </div>
+
+              <div class="form-group">
+                <label>📝 Colonna Testo da Leggere:</label>
+                <select id="ruoli-select-col-testo" onchange="cambiaColonnaTestoLettura(this.value)">
+                  <option value="5" selected>Colonna F (Testo Parlato - Default)</option>
+                  <option value="0">Colonna A (Stanza / Ambiente)</option>
+                  <option value="1">Colonna B (Prezzo)</option>
+                  <option value="2">Colonna C (MQ)</option>
+                  <option value="3">Colonna D (Titolo)</option>
+                  <option value="4">Colonna E (Tipo Media)</option>
+                  <option value="6">Colonna G (Audio Esistente)</option>
+                  <option value="7">Colonna H (Ticker)</option>
+                  <option value="8">Colonna I (Link Annuncio)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>🗣️ Colonna Rilevamento Voce Auto (DarIO/DarIA):</label>
+                <select id="ruoli-select-col-voce" onchange="cambiaColonnaRilevamentoVoce(this.value)">
+                  <option value="-1">Nessuna (Alternanza Auto / Selezione Card)</option>
+                  <option value="6">Colonna G (Cerca 'antonio', 'dario' o 'daria')</option>
+                  <option value="4">Colonna E (Tipo Media)</option>
+                  <option value="0">Colonna A (Nome Stanza)</option>
+                  <option value="7">Colonna H (Ticker)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- BARRA AZIONI MASSIVE -->
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--gold); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--gold-bright); margin-bottom: 8px;">⚡ AZIONI MASSIVE SULL'INTERO FOGLIO (SCRITTURA COLONNA J & DRIVE):</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                <button onclick="generaESalvaAudioColonnaJMassivo()" class="btn-gold" style="flex: 2; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; font-weight: 700; font-size: 13px;">
+                  💾 GENERA & SALVA TUTTO IL FOGLIO IN COLONNA J (DRIVE)
+                </button>
+                <button onclick="convertiTuttiILinkTranslateMassivo()" class="btn-gold" style="flex: 1.8; background: linear-gradient(135deg, #e67e22, #d35400); color: white; font-weight: 700; font-size: 12px;">
+                  🔧 BONIFICA VECCHI LINK TRANSLATE -> MP3 DRIVE
+                </button>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button onclick="riproduciTutteLeRigheInSequenza()" class="btn-gold" style="flex: 1; background: rgba(255,255,255,0.1); color: var(--gold-bright); border: 1px solid var(--gold); font-size: 12px;">
+                  🔊 Ascolta Sequenza
+                </button>
+                <button onclick="inviaTutteLeRigheInDiretta()" class="btn-gold" style="flex: 1; background: linear-gradient(135deg, #1e90ff, #70a1ff); color: white; font-size: 12px;">
+                  🚀 Invia Tutto in Diretta
+                </button>
+              </div>
+            </div>
+
+            <!-- 📊 BARRA DI AVANZAMENTO IN PERCENTUALE -->
+            <div id="ruoli-progress-container" style="display: none; margin-bottom: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--gold); border-radius: 10px; padding: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span id="ruoli-progress-title" style="font-size: 13px; font-weight: 700; color: var(--gold-bright);">⏳ Esecuzione massiva in corso...</span>
+                <span id="ruoli-progress-percent" style="font-size: 14px; font-weight: 900; color: #2ecc71;">0%</span>
+              </div>
+              <div style="width: 100%; height: 16px; background: rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; border: 1px solid rgba(201, 163, 94, 0.4);">
+                <div id="ruoli-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f1c40f, #2ecc71); transition: width 0.3s ease-in-out;"></div>
+              </div>
+              <div id="ruoli-progress-detail" style="font-size: 11px; color: var(--sand); margin-top: 6px; text-align: center;">Elaborate 0 di 0 righe</div>
+            </div>
+
+            <!-- CONTENITORE RIGHE / CARDS IMMOBILE -->
+            <div id="ruoli-cards-container" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="text-align: center; padding: 20px; color: var(--sand);">⏳ Caricamento righe del foglio in corso...</div>
+            </div>
+
+            <div id="ruoli-status-msg" style="font-size: 12px; color: #2ecc71; margin-top: 14px; text-align: center; display: none; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px;"></div>
+          </div>
+        </div>
+
